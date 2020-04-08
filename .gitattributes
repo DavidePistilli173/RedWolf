@@ -1,0 +1,5 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Remove language detection from external dependencies.
+RedWolf/docs/* linguist-vendored
