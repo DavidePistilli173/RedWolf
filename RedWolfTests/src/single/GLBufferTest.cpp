@@ -1,3 +1,4 @@
+/* Tests for rw::gl::GLBuffer */
 #include "utility.hpp"
 
 #include <RedWolf/gl/GLBuffer.hpp>
@@ -8,8 +9,8 @@
 
 enum class Error
 {
-    WINDOW_CREATION = 1,
-    OPENGL
+    window_creation = 1,
+    opengl
 };
 
 constexpr std::string_view win_name{ "GLBufferTest" }; // Name of the test window.
@@ -35,7 +36,7 @@ int main(int argc, char* args[])
 int test()
 {
     rwt::window_t win{ rwt::setUpGLContext(win_name) };
-    if (win == nullptr) return static_cast<int>(Error::WINDOW_CREATION);
+    if (win == nullptr) return static_cast<int>(Error::window_creation);
 
     /* Test data. */
     std::array<unsigned int, sizes[0]> a_uc1{ def_uc };
@@ -137,7 +138,7 @@ int test()
     }
 
 
-    if (rwt::g_glError) return static_cast<int>(Error::OPENGL);
+    if (rwt::g_glError) return static_cast<int>(Error::opengl);
     return 0;
 }
 

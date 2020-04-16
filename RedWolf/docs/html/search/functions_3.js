@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['setdata_14',['setData',['../classrw_1_1gl_1_1_g_l_buffer.html#aafe34961d79f2200c0b629978e4f10b9',1,'rw::gl::GLBuffer']]],
-  ['settarget_15',['setTarget',['../classrw_1_1gl_1_1_g_l_buffer.html#a0aa414c2f4cd3634638baf8e8bb35161',1,'rw::gl::GLBuffer']]],
-  ['size_16',['Size',['../structrw_1_1_size.html#a602557a014c92cd9980da477114b8000',1,'rw::Size::Size()=default'],['../structrw_1_1_size.html#adc25b8d37d771277177e38177e07231e',1,'rw::Size::Size(T a, T b)']]]
+  ['glbuffer_37',['GLBuffer',['../classrw_1_1gl_1_1_g_l_buffer.html#a017c060fea85c7c06dc107de01628dea',1,'rw::gl::GLBuffer::GLBuffer()'],['../classrw_1_1gl_1_1_g_l_buffer.html#a724209e972ea0d255345f0de1a5c8cc7',1,'rw::gl::GLBuffer::GLBuffer(GLenum target)'],['../classrw_1_1gl_1_1_g_l_buffer.html#ada6fb8e8eb5a3c69c5fce44a19c2b35f',1,'rw::gl::GLBuffer::GLBuffer(GLenum target, GLenum usage)'],['../classrw_1_1gl_1_1_g_l_buffer.html#a399c0a2e95dc12bc355e0b42b1a71b8b',1,'rw::gl::GLBuffer::GLBuffer(const std::array&lt; T, N &gt; &amp;data, GLenum target, GLenum usage)'],['../classrw_1_1gl_1_1_g_l_buffer.html#ac70f329260aad7ccb238329279f41de6',1,'rw::gl::GLBuffer::GLBuffer(const GLBuffer &amp;)=delete'],['../classrw_1_1gl_1_1_g_l_buffer.html#aa7a6be5b2a6aabbd833162413ae23559',1,'rw::gl::GLBuffer::GLBuffer(GLBuffer &amp;&amp;buf) noexcept']]]
 ];

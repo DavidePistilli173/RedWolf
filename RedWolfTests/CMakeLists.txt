@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION "3.8") # Minimum cmake version to support C++17
 set(CMAKE_CXX_STANDARD 17) # Target C++ standard.
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # Enable the target standard.
 
-project("RedWolfTests" VERSION "0.0.0" DESCRIPTION "")
+project("RedWolfTests" VERSION "0.0.1" DESCRIPTION "Unit tests for RedWolf.")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
@@ -25,3 +25,9 @@ add_executable("GLBufferTest"
 )
 target_link_libraries("GLBufferTest" "${REDWOLF_LIB}" "${SDL_LIB}" "${SDL_MAIN_LIB}")
 add_test(NAME "GLBufferTest" COMMAND "GLBufferTest")
+
+add_executable("LogTest"
+    "src/single/LogTest.cpp"
+)
+target_link_libraries("LogTest" "${REDWOLF_LIB}")
+add_test(NAME "LogTest" COMMAND "LogTest")

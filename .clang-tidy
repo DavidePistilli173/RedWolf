@@ -1,7 +1,7 @@
 ---
 Checks:            '*, -modernize-use-trailing-return-type, -google-readability-namespace-comments, -llvm-namespace-comment, 
                     -fuchsia-trailing-return, -hicpp-vararg, -cppcoreguidelines-pro-type-vararg, -fuchsia-default-arguments-calls,
-                    -hicpp-braces-around-statements'
+                    -hicpp-braces-around-statements, -google-readability-braces-around-statements, -readability-braces-around-statements'
 WarningsAsErrors:  ''
 HeaderFilterRegex: '.*'
 FormatStyle:       'file'

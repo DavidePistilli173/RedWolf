@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['operator_3d_13',['operator=',['../classrw_1_1gl_1_1_g_l_buffer.html#a2f1984289a6c65b1e94dc9ab136a97be',1,'rw::gl::GLBuffer::operator=(const GLBuffer &amp;)=delete'],['../classrw_1_1gl_1_1_g_l_buffer.html#af23abc4345b287d979e8302513512f4e',1,'rw::gl::GLBuffer::operator=(GLBuffer &amp;&amp;buf) noexcept']]]
+  ['core_5ferr_34',['core_err',['../classrw_1_1_log.html#ae80df3217a9921f5c8ed7d3baa9557b3',1,'rw::Log']]],
+  ['core_5finfo_35',['core_info',['../classrw_1_1_log.html#aa2d2c49872402a47255923ee24827ef6',1,'rw::Log']]],
+  ['core_5fwarn_36',['core_warn',['../classrw_1_1_log.html#ad169b04930bf9baa5e28011fea235dee',1,'rw::Log']]]
 ];

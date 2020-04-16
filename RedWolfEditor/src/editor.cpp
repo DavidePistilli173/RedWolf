@@ -1,9 +1,6 @@
-#include <RedWolf/gl/GLBuffer.hpp>
-
 #include "RedWolfEditor/editor.hpp"
 
-int main()
+std::unique_ptr<rw::App> rw::createApp()
 {
-    rw::print("Hello World!\n");
-    return 0;
+    return std::make_unique<rw::App>(Editor{});
 }

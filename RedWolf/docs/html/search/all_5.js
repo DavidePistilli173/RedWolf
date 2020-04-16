@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['w_7',['w',['../structrw_1_1_size.html#a4a4cf364dd4d2e06d40eef2c7aa23a0e',1,'rw::Size']]]
+  ['init_12',['init',['../classrw_1_1_log.html#a6b0378cf6942c441283df146202ce003',1,'rw::Log']]]
 ];

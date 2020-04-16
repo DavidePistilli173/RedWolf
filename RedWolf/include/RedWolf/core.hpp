@@ -1,8 +1,6 @@
 #ifndef RW_CORE_HPP
 #define RW_CORE_HPP
 
-#include <string_view>
-
 #ifdef RW_EXPORTS
     #define RW_API __declspec(dllexport)
 #else
@@ -11,7 +9,11 @@
 
 namespace rw
 {
-    extern RW_API void print(std::string_view msg);
+    #ifdef RW_DEBUG
+        constexpr bool debug{ true };
+    #else
+        constexpr bool debug{ false };
+    #endif
 }
 
 #endif

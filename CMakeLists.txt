@@ -19,6 +19,7 @@ add_subdirectory("${REDWOLFTESTS_SOURCE_DIR}")
 if (WIN32)
     # RedWolfEditor
     file(COPY "${BIN_DIR}/RedWolf/RedWolf.dll" DESTINATION "${BIN_DIR}/RedWolfEditor/")
+    file(COPY "${VENDOR_DIR}/lib/SDL2.0.9/SDL2.dll" DESTINATION "${BIN_DIR}/RedWolfEditor/")
     # RedWolfTests
     file(COPY "${BIN_DIR}/RedWolf/RedWolf.dll" DESTINATION "${BIN_DIR}/RedWolfTests/")
     file(COPY "${VENDOR_DIR}/lib/SDL2.0.9/SDL2.dll" DESTINATION "${BIN_DIR}/RedWolfTests/")
