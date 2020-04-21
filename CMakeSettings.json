@@ -12,7 +12,7 @@
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "enableClangTidyCodeAnalysis": true,
-      "clangTidyChecks": "*, -modernize-use-trailing-return-type, -google-readability-namespace-comments, -llvm-namespace-comment, -fuchsia-trailing-return, -hicpp-vararg, -cppcoreguidelines-pro-type-vararg, -fuchsia-default-arguments-calls, -hicpp-braces-around-statements, -google-readability-braces-around-statements, -readability-braces-around-statements"
+      "clangTidyChecks": "*, -modernize-use-trailing-return-type, -google-readability-namespace-comments, -llvm-namespace-comment, -fuchsia-trailing-return, -hicpp-vararg, -cppcoreguidelines-pro-type-vararg, -fuchsia-default-arguments-calls, -hicpp-braces-around-statements, -google-readability-braces-around-statements, -readability-braces-around-statements, -llvm-header-guard, -fuchsia-statically-constructed-objects, -google-runtime-references, -cppcoreguidelines-non-private-member-variables-in-classes, -cppcoreguidelines-pro-bounds-constant-array-index, -readability-avoid-const-params-in-decls, -cert-err58-cpp, -google-runtime-int, -misc-non-private-member-variables-in-classes"
     }
   ]
 }

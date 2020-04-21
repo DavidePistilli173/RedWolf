@@ -1,4 +1,9 @@
 var searchData=
 [
-  ['glbuffer_37',['GLBuffer',['../classrw_1_1gl_1_1_g_l_buffer.html#a017c060fea85c7c06dc107de01628dea',1,'rw::gl::GLBuffer::GLBuffer()'],['../classrw_1_1gl_1_1_g_l_buffer.html#a724209e972ea0d255345f0de1a5c8cc7',1,'rw::gl::GLBuffer::GLBuffer(GLenum target)'],['../classrw_1_1gl_1_1_g_l_buffer.html#ada6fb8e8eb5a3c69c5fce44a19c2b35f',1,'rw::gl::GLBuffer::GLBuffer(GLenum target, GLenum usage)'],['../classrw_1_1gl_1_1_g_l_buffer.html#a399c0a2e95dc12bc355e0b42b1a71b8b',1,'rw::gl::GLBuffer::GLBuffer(const std::array&lt; T, N &gt; &amp;data, GLenum target, GLenum usage)'],['../classrw_1_1gl_1_1_g_l_buffer.html#ac70f329260aad7ccb238329279f41de6',1,'rw::gl::GLBuffer::GLBuffer(const GLBuffer &amp;)=delete'],['../classrw_1_1gl_1_1_g_l_buffer.html#aa7a6be5b2a6aabbd833162413ae23559',1,'rw::gl::GLBuffer::GLBuffer(GLBuffer &amp;&amp;buf) noexcept']]]
+  ['geth_94',['getH',['../classrw_1_1gl_1_1_texture.html#ae2a4fdaa0d19117e6f5d2145c0a357e8',1,'rw::gl::Texture']]],
+  ['getsize_95',['getSize',['../classrw_1_1gl_1_1_texture.html#afbb78f347f98b559181e6e15fc617c04',1,'rw::gl::Texture']]],
+  ['getw_96',['getW',['../classrw_1_1gl_1_1_texture.html#ade4278f9038692d7399ac37f3ede592d',1,'rw::gl::Texture']]],
+  ['gl_5ferr_97',['gl_err',['../classrw_1_1_log.html#a7eb5da76c9716f7dcfb62792b32918a7',1,'rw::Log']]],
+  ['gl_5finfo_98',['gl_info',['../classrw_1_1_log.html#a7a12b6500925e64a907adea038ac5c33',1,'rw::Log']]],
+  ['gl_5fwarn_99',['gl_warn',['../classrw_1_1_log.html#ae3f806344f05f232507eabf61e0555f9',1,'rw::Log']]]
 ];

@@ -85,37 +85,76 @@ $(document).ready(function(){initNavTree('utility_8hpp_source.html',''); initRes
 <div class="title">utility.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef REDWOLF_UTILITY_HPP</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define REDWOLF_UTILITY_HPP</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span>rw</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;{</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">    /********** STRUCTS *********/</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="structrw_1_1_size.html">   11</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structrw_1_1_size.html">Size</a></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        constexpr <a class="code" href="structrw_1_1_size.html#a602557a014c92cd9980da477114b8000">Size</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structrw_1_1_size.html#adc25b8d37d771277177e38177e07231e">   22</a></span>&#160;        constexpr <a class="code" href="structrw_1_1_size.html#adc25b8d37d771277177e38177e07231e">Size</a>(T a, T b) :</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            <a class="code" href="structrw_1_1_size.html#a4a4cf364dd4d2e06d40eef2c7aa23a0e">w</a>{ a }, <a class="code" href="structrw_1_1_size.html#a06abd57a7b1ee22791719049851e78e5">h</a>{ b }</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        {}</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structrw_1_1_size.html#a4a4cf364dd4d2e06d40eef2c7aa23a0e">   26</a></span>&#160;        T <a class="code" href="structrw_1_1_size.html#a4a4cf364dd4d2e06d40eef2c7aa23a0e">w</a>{}; </div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="structrw_1_1_size.html#a06abd57a7b1ee22791719049851e78e5">   27</a></span>&#160;        T <a class="code" href="structrw_1_1_size.html#a06abd57a7b1ee22791719049851e78e5">h</a>{}; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    };</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#endif</span></div>
+<a href="utility_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#ifndef REDWOLF_UTILITY_HPP</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#define REDWOLF_UTILITY_HPP</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;SDL2.0.9/SDL.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;SDL2_ttf2.0.15/SDL_ttf.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;queue&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>rw</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">    /********** TYPE ALIASES *********/</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="utility_8hpp.html#aa7f77a5c18acb5383f7e5d4b6cacf7c3">   19</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="utility_8hpp.html#aa7f77a5c18acb5383f7e5d4b6cacf7c3">file_ptr_t</a> = std::unique_ptr&lt;SDL_RWops, void(*)(SDL_RWops*)&gt;;</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="utility_8hpp.html#abf570c4be713dfaf5150cb31b18c259f">   21</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="utility_8hpp.html#abf570c4be713dfaf5150cb31b18c259f">font_ptr_t</a> = std::unique_ptr&lt;TTF_Font, void(*)(TTF_Font*)&gt;;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="utility_8hpp.html#ab6a489fbdcbc4d11d7274664c6d0f7e8">   23</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="utility_8hpp.html#ab6a489fbdcbc4d11d7274664c6d0f7e8">surf_ptr_t</a> = std::unique_ptr&lt;SDL_Surface, void(*)(SDL_Surface*)&gt;;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="utility_8hpp.html#a8f56ec4968dac2a2d8f43f11b956092d">   25</a></span>&#160;    <span class="keyword">using</span> <a class="code" href="utility_8hpp.html#a8f56ec4968dac2a2d8f43f11b956092d">win_ptr_t</a> = std::unique_ptr&lt;SDL_Window, void(*)(SDL_Window*)&gt;;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">    /********** STRUCTS *********/</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="structrw_1_1_size.html">   32</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structrw_1_1_size.html">Size</a></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        constexpr <a class="code" href="structrw_1_1_size.html#a602557a014c92cd9980da477114b8000">Size</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="structrw_1_1_size.html#adc25b8d37d771277177e38177e07231e">   43</a></span>&#160;        constexpr <a class="code" href="structrw_1_1_size.html#adc25b8d37d771277177e38177e07231e">Size</a>(T a, T b) :</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            <a class="code" href="structrw_1_1_size.html#a4a4cf364dd4d2e06d40eef2c7aa23a0e">w</a>{ a }, <a class="code" href="structrw_1_1_size.html#a06abd57a7b1ee22791719049851e78e5">h</a>{ b }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        {}</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="structrw_1_1_size.html#a4a4cf364dd4d2e06d40eef2c7aa23a0e">   47</a></span>&#160;        T <a class="code" href="structrw_1_1_size.html#a4a4cf364dd4d2e06d40eef2c7aa23a0e">w</a>{}; </div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="structrw_1_1_size.html#a06abd57a7b1ee22791719049851e78e5">   48</a></span>&#160;        T <a class="code" href="structrw_1_1_size.html#a06abd57a7b1ee22791719049851e78e5">h</a>{}; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    };</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">    /********** CLASSES *********/</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">size_t</span> max_size&gt;</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classrw_1_1_fixed_queue.html">   54</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classrw_1_1_fixed_queue.html">FixedQueue</a> : <span class="keyword">public</span> std::queue&lt;T&gt;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classrw_1_1_fixed_queue.html#abbfd32478d0709efd68dc07336e99d45">   61</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classrw_1_1_fixed_queue.html#abbfd32478d0709efd68dc07336e99d45">push</a>(<span class="keyword">const</span> T&amp; value)</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <span class="comment">/* Pop a message if the maximum size was reached. */</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            <span class="keywordflow">if</span> (size() &gt;= max_size) pop();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            std::queue&lt;T&gt;::push(value);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classrw_1_1_fixed_queue.html#a20214a8b00da12057d721a305bd8fad1">   72</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classrw_1_1_fixed_queue.html#a20214a8b00da12057d721a305bd8fad1">push</a>(T&amp;&amp; value)</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        {</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            <span class="keywordflow">if</span> (size() &gt;= max_size) pop();</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            std::queue&lt;T&gt;::push(value);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    };</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;}</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="astructrw_1_1_size_html_a06abd57a7b1ee22791719049851e78e5"><div class="ttname"><a href="structrw_1_1_size.html#a06abd57a7b1ee22791719049851e78e5">rw::Size::h</a></div><div class="ttdeci">T h</div><div class="ttdef"><b>Definition:</b> utility.hpp:27</div></div>
-<div class="ttc" id="astructrw_1_1_size_html_adc25b8d37d771277177e38177e07231e"><div class="ttname"><a href="structrw_1_1_size.html#adc25b8d37d771277177e38177e07231e">rw::Size::Size</a></div><div class="ttdeci">constexpr Size(T a, T b)</div><div class="ttdoc">Initialises a struct with given values.</div><div class="ttdef"><b>Definition:</b> utility.hpp:22</div></div>
-<div class="ttc" id="astructrw_1_1_size_html_a4a4cf364dd4d2e06d40eef2c7aa23a0e"><div class="ttname"><a href="structrw_1_1_size.html#a4a4cf364dd4d2e06d40eef2c7aa23a0e">rw::Size::w</a></div><div class="ttdeci">T w</div><div class="ttdef"><b>Definition:</b> utility.hpp:26</div></div>
+<div class="ttc" id="astructrw_1_1_size_html_a06abd57a7b1ee22791719049851e78e5"><div class="ttname"><a href="structrw_1_1_size.html#a06abd57a7b1ee22791719049851e78e5">rw::Size::h</a></div><div class="ttdeci">T h</div><div class="ttdef"><b>Definition:</b> utility.hpp:48</div></div>
+<div class="ttc" id="astructrw_1_1_size_html_adc25b8d37d771277177e38177e07231e"><div class="ttname"><a href="structrw_1_1_size.html#adc25b8d37d771277177e38177e07231e">rw::Size::Size</a></div><div class="ttdeci">constexpr Size(T a, T b)</div><div class="ttdoc">Initialises a struct with given values.</div><div class="ttdef"><b>Definition:</b> utility.hpp:43</div></div>
+<div class="ttc" id="astructrw_1_1_size_html_a4a4cf364dd4d2e06d40eef2c7aa23a0e"><div class="ttname"><a href="structrw_1_1_size.html#a4a4cf364dd4d2e06d40eef2c7aa23a0e">rw::Size::w</a></div><div class="ttdeci">T w</div><div class="ttdef"><b>Definition:</b> utility.hpp:47</div></div>
 <div class="ttc" id="astructrw_1_1_size_html_a602557a014c92cd9980da477114b8000"><div class="ttname"><a href="structrw_1_1_size.html#a602557a014c92cd9980da477114b8000">rw::Size::Size</a></div><div class="ttdeci">constexpr Size()=default</div><div class="ttdoc">Initialises a struct with default values.</div></div>
-<div class="ttc" id="astructrw_1_1_size_html"><div class="ttname"><a href="structrw_1_1_size.html">rw::Size</a></div><div class="ttdoc">Struct containing information about width and height.</div><div class="ttdef"><b>Definition:</b> utility.hpp:11</div></div>
+<div class="ttc" id="aclassrw_1_1_fixed_queue_html"><div class="ttname"><a href="classrw_1_1_fixed_queue.html">rw::FixedQueue</a></div><div class="ttdoc">Fixed size queue.</div><div class="ttdef"><b>Definition:</b> utility.hpp:54</div></div>
+<div class="ttc" id="aclassrw_1_1_fixed_queue_html_a20214a8b00da12057d721a305bd8fad1"><div class="ttname"><a href="classrw_1_1_fixed_queue.html#a20214a8b00da12057d721a305bd8fad1">rw::FixedQueue::push</a></div><div class="ttdeci">void push(T &amp;&amp;value)</div><div class="ttdoc">Move a value into the queue.</div><div class="ttdef"><b>Definition:</b> utility.hpp:72</div></div>
+<div class="ttc" id="autility_8hpp_html_a8f56ec4968dac2a2d8f43f11b956092d"><div class="ttname"><a href="utility_8hpp.html#a8f56ec4968dac2a2d8f43f11b956092d">rw::win_ptr_t</a></div><div class="ttdeci">std::unique_ptr&lt; SDL_Window, void(*)(SDL_Window *)&gt; win_ptr_t</div><div class="ttdoc">Pointer to a GUI window.</div><div class="ttdef"><b>Definition:</b> utility.hpp:25</div></div>
+<div class="ttc" id="astructrw_1_1_size_html"><div class="ttname"><a href="structrw_1_1_size.html">rw::Size</a></div><div class="ttdoc">Struct containing information about width and height.</div><div class="ttdef"><b>Definition:</b> utility.hpp:32</div></div>
+<div class="ttc" id="autility_8hpp_html_abf570c4be713dfaf5150cb31b18c259f"><div class="ttname"><a href="utility_8hpp.html#abf570c4be713dfaf5150cb31b18c259f">rw::font_ptr_t</a></div><div class="ttdeci">std::unique_ptr&lt; TTF_Font, void(*)(TTF_Font *)&gt; font_ptr_t</div><div class="ttdoc">Text font to be used in textures.</div><div class="ttdef"><b>Definition:</b> utility.hpp:21</div></div>
+<div class="ttc" id="aclassrw_1_1_fixed_queue_html_abbfd32478d0709efd68dc07336e99d45"><div class="ttname"><a href="classrw_1_1_fixed_queue.html#abbfd32478d0709efd68dc07336e99d45">rw::FixedQueue::push</a></div><div class="ttdeci">void push(const T &amp;value)</div><div class="ttdoc">Copy a value into the queue.</div><div class="ttdef"><b>Definition:</b> utility.hpp:61</div></div>
+<div class="ttc" id="autility_8hpp_html_aa7f77a5c18acb5383f7e5d4b6cacf7c3"><div class="ttname"><a href="utility_8hpp.html#aa7f77a5c18acb5383f7e5d4b6cacf7c3">rw::file_ptr_t</a></div><div class="ttdeci">std::unique_ptr&lt; SDL_RWops, void(*)(SDL_RWops *)&gt; file_ptr_t</div><div class="ttdoc">File handle.</div><div class="ttdef"><b>Definition:</b> utility.hpp:19</div></div>
+<div class="ttc" id="autility_8hpp_html_ab6a489fbdcbc4d11d7274664c6d0f7e8"><div class="ttname"><a href="utility_8hpp.html#ab6a489fbdcbc4d11d7274664c6d0f7e8">rw::surf_ptr_t</a></div><div class="ttdeci">std::unique_ptr&lt; SDL_Surface, void(*)(SDL_Surface *)&gt; surf_ptr_t</div><div class="ttdoc">Pointer to an SDL surface.</div><div class="ttdef"><b>Definition:</b> utility.hpp:23</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_a33bad952c07cd29bb880b81af77f0cf.html">RedWolf</a></li><li class="navelem"><b>utility.hpp</b></li>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_a33bad952c07cd29bb880b81af77f0cf.html">RedWolf</a></li><li class="navelem"><a class="el" href="utility_8hpp.html">utility.hpp</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>

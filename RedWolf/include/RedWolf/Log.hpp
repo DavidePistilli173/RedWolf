@@ -6,6 +6,7 @@
 #include <spdlog/spdlog.h>
 
 #include <memory>
+#include <string_view>
 
 namespace rw
 {
@@ -13,10 +14,21 @@ namespace rw
     class RW_API Log
     {
     public:
+        /** \brief Logger modes. */
+        enum class Mode
+        {
+            file_only, /**< Only log to file. */
+            file_and_console /**< Log both to file and console. */
+        };
+
+        /** \brief Name of the log file. */
+        static constexpr std::string_view file_name{ "rwelog.log" };
         /** \brief Name of the engine logger. */
         static constexpr std::string_view core_name{ "REDWOLF" };
         /** \brief Name of the application logger. */
         static constexpr std::string_view app_name{ "APP" };
+        /** \brief Name of the OpenGL logger. */
+        static constexpr std::string_view gl_name{ "OPENGL" };
         /** \brief Formatting pattern for log messages. */
         static constexpr std::string_view pattern{ "%^[%n - %l] - %T:%e\n    %v" };
 
@@ -24,7 +36,7 @@ namespace rw
             \brief Initialise the logger. 
             \return true if initialisation was successful, false otherwise.
         */
-        static bool init();
+        static bool init(Mode mode);
 
         /** 
             \brief Log information from the engine.
@@ -116,11 +128,58 @@ namespace rw
             }
         }
 
+        /**
+            \brief Log information from the OpenGL API.
+            Only active in debug builds (see core.hpp)
+            \param msg Information message with spdlog formatting.
+            \param args Additional parameters to be printed with msg.
+        */
+        template <typename... Args>
+        static void gl_info(std::string_view msg, Args... args)
+        {
+            if constexpr (rw::debug)
+            {
+                glLogger_->info(msg, args...);
+            }
+        }
+
+        /**
+            \brief Log a warning from the OpenGL API.
+            Only active in debug builds (see core.hpp)
+            \param msg Warning message with spdlog formatting.
+            \param args Additional parameters to be printed with msg.
+        */
+        template <typename... Args>
+        static void gl_warn(std::string_view msg, Args... args)
+        {
+            if constexpr (rw::debug)
+            {
+                glLogger_->warn(msg, args...);
+            }
+        }
+
+        /**
+            \brief Log an error from the OpenGL API.
+            Only active in debug builds (see core.hpp)
+            \param msg Error message with spdlog formatting.
+            \param args Additional parameters to be printed with msg.
+        */
+        template <typename... Args>
+        static void gl_err(std::string_view msg, Args... args)
+        {
+            if constexpr (rw::debug)
+            {
+                glLogger_->error(msg, args...);
+            }
+        }
+
     private:
         /** \brief Engine logger. */
         static std::shared_ptr<spdlog::logger> coreLogger_;
         /** \brief Application logger. */
         static std::shared_ptr<spdlog::logger> appLogger_;
+        /** \brief OpenGL logger. */
+        static std::shared_ptr<spdlog::logger> glLogger_;
     };
 }
 

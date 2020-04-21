@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['init_38',['init',['../classrw_1_1_log.html#a6b0378cf6942c441283df146202ce003',1,'rw::Log']]]
+  ['init_100',['init',['../classrw_1_1_log.html#aeaa7b5fe22636ee3b535096c437500fa',1,'rw::Log']]]
 ];

@@ -14,12 +14,22 @@ include_directories(
     "${VENDOR_DIR}/include"
 )
 
-find_library(SDL_LIB "SDL2" HINTS "${VENDOR_DIR}/lib/SDL2.0.9")
-find_library(SDL_MAIN_LIB "SDL2main" HINTS "${VENDOR_DIR}/lib/SDL2.0.9")
-
 add_executable("${PROJECT_NAME}"
+    "${VENDOR_DIR}/src/glad.c"
     "src/editor.cpp"
 )
 
 find_library(REDWOLF_LIB "RedWolf" HINTS "${BIN_DIR}/RedWolf")
 target_link_libraries("${PROJECT_NAME}" "${REDWOLF_LIB}" "${SDL_LIB}" "${SDL_MAIN_LIB}")
+
+# Copy relevant dlls.
+if (WIN32)
+    # Bin dir
+    file(TO_NATIVE_PATH "${BIN_DIR}" NATIVE_BIN_DIR)
+    # RedWolf
+    file(TO_NATIVE_PATH "${BIN_DIR}/RedWolf/" NATIVE_REDWOLF_DIR)
+    add_custom_command(
+        TARGET "${PROJECT_NAME}" POST_BUILD
+        COMMAND copy /Y /B "${NATIVE_REDWOLF_DIR}\\*.dll" "${NATIVE_BIN_DIR}\\RedWolfEditor"
+    )
+endif (WIN32)

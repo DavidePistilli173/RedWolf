@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['redwolf_2ehpp_28',['RedWolf.hpp',['../_red_wolf_8hpp.html',1,'']]]
+  ['core_2ehpp_78',['core.hpp',['../core_8hpp.html',1,'']]]
 ];

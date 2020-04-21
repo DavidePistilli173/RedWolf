@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['redwolf_2ehpp_16',['RedWolf.hpp',['../_red_wolf_8hpp.html',1,'']]],
-  ['run_17',['run',['../classrw_1_1_app.html#aa2d91c6909411a46b86d34a6f0d85bbe',1,'rw::App']]]
+  ['log_38',['Log',['../classrw_1_1_log.html',1,'rw']]],
+  ['lvl_39',['lvl',['../structrw_1_1gl_1_1_msg.html#a67dd3a348578da4c87ac0f5621200d9c',1,'rw::gl::Msg']]]
 ];

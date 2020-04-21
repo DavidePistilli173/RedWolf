@@ -1,5 +1,5 @@
-#ifndef REDWOLF_GL_GLBUFFER_HPP
-#define REDWOLF_GL_GLBUFFER_HPP
+#ifndef REDWOLF_GL_BUFFER_HPP
+#define REDWOLF_GL_BUFFER_HPP
 
 #include "RedWolf/core.hpp"
 
@@ -11,35 +11,35 @@ namespace rw::gl
 {
     /** \brief Wrapper for an OpenGL data buffer. */
     template <typename T, size_t N>
-    class GLBuffer
+    class Buffer
     {
     public:
         /** \brief Create an empty buffer with default settings. */
-        GLBuffer();
+        Buffer();
 
         /** \brief Create an empty buffer with a custom target. */
-        explicit GLBuffer(GLenum target);
+        explicit Buffer(GLenum target);
 
         /** \brief Create an empty buffer with custom target and usage parameters. */
-        GLBuffer(GLenum target, GLenum usage);
+        Buffer(GLenum target, GLenum usage);
 
         /** \brief Create a custom buffer and fill it with data. */
-        GLBuffer(const std::array<T,N>& data, GLenum target, GLenum usage);
+        Buffer(const std::array<T,N>& data, GLenum target, GLenum usage);
 
         /** \brief Destructor. */
-        ~GLBuffer();
+        ~Buffer();
 
         /** \brief This object cannot be copied. */
-        GLBuffer(const GLBuffer&) = delete;
+        Buffer(const Buffer&) = delete;
 
         /** \brief Move constructor. */
-        GLBuffer(GLBuffer&& buf) noexcept;
+        Buffer(Buffer&& buf) noexcept;
 
         /** \brief This object cannot be copied. */
-        GLBuffer& operator=(const GLBuffer&) = delete;
+        Buffer& operator=(const Buffer&) = delete;
 
         /** \brief Move-assignment operator. */
-        GLBuffer& operator=(GLBuffer&& buf) noexcept;
+        Buffer& operator=(Buffer&& buf) noexcept;
 
         /** \brief Bind the buffer to its current target. */
         void bind() const noexcept;
@@ -60,7 +60,7 @@ namespace rw::gl
 
 
 template <typename T, size_t N>
-inline rw::gl::GLBuffer<T, N>::GLBuffer()
+inline rw::gl::Buffer<T, N>::Buffer()
 {
     glGenBuffers(1, &id_);
 }
@@ -69,7 +69,7 @@ inline rw::gl::GLBuffer<T, N>::GLBuffer()
     \param target Binding target for the buffer.
 */
 template<typename T, size_t N>
-inline rw::gl::GLBuffer<T, N>::GLBuffer(GLenum target) :
+inline rw::gl::Buffer<T, N>::Buffer(GLenum target) :
     target_{ target }
 {
     glGenBuffers(1, &id_);
@@ -80,7 +80,7 @@ inline rw::gl::GLBuffer<T, N>::GLBuffer(GLenum target) :
     \param usage Expected usage of the buffer (static, dynamic or stream draws).
 */
 template<typename T, size_t N>
-inline rw::gl::GLBuffer<T, N>::GLBuffer(GLenum target, GLenum usage) :
+inline rw::gl::Buffer<T, N>::Buffer(GLenum target, GLenum usage) :
     target_{ target },
     usage_{ usage }
 {
@@ -93,7 +93,7 @@ inline rw::gl::GLBuffer<T, N>::GLBuffer(GLenum target, GLenum usage) :
     \param usage Expected usage of the buffer (static, dynamic or stream draws).
 */
 template<typename T, size_t N>
-inline rw::gl::GLBuffer<T, N>::GLBuffer(const std::array<T, N>& data, GLenum target, GLenum usage) :
+inline rw::gl::Buffer<T, N>::Buffer(const std::array<T, N>& data, GLenum target, GLenum usage) :
     capacity_{ data.size() },
     target_{ target },
     usage_{ usage }
@@ -104,13 +104,13 @@ inline rw::gl::GLBuffer<T, N>::GLBuffer(const std::array<T, N>& data, GLenum tar
 }
 
 template<typename T, size_t N>
-inline rw::gl::GLBuffer<T, N>::~GLBuffer()
+inline rw::gl::Buffer<T, N>::~Buffer()
 {
     glDeleteBuffers(1, &id_);
 }
 
 template<typename T, size_t N>
-inline rw::gl::GLBuffer<T, N>::GLBuffer(GLBuffer&& buf) noexcept :
+inline rw::gl::Buffer<T, N>::Buffer(Buffer&& buf) noexcept :
     capacity_{ buf.capacity_ },
     target_{ buf.target_ },
     usage_{ buf.usage_ }
@@ -120,7 +120,7 @@ inline rw::gl::GLBuffer<T, N>::GLBuffer(GLBuffer&& buf) noexcept :
 }
 
 template<typename T, size_t N>
-inline rw::gl::GLBuffer<T, N>& rw::gl::GLBuffer<T, N>::operator=(rw::gl::GLBuffer<T, N>&& buf) noexcept
+inline rw::gl::Buffer<T, N>& rw::gl::Buffer<T, N>::operator=(rw::gl::Buffer<T, N>&& buf) noexcept
 {
     if (this != &buf)
     {
@@ -136,7 +136,7 @@ inline rw::gl::GLBuffer<T, N>& rw::gl::GLBuffer<T, N>::operator=(rw::gl::GLBuffe
 }
 
 template<typename T, size_t N>
-inline void rw::gl::GLBuffer<T, N>::bind() const noexcept
+inline void rw::gl::Buffer<T, N>::bind() const noexcept
 {
     glBindBuffer(target_, id_);
 }
@@ -145,7 +145,7 @@ inline void rw::gl::GLBuffer<T, N>::bind() const noexcept
     \param data Data to store in the buffer.
 */
 template<typename T, size_t N>
-inline void rw::gl::GLBuffer<T, N>::setData(const std::array<T, N>& data)
+inline void rw::gl::Buffer<T, N>::setData(const std::array<T, N>& data)
 {
     glBindBuffer(target_, id_);
     if (capacity_ == 0) glBufferData(target_, data.size() * sizeof(T), data.data(), usage_);
@@ -156,7 +156,7 @@ inline void rw::gl::GLBuffer<T, N>::setData(const std::array<T, N>& data)
     \param target New binding target for the buffer.
 */
 template<typename T, size_t N>
-inline void rw::gl::GLBuffer<T, N>::setTarget(GLenum target)
+inline void rw::gl::Buffer<T, N>::setTarget(GLenum target)
 {
     target_ = target;
 }

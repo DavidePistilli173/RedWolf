@@ -15,6 +15,15 @@ namespace rw
         App() = default;
         /** \brief Default destructor. */
         virtual ~App() = default;
+        /** \brief Applications cannot be copied. */
+        App(const App&) = delete;
+        /** \brief Default move constructor. */
+        App(App&& app) = default;
+
+        /** \brief Applications cannot be copied. */
+        App& operator=(const App&) = delete;
+        /** \brief Default move assignment operator. */
+        App& operator=(App&& app) = default;
 
         /** \brief Run the application. */
         void run();

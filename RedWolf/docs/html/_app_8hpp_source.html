@@ -88,28 +88,35 @@ $(document).ready(function(){initNavTree('_app_8hpp_source.html',''); initResiza
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef RW_APP_HPP</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define RW_APP_HPP</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;RedWolf/core.hpp&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="core_8hpp.html">RedWolf/core.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span>rw</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;{</div>
-<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classrw_1_1_app.html">   11</a></span>&#160;    <span class="keyword">class </span>RW_API <a class="code" href="classrw_1_1_app.html">App</a></div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classrw_1_1_app.html">   11</a></span>&#160;    <span class="keyword">class </span><a class="code" href="core_8hpp.html#ac63e95a9eabcd4bedbed3adea6b16169">RW_API</a> <a class="code" href="classrw_1_1_app.html">App</a></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    {</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <a class="code" href="classrw_1_1_app.html">App</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keyword">virtual</span> ~<a class="code" href="classrw_1_1_app.html">App</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keywordtype">void</span> run();</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    };</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <a class="code" href="classrw_1_1_app.html">App</a>(<span class="keyword">const</span> <a class="code" href="classrw_1_1_app.html">App</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <a class="code" href="classrw_1_1_app.html">App</a>(<a class="code" href="classrw_1_1_app.html">App</a>&amp;&amp; app) = <span class="keywordflow">default</span>;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    std::unique_ptr&lt;App&gt; createApp();</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;}</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <a class="code" href="classrw_1_1_app.html">App</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classrw_1_1_app.html">App</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <a class="code" href="classrw_1_1_app.html">App</a>&amp; operator=(<a class="code" href="classrw_1_1_app.html">App</a>&amp;&amp; app) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordtype">void</span> run();</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    };</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::unique_ptr&lt;App&gt; createApp();</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aclassrw_1_1_app_html"><div class="ttname"><a href="classrw_1_1_app.html">rw::App</a></div><div class="ttdoc">Base application class for all RedWolf programs.</div><div class="ttdef"><b>Definition:</b> App.hpp:11</div></div>
+<div class="ttc" id="acore_8hpp_html_ac63e95a9eabcd4bedbed3adea6b16169"><div class="ttname"><a href="core_8hpp.html#ac63e95a9eabcd4bedbed3adea6b16169">RW_API</a></div><div class="ttdeci">#define RW_API</div><div class="ttdoc">Sets dll exporting or importing.</div><div class="ttdef"><b>Definition:</b> core.hpp:13</div></div>
+<div class="ttc" id="acore_8hpp_html"><div class="ttname"><a href="core_8hpp.html">core.hpp</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

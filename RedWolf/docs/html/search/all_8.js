@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['pattern_15',['pattern',['../classrw_1_1_log.html#af5d73f64a42678f0f62ee16336f82357',1,'rw::Log']]]
+  ['id_36',['id',['../structrw_1_1gl_1_1_msg.html#a325709518e9f14ff73fbf2ae3686b9f9',1,'rw::gl::Msg']]],
+  ['init_37',['init',['../classrw_1_1_log.html#aeaa7b5fe22636ee3b535096c437500fa',1,'rw::Log']]]
 ];
