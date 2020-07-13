@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION "3.8") # Minimum cmake version to support C++17
 set(CMAKE_CXX_STANDARD 17) # Target C++ standard.
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # Enable the target standard.
 
-project("RedWolfTests" VERSION "0.0.2" DESCRIPTION "Unit tests for RedWolf.")
+project("RedWolfTests" VERSION "0.0.3" DESCRIPTION "Unit tests for RedWolf.")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")

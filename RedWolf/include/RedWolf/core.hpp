@@ -8,22 +8,22 @@
     \brief Sets dll exporting or importing. 
 */
 #ifdef RW_EXPORTS
-    #define RW_API __declspec(dllexport)
+   #define RW_API __declspec(dllexport)
 #else
-    #define RW_API __declspec(dllimport)
+   #define RW_API __declspec(dllimport)
 #endif
 
 namespace rw
 {
-    /** 
+/** 
         \var debug 
         \brief true for debug configurations, false otherwise.
     */
-    #ifdef RW_DEBUG
-        constexpr bool debug{ true };
-    #else
-        constexpr bool debug{ false };
-    #endif
-}
+#ifdef RW_DEBUG
+   constexpr bool debug{ true };
+#else
+   constexpr bool debug{ false };
+#endif
+} // namespace rw
 
 #endif
