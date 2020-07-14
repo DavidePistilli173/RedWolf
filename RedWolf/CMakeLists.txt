@@ -22,7 +22,9 @@ add_library("${PROJECT_NAME}" SHARED
     "src/gl/Texture.cpp"
     "src/Log.cpp"
     "src/init.cpp"
-  "src/ui/Window.cpp"  "src/gl/Buffer.cpp")
+    "src/ui/Window.cpp"  
+    "src/gl/Buffer.cpp" 
+    "src/io/Text.cpp")
 
 target_link_libraries("${PROJECT_NAME}"
     "${SDL_LIB}"

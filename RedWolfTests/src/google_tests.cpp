@@ -2,6 +2,7 @@
 #include "LogTest.cpp"
 #include "gl/BufferTest.cpp"
 #include "gl/TextureTest.cpp"
+#include "io/TextTest.cpp"
 #include "utility.hpp"
 
 #include <RedWolf/init.hpp>
