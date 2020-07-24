@@ -25,6 +25,7 @@ add_library("${PROJECT_NAME}" SHARED
     "src/ui/Window.cpp"  
     "src/gl/Buffer.cpp" 
     "src/io/Text.cpp"
+    "src/io/Parser.cpp" 
     "src/algorithms.cpp")
 
 target_link_libraries("${PROJECT_NAME}"

@@ -11,6 +11,7 @@
 #include <memory>
 #include <queue>
 #include <utility>
+#include <vector>
 
 namespace rw
 {
@@ -66,7 +67,7 @@ namespace rw
       void push(const T& value)
       {
          /* Pop a message if the maximum size was reached. */
-         if (size() >= max_size) pop();
+         if (this->size() >= max_size) std::queue<T>::pop();
          std::queue<T>::push(value);
       }
 
@@ -76,7 +77,7 @@ namespace rw
         */
       void push(T&& value)
       {
-         if (size() >= max_size) pop();
+         if (size() >= max_size) std::queue<T>::pop();
          std::queue<T>::push(value);
       }
    };

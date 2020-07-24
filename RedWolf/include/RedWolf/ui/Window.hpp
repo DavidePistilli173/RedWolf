@@ -16,12 +16,12 @@ namespace rw::ui
    {
    public:
       /** \brief Default name for the window. */
-      static constexpr std::string_view name{ "RedWolf Application" };
+      static constexpr std::string_view def_name{ "RedWolf Application" };
       /** \brief Default position and size of the window. */
       static constexpr rw::Rect win_rect{ 100, 100, 800, 600 };
 
       /** \brief Create a window with a custom name. */
-      Window(std::string_view name = name, rw::Rect<int> rect = win_rect);
+      explicit Window(std::string_view name = def_name, rw::Rect<int> rect = win_rect);
 
    private:
       rw::win_ptr_t win_{ rw::win_ptr_t(nullptr, SDL_DestroyWindow) }; /**< Pointer to the window. */

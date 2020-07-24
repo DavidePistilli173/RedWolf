@@ -16,9 +16,9 @@
 namespace rw
 {
 /** 
-        \var debug 
-        \brief true for debug configurations, false otherwise.
-    */
+   \var debug 
+   \brief true for debug configurations, false otherwise.
+*/
 #ifdef RW_DEBUG
    constexpr bool debug{ true };
 #else

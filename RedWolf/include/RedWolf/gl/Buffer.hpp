@@ -55,6 +55,11 @@ namespace rw::gl
       GLenum target_{ GL_ARRAY_BUFFER }; /**< Binding target of the buffer. */
       GLenum usage_{ GL_STATIC_DRAW };   /**< static, dynamic or stream drawing. */
    };
+
+   /** \brief Supported buffer sizes. */
+   constexpr std::array buffer_sizes{
+      1, 3, 6, 20, 60, 64
+   };
 } // namespace rw::gl
 
 template<typename T, size_t N>
@@ -162,15 +167,17 @@ inline void rw::gl::Buffer<T, N>::setTarget(GLenum target)
 }
 
 // Template instantiations.
-template class RW_API rw::gl::Buffer<unsigned int, 1>;
-template class RW_API rw::gl::Buffer<unsigned int, 3>;
-template class RW_API rw::gl::Buffer<unsigned int, 6>;
-template class RW_API rw::gl::Buffer<unsigned int, 20>;
-template class RW_API rw::gl::Buffer<unsigned int, 64>;
-template class RW_API rw::gl::Buffer<float, 1>;
-template class RW_API rw::gl::Buffer<float, 3>;
-template class RW_API rw::gl::Buffer<float, 6>;
-template class RW_API rw::gl::Buffer<float, 20>;
-template class RW_API rw::gl::Buffer<float, 64>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[0]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[1]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[2]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[3]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[4]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[5]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[0]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[1]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[2]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[3]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[4]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[5]>;
 
 #endif
