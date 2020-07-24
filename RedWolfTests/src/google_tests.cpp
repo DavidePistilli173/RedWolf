@@ -1,5 +1,6 @@
 #include "FixedQueueTest.cpp"
 #include "LogTest.cpp"
+#include "binary_searchTest.cpp"
 #include "gl/BufferTest.cpp"
 #include "gl/TextureTest.cpp"
 #include "io/TextTest.cpp"
