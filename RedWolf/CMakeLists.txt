@@ -25,6 +25,7 @@ add_library("${PROJECT_NAME}" SHARED
     "src/ui/Window.cpp"  
     "src/gl/Buffer.cpp" 
     "src/io/Text.cpp"
+    "src/gl/Shader.cpp" 
     "src/io/Parser.cpp" 
     "src/algorithms.cpp")
 

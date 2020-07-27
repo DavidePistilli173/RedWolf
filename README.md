@@ -7,3 +7,4 @@ It uses:
 - SDL_ttf 2.0.15;
 - glad 0.1.33;
 - spdlog 1.6.0.
+- glm 0.9.9.7

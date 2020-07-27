@@ -2,6 +2,7 @@
 #include "LogTest.cpp"
 #include "binary_searchTest.cpp"
 #include "gl/BufferTest.cpp"
+#include "gl/ShaderTest.cpp"
 #include "gl/TextureTest.cpp"
 #include "io/ParserTest.cpp"
 #include "io/TextTest.cpp"
@@ -23,8 +24,5 @@ int main(int argc, char* args[])
    ::testing::InitGoogleTest(&argc, args);
    int retVal{ RUN_ALL_TESTS() };
 
-   TTF_Quit();
-   IMG_Quit();
-   SDL_Quit();
    return retVal;
 }

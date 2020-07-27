@@ -34,17 +34,17 @@ namespace rw::gl
        \param userParam Optional user data. Unused.
    */
    void RW_API GLAPIENTRY openGLError(
-      GLenum        source,
-      GLenum        type,
-      GLuint        id,
-      GLenum        severity,
-      GLsizei       length,
-      const GLchar* message,
-      const void*   userParam)
+      GLenum                       source,
+      GLenum                       type,
+      [[maybe_unused]] GLuint      id,
+      GLenum                       severity,
+      [[maybe_unused]] GLsizei     length,
+      const GLchar*                message,
+      [[maybe_unused]] const void* userParam)
    {
       static long msgId{ 1 }; // Custom ID for messages.
 
-      /* Set the error source. */
+      // Set the error source
       std::string errSrc; // Error source.
       switch (source)
       {
@@ -71,7 +71,7 @@ namespace rw::gl
          break;
       }
 
-      /* Set the error type. */
+      // Set the error type.
       unsigned int severityValue{ 0 }; // Current level of severity.
       std::string  errType;            // Error type.
       switch (type)
@@ -117,7 +117,7 @@ namespace rw::gl
          break;
       }
 
-      /* Set the error severity. */
+      // Set the error severity.
       std::string errSev; // Error severity.
       switch (severity)
       {
@@ -143,7 +143,7 @@ namespace rw::gl
          break;
       }
 
-      /* Set the appropriate level error based on the accumulated severity score. */
+      // Set the appropriate level error based on the accumulated severity score.
       Msg msg;          // Message data.
       msg.id = msgId++; // Set and increase the message ID.
       if (severityValue > static_cast<int>(ErrThresholds::info))
@@ -153,7 +153,7 @@ namespace rw::gl
       else if (severityValue > static_cast<int>(ErrThresholds::error))
          msg.lvl = ErrLvl::error;
 
-      /* Log the error and add it to memory. */
+      // Log the error and add it to memory.
       switch (msg.lvl)
       {
       case ErrLvl::info:
