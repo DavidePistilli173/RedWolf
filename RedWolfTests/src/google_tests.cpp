@@ -4,6 +4,7 @@
 #include "gl/BufferTest.cpp"
 #include "gl/ShaderTest.cpp"
 #include "gl/TextureTest.cpp"
+#include "gl/VAOTest.cpp"
 #include "io/ParserTest.cpp"
 #include "io/TextTest.cpp"
 #include "utility.hpp"

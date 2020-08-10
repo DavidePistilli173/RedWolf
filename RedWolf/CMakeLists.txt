@@ -27,7 +27,9 @@ add_library("${PROJECT_NAME}" SHARED
     "src/io/Text.cpp"
     "src/gl/Shader.cpp" 
     "src/io/Parser.cpp" 
-    "src/algorithms.cpp")
+    "src/algorithms.cpp" 
+    "src/gl/VAO.cpp"
+)
 
 target_link_libraries("${PROJECT_NAME}"
     "${SDL_LIB}"
