@@ -12,22 +12,27 @@ namespace rw::gl
    /** \brief Wrapper for a Vertex Array Object. 
        Only suppors vertices in 3D space and 2D textures.
    */
-   template<size_t S>
+   template<size_t VBOSize, size_t EBOSize>
    class VAO
    {
    public:
+      /** \brief Maximum size of the VBO. */
+      static constexpr size_t max_vbo_size{ 100 };
+      /** \brief Maximum size of the EBO. */
+      static constexpr size_t max_ebo_size{ 100 };
+
       /** \brief Number of coordinate components for each vertex. 
           Forces the class to use 3D vertices.
       */
       static constexpr GLint vtx_coords_num{ 3 };
+
       /** \brief Number of texture coordinate components for each vertex. 
           Forces the class to use 2D textures.
       */
       static constexpr GLint tex_coords_num{ 2 };
+
       /** \brief Number of data elements for each vertex. */
       static constexpr GLint vbo_stride_elems{ vtx_coords_num + tex_coords_num };
-      /** \brief Number of elements of the EBO. */
-      static constexpr GLint ebo_size{ S / vbo_stride_elems };
 
       /** \brief Construct an empty VAO. */
       VAO();
@@ -54,34 +59,52 @@ namespace rw::gl
       void bind() const;
 
       /** \brief Set the EBO data directly.*/
-      void setEBO(const std::array<unsigned int, ebo_size>& data);
+      void setEBO(const std::array<unsigned int, EBOSize>& data);
 
       /** \brief Set a new EBO. */
-      void setEBO(Buffer<unsigned int, ebo_size>&& buff);
+      void setEBO(Buffer<unsigned int, EBOSize>&& buff);
 
       /** \brief Set the VBO data directly. Fastest option. */
-      void setVBO(const std::array<float, S>& data);
+      void setVBO(const std::array<float, VBOSize>& data);
 
       /** \brief Set a new VBO. Slowest option. */
-      void setVBO(Buffer<float, S>&& buff);
+      void setVBO(Buffer<float, VBOSize>&& buff);
 
    private:
       /** \brief Set the attribute locations and enable them. */
       void setAttributes_();
 
-      GLuint                         id_{ 0 }; /**< OpenGL ID of the VAO. */
-      Buffer<float, S>               vbo_{ GL_ARRAY_BUFFER, GL_STATIC_DRAW };
-      Buffer<unsigned int, ebo_size> ebo_{ GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW };
+      GLuint                        id_{ 0 }; /**< OpenGL ID of the VAO. */
+      Buffer<float, VBOSize>        vbo_{ GL_ARRAY_BUFFER, GL_STATIC_DRAW };
+      Buffer<unsigned int, EBOSize> ebo_{ GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW };
    };
 
    /** \brief Supported VAO sizes. */
    constexpr std::array vao_sizes{
-      0, 1, 2, 3, 4, 6, 12, 20, 60, 64
+      std::pair{ 0, 0 },
+      std::pair{ 5, 1 },
+      std::pair{ 10, 2 },
+      std::pair{ 15, 3 },
+      std::pair{ 20, 6 },
+      std::pair{ 25, 6 },
+      std::pair{ 25, 9 },
+      std::pair{ 30, 6 },
+      std::pair{ 30, 9 },
+      std::pair{ 30, 12 },
+      std::pair{ 35, 6 },
+      std::pair{ 35, 9 },
+      std::pair{ 35, 12 },
+      std::pair{ 35, 15 },
+      std::pair{ 40, 6 },
+      std::pair{ 40, 9 },
+      std::pair{ 40, 12 },
+      std::pair{ 40, 15 },
+      std::pair{ 40, 18 },
    };
 } // namespace rw::gl
 
-template<size_t S>
-inline rw::gl::VAO<S>::VAO()
+template<size_t VBOSize, size_t EBOSize>
+inline rw::gl::VAO<VBOSize, EBOSize>::VAO()
 {
    // Generate the VAO.
    glGenVertexArrays(1, &id_);
@@ -92,24 +115,24 @@ inline rw::gl::VAO<S>::VAO()
 /**
    \param usage Expected usage of the VBO (static, dynamic or stream draws).
 */
-template<size_t S>
-inline rw::gl::VAO<S>::VAO(GLenum usage)
+template<size_t VBOSize, size_t EBOSize>
+inline rw::gl::VAO<VBOSize, EBOSize>::VAO(GLenum usage)
 {
    // Generate the VAO.
    glGenVertexArrays(1, &id_);
 
-   vbo_ = rw::gl::Buffer<float, S>(GL_ARRAY_BUFFER, usage);
+   vbo_ = rw::gl::Buffer<float, VBOSize>{ GL_ARRAY_BUFFER, usage };
    setAttributes_();
 }
 
-template<size_t S>
-inline rw::gl::VAO<S>::~VAO()
+template<size_t VBOSize, size_t EBOSize>
+inline rw::gl::VAO<VBOSize, EBOSize>::~VAO()
 {
    glDeleteVertexArrays(1, &id_);
 }
 
-template<size_t S>
-inline rw::gl::VAO<S>::VAO(VAO&& oldVAO)
+template<size_t VBOSize, size_t EBOSize>
+inline rw::gl::VAO<VBOSize, EBOSize>::VAO(VAO&& oldVAO)
 {
    id_ = oldVAO.id_;
    oldVAO.id_ = 0;
@@ -120,8 +143,8 @@ inline rw::gl::VAO<S>::VAO(VAO&& oldVAO)
    setAttributes_();
 }
 
-template<size_t S>
-inline rw::gl::VAO<S>& rw::gl::VAO<S>::operator=(VAO&& oldVAO)
+template<size_t VBOSize, size_t EBOSize>
+inline rw::gl::VAO<VBOSize, EBOSize>& rw::gl::VAO<VBOSize, EBOSize>::operator=(VAO&& oldVAO)
 {
    if (this != &oldVAO)
    {
@@ -138,8 +161,8 @@ inline rw::gl::VAO<S>& rw::gl::VAO<S>::operator=(VAO&& oldVAO)
    return *this;
 }
 
-template<size_t S>
-inline void rw::gl::VAO<S>::bind() const
+template<size_t VBOSize, size_t EBOSize>
+inline void rw::gl::VAO<VBOSize, EBOSize>::bind() const
 {
    glBindVertexArray(id_);
 }
@@ -147,8 +170,8 @@ inline void rw::gl::VAO<S>::bind() const
 /**
    \param data Data to store in the EBO.
 */
-template<size_t S>
-inline void rw::gl::VAO<S>::setEBO(const std::array<unsigned int, ebo_size>& data)
+template<size_t VBOSize, size_t EBOSize>
+inline void rw::gl::VAO<VBOSize, EBOSize>::setEBO(const std::array<unsigned int, EBOSize>& data)
 {
    ebo_.setData(data);
 }
@@ -156,8 +179,8 @@ inline void rw::gl::VAO<S>::setEBO(const std::array<unsigned int, ebo_size>& dat
 /**
    \param buff Source data buffer. It will be moved.
 */
-template<size_t S>
-inline void rw::gl::VAO<S>::setEBO(rw::gl::Buffer<unsigned int, ebo_size>&& buff)
+template<size_t VBOSize, size_t EBOSize>
+inline void rw::gl::VAO<VBOSize, EBOSize>::setEBO(rw::gl::Buffer<unsigned int, EBOSize>&& buff)
 {
    ebo_ = std::move(buff);
    glBindVertexArray(id_);
@@ -167,8 +190,8 @@ inline void rw::gl::VAO<S>::setEBO(rw::gl::Buffer<unsigned int, ebo_size>&& buff
 /**
    \param data Data to store in the VBO.
 */
-template<size_t S>
-inline void rw::gl::VAO<S>::setVBO(const std::array<float, S>& data)
+template<size_t VBOSize, size_t EBOSize>
+inline void rw::gl::VAO<VBOSize, EBOSize>::setVBO(const std::array<float, VBOSize>& data)
 {
    vbo_.setData(data);
 }
@@ -176,15 +199,15 @@ inline void rw::gl::VAO<S>::setVBO(const std::array<float, S>& data)
 /**
    \param buff Source data buffer. It will be moved.
 */
-template<size_t S>
-inline void rw::gl::VAO<S>::setVBO(rw::gl::Buffer<float, S>&& buff)
+template<size_t VBOSize, size_t EBOSize>
+inline void rw::gl::VAO<VBOSize, EBOSize>::setVBO(rw::gl::Buffer<float, VBOSize>&& buff)
 {
    vbo_ = std::move(buff);
    setAttributes_();
 }
 
-template<size_t S>
-inline void rw::gl::VAO<S>::setAttributes_()
+template<size_t VBOSize, size_t EBOSize>
+inline void rw::gl::VAO<VBOSize, EBOSize>::setAttributes_()
 {
    // Bind the buffers.
    glBindVertexArray(id_);
@@ -216,15 +239,24 @@ inline void rw::gl::VAO<S>::setAttributes_()
 }
 
 // Template instantiations.
-template class RW_API rw::gl::VAO<rw::gl::vao_sizes[0]>;
-template class RW_API rw::gl::VAO<rw::gl::vao_sizes[1]>;
-template class RW_API rw::gl::VAO<rw::gl::vao_sizes[2]>;
-template class RW_API rw::gl::VAO<rw::gl::vao_sizes[3]>;
-template class RW_API rw::gl::VAO<rw::gl::vao_sizes[4]>;
-template class RW_API rw::gl::VAO<rw::gl::vao_sizes[5]>;
-template class RW_API rw::gl::VAO<rw::gl::vao_sizes[6]>;
-template class RW_API rw::gl::VAO<rw::gl::vao_sizes[7]>;
-template class RW_API rw::gl::VAO<rw::gl::vao_sizes[8]>;
-template class RW_API rw::gl::VAO<rw::gl::vao_sizes[9]>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[0].first, rw::gl::vao_sizes[0].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[1].first, rw::gl::vao_sizes[1].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[2].first, rw::gl::vao_sizes[2].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[3].first, rw::gl::vao_sizes[3].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[4].first, rw::gl::vao_sizes[4].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[5].first, rw::gl::vao_sizes[5].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[6].first, rw::gl::vao_sizes[6].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[7].first, rw::gl::vao_sizes[7].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[8].first, rw::gl::vao_sizes[8].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[9].first, rw::gl::vao_sizes[9].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[10].first, rw::gl::vao_sizes[10].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[11].first, rw::gl::vao_sizes[11].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[12].first, rw::gl::vao_sizes[12].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[13].first, rw::gl::vao_sizes[13].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[14].first, rw::gl::vao_sizes[14].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[15].first, rw::gl::vao_sizes[15].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[16].first, rw::gl::vao_sizes[16].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[17].first, rw::gl::vao_sizes[17].second>;
+template class RW_API rw::gl::VAO<rw::gl::vao_sizes[18].first, rw::gl::vao_sizes[18].second>;
 
 #endif
