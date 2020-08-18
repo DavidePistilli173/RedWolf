@@ -1,6 +1,7 @@
 #include "FixedQueueTest.cpp"
 #include "LogTest.cpp"
 #include "binary_searchTest.cpp"
+#include "data/VBORectTest.cpp"
 #include "gl/BufferTest.cpp"
 #include "gl/ShaderTest.cpp"
 #include "gl/TextureTest.cpp"
