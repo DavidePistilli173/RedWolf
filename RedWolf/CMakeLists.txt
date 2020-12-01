@@ -29,6 +29,7 @@ add_library("${PROJECT_NAME}" SHARED
     "src/io/Parser.cpp" 
     "src/algorithms.cpp" 
     "src/gl/VAO.cpp"
+    "src/gl/Sprite.cpp"
     "src/data/VBORect.cpp"
 )
 

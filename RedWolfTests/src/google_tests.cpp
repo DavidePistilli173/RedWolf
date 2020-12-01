@@ -4,6 +4,7 @@
 #include "data/VBORectTest.cpp"
 #include "gl/BufferTest.cpp"
 #include "gl/ShaderTest.cpp"
+#include "gl/SpriteTest.cpp"
 #include "gl/TextureTest.cpp"
 #include "gl/VAOTest.cpp"
 #include "io/ParserTest.cpp"
