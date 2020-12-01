@@ -57,6 +57,9 @@ namespace rw::data
       /** \brief Get the data stored inside the structure. */
       const std::array<float, size>& data() const;
 
+      /** \brief Get the height of the rectangle. */
+      float h() const;
+
       /** \brief Set the height of the rectangle. */
       void setH(float h);
 
@@ -89,6 +92,30 @@ namespace rw::data
 
       /** \brief Set the z coordinate of the rectangle's top-left corner. */
       void setZ(float z);
+
+      /** \brief Get the height of the texture. */
+      float texH() const;
+
+      /** \brief Get the width of the texture. */
+      float texW() const;
+
+      /** \brief Get the x coordinate of the texture's top-left corner. */
+      float texX() const;
+
+      /** \brief Get the y coordinate of the texture's top-left corner. */
+      float texY() const;
+
+      /** \brief Get the width of the rectangle. */
+      float w() const;
+
+      /** \brief Get the x coordinate of the rectangle's top-left corner. */
+      float x() const;
+
+      /** \brief Get the y coordinate of the rectangle's top-left corner. */
+      float y() const;
+
+      /** \brief Get the z coordinate of the rectangle's top-left corner. */
+      float z() const;
 
    private:
       /** \brief Actual data. */

@@ -322,6 +322,7 @@ namespace data_vborect_test
 
       // Test setH method.
       vborect.setH(rect.h);
+      ASSERT_NEAR(vborect.h(), rect.h, rounding_error);
       height = data[static_cast<size_t>(VtxIdx::bl_y)] - data[static_cast<size_t>(VtxIdx::tl_y)];
       ASSERT_NEAR(height, rect.h, rounding_error);
       height = data[static_cast<size_t>(VtxIdx::br_y)] - data[static_cast<size_t>(VtxIdx::tr_y)];
@@ -352,6 +353,7 @@ namespace data_vborect_test
 
       // Test setTexH method.
       vborect.setTexH(texRect.h);
+      ASSERT_NEAR(vborect.texH(), texRect.h, rounding_error);
       height = data[static_cast<size_t>(TexIdx::bl_y)] - data[static_cast<size_t>(TexIdx::tl_y)];
       ASSERT_NEAR(height, texRect.h, rounding_error);
       height = data[static_cast<size_t>(TexIdx::br_y)] - data[static_cast<size_t>(TexIdx::tr_y)];
@@ -380,6 +382,7 @@ namespace data_vborect_test
 
       // Test setTexW method.
       vborect.setTexW(texRect.w);
+      ASSERT_NEAR(vborect.texW(), texRect.w, rounding_error);
       width = data[static_cast<size_t>(TexIdx::tr_x)] - data[static_cast<size_t>(TexIdx::tl_x)];
       ASSERT_NEAR(width, texRect.w, rounding_error);
       width = data[static_cast<size_t>(TexIdx::br_x)] - data[static_cast<size_t>(TexIdx::bl_x)];
@@ -394,6 +397,7 @@ namespace data_vborect_test
       // Test setTexX method.
       width = data[static_cast<size_t>(TexIdx::tr_x)] - data[static_cast<size_t>(TexIdx::tl_x)];
       vborect.setTexX(texRect.x);
+      ASSERT_NEAR(vborect.texX(), texRect.x, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(TexIdx::tl_x)], texRect.x, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(TexIdx::bl_x)], texRect.x, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(TexIdx::tr_x)], texRect.x + width, rounding_error);
@@ -407,6 +411,7 @@ namespace data_vborect_test
       // Test setTexY method.
       height = data[static_cast<size_t>(TexIdx::bl_y)] - data[static_cast<size_t>(TexIdx::tl_y)];
       vborect.setTexY(texRect.y);
+      ASSERT_NEAR(vborect.texY(), texRect.y, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(TexIdx::tl_y)], texRect.y, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(TexIdx::tr_y)], texRect.y, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(TexIdx::bl_y)], texRect.y + height, rounding_error);
@@ -419,6 +424,7 @@ namespace data_vborect_test
 
       // Test setW method.
       vborect.setW(rect.w);
+      ASSERT_NEAR(vborect.w(), rect.w, rounding_error);
       width = data[static_cast<size_t>(VtxIdx::tr_x)] - data[static_cast<size_t>(VtxIdx::tl_x)];
       ASSERT_NEAR(width, rect.w, rounding_error);
       width = data[static_cast<size_t>(VtxIdx::br_x)] - data[static_cast<size_t>(VtxIdx::bl_x)];
@@ -434,6 +440,7 @@ namespace data_vborect_test
       // Test setX method.
       width = data[static_cast<size_t>(VtxIdx::tr_x)] - data[static_cast<size_t>(VtxIdx::tl_x)];
       vborect.setX(rect.x);
+      ASSERT_NEAR(vborect.x(), rect.x, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(VtxIdx::tl_x)], rect.x, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(VtxIdx::bl_x)], rect.x, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(VtxIdx::tr_x)], rect.x + width, rounding_error);
@@ -448,6 +455,7 @@ namespace data_vborect_test
       // Test setY method.
       height = data[static_cast<size_t>(VtxIdx::bl_y)] - data[static_cast<size_t>(VtxIdx::tl_y)];
       vborect.setY(rect.y);
+      ASSERT_NEAR(vborect.y(), rect.y, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(VtxIdx::tl_y)], rect.y, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(VtxIdx::tr_y)], rect.y, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(VtxIdx::bl_y)], rect.y + height, rounding_error);
@@ -461,6 +469,7 @@ namespace data_vborect_test
 
       // Test setZ method.
       vborect.setZ(z);
+      ASSERT_NEAR(vborect.z(), z, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(VtxIdx::tl_z)], z, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(VtxIdx::tr_z)], z, rounding_error);
       ASSERT_NEAR(data[static_cast<size_t>(VtxIdx::br_z)], z, rounding_error);

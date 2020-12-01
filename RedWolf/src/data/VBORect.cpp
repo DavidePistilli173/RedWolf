@@ -24,11 +24,15 @@ namespace rw::data
       return data_;
    }
 
+   float VBORect::h() const
+   {
+      return data_[static_cast<size_t>(VtxIdx::bl_y)] - data_[static_cast<size_t>(VtxIdx::tl_y)];
+   }
+
    /** \param h New height. */
    void VBORect::setH(float h)
    {
-      float oldHeight{ data_[static_cast<size_t>(VtxIdx::bl_y)] - data_[static_cast<size_t>(VtxIdx::tl_y)] };
-      float diff{ h - oldHeight };
+      float diff{ h - this->h() };
       data_[static_cast<size_t>(VtxIdx::bl_y)] += diff;
       data_[static_cast<size_t>(VtxIdx::br_y)] = data_[static_cast<size_t>(VtxIdx::bl_y)];
    }
@@ -49,8 +53,7 @@ namespace rw::data
    /** \param texH New normalised height. */
    void VBORect::setTexH(float texH)
    {
-      float oldHeight{ data_[static_cast<size_t>(TexIdx::bl_y)] - data_[static_cast<size_t>(TexIdx::tl_y)] };
-      float diff{ texH - oldHeight };
+      float diff{ texH - this->texH() };
       data_[static_cast<size_t>(TexIdx::bl_y)] += diff;
       data_[static_cast<size_t>(TexIdx::br_y)] = data_[static_cast<size_t>(TexIdx::bl_y)];
    }
@@ -71,8 +74,7 @@ namespace rw::data
    /** \param texW New normalised width.*/
    void VBORect::setTexW(float texW)
    {
-      float oldWidth{ data_[static_cast<size_t>(TexIdx::tr_x)] - data_[static_cast<size_t>(TexIdx::tl_x)] };
-      float diff{ texW - oldWidth };
+      float diff{ texW - this->texW() };
       data_[static_cast<size_t>(TexIdx::tr_x)] += diff;
       data_[static_cast<size_t>(TexIdx::br_x)] = data_[static_cast<size_t>(TexIdx::tr_x)];
    }
@@ -80,7 +82,7 @@ namespace rw::data
    /** \param texX New normalised x coordinate. */
    void VBORect::setTexX(float texX)
    {
-      float width{ data_[static_cast<size_t>(TexIdx::tr_x)] - data_[static_cast<size_t>(TexIdx::tl_x)] };
+      float width{ this->texW() };
       data_[static_cast<size_t>(TexIdx::tl_x)] = texX;
       data_[static_cast<size_t>(TexIdx::bl_x)] = texX;
       data_[static_cast<size_t>(TexIdx::tr_x)] = texX + width;
@@ -90,7 +92,7 @@ namespace rw::data
    /** \param New normalised y coordinate. */
    void VBORect::setTexY(float texY)
    {
-      float height{ data_[static_cast<size_t>(TexIdx::bl_y)] - data_[static_cast<size_t>(TexIdx::tl_y)] };
+      float height{ this->texH() };
       data_[static_cast<size_t>(TexIdx::tl_y)] = texY;
       data_[static_cast<size_t>(TexIdx::tr_y)] = texY;
       data_[static_cast<size_t>(TexIdx::bl_y)] = texY + height;
@@ -100,8 +102,7 @@ namespace rw::data
    /** \param w New width. */
    void VBORect::setW(float w)
    {
-      float oldWidth{ data_[static_cast<size_t>(VtxIdx::tr_x)] - data_[static_cast<size_t>(VtxIdx::tl_x)] };
-      float diff{ w - oldWidth };
+      float diff{ w - this->w() };
       data_[static_cast<size_t>(VtxIdx::tr_x)] += diff;
       data_[static_cast<size_t>(VtxIdx::br_x)] = data_[static_cast<size_t>(VtxIdx::tr_x)];
    }
@@ -109,7 +110,7 @@ namespace rw::data
    /** \param x New x coordinate. */
    void VBORect::setX(float x)
    {
-      float width{ data_[static_cast<size_t>(VtxIdx::tr_x)] - data_[static_cast<size_t>(VtxIdx::tl_x)] };
+      float width{ this->w() };
       data_[static_cast<size_t>(VtxIdx::tl_x)] = x;
       data_[static_cast<size_t>(VtxIdx::bl_x)] = x;
       data_[static_cast<size_t>(VtxIdx::tr_x)] = x + width;
@@ -119,7 +120,7 @@ namespace rw::data
    /** \param y New y coordinate. */
    void VBORect::setY(float y)
    {
-      float height{ data_[static_cast<size_t>(VtxIdx::bl_y)] - data_[static_cast<size_t>(VtxIdx::tl_y)] };
+      float height{ this->h() };
       data_[static_cast<size_t>(VtxIdx::tl_y)] = y;
       data_[static_cast<size_t>(VtxIdx::tr_y)] = y;
       data_[static_cast<size_t>(VtxIdx::bl_y)] = y + height;
@@ -133,5 +134,49 @@ namespace rw::data
       data_[static_cast<size_t>(VtxIdx::tr_z)] = z;
       data_[static_cast<size_t>(VtxIdx::br_z)] = z;
       data_[static_cast<size_t>(VtxIdx::bl_z)] = z;
+   }
+
+   /** \brief Get the height of the texture. */
+   float VBORect::texH() const
+   {
+      return data_[static_cast<size_t>(TexIdx::bl_y)] - data_[static_cast<size_t>(TexIdx::tl_y)];
+   }
+
+   /** \brief Get the width of the texture. */
+   float VBORect::texW() const
+   {
+      return data_[static_cast<size_t>(TexIdx::tr_x)] - data_[static_cast<size_t>(TexIdx::tl_x)];
+   }
+
+   /** \brief Get the x coordinate of the texture's top-left corner. */
+   float VBORect::texX() const
+   {
+      return data_[static_cast<size_t>(TexIdx::tl_x)];
+   }
+
+   /** \brief Get the y coordinate of the texture's top-left corner. */
+   float VBORect::texY() const
+   {
+      return data_[static_cast<size_t>(TexIdx::tl_y)];
+   }
+
+   float VBORect::w() const
+   {
+      return data_[static_cast<size_t>(VtxIdx::tr_x)] - data_[static_cast<size_t>(VtxIdx::tl_x)];
+   }
+
+   float VBORect::x() const
+   {
+      return data_[static_cast<size_t>(VtxIdx::tl_x)];
+   }
+
+   float VBORect::y() const
+   {
+      return data_[static_cast<size_t>(VtxIdx::tl_y)];
+   }
+
+   float VBORect::z() const
+   {
+      return data_[static_cast<size_t>(VtxIdx::tl_z)];
    }
 } // namespace rw::data
