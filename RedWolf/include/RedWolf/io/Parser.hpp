@@ -85,6 +85,6 @@ namespace rw::io
       /** \brief Input text. */
       std::pmr::string text_;
       /** \brief Map of all strings that were looked for with their positions. */
-      std::pmr::map<std::string, std::set<size_t>> index_;
+      std::pmr::map<std::pmr::string, std::set<size_t>> index_;
    };
 } // namespace rw::io

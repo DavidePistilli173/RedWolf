@@ -31,6 +31,8 @@ add_library("${PROJECT_NAME}" SHARED
     "src/gl/VAO.cpp"
     "src/gl/Sprite.cpp"
     "src/data/VBORect.cpp"
+    "src/ui/Entity.cpp"
+    "src/data/Event.cpp"
 )
 
 target_link_libraries("${PROJECT_NAME}"

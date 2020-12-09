@@ -31,10 +31,10 @@ namespace rw::gl
       void draw();
 
       /** \brief Get the height of the sprite. */
-      float h() const;
+      [[nodiscard]] float h() const;
 
       /** \brief Check whether the sprite was modified since the last draw call or not. */
-      bool modified() const;
+      [[nodiscard]] bool modified() const;
 
       /** \brief Set the height of the sprite. */
       void setH(float h);
@@ -88,37 +88,37 @@ namespace rw::gl
           It is usually expressed between 0 and 1, where 1 means that the entire height of the source texture 
           is considered. Values outside this range rely on the texture's border policy.
       */
-      float texH() const;
+      [[nodiscard]] float texH() const;
 
       /** \brief Get the width of the texture. 
           It is usually expressed between 0 and 1, where 1 means that the entire width of the source texture 
           is considered. Values outside this range rely on the texture's border policy.
       */
-      float texW() const;
+      [[nodiscard]] float texW() const;
 
       /** \brief Get the x coordinate of the top-left corner of the texture. 
           It is usually expressed between 0 and 1, where 0 is the leftmost part of the texture. 
           Values outside this range rely on the texture's border policy.
       */
-      float texX() const;
+      [[nodiscard]] float texX() const;
 
       /** \brief Get the y coordinate of the top-left corner of the texture. 
           It is usually expressed between 0 and 1, where 0 is the upmost part of the texture. 
           Values outside this range rely on the texture's border policy.
       */
-      float texY() const;
+      [[nodiscard]] float texY() const;
 
       /** \brief Set the width of the sprite. */
-      float w() const;
+      [[nodiscard]] float w() const;
 
       /** \brief Get the x coordinate of the top-left corner of the sprite. */
-      float x() const;
+      [[nodiscard]] float x() const;
 
       /** \brief Get the y coordinate of the top-left corner of the sprite. */
-      float y() const;
+      [[nodiscard]] float y() const;
 
       /** \brief Get the z coordinate of the sprite. */
-      float z() const;
+      [[nodiscard]] float z() const;
 
    private:
       rw::data::VBORect       vbo_data_; /**< Position and size. */

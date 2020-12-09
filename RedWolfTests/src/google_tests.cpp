@@ -17,12 +17,33 @@
 #include <SDL2_ttf2.0.15/SDL_ttf.h>
 #include <gtest/gtest.h>
 
-constexpr std::string_view win_name{ "RedWolfTests" };
+namespace rwtests
+{
+   class TestWindow : public rw::ui::Window
+   {
+   public:
+      /**< Name of the window. */
+      static constexpr std::string_view win_name{ "RedWolfTests" };
+
+      TestWindow() :
+         Window(win_name)
+      {
+      }
+
+      /**< Empty main loop. */
+      bool run() override
+      {
+         return true;
+      }
+
+   private:
+   };
+} // namespace rwtests
 
 int main(int argc, char* args[])
 {
    rw::SubsystemsHandler core;
-   rw::ui::Window        win{ win_name };
+   rwtests::TestWindow   win{};
 
    ::testing::InitGoogleTest(&argc, args);
    int retVal{ RUN_ALL_TESTS() };
