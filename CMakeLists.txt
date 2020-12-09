@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION "3.8")
 
-project("RedWolfEngine" VERSION "0.0.4" DESCRIPTION "")
+project("RedWolfEngine" VERSION "0.1.0" DESCRIPTION "")
 
 set(REDWOLF_SOURCE_DIR "${PROJECT_SOURCE_DIR}/RedWolf")
 set(REDWOLFEDITOR_SOURCE_DIR "${PROJECT_SOURCE_DIR}/RedWolfSandbox")
