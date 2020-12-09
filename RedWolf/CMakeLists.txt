@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION "3.8") # Minimum cmake version to support C++17
 set(CMAKE_CXX_STANDARD 17) # Target C++ standard.
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # Enable the target standard.
 
-project("RedWolf" VERSION "0.0.3" DESCRIPTION "Library for 2D applications.")
+project("RedWolf" VERSION "0.0.4" DESCRIPTION "Library for 2D applications.")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
@@ -27,7 +27,13 @@ add_library("${PROJECT_NAME}" SHARED
     "src/io/Text.cpp"
     "src/gl/Shader.cpp" 
     "src/io/Parser.cpp" 
-    "src/algorithms.cpp")
+    "src/algorithms.cpp" 
+    "src/gl/VAO.cpp"
+    "src/gl/Sprite.cpp"
+    "src/data/VBORect.cpp"
+    "src/ui/Entity.cpp"
+    "src/data/Event.cpp"
+)
 
 target_link_libraries("${PROJECT_NAME}"
     "${SDL_LIB}"

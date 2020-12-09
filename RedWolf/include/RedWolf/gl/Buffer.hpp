@@ -58,7 +58,7 @@ namespace rw::gl
 
    /** \brief Supported buffer sizes. */
    constexpr std::array buffer_sizes{
-      1, 3, 6, 20, 60, 64
+      0, 1, 2, 3, 4, 5, 6, 9, 10, 12, 15, 18, 20, 25, 30, 35, 40, 60, 64
    };
 } // namespace rw::gl
 
@@ -173,11 +173,37 @@ template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[2]>;
 template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[3]>;
 template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[4]>;
 template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[5]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[6]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[7]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[8]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[9]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[10]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[11]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[12]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[13]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[14]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[15]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[16]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[17]>;
+template class RW_API rw::gl::Buffer<unsigned int, rw::gl::buffer_sizes[18]>;
 template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[0]>;
 template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[1]>;
 template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[2]>;
 template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[3]>;
 template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[4]>;
 template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[5]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[6]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[7]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[8]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[9]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[10]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[11]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[12]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[13]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[14]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[15]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[16]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[17]>;
+template class RW_API rw::gl::Buffer<float, rw::gl::buffer_sizes[18]>;
 
 #endif

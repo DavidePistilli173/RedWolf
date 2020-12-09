@@ -23,7 +23,16 @@ namespace rw::ui
       /** \brief Create a window with a custom name. */
       explicit Window(std::string_view name = def_name, rw::Rect<int> rect = win_rect);
 
-   private:
+      /** \brief Destructor. */
+      virtual ~Window() = default;
+
+      /** 
+         \brief Run the main loop of the window. 
+         \return True if the execution completed successfully, false otherwise.
+      */
+      virtual bool run() = 0;
+
+   protected:
       rw::win_ptr_t win_{ rw::win_ptr_t(nullptr, SDL_DestroyWindow) }; /**< Pointer to the window. */
       SDL_GLContext ctx_{ nullptr };                                   /**< OpenGL context. */
    };

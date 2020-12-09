@@ -17,7 +17,8 @@ include_directories(
 add_executable("${PROJECT_NAME}"
     "${VENDOR_DIR}/src/glad.c"
     "src/main.cpp"
- )
+    "src/MainWindow.cpp"
+)
 
 find_library(REDWOLF_LIB "RedWolf" HINTS "${BIN_DIR}/RedWolf")
 target_link_libraries("${PROJECT_NAME}" "${REDWOLF_LIB}" "${SDL_LIB}" "${SDL_MAIN_LIB}")

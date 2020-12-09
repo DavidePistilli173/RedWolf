@@ -1,4 +1,5 @@
-# RedWolf
+![alt text](https://github.com/DavidePistilli173/RedWolf/blob/devel/RedWolf/logo/RedWolf.png?raw=true)
+
 RedWolf is a library for 2D applications.
 It uses:
 - OpenGL 4.3;

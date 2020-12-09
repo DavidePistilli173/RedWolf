@@ -14,6 +14,13 @@ namespace rw::gl
    class RW_API Shader
    {
    public:
+      /** \brief Positions of all different shader attributes. */
+      enum class Attrib
+      {
+         vtx_coords, // Vertex coordinates.
+         tex_coords  // Texture coordinates.
+      };
+
       /** \brief Size of the error log for shader compilation and linking. */
       static constexpr size_t log_size{ 2048 };
       /** \brief Token for uniform parsing in shader code. */
