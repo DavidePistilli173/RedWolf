@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION "3.12")
 
-project("RedWolfEngine" VERSION "0.4.0" DESCRIPTION "")
+project("RedWolfEngine" VERSION "0.5.0" DESCRIPTION "")
 
 set(RW_ROOT_DIR "${PROJECT_SOURCE_DIR}")
 set(RW_SRC_DIR "${PROJECT_SOURCE_DIR}/RedWolf")

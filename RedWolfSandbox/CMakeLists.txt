@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION "3.12") # Minimum cmake version to support C++20
 set(CMAKE_CXX_STANDARD 20) # Target C++ standard.
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # Enable the target standard.
 
-project("RedWolfSandbox" VERSION "0.4.0" DESCRIPTION "Sandbox application that uses the RedWolf library.")
+project("RedWolfSandbox" VERSION "0.5.0" DESCRIPTION "Sandbox application that uses the RedWolf library.")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
