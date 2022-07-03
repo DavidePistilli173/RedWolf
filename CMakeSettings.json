@@ -1,5 +1,4 @@
 ﻿{
-  // See https://go.microsoft.com//fwlink//?linkid=834763 for more information about this file.
   "configurations": [
     {
       "name": "x64-Debug",
@@ -9,10 +8,19 @@
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "",
-      "buildCommandArgs": "-v",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": ""
+    },
+    {
+      "name": "x64-Release",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "enableClangTidyCodeAnalysis": true,
-      "clangTidyChecks": "*, -fuchsia*, -google*, -modernize-use-trailing-return-type, -llvm-namespace-comment, -hicpp-vararg, -cppcoreguidelines-pro-type-vararg, -hicpp-braces-around-statements, -readability-braces-around-statements, -llvm-header-guard, -cppcoreguidelines-non-private-member-variables-in-classes, -cppcoreguidelines-pro-bounds-constant-array-index, -readability-avoid-const-params-in-decls, -cert-err58-cpp, -misc-non-private-member-variables-in-classes"
+      "inheritEnvironments": [ "msvc_x64_x64" ]
     }
   ]
 }

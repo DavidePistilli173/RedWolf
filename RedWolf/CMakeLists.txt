@@ -1,66 +1,63 @@
-cmake_minimum_required(VERSION "3.8") # Minimum cmake version to support C++17
-set(CMAKE_CXX_STANDARD 17) # Target C++ standard.
+cmake_minimum_required(VERSION "3.12") # Minimum cmake version to support C++20
+set(CMAKE_CXX_STANDARD 20) # Target C++ standard.
 set(CMAKE_CXX_STANDARD_REQUIRED ON) # Enable the target standard.
 
-project("RedWolf" VERSION "0.0.4" DESCRIPTION "Library for 2D applications.")
+project("RedWolf" VERSION "0.4.0" DESCRIPTION "Graphics and utility library for desktop applications.")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
+set(CMAKE_INSTALL_PREFIX "${BIN_DIR}/${PROJECT_NAME}/${CMAKE_BUILD_TYPE}")
 
-add_compile_definitions(RW_EXPORTS) # Macro for dll exporting.
+include(CheckIPOSupported)
+check_ipo_supported(RESULT supported OUTPUT error)
 
 # Build the library.
 include_directories(
-    "include"
+    "${RW_ROOT_DIR}"
     "${VENDOR_DIR}/include"
 )
 
-add_library("${PROJECT_NAME}" SHARED
-    "${VENDOR_DIR}/src/glad.c"
-    "src/gl/error.cpp"
-    "src/gl/Texture.cpp"
-    "src/Log.cpp"
-    "src/init.cpp"
-    "src/ui/Window.cpp"  
-    "src/gl/Buffer.cpp" 
-    "src/io/Text.cpp"
-    "src/gl/Shader.cpp" 
-    "src/io/Parser.cpp" 
-    "src/algorithms.cpp" 
-    "src/gl/VAO.cpp"
-    "src/gl/Sprite.cpp"
-    "src/data/VBORect.cpp"
-    "src/ui/Entity.cpp"
-    "src/data/Event.cpp"
+add_library("${RW_LIB_TARGET_NAME}" STATIC
+    "core/BaseApplication.cpp"
+    "core/BaseObject.cpp"
+    "dat/LogMsg.cpp"
+    "io/File.cpp"
+    "thread/ThreadPool.cpp"
+    "time/DateTime.cpp"
+    "time/Timer.cpp"
+    "utils/Logger.cpp"
+    "utils/Settings.cpp"
 )
+set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 
-target_link_libraries("${PROJECT_NAME}"
-    "${SDL_LIB}"
-    "${SDL_IMAGE_LIB}"
-    "${SDL_TTF_LIB}"
-)
+#target_link_libraries("${PROJECT_NAME}"
+#   "${SDL_LIB}"
+#    "${SDL_IMAGE_LIB}"
+#    "${SDL_TTF_LIB}"
+#)
 
 # Copy relevant dlls to binary folder.
-if (WIN32)
+#if (WIN32)
     # Bin dir
-    file(TO_NATIVE_PATH "${BIN_DIR}" NATIVE_BIN_DIR)
+#    file(TO_NATIVE_PATH "${BIN_DIR}" NATIVE_BIN_DIR)
     # SDL
-    file(TO_NATIVE_PATH "${VENDOR_DIR}/lib/SDL2.0.9" NATIVE_SDL_DIR)
-    add_custom_command(
-        TARGET "${PROJECT_NAME}" POST_BUILD
-        COMMAND copy /Y /B "${NATIVE_SDL_DIR}\\*.dll" "${NATIVE_BIN_DIR}\\RedWolf"
-    )
+#    file(TO_NATIVE_PATH "${VENDOR_DIR}/lib/SDL2.0.9" NATIVE_SDL_DIR)
+#    add_custom_command(
+#        TARGET "${PROJECT_NAME}" POST_BUILD
+#        COMMAND copy /Y /B "${NATIVE_SDL_DIR}\\*.dll" "${NATIVE_BIN_DIR}\\RedWolf"
+#    )
     # SDL image
-    file(TO_NATIVE_PATH "${VENDOR_DIR}/lib/SDL2_image2.0.4" NATIVE_SDL_IMAGE_DIR)
-    add_custom_command(
-        TARGET "${PROJECT_NAME}" POST_BUILD
-        COMMAND copy /Y /B "${NATIVE_SDL_IMAGE_DIR}\\*.dll" "${NATIVE_BIN_DIR}\\RedWolf"
-    )
+#    file(TO_NATIVE_PATH "${VENDOR_DIR}/lib/SDL2_image2.0.4" NATIVE_SDL_IMAGE_DIR)
+#    add_custom_command(
+#        TARGET "${PROJECT_NAME}" POST_BUILD
+#        COMMAND copy /Y /B "${NATIVE_SDL_IMAGE_DIR}\\*.dll" "${NATIVE_BIN_DIR}\\RedWolf"
+#    )
     # SDL TTF
-    file(TO_NATIVE_PATH "${VENDOR_DIR}/lib/SDL2_ttf2.0.15" NATIVE_SDL_TTF_DIR)
-    add_custom_command(
-        TARGET "${PROJECT_NAME}" POST_BUILD
-        COMMAND copy /Y /B "${NATIVE_SDL_TTF_DIR}\\*.dll" "${NATIVE_BIN_DIR}\\RedWolf"
-    )
-endif (WIN32)
+#    file(TO_NATIVE_PATH "${VENDOR_DIR}/lib/SDL2_ttf2.0.15" NATIVE_SDL_TTF_DIR)
+#    add_custom_command(
+#        TARGET "${PROJECT_NAME}" POST_BUILD
+#        COMMAND copy /Y /B "${NATIVE_SDL_TTF_DIR}\\*.dll" "${NATIVE_BIN_DIR}\\RedWolf"
+#    )
+#endif (WIN32)

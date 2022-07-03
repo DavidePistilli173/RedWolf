@@ -1,8 +1,8 @@
 ---
-Checks:            '*, -fuchsia*, -google*, -modernize-use-trailing-return-type, -llvm-namespace-comment, 
-                    -hicpp-vararg, -cppcoreguidelines-pro-type-vararg, -hicpp-braces-around-statements, -readability-braces-around-statements,
-                    -llvm-header-guard, -cppcoreguidelines-non-private-member-variables-in-classes, -cppcoreguidelines-pro-bounds-constant-array-index,
-                    -readability-avoid-const-params-in-decls, -cert-err58-cpp, -misc-non-private-member-variables-in-classes'
+Checks:            '*, -abseil*, -altera*, -android*, -boost*, -darwin*, -fuchsia*, -google*, 
+                    -hicpp-braces-around-statements,  -llvm-header-guard, -llvmlibc-*, -modernize-use-trailing-return-type,
+                    -mpi*, -objc*, -openmp*, -readability-braces-around-statements'
+CheckOptions: [{key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic, value: 1} ]
 WarningsAsErrors:  ''
 HeaderFilterRegex: '.*'
 FormatStyle:       'file'

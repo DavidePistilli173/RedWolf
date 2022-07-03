@@ -1,0 +1,26 @@
+Version 0.4.0
+    Notes: the only compiler that works right now is the latest version of msvc (G++ and Clang do not support all the used features).
+
+    RedWolf:
+        - Move to C++20.
+        - Change RedWolf from dynamic library to static library.
+        - Remove dependency from spdlog in favour of a custom logger that uses std::format.
+        - Add BaseObject and BaseApplication classes.
+        - Add event handling system.
+        - Add Timer class and events.
+        - Add library-wide concepts.
+        - Add ConstexprMap container.
+        - Add sorting algorithms for ConstexprMap.
+        - Add KVPair data type for ConstexprMap.
+        - Remove unit tests (not enough time to maintain them).
+        - Temporarily remove OpenGL and SDL dependencies for planned introduction of Vulkan.
+        - Add File class.
+        - Add Settings class.
+        - Add MVPair data type to associate a value with its mutex.
+        - Add DateTime class.
+        - Add LogMsg data type.
+        - Add ThreadPool class.
+
+    RedWolfSandbox:
+        - Move to C++20.
+        - Add basic MainApplication.
