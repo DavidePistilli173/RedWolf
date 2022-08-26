@@ -12,7 +12,7 @@ namespace rw::thread
          workers_.emplace_back([this, i]() { workerMainLoop_(workers_[i]); });
       }
 
-      logger_->trace("ThreadPool::ThreadPool - Thread pool created with {} threads.", numThreads);
+      logger_->trace("Thread pool created with {} threads.", numThreads);
    }
 
    ThreadPool::~ThreadPool()
@@ -52,10 +52,10 @@ namespace rw::thread
       if (defaultPool_ == nullptr)
       {
          defaultPool_.reset(new ThreadPool());
-         defaultPool_->logger_->relInfo("ThreadPool::defaultPool - Default thread pool created.");
+         defaultPool_->logger_->relInfo("Default thread pool created.");
       }
 
-      defaultPool_->logger_->trace("ThreadPool::defaultPool - Default thread pool retrieved.");
+      defaultPool_->logger_->trace("Default thread pool retrieved.");
       return defaultPool_.get();
    }
 

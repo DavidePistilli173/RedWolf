@@ -76,11 +76,11 @@ namespace rw::time
       {
          std::scoped_lock lck(mtx_);
          interval_ = std::chrono::microseconds(static_cast<long long>(microseconds_per_second / hertz));
-         logger_->trace("Timer::setCycleFrequency -Timer frequency set to {}Hz (interval_ = {} microseconds)", hertz, interval_);
+         logger_->trace("Timer frequency set to {}Hz (interval_ = {})", hertz, interval_);
       }
       else
       {
-         logger_->err("Timer::setCycleFrequency - Timer frequency must be a positive double or 0, but {} was passed.", hertz);
+         logger_->err("Timer frequency must be a positive double or 0, but {} was passed.", hertz);
       }
    }
 

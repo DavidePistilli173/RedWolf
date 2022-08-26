@@ -26,7 +26,7 @@ namespace rw::time
       template<IsChronoClock T>
       DateTime(std::chrono::time_point<T> timePoint) :
          date_{ std::chrono::floor<std::chrono::days>(timePoint) }, time_{ std::chrono::duration_cast<std::chrono::seconds>(
-                                                                       std::chrono::floor<std::chrono::days>(timePoint) - T::now()) }
+                                                                       T::now() - std::chrono::floor<std::chrono::days>(timePoint)) }
       {
       }
 

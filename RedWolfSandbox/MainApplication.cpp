@@ -25,8 +25,7 @@ void MainApplication::userInit_()
 void MainApplication::userRun_()
 {
    ++mainLoopIteration_;
-   logger_->relInfo(
-      "Main Application loop, iteration: {}, timer called {} times since the last update.", mainLoopIteration_, timerCount_.load());
+   logger_->relInfo("Iteration: {}, timer called {} times since the last update.", mainLoopIteration_, timerCount_.load());
    timerCount_ = 0U;
 
    if (mainLoopIteration_ == 10U)

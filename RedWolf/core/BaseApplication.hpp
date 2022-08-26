@@ -70,7 +70,7 @@ namespace rw::core
          if (duration >= cycle_control_value_)
          {
             cycleDuration_ = std::chrono::microseconds(duration);
-            logger_->trace("BaseApplication::setCycleDuration - Main loop duration set to {} microseconds.", cycleDuration_);
+            logger_->trace("Main loop duration set to {}.", cycleDuration_);
          }
          else
          {

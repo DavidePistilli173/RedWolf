@@ -29,10 +29,31 @@ namespace rw::utils
       using Level = rw::dat::LogMsg::Level;
 
       /**
+       * @brief Utility structure for storing a message and the source code location that generated.
+       */
+      struct MessageWithLocation
+      {
+         /**
+          * @brief Constructor. It is not made explicit on purpose, so that it is transparent to the user.
+          * @param pMsg Text message with ftm formatting syntax.
+          * @param pLoc Source code location data.
+          */
+         template<typename T>
+         MessageWithLocation(T pMsg, std::source_location pLoc = std::source_location::current()) : txt{ pMsg }, loc{ pLoc }
+         {
+         }
+
+         std::string_view     txt; /**< Text message with formatting syntax. */
+         std::source_location loc; /**< Source code location data. */
+      };
+
+      /**
        * @brief Log an error message only in debug builds.
+       * @param msg Message to log. Supports the std::format syntax.
+       * @param args Optional arguments to insert into the message.
        */
       template<rw::io::IsFormattable... Args>
-      void err(std::string_view msg, const Args&... args)
+      void err(const MessageWithLocation& msg, const Args&... args)
       {
          if constexpr (rw::debug) message_base(Level::error, msg, args...);
       }
@@ -40,18 +61,22 @@ namespace rw::utils
       /**
        * @brief Log a fatal message only in debug builds.
        * @details Throws an std::exception.
+       * @param msg Message to log. Supports the std::format syntax.
+       * @param args Optional arguments to insert into the message.
        */
       template<rw::io::IsFormattable... Args>
-      void fatal(std::string_view msg, const Args&... args)
+      void fatal(const MessageWithLocation& msg, const Args&... args)
       {
          if constexpr (rw::debug) message_base(Level::fatal, msg, args...);
       }
 
       /**
        * @brief Log an information message only in debug builds.
+       * @param msg Message to log. Supports the std::format syntax.
+       * @param args Optional arguments to insert into the message.
        */
       template<rw::io::IsFormattable... Args>
-      void info(std::string_view msg, const Args&... args)
+      void info(const MessageWithLocation& msg, const Args&... args)
       {
          if constexpr (rw::debug) message_base(Level::info, msg, args...);
       }
@@ -76,11 +101,11 @@ namespace rw::utils
        * @param args Optional arguments for the format string.
        */
       template<rw::io::IsFormattable... Args>
-      void message_base(Level level, std::string_view msg, const Args&... args)
+      void message_base(Level level, const MessageWithLocation& msg, const Args&... args)
       {
          if (level >= level_)
          {
-            rw::dat::LogMsg message{ level, std::vformat(msg, std::make_format_args(args...)) };
+            rw::dat::LogMsg message{ level, msg.loc, std::vformat(msg.txt, std::make_format_args(args...)) };
 
             std::scoped_lock lck{ mtx_ };
 
@@ -108,9 +133,11 @@ namespace rw::utils
 
       /**
        * @brief Log an error message in all build types.
+       * @param msg Message to log. Supports the std::format syntax.
+       * @param args Optional arguments to insert into the message.
        */
       template<rw::io::IsFormattable... Args>
-      void relErr(std::string_view msg, const Args&... args)
+      void relErr(const MessageWithLocation& msg, const Args&... args)
       {
          message_base(Level::error, msg, args...);
       }
@@ -118,36 +145,44 @@ namespace rw::utils
       /**
        * @brief Log a fatal message in all build types.
        * @details Throws an std::exception.
+       * @param msg Message to log. Supports the std::format syntax.
+       * @param args Optional arguments to insert into the message.
        */
       template<rw::io::IsFormattable... Args>
-      void relFatal(std::string_view msg, const Args&... args)
+      void relFatal(const MessageWithLocation& msg, const Args&... args)
       {
          message_base(Level::fatal, msg, args...);
       }
 
       /**
        * @brief Log an information message in all build types.
+       * @param msg Message to log. Supports the std::format syntax.
+       * @param args Optional arguments to insert into the message.
        */
       template<rw::io::IsFormattable... Args>
-      void relInfo(std::string_view msg, const Args&... args)
+      void relInfo(const MessageWithLocation& msg, const Args&... args)
       {
          message_base(Level::info, msg, args...);
       }
 
       /**
        * @brief Log a trace message in all build types.
+       * @param msg Message to log. Supports the std::format syntax.
+       * @param args Optional arguments to insert into the message.
        */
       template<rw::io::IsFormattable... Args>
-      void relTrace(std::string_view msg, const Args&... args)
+      void relTrace(const MessageWithLocation& msg, const Args&... args)
       {
          message_base(Level::trace, msg, args...);
       }
 
       /**
        * @brief Log a warning message in all build types.
+       * @param msg Message to log. Supports the std::format syntax.
+       * @param args Optional arguments to insert into the message.
        */
       template<rw::io::IsFormattable... Args>
-      void relWarn(std::string_view msg, const Args&... args)
+      void relWarn(const MessageWithLocation& msg, const Args&... args)
       {
          message_base(Level::warning, msg, args...);
       }
@@ -166,18 +201,22 @@ namespace rw::utils
 
       /**
        * @brief Log a trace message only in debug builds.
+       * @param msg Message to log. Supports the std::format syntax.
+       * @param args Optional arguments to insert into the message.
        */
       template<rw::io::IsFormattable... Args>
-      void trace(std::string_view msg, const Args&... args)
+      void trace(const MessageWithLocation& msg, const Args&... args)
       {
          if constexpr (rw::debug) message_base(Level::trace, msg, args...);
       }
 
       /**
        * @brief Log a warning message only in debug builds.
+       * @param msg Message to log. Supports the std::format syntax.
+       * @param args Optional arguments to insert into the message.
        */
       template<rw::io::IsFormattable... Args>
-      void warn(std::string_view msg, const Args&... args)
+      void warn(const MessageWithLocation& msg, const Args&... args)
       {
          if constexpr (rw::debug) message_base(Level::warning, msg, args...);
       }
@@ -195,185 +234,185 @@ namespace rw::utils
    };
 
    // Declaration of explicit template instantiation for common types, so they will not be compiled in user projects.
-   extern template void Logger::trace(std::string_view);
-   extern template void Logger::trace(std::string_view, const char* const&);
-   extern template void Logger::trace(std::string_view, const std::string_view&);
-   extern template void Logger::trace(std::string_view, const std::string&);
-   extern template void Logger::trace(std::string_view, const char&);
-   extern template void Logger::trace(std::string_view, const short&);
-   extern template void Logger::trace(std::string_view, const int&);
-   extern template void Logger::trace(std::string_view, const long&);
-   extern template void Logger::trace(std::string_view, const long long&);
-   extern template void Logger::trace(std::string_view, const unsigned char&);
-   extern template void Logger::trace(std::string_view, const unsigned short&);
-   extern template void Logger::trace(std::string_view, const unsigned int&);
-   extern template void Logger::trace(std::string_view, const unsigned long&);
-   extern template void Logger::trace(std::string_view, const unsigned long long&);
-   extern template void Logger::trace(std::string_view, const float&);
-   extern template void Logger::trace(std::string_view, const double&);
-   extern template void Logger::trace(std::string_view, const bool&);
+   extern template void Logger::trace(const MessageWithLocation&);
+   extern template void Logger::trace(const MessageWithLocation&, const char* const&);
+   extern template void Logger::trace(const MessageWithLocation&, const std::string_view&);
+   extern template void Logger::trace(const MessageWithLocation&, const std::string&);
+   extern template void Logger::trace(const MessageWithLocation&, const char&);
+   extern template void Logger::trace(const MessageWithLocation&, const short&);
+   extern template void Logger::trace(const MessageWithLocation&, const int&);
+   extern template void Logger::trace(const MessageWithLocation&, const long&);
+   extern template void Logger::trace(const MessageWithLocation&, const long long&);
+   extern template void Logger::trace(const MessageWithLocation&, const unsigned char&);
+   extern template void Logger::trace(const MessageWithLocation&, const unsigned short&);
+   extern template void Logger::trace(const MessageWithLocation&, const unsigned int&);
+   extern template void Logger::trace(const MessageWithLocation&, const unsigned long&);
+   extern template void Logger::trace(const MessageWithLocation&, const unsigned long long&);
+   extern template void Logger::trace(const MessageWithLocation&, const float&);
+   extern template void Logger::trace(const MessageWithLocation&, const double&);
+   extern template void Logger::trace(const MessageWithLocation&, const bool&);
 
-   extern template void Logger::info(std::string_view);
-   extern template void Logger::info(std::string_view, const char* const&);
-   extern template void Logger::info(std::string_view, const std::string_view&);
-   extern template void Logger::info(std::string_view, const std::string&);
-   extern template void Logger::info(std::string_view, const char&);
-   extern template void Logger::info(std::string_view, const short&);
-   extern template void Logger::info(std::string_view, const int&);
-   extern template void Logger::info(std::string_view, const long&);
-   extern template void Logger::info(std::string_view, const long long&);
-   extern template void Logger::info(std::string_view, const unsigned char&);
-   extern template void Logger::info(std::string_view, const unsigned short&);
-   extern template void Logger::info(std::string_view, const unsigned int&);
-   extern template void Logger::info(std::string_view, const unsigned long&);
-   extern template void Logger::info(std::string_view, const unsigned long long&);
-   extern template void Logger::info(std::string_view, const float&);
-   extern template void Logger::info(std::string_view, const double&);
-   extern template void Logger::info(std::string_view, const bool&);
+   extern template void Logger::info(const MessageWithLocation&);
+   extern template void Logger::info(const MessageWithLocation&, const char* const&);
+   extern template void Logger::info(const MessageWithLocation&, const std::string_view&);
+   extern template void Logger::info(const MessageWithLocation&, const std::string&);
+   extern template void Logger::info(const MessageWithLocation&, const char&);
+   extern template void Logger::info(const MessageWithLocation&, const short&);
+   extern template void Logger::info(const MessageWithLocation&, const int&);
+   extern template void Logger::info(const MessageWithLocation&, const long&);
+   extern template void Logger::info(const MessageWithLocation&, const long long&);
+   extern template void Logger::info(const MessageWithLocation&, const unsigned char&);
+   extern template void Logger::info(const MessageWithLocation&, const unsigned short&);
+   extern template void Logger::info(const MessageWithLocation&, const unsigned int&);
+   extern template void Logger::info(const MessageWithLocation&, const unsigned long&);
+   extern template void Logger::info(const MessageWithLocation&, const unsigned long long&);
+   extern template void Logger::info(const MessageWithLocation&, const float&);
+   extern template void Logger::info(const MessageWithLocation&, const double&);
+   extern template void Logger::info(const MessageWithLocation&, const bool&);
 
-   extern template void Logger::warn(std::string_view);
-   extern template void Logger::warn(std::string_view, const char* const&);
-   extern template void Logger::warn(std::string_view, const std::string_view&);
-   extern template void Logger::warn(std::string_view, const std::string&);
-   extern template void Logger::warn(std::string_view, const char&);
-   extern template void Logger::warn(std::string_view, const short&);
-   extern template void Logger::warn(std::string_view, const int&);
-   extern template void Logger::warn(std::string_view, const long&);
-   extern template void Logger::warn(std::string_view, const long long&);
-   extern template void Logger::warn(std::string_view, const unsigned char&);
-   extern template void Logger::warn(std::string_view, const unsigned short&);
-   extern template void Logger::warn(std::string_view, const unsigned int&);
-   extern template void Logger::warn(std::string_view, const unsigned long&);
-   extern template void Logger::warn(std::string_view, const unsigned long long&);
-   extern template void Logger::warn(std::string_view, const float&);
-   extern template void Logger::warn(std::string_view, const double&);
-   extern template void Logger::warn(std::string_view, const bool&);
+   extern template void Logger::warn(const MessageWithLocation&);
+   extern template void Logger::warn(const MessageWithLocation&, const char* const&);
+   extern template void Logger::warn(const MessageWithLocation&, const std::string_view&);
+   extern template void Logger::warn(const MessageWithLocation&, const std::string&);
+   extern template void Logger::warn(const MessageWithLocation&, const char&);
+   extern template void Logger::warn(const MessageWithLocation&, const short&);
+   extern template void Logger::warn(const MessageWithLocation&, const int&);
+   extern template void Logger::warn(const MessageWithLocation&, const long&);
+   extern template void Logger::warn(const MessageWithLocation&, const long long&);
+   extern template void Logger::warn(const MessageWithLocation&, const unsigned char&);
+   extern template void Logger::warn(const MessageWithLocation&, const unsigned short&);
+   extern template void Logger::warn(const MessageWithLocation&, const unsigned int&);
+   extern template void Logger::warn(const MessageWithLocation&, const unsigned long&);
+   extern template void Logger::warn(const MessageWithLocation&, const unsigned long long&);
+   extern template void Logger::warn(const MessageWithLocation&, const float&);
+   extern template void Logger::warn(const MessageWithLocation&, const double&);
+   extern template void Logger::warn(const MessageWithLocation&, const bool&);
 
-   extern template void Logger::err(std::string_view);
-   extern template void Logger::err(std::string_view, const char* const&);
-   extern template void Logger::err(std::string_view, const std::string_view&);
-   extern template void Logger::err(std::string_view, const std::string&);
-   extern template void Logger::err(std::string_view, const char&);
-   extern template void Logger::err(std::string_view, const short&);
-   extern template void Logger::err(std::string_view, const int&);
-   extern template void Logger::err(std::string_view, const long&);
-   extern template void Logger::err(std::string_view, const long long&);
-   extern template void Logger::err(std::string_view, const unsigned char&);
-   extern template void Logger::err(std::string_view, const unsigned short&);
-   extern template void Logger::err(std::string_view, const unsigned int&);
-   extern template void Logger::err(std::string_view, const unsigned long&);
-   extern template void Logger::err(std::string_view, const unsigned long long&);
-   extern template void Logger::err(std::string_view, const float&);
-   extern template void Logger::err(std::string_view, const double&);
-   extern template void Logger::err(std::string_view, const bool&);
+   extern template void Logger::err(const MessageWithLocation&);
+   extern template void Logger::err(const MessageWithLocation&, const char* const&);
+   extern template void Logger::err(const MessageWithLocation&, const std::string_view&);
+   extern template void Logger::err(const MessageWithLocation&, const std::string&);
+   extern template void Logger::err(const MessageWithLocation&, const char&);
+   extern template void Logger::err(const MessageWithLocation&, const short&);
+   extern template void Logger::err(const MessageWithLocation&, const int&);
+   extern template void Logger::err(const MessageWithLocation&, const long&);
+   extern template void Logger::err(const MessageWithLocation&, const long long&);
+   extern template void Logger::err(const MessageWithLocation&, const unsigned char&);
+   extern template void Logger::err(const MessageWithLocation&, const unsigned short&);
+   extern template void Logger::err(const MessageWithLocation&, const unsigned int&);
+   extern template void Logger::err(const MessageWithLocation&, const unsigned long&);
+   extern template void Logger::err(const MessageWithLocation&, const unsigned long long&);
+   extern template void Logger::err(const MessageWithLocation&, const float&);
+   extern template void Logger::err(const MessageWithLocation&, const double&);
+   extern template void Logger::err(const MessageWithLocation&, const bool&);
 
-   extern template void Logger::fatal(std::string_view);
-   extern template void Logger::fatal(std::string_view, const char* const&);
-   extern template void Logger::fatal(std::string_view, const std::string_view&);
-   extern template void Logger::fatal(std::string_view, const std::string&);
-   extern template void Logger::fatal(std::string_view, const char&);
-   extern template void Logger::fatal(std::string_view, const short&);
-   extern template void Logger::fatal(std::string_view, const int&);
-   extern template void Logger::fatal(std::string_view, const long&);
-   extern template void Logger::fatal(std::string_view, const long long&);
-   extern template void Logger::fatal(std::string_view, const unsigned char&);
-   extern template void Logger::fatal(std::string_view, const unsigned short&);
-   extern template void Logger::fatal(std::string_view, const unsigned int&);
-   extern template void Logger::fatal(std::string_view, const unsigned long&);
-   extern template void Logger::fatal(std::string_view, const unsigned long long&);
-   extern template void Logger::fatal(std::string_view, const float&);
-   extern template void Logger::fatal(std::string_view, const double&);
-   extern template void Logger::fatal(std::string_view, const bool&);
+   extern template void Logger::fatal(const MessageWithLocation&);
+   extern template void Logger::fatal(const MessageWithLocation&, const char* const&);
+   extern template void Logger::fatal(const MessageWithLocation&, const std::string_view&);
+   extern template void Logger::fatal(const MessageWithLocation&, const std::string&);
+   extern template void Logger::fatal(const MessageWithLocation&, const char&);
+   extern template void Logger::fatal(const MessageWithLocation&, const short&);
+   extern template void Logger::fatal(const MessageWithLocation&, const int&);
+   extern template void Logger::fatal(const MessageWithLocation&, const long&);
+   extern template void Logger::fatal(const MessageWithLocation&, const long long&);
+   extern template void Logger::fatal(const MessageWithLocation&, const unsigned char&);
+   extern template void Logger::fatal(const MessageWithLocation&, const unsigned short&);
+   extern template void Logger::fatal(const MessageWithLocation&, const unsigned int&);
+   extern template void Logger::fatal(const MessageWithLocation&, const unsigned long&);
+   extern template void Logger::fatal(const MessageWithLocation&, const unsigned long long&);
+   extern template void Logger::fatal(const MessageWithLocation&, const float&);
+   extern template void Logger::fatal(const MessageWithLocation&, const double&);
+   extern template void Logger::fatal(const MessageWithLocation&, const bool&);
 
-   extern template void Logger::relTrace(std::string_view);
-   extern template void Logger::relTrace(std::string_view, const char* const&);
-   extern template void Logger::relTrace(std::string_view, const std::string_view&);
-   extern template void Logger::relTrace(std::string_view, const std::string&);
-   extern template void Logger::relTrace(std::string_view, const char&);
-   extern template void Logger::relTrace(std::string_view, const short&);
-   extern template void Logger::relTrace(std::string_view, const int&);
-   extern template void Logger::relTrace(std::string_view, const long&);
-   extern template void Logger::relTrace(std::string_view, const long long&);
-   extern template void Logger::relTrace(std::string_view, const unsigned char&);
-   extern template void Logger::relTrace(std::string_view, const unsigned short&);
-   extern template void Logger::relTrace(std::string_view, const unsigned int&);
-   extern template void Logger::relTrace(std::string_view, const unsigned long&);
-   extern template void Logger::relTrace(std::string_view, const unsigned long long&);
-   extern template void Logger::relTrace(std::string_view, const float&);
-   extern template void Logger::relTrace(std::string_view, const double&);
-   extern template void Logger::relTrace(std::string_view, const bool&);
+   extern template void Logger::relTrace(const MessageWithLocation&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const char* const&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const std::string_view&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const std::string&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const char&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const short&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const int&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const long&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const long long&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const unsigned char&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const unsigned short&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const unsigned int&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const unsigned long&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const unsigned long long&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const float&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const double&);
+   extern template void Logger::relTrace(const MessageWithLocation&, const bool&);
 
-   extern template void Logger::relInfo(std::string_view);
-   extern template void Logger::relInfo(std::string_view, const char* const&);
-   extern template void Logger::relInfo(std::string_view, const std::string_view&);
-   extern template void Logger::relInfo(std::string_view, const std::string&);
-   extern template void Logger::relInfo(std::string_view, const char&);
-   extern template void Logger::relInfo(std::string_view, const short&);
-   extern template void Logger::relInfo(std::string_view, const int&);
-   extern template void Logger::relInfo(std::string_view, const long&);
-   extern template void Logger::relInfo(std::string_view, const long long&);
-   extern template void Logger::relInfo(std::string_view, const unsigned char&);
-   extern template void Logger::relInfo(std::string_view, const unsigned short&);
-   extern template void Logger::relInfo(std::string_view, const unsigned int&);
-   extern template void Logger::relInfo(std::string_view, const unsigned long&);
-   extern template void Logger::relInfo(std::string_view, const unsigned long long&);
-   extern template void Logger::relInfo(std::string_view, const float&);
-   extern template void Logger::relInfo(std::string_view, const double&);
-   extern template void Logger::relInfo(std::string_view, const bool&);
+   extern template void Logger::relInfo(const MessageWithLocation&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const char* const&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const std::string_view&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const std::string&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const char&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const short&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const int&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const long&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const long long&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const unsigned char&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const unsigned short&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const unsigned int&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const unsigned long&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const unsigned long long&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const float&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const double&);
+   extern template void Logger::relInfo(const MessageWithLocation&, const bool&);
 
-   extern template void Logger::relWarn(std::string_view);
-   extern template void Logger::relWarn(std::string_view, const char* const&);
-   extern template void Logger::relWarn(std::string_view, const std::string_view&);
-   extern template void Logger::relWarn(std::string_view, const std::string&);
-   extern template void Logger::relWarn(std::string_view, const char&);
-   extern template void Logger::relWarn(std::string_view, const short&);
-   extern template void Logger::relWarn(std::string_view, const int&);
-   extern template void Logger::relWarn(std::string_view, const long&);
-   extern template void Logger::relWarn(std::string_view, const long long&);
-   extern template void Logger::relWarn(std::string_view, const unsigned char&);
-   extern template void Logger::relWarn(std::string_view, const unsigned short&);
-   extern template void Logger::relWarn(std::string_view, const unsigned int&);
-   extern template void Logger::relWarn(std::string_view, const unsigned long&);
-   extern template void Logger::relWarn(std::string_view, const unsigned long long&);
-   extern template void Logger::relWarn(std::string_view, const float&);
-   extern template void Logger::relWarn(std::string_view, const double&);
-   extern template void Logger::relWarn(std::string_view, const bool&);
+   extern template void Logger::relWarn(const MessageWithLocation&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const char* const&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const std::string_view&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const std::string&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const char&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const short&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const int&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const long&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const long long&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const unsigned char&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const unsigned short&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const unsigned int&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const unsigned long&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const unsigned long long&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const float&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const double&);
+   extern template void Logger::relWarn(const MessageWithLocation&, const bool&);
 
-   extern template void Logger::relErr(std::string_view);
-   extern template void Logger::relErr(std::string_view, const char* const&);
-   extern template void Logger::relErr(std::string_view, const std::string_view&);
-   extern template void Logger::relErr(std::string_view, const std::string&);
-   extern template void Logger::relErr(std::string_view, const char&);
-   extern template void Logger::relErr(std::string_view, const short&);
-   extern template void Logger::relErr(std::string_view, const int&);
-   extern template void Logger::relErr(std::string_view, const long&);
-   extern template void Logger::relErr(std::string_view, const long long&);
-   extern template void Logger::relErr(std::string_view, const unsigned char&);
-   extern template void Logger::relErr(std::string_view, const unsigned short&);
-   extern template void Logger::relErr(std::string_view, const unsigned int&);
-   extern template void Logger::relErr(std::string_view, const unsigned long&);
-   extern template void Logger::relErr(std::string_view, const unsigned long long&);
-   extern template void Logger::relErr(std::string_view, const float&);
-   extern template void Logger::relErr(std::string_view, const double&);
-   extern template void Logger::relErr(std::string_view, const bool&);
+   extern template void Logger::relErr(const MessageWithLocation&);
+   extern template void Logger::relErr(const MessageWithLocation&, const char* const&);
+   extern template void Logger::relErr(const MessageWithLocation&, const std::string_view&);
+   extern template void Logger::relErr(const MessageWithLocation&, const std::string&);
+   extern template void Logger::relErr(const MessageWithLocation&, const char&);
+   extern template void Logger::relErr(const MessageWithLocation&, const short&);
+   extern template void Logger::relErr(const MessageWithLocation&, const int&);
+   extern template void Logger::relErr(const MessageWithLocation&, const long&);
+   extern template void Logger::relErr(const MessageWithLocation&, const long long&);
+   extern template void Logger::relErr(const MessageWithLocation&, const unsigned char&);
+   extern template void Logger::relErr(const MessageWithLocation&, const unsigned short&);
+   extern template void Logger::relErr(const MessageWithLocation&, const unsigned int&);
+   extern template void Logger::relErr(const MessageWithLocation&, const unsigned long&);
+   extern template void Logger::relErr(const MessageWithLocation&, const unsigned long long&);
+   extern template void Logger::relErr(const MessageWithLocation&, const float&);
+   extern template void Logger::relErr(const MessageWithLocation&, const double&);
+   extern template void Logger::relErr(const MessageWithLocation&, const bool&);
 
-   extern template void Logger::relFatal(std::string_view);
-   extern template void Logger::relFatal(std::string_view, const char* const&);
-   extern template void Logger::relFatal(std::string_view, const std::string_view&);
-   extern template void Logger::relFatal(std::string_view, const std::string&);
-   extern template void Logger::relFatal(std::string_view, const char&);
-   extern template void Logger::relFatal(std::string_view, const short&);
-   extern template void Logger::relFatal(std::string_view, const int&);
-   extern template void Logger::relFatal(std::string_view, const long&);
-   extern template void Logger::relFatal(std::string_view, const long long&);
-   extern template void Logger::relFatal(std::string_view, const unsigned char&);
-   extern template void Logger::relFatal(std::string_view, const unsigned short&);
-   extern template void Logger::relFatal(std::string_view, const unsigned int&);
-   extern template void Logger::relFatal(std::string_view, const unsigned long&);
-   extern template void Logger::relFatal(std::string_view, const unsigned long long&);
-   extern template void Logger::relFatal(std::string_view, const float&);
-   extern template void Logger::relFatal(std::string_view, const double&);
-   extern template void Logger::relFatal(std::string_view, const bool&);
+   extern template void Logger::relFatal(const MessageWithLocation&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const char* const&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const std::string_view&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const std::string&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const char&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const short&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const int&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const long&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const long long&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const unsigned char&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const unsigned short&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const unsigned int&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const unsigned long&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const unsigned long long&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const float&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const double&);
+   extern template void Logger::relFatal(const MessageWithLocation&, const bool&);
 } // namespace rw::utils
 
 #endif

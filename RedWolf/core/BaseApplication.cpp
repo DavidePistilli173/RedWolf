@@ -7,7 +7,7 @@ namespace rw::core
       // Save the command-line arguments for later use, if present.
       if (argc > 0 && argv != nullptr)
       {
-         logger_->trace("BaseApplication::BaseApplication - Saving {} command-line arguments.", argc);
+         logger_->trace("Saving {} command-line arguments.", argc);
 
          arguments_.reserve(argc);
          for (int i = 0; i < argc; ++i)
@@ -19,11 +19,11 @@ namespace rw::core
 
    void BaseApplication::init()
    {
-      logger_->trace("BaseApplication::init - Initialising.");
+      logger_->trace("Initialising.");
 
       userInit_();
 
-      logger_->trace("BaseApplication::init - Init complete.");
+      logger_->trace("Init complete.");
    }
 
    void BaseApplication::run()
@@ -52,20 +52,17 @@ namespace rw::core
       if (hertz >= 0.0F)
       {
          cycleDuration_ = std::chrono::microseconds(static_cast<long long>(1'000'000 / hertz));
-         logger_->trace(
-            "BaseApplication::setCycleFrequency - Main loop frequency set to {}Hz (cycleDuration_ = {} microseconds)",
-            hertz,
-            cycleDuration_);
+         logger_->trace("Main loop frequency set to {}Hz (cycleDuration_ = {})", hertz, cycleDuration_);
       }
       else
       {
-         logger_->err("BaseApplication::setCycleFrequency - Main loop frequency must be a positive float or 0, but {} was passed.", hertz);
+         logger_->err("Main loop frequency must be a positive float or 0, but {} was passed.", hertz);
       }
    }
 
    void BaseApplication::stop()
    {
       running_ = false;
-      logger_->trace("BaseApplication::stop - Main loop stopped.");
+      logger_->trace("Main loop stopped.");
    }
 } // namespace rw::core

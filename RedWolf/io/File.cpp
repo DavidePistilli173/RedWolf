@@ -8,8 +8,8 @@ namespace rw::io
    {
       if (std::filesystem::exists(path_) && std::filesystem::is_directory(path_))
       {
-         logger_->relErr("File::File - The input path refers to a directory, not a file ({}).", path_.string());
-         throw std::exception{ "File::File - The input path refers to a directory, not a file." };
+         logger_->relErr("The input path refers to a directory, not a file ({}).", path_.string());
+         throw std::exception{ "The input path refers to a directory, not a file." };
       }
 
       if (format == Format::unknown) computeFormat_();
@@ -34,7 +34,7 @@ namespace rw::io
       std::ifstream f = std::ifstream(path_, std::ios_base::in);
       if (!f.is_open())
       {
-         logger_->relErr("File::readAll - Failed to open file {}.", path_.string());
+         logger_->relErr("Failed to open file {}.", path_.string());
          return std::string();
       }
 
