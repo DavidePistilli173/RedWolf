@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <array>
 #include <iterator>
+#include <stdexcept>
 #include <utility>
 
 namespace rw::cont

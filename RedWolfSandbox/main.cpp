@@ -26,6 +26,7 @@ int main(int argc, char** argv)
 
       MainApplication app(argc, argv);
       app.init();
+
       app.run();
    }
    catch (const std::exception& e)

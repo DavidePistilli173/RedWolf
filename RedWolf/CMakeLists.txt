@@ -4,10 +4,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) # Enable the target standard.
 
 project("RedWolf" VERSION "0.5.0" DESCRIPTION "Graphics and utility library for desktop applications.")
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${BIN_DIR}/${PROJECT_NAME}")
-set(CMAKE_INSTALL_PREFIX "${BIN_DIR}/${PROJECT_NAME}/${CMAKE_BUILD_TYPE}")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${RW_BIN_DIR}/${PROJECT_NAME}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${RW_BIN_DIR}/${PROJECT_NAME}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${RW_BIN_DIR}/${PROJECT_NAME}")
+set(CMAKE_INSTALL_PREFIX "${RW_BIN_DIR}/${PROJECT_NAME}/${CMAKE_BUILD_TYPE}")
+
+# Third-party libraries
+set(RW_THIRD_PARTY_DIR "${PROJECT_SOURCE_DIR}/third_party")
+
+# GLFW
+set(RW_GLFW_DIR "${RW_THIRD_PARTY_DIR}/glfw")
+set(RW_GLFW_INCLUDE_DIR "${RW_THIRD_PARTY_DIR}/glfw/include")
+set(GLFW_BUILD_EXAMPLES OFF)
+set(GLFW_BUILD_TESTS OFF)
+set(GLFW_INSTALL OFF)
+add_subdirectory("${RW_GLFW_DIR}")
+
+# GLM
+set(RW_GLM_INCLUDE_DIR "${RW_THIRD_PARTY_DIR}/glm")
 
 include(CheckIPOSupported)
 check_ipo_supported(RESULT supported OUTPUT error)
@@ -15,7 +29,8 @@ check_ipo_supported(RESULT supported OUTPUT error)
 # Build the library.
 include_directories(
     "${RW_ROOT_DIR}"
-    "${VENDOR_DIR}/include"
+    "${RW_GLFW_INCLUDE_DIR}"
+    "${RW_GLM_INCLUDE_DIR}"
 )
 
 add_library("${RW_LIB_TARGET_NAME}" STATIC
@@ -33,10 +48,34 @@ set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 #target_link_libraries("${PROJECT_NAME}"
-#   "${SDL_LIB}"
-#    "${SDL_IMAGE_LIB}"
-#    "${SDL_TTF_LIB}"
+#    "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/glfw3.lib"
 #)
+
+# Copy all files required by the users in the output folder.
+if (WIN32)
+    file(TO_NATIVE_PATH "${RW_BIN_DIR}/${PROJECT_NAME}" NATIVE_OUTPUT_DIR)
+
+    # RedWolf
+    file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}" NATIVE_SOURCE_DIR)
+    add_custom_command(
+        TARGET ${RW_LIB_TARGET_NAME} POST_BUILD
+        COMMAND xcopy "${NATIVE_SOURCE_DIR}\\*.hpp" "${NATIVE_OUTPUT_DIR}\\include\\RedWolf" /f /i /s /y 
+    )
+    
+    # GLFW
+    file(TO_NATIVE_PATH "${RW_GLFW_INCLUDE_DIR}" NATIVE_GLFW_INCLUDE_DIR)
+    add_custom_command(
+        TARGET ${RW_LIB_TARGET_NAME} POST_BUILD
+        COMMAND xcopy "${NATIVE_GLFW_INCLUDE_DIR}\\GLFW" "${NATIVE_OUTPUT_DIR}\\include\\GLFW" /f /i /s /y  
+    )
+
+    # GLM
+    file(TO_NATIVE_PATH "${RW_GLM_INCLUDE_DIR}" NATIVE_GLM_INCLUDE_DIR)
+    add_custom_command(
+        TARGET ${RW_LIB_TARGET_NAME} POST_BUILD
+        COMMAND xcopy "${NATIVE_GLM_INCLUDE_DIR}\\glm" "${NATIVE_OUTPUT_DIR}\\include\\glm" /f /i /s /y 
+    )
+endif (WIN32)
 
 # Copy relevant dlls to binary folder.
 #if (WIN32)

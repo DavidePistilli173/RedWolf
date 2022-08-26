@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION "3.12")
 
 project("RedWolfEngine" VERSION "0.5.0" DESCRIPTION "")
 
+# Library variables
 set(RW_ROOT_DIR "${PROJECT_SOURCE_DIR}")
 set(RW_SRC_DIR "${PROJECT_SOURCE_DIR}/RedWolf")
 set(RW_SANDBOX_DIR "${PROJECT_SOURCE_DIR}/RedWolfSandbox")
-set(VENDOR_DIR "${PROJECT_SOURCE_DIR}/vendor")
-set(BUILD_DIR "${PROJECT_SOURCE_DIR}/build")
-set(BIN_DIR "${PROJECT_SOURCE_DIR}/bin")
-set(RW_LIB_DIR "${BIN_DIR}/RedWolf/")
+set(RW_BUILD_DIR "${PROJECT_SOURCE_DIR}/build")
+set(RW_BIN_DIR "${PROJECT_SOURCE_DIR}/bin")
+set(RW_LIB_DIR "${RW_BIN_DIR}/RedWolf/")
 
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
     set(RW_LIB_TARGET_NAME "RedWolfd")
