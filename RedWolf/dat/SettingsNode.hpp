@@ -37,10 +37,18 @@ namespace rw::dat
 
       /**
        * @brief Get the attribute with the given name.
-       * @param name Name of the attributed.
+       * @param name Name of the attribute to get.
        * @return Value of the attribute, if present.
        */
       [[nodiscard]] std::optional<std::string> attribute(std::string_view name) const;
+
+      /**
+       * @brief Get the attribute with the given name, or a default value if it does not exist.
+       * @param name Name of the attribute to get.
+       * @param defaultValue Default return value in case the attribute does not exist.
+       * @return Value of the attribute or defaultValue.
+       */
+      [[nodiscard]] std::string attribute(std::string_view name, std::string_view defaultValue) const;
 
       /**
        * @brief Get a specific child of the node.

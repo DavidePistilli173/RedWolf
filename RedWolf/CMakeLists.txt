@@ -78,27 +78,3 @@ if (WIN32)
         COMMAND xcopy "${NATIVE_GLM_INCLUDE_DIR}\\glm" "${NATIVE_OUTPUT_DIR}\\include\\glm" /f /i /s /y 
     )
 endif (WIN32)
-
-# Copy relevant dlls to binary folder.
-#if (WIN32)
-    # Bin dir
-#    file(TO_NATIVE_PATH "${BIN_DIR}" NATIVE_BIN_DIR)
-    # SDL
-#    file(TO_NATIVE_PATH "${VENDOR_DIR}/lib/SDL2.0.9" NATIVE_SDL_DIR)
-#    add_custom_command(
-#        TARGET "${PROJECT_NAME}" POST_BUILD
-#        COMMAND copy /Y /B "${NATIVE_SDL_DIR}\\*.dll" "${NATIVE_BIN_DIR}\\RedWolf"
-#    )
-    # SDL image
-#    file(TO_NATIVE_PATH "${VENDOR_DIR}/lib/SDL2_image2.0.4" NATIVE_SDL_IMAGE_DIR)
-#    add_custom_command(
-#        TARGET "${PROJECT_NAME}" POST_BUILD
-#        COMMAND copy /Y /B "${NATIVE_SDL_IMAGE_DIR}\\*.dll" "${NATIVE_BIN_DIR}\\RedWolf"
-#    )
-    # SDL TTF
-#    file(TO_NATIVE_PATH "${VENDOR_DIR}/lib/SDL2_ttf2.0.15" NATIVE_SDL_TTF_DIR)
-#    add_custom_command(
-#        TARGET "${PROJECT_NAME}" POST_BUILD
-#        COMMAND copy /Y /B "${NATIVE_SDL_TTF_DIR}\\*.dll" "${NATIVE_BIN_DIR}\\RedWolf"
-#    )
-#endif (WIN32)

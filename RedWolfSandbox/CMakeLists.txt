@@ -28,3 +28,15 @@ set_target_properties(${PROJECT_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TR
 target_link_libraries("${PROJECT_NAME}" 
                       "${RW_LIB_DIR}/${RW_LIB_TARGET_NAME}.lib" 
                       "${RW_LIB_DIR}/glfw3.lib")
+
+# Copy all files required by the users in the output folder.
+if (WIN32)
+    file(TO_NATIVE_PATH "${RW_BIN_DIR}/${PROJECT_NAME}" NATIVE_OUTPUT_DIR)
+
+    # Config files
+    file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}" NATIVE_SOURCE_DIR)
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND xcopy "${NATIVE_SOURCE_DIR}\\config" "${NATIVE_OUTPUT_DIR}\\config" /f /i /s /y 
+    )
+endif (WIN32)

@@ -35,6 +35,12 @@ namespace rw::utils
       static Settings*
          instance(std::string_view filePath = default_settings_file, rw::io::File::Format format = rw::io::File::Format::unknown);
 
+      /**
+       * @brief Get the root settings node.
+       * @return Root settings node.
+       */
+      Node* root();
+
    private:
       /**
        * @brief Constructor.

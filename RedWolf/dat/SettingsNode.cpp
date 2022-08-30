@@ -30,6 +30,16 @@ namespace rw::dat
       return it->second;
    }
 
+   std::string SettingsNode::attribute(std::string_view name, std::string_view defaultValue) const
+   {
+      std::shared_lock lck{ mtx_ };
+
+      auto it = attributes_.find(name);
+      if (it == attributes_.end()) return std::string(defaultValue);
+
+      return it->second;
+   }
+
    SettingsNode* SettingsNode::child(std::string_view name, size_t index)
    {
       std::shared_lock lck{ mtx_ };

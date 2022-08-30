@@ -39,6 +39,11 @@ namespace rw::utils
       return instanceIt->value.get();
    }
 
+   Settings::Node* Settings::root()
+   {
+      return root_.get();
+   }
+
    std::array<rw::dat::KVPair<std::string, std::unique_ptr<Settings>>, Settings::max_settings_files>::iterator
       Settings::load_(std::string_view filePath, rw::io::File::Format format)
    {
@@ -74,7 +79,17 @@ namespace rw::utils
 
       for (auto val = file.readline(); val.has_value(); val = file.readline())
       {
-         std::string trimmedLine = rw::text::trim(val.value());
+         std::string trimmedLine = val.value();
+
+         // Remove comments
+         size_t commentIdx{ trimmedLine.find('#') };
+         if (commentIdx != std::string::npos)
+         {
+            trimmedLine = trimmedLine.substr(0U, commentIdx);
+         }
+
+         // Trim the line.
+         trimmedLine = rw::text::trim(val.value());
          if (!trimmedLine.empty())
          {
             // Check new section start.
@@ -86,7 +101,7 @@ namespace rw::utils
             else
             {
                size_t equalsIdx{ trimmedLine.find('=') };
-               if (equalsIdx != std::string_view::npos)
+               if (equalsIdx != std::string::npos)
                {
                   std::string attributeName{ rw::text::rightTrim(trimmedLine.substr(0U, equalsIdx)) };
                   std::string attributeValue{ rw::text::leftTrim(trimmedLine.substr(equalsIdx + 1U, trimmedLine.length())) };

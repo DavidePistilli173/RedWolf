@@ -10,6 +10,9 @@ Versopm 0.5.0
         - Add loading of INI settings files.
         - [PLANNED] Add Vulkan support.
 
+     RedWolfSandbox:
+        - Add config file.
+
 Version 0.4.0
     Notes: the only compiler that works right now is the latest version of msvc (G++ and Clang do not support all the used features).
 

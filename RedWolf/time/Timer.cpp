@@ -8,12 +8,10 @@ namespace rw::time
 
    Timer::~Timer()
    {
+      stop();
       if (timerThread_.joinable())
       {
-         stop();
-         while (timerThread_.joinable())
-         {
-         };
+         timerThread_.join();
       }
    }
 

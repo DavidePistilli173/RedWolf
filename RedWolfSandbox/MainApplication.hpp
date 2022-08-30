@@ -41,6 +41,7 @@ private:
    rw::utils::Logger* logger_{ nullptr }; /**< Application logger. */
 
    size_t mainLoopIteration_{ 0U }; /**< Number of iterations of the main loop. */
+   size_t totalIterations_{ 0U };   /**< Total number of iterations of the main loop. */
 
    rw::time::Timer     timer_;            /**< Timer. */
    std::atomic<size_t> timerCount_{ 0U }; /**< Number of times the timer was called since the last main loop iteration. */
