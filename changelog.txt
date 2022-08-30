@@ -1,13 +1,21 @@
-Versopm 0.5.0
+Future Releases
+    RedWolf:
+        - [PLANNED] Fix linux compatibility
+
+    RedWolfSandbox:
+        - [PLANNED] Fix linux compatibility
+
+Version 0.5.0
     Notes: the only compiler that works right now is the latest version of msvc (G++ and Clang do not support all the used features).
 
     RedWolf:
-        - Fix sign of the time of day in the DateTime structure.
         - Add source code location information to the logger.
-        - Improve comments.
         - Add SettingsNode class.
         - Add utility string functions.
         - Add loading of INI settings files.
+        - Fix Timer destructor.
+        - Fix sign of the time of day in the DateTime structure.
+        - Improve comments.
         - [PLANNED] Add Vulkan support.
 
      RedWolfSandbox:

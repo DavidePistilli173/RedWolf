@@ -10,7 +10,6 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "enableMicrosoftCodeAnalysis": true,
       "enableClangTidyCodeAnalysis": true
     },
     {
@@ -22,7 +21,6 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "enableMicrosoftCodeAnalysis": true,
       "enableClangTidyCodeAnalysis": true,
       "inheritEnvironments": [ "msvc_x64_x64" ]
     }
