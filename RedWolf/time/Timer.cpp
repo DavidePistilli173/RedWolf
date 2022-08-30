@@ -127,7 +127,7 @@ namespace rw::time
                          std::chrono::microseconds(0))
                   {
                   }
-                  generateEvent<rw::events::TimeoutEvent>(rw::events::TimeoutEvent());
+                  generateEvent(rw::events::TimeoutEvent());
                   if (singleShot_) running_ = false;
                }
                else
@@ -139,7 +139,7 @@ namespace rw::time
                   if (timerConditionVariable_.wait_for(lck, remainingTime_) == std::cv_status::timeout)
                   {
                      // If the sleep reached timeout, generate the timeout event.
-                     generateEvent<rw::events::TimeoutEvent>(rw::events::TimeoutEvent());
+                     generateEvent(rw::events::TimeoutEvent());
                      remainingTime_ = interval_;
                      if (singleShot_) running_ = false;
                   }

@@ -5,6 +5,9 @@ Versopm 0.5.0
         - Fix sign of the time of day in the DateTime structure.
         - Add source code location information to the logger.
         - Improve comments.
+        - Add SettingsNode class.
+        - Add utility string functions.
+        - Add loading of INI settings files.
         - [PLANNED] Add Vulkan support.
 
 Version 0.4.0

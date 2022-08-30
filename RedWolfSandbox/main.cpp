@@ -2,6 +2,7 @@
 
 #include <RedWolf/core/BaseObject.hpp>
 #include <RedWolf/utils/Logger.hpp>
+#include <RedWolf/utils/Settings.hpp>
 #include <iostream>
 
 using namespace rw::utils;

@@ -5,6 +5,9 @@
 #include "RedWolf/utils/Logger.hpp"
 
 #include <filesystem>
+#include <format>
+#include <fstream>
+#include <optional>
 #include <string>
 #include <string_view>
 
@@ -16,6 +19,16 @@ namespace rw::io
    class File
    {
    public:
+      /**
+       * @brief All possible modes to open a file.
+       */
+      enum class OpenMode
+      {
+         append,
+         read,
+         write
+      };
+
       /**
        * @brief Different file formats for I/O operations.
        */
@@ -52,9 +65,10 @@ namespace rw::io
       /**
        * @brief Constructor
        * @param filePath Path to the file.
+       * @param mode Mode to open the file with.
        * @param format Format of the file. If unknown, the class will try to deduce it from the file extension.
        */
-      File(std::string_view filePath, Format format = Format::unknown);
+      File(std::string_view filePath, OpenMode mode = OpenMode::read, Format format = Format::unknown);
 
       /**
        * @brief Extract the extension of the file.
@@ -64,8 +78,15 @@ namespace rw::io
 
       /**
        * @brief Get the file format.
+       * @return File format.
        */
       [[nodiscard]] Format format() const;
+
+      /**
+       * @brief Get the file path.
+       * @return File path.
+       */
+      [[nodiscard]] std::filesystem::path path() const;
 
       /**
        * @brief Read all file contents and store them in a string.
@@ -86,7 +107,7 @@ namespace rw::io
          std::ifstream f = std::ifstream(path_, std::ios_base::in | std::ios_base::binary);
          if (!f.is_open())
          {
-            logger_->relErr("File::readAllBinary - Failed to open file {}.", path_.string());
+            logger_->relErr("Failed to open file {}.", path_.string());
             return T();
          }
 
@@ -95,16 +116,18 @@ namespace rw::io
 
          if (f.gcount() < sizeof(T))
          {
-            logger_->relErr(
-               "File::readAllBinary - File too small for the selected object type (File {}; {}B/{}B).",
-               path_.string(),
-               f.gcount(),
-               sizeof(T));
+            logger_->relErr("File too small for the selected object type (File {}; {}B/{}B).", path_.string(), f.gcount(), sizeof(T));
             return T();
          }
 
          return out;
       }
+
+      /**
+       * @brief Read a line from file.
+       * @return Line read from file, if EOF was not reached.
+       */
+      [[nodiscard]] std::optional<std::string> readline();
 
    private:
       /**
@@ -115,8 +138,66 @@ namespace rw::io
       mutable rw::utils::Logger* logger_{ nullptr }; /**< Logger instance. */
 
       std::filesystem::path path_;                      /**< Path to the file. */
+      std::fstream          fileStream_;                /**< File stream. */
       Format                format_{ Format::unknown }; /**< Data format of the file. */
    };
 } // namespace rw::io
+
+/**
+ * @brief std::formatter specialization for rw::io::File::Format
+ */
+template<>
+struct std::formatter<rw::io::File::Format> : std::formatter<std::string>
+{
+   auto format(rw::io::File::Format format, std::format_context& ctx)
+   {
+      switch (format)
+      {
+      case rw::io::File::Format::bin:
+         return std::formatter<std::string>::format(std::format("{}", "bin"), ctx);
+         break;
+      case rw::io::File::Format::bmp:
+         return std::formatter<std::string>::format(std::format("{}", "bmp"), ctx);
+         break;
+      case rw::io::File::Format::cab:
+         return std::formatter<std::string>::format(std::format("{}", "cab"), ctx);
+         break;
+      case rw::io::File::Format::dll:
+         return std::formatter<std::string>::format(std::format("{}", "dll"), ctx);
+         break;
+      case rw::io::File::Format::exe:
+         return std::formatter<std::string>::format(std::format("{}", "exe"), ctx);
+         break;
+      case rw::io::File::Format::ini:
+         return std::formatter<std::string>::format(std::format("{}", "ini"), ctx);
+         break;
+      case rw::io::File::Format::jpg:
+         return std::formatter<std::string>::format(std::format("{}", "jpg"), ctx);
+         break;
+      case rw::io::File::Format::msi:
+         return std::formatter<std::string>::format(std::format("{}", "msi"), ctx);
+         break;
+      case rw::io::File::Format::png:
+         return std::formatter<std::string>::format(std::format("{}", "png"), ctx);
+         break;
+      case rw::io::File::Format::sh:
+         return std::formatter<std::string>::format(std::format("{}", "sh"), ctx);
+         break;
+      case rw::io::File::Format::txt:
+         return std::formatter<std::string>::format(std::format("{}", "txt"), ctx);
+         break;
+      case rw::io::File::Format::xml:
+         return std::formatter<std::string>::format(std::format("{}", "xml"), ctx);
+         break;
+      case rw::io::File::Format::zip:
+         return std::formatter<std::string>::format(std::format("{}", "zip"), ctx);
+         break;
+      case rw::io::File::Format::unknown:
+         return std::formatter<std::string>::format(std::format("{}", "unknown"), ctx);
+         break;
+      }
+      return std::formatter<std::string>::format(std::format("{}", "INVALID"), ctx);
+   }
+};
 
 #endif
