@@ -8,7 +8,7 @@ namespace rw::events
    /**
     * @brief Event for signalling a timer's timeout.
     */
-   struct TimeoutEvent : public BaseEvent
+   struct RW_API TimeoutEvent : public BaseEvent
    {
       static constexpr auto event_id{ static_cast<EventID>(BaseEvent::ReservedEventId::timeout) }; /**< Event ID. */
 

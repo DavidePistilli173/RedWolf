@@ -1,6 +1,7 @@
 #ifndef RW_TIME_DATETIME_HPP
 #define RW_TIME_DATETIME_HPP
 
+#include "RedWolf/common.hpp"
 #include "RedWolf/time/concepts.hpp"
 
 #include <chrono>
@@ -10,7 +11,7 @@ namespace rw::time
    /**
     * @brief Class containing date and time information.
     */
-   class DateTime
+   class RW_API DateTime
    {
    public:
       /**

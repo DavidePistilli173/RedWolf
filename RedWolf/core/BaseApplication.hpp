@@ -1,6 +1,7 @@
 #ifndef RW_CORE_BASEAPPLICATION_HPP
 #define RW_CORE_BASEAPPLICATION_HPP
 
+#include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseObject.hpp"
 #include "RedWolf/time/concepts.hpp"
 #include "RedWolf/utils/Logger.hpp"
@@ -14,7 +15,7 @@ namespace rw::core
    /**
     * @brief Base class for all RedWolf applications. To be extended by users of the library.
     */
-   class BaseApplication : public BaseObject
+   class RW_API BaseApplication : public BaseObject
    {
    public:
       /**

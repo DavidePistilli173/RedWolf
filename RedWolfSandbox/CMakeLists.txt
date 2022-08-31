@@ -26,8 +26,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${PROJECT_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 target_link_libraries("${PROJECT_NAME}" 
-                      "${RW_LIB_DIR}/${RW_LIB_TARGET_NAME}.lib" 
-                      "${RW_LIB_DIR}/glfw3.lib")
+                      "${RW_LIB_DIR}/${RW_LIB_TARGET_NAME}.lib"
+)
 
 # Copy all files required by the users in the output folder.
 if (WIN32)
@@ -37,6 +37,21 @@ if (WIN32)
     file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}" NATIVE_SOURCE_DIR)
     add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND xcopy "${NATIVE_SOURCE_DIR}\\config" "${NATIVE_OUTPUT_DIR}\\config" /f /i /s /y 
+        COMMAND xcopy "${NATIVE_SOURCE_DIR}\\config" "${NATIVE_OUTPUT_DIR}\\config" /f /i /s /y
     )
+
+    # RedWolf dll
+    file(TO_NATIVE_PATH "${RW_LIB_DIR}" NATIVE_RW_LIB_DIR)
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND xcopy "${NATIVE_RW_LIB_DIR}\\${RW_LIB_TARGET_NAME}.dll" "${NATIVE_OUTPUT_DIR}" /f /i /s /y
+    )
+
+    # Redwolf pdb
+    if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
+        add_custom_command(
+            TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND xcopy "${NATIVE_RW_LIB_DIR}\\${RW_LIB_TARGET_NAME}.pdb" "${NATIVE_OUTPUT_DIR}" /f /i /s /y
+        )
+    endif ()
 endif (WIN32)

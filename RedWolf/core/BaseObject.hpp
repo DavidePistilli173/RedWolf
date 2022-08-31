@@ -19,7 +19,7 @@ namespace rw::core
    /**
     * @brief Base class for all objects that need to be hooked up with the event system of RedWolf.
     */
-   class BaseObject
+   class RW_API BaseObject
    {
    public:
       /**

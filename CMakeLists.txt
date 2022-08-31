@@ -16,13 +16,17 @@ else()
     set(RW_LIB_TARGET_NAME "RedWolf")
 endif()
 
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "/W4 /wd4251")
+endif(MSVC)
+
 #find_library(SDL_LIB "SDL2" HINTS "${VENDOR_DIR}/lib/SDL2.0.9")
 #find_library(SDL_MAIN_LIB "SDL2main" HINTS "${VENDOR_DIR}/lib/SDL2.0.9")
 #find_library(SDL_IMAGE_LIB "SDL2_image" HINTS "${VENDOR_DIR}/lib/SDL2_image2.0.4")
 #find_library(SDL_TTF_LIB "SDL2_ttf" HINTS "${VENDOR_DIR}/lib/SDL2_ttf2.0.15")
 
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    add_compile_definitions(RW_DEBUG) # Macro for dll exporting.
+    add_compile_definitions(RW_DEBUG) # Macro for debug builds.
 endif()
 
 add_subdirectory("${RW_SRC_DIR}")

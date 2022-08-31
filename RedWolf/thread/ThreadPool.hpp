@@ -1,6 +1,7 @@
 #ifndef RW_THREAD_THREADPOOL_HPP
 #define RW_THREAD_THREADPOOL_HPP
 
+#include "RedWolf/common.hpp"
 #include "RedWolf/utils/Logger.hpp"
 
 #include <algorithm>
@@ -20,7 +21,7 @@ namespace rw::thread
    /**
     * @brief Class for handling a pool of threads that can execute custom tasks and be controlled from other threads.
     */
-   class ThreadPool
+   class RW_API ThreadPool
    {
    public:
       /**

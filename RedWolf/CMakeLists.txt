@@ -26,6 +26,11 @@ set(RW_GLM_INCLUDE_DIR "${RW_THIRD_PARTY_DIR}/glm")
 include(CheckIPOSupported)
 check_ipo_supported(RESULT supported OUTPUT error)
 
+# Compile definitions
+if (WIN32)
+    add_compile_definitions(RW_DLL) # Macro for dll exporting.
+endif (WIN32)
+
 # Build the library.
 include_directories(
     "${RW_ROOT_DIR}"
@@ -33,12 +38,13 @@ include_directories(
     "${RW_GLM_INCLUDE_DIR}"
 )
 
-add_library("${RW_LIB_TARGET_NAME}" STATIC
+add_library("${RW_LIB_TARGET_NAME}" SHARED
     "core/BaseApplication.cpp"
     "core/BaseObject.cpp"
     "dat/LogMsg.cpp"
     "dat/SettingsNode.cpp"
     "io/File.cpp"
+    "net/BaseSocket.cpp"
     "text/string_utils.cpp"
     "thread/ThreadPool.cpp"
     "time/DateTime.cpp"
@@ -49,9 +55,16 @@ add_library("${RW_LIB_TARGET_NAME}" STATIC
 set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 
-#target_link_libraries("${PROJECT_NAME}"
-#    "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/glfw3.lib"
-#)
+if (WIN32)
+    target_link_libraries("${RW_LIB_TARGET_NAME}" 
+        "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/glfw3.lib"
+        "Ws2_32.lib"
+    )
+else (WIN32)
+    target_link_libraries("${RW_LIB_TARGET_NAME}" 
+        "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/glfw3.lib"
+    )
+endif (WIN32)
 
 # Copy all files required by the users in the output folder.
 if (WIN32)

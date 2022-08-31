@@ -19,6 +19,7 @@
 #include "RedWolf/dat/KVPair.hpp"
 #include "RedWolf/dat/LogMsg.hpp"
 #include "RedWolf/dat/MVPair.hpp"
+#include "RedWolf/dat/SettingsNode.hpp"
 
 // events
 #include "RedWolf/events/BaseEvent.hpp"
@@ -30,6 +31,12 @@
 // io
 #include "RedWolf/io/File.hpp"
 #include "RedWolf/io/concepts.hpp"
+
+// net
+#include "RedWolf/net/BaseSocket.hpp"
+
+// text
+#include "RedWolf/text/string_utils.hpp"
 
 // thread
 #include "RedWolf/thread/ThreadPool.hpp"

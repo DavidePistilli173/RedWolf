@@ -1,6 +1,7 @@
 #ifndef RW_DAT_LOGMSG_HPP
 #define RW_DAT_LOGMSG_HPP
 
+#include "RedWolf/common.hpp"
 #include "RedWolf/time/DateTime.hpp"
 
 #include <filesystem>
@@ -14,7 +15,7 @@ namespace rw::dat
    /**
     * @brief Struct containing a log message.
     */
-   struct LogMsg
+   struct RW_API LogMsg
    {
       /**
        * @brief Logging levels.

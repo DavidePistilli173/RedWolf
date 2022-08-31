@@ -1,6 +1,7 @@
 #ifndef RW_TIME_TIMER_HPP
 #define RW_TIME_TIMER_HPP
 
+#include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseObject.hpp"
 #include "RedWolf/events/TimeoutEvent.hpp"
 #include "RedWolf/time/concepts.hpp"
@@ -20,7 +21,7 @@ namespace rw::time
     *          For timers with an interval lower than busy_waiting_threshold, in order to get the required precision a busy-waiting approach
     *          was used, so use these high frequency timers with caution.
     */
-   class Timer : public rw::core::BaseObject
+   class RW_API Timer : public rw::core::BaseObject
    {
    public:
       /**
@@ -161,6 +162,11 @@ namespace rw::time
       void stop();
 
    protected:
+      /**
+       * @brief Implementation of the userHandle_ function from BaseObject.
+       * @param evnt Event.
+       * @param sender Sender of the event.
+       */
       virtual void userHandle_(const rw::events::BaseEvent& evnt, const rw::core::BaseObject* sender) override;
 
    private:

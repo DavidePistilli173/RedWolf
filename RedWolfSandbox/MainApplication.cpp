@@ -4,7 +4,7 @@
 
 MainApplication::MainApplication(int argc, char** argv) : BaseApplication(argc, argv), logger_{ rw::utils::Logger::instance() } {}
 
-void MainApplication::userHandle_(const rw::events::BaseEvent& evnt, const BaseObject* sender)
+void MainApplication::userHandle_(const rw::events::BaseEvent& evnt, const BaseObject*)
 {
    switch (evnt.id)
    {

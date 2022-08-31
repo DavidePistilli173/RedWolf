@@ -1,6 +1,7 @@
 #ifndef RW_IO_FILE_HPP
 #define RW_IO_FILE_HPP
 
+#include "RedWolf/common.hpp"
 #include "RedWolf/cont/ConstexprMap.hpp"
 #include "RedWolf/utils/Logger.hpp"
 
@@ -16,7 +17,7 @@ namespace rw::io
    /**
     * @brief Class for handling a single file.
     */
-   class File
+   class RW_API File
    {
    public:
       /**

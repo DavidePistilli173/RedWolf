@@ -18,7 +18,7 @@ namespace rw::utils
    /**
     * @brief Class for loading and managing application-wide settings in a thread-safe manner.
     */
-   class Settings
+   class RW_API Settings
    {
    public:
       using Node = rw::dat::SettingsNode;

@@ -1,8 +1,8 @@
 #include "MainApplication.hpp"
 
 #include <RedWolf/core/BaseObject.hpp>
+#include <RedWolf/net/BaseSocket.hpp>
 #include <RedWolf/utils/Logger.hpp>
-#include <RedWolf/utils/Settings.hpp>
 #include <iostream>
 
 using namespace rw::utils;
@@ -24,6 +24,8 @@ int main(int argc, char** argv)
       {
          logger->trace("Welcome to: RedWolfSandbox!");
       }
+
+      rw::net::BaseSocket socket{ "10.0.0.1", "3545" };
 
       MainApplication app(argc, argv);
       app.init();

@@ -106,7 +106,7 @@ namespace rw::time
       timerConditionVariable_.notify_one();
    }
 
-   void Timer::userHandle_(const rw::events::BaseEvent& evnt, const BaseObject* sender) {}
+   void Timer::userHandle_(const rw::events::BaseEvent&, const BaseObject*) {}
 
    void Timer::createTimerThread_()
    {

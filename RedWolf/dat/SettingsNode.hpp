@@ -1,6 +1,8 @@
 #ifndef RW_DAT_SETTINGSNODE_HPP
 #define RW_DAT_SETTINGSNODE_HPP
 
+#include "RedWolf/common.hpp"
+
 #include <map>
 #include <memory>
 #include <mutex>
@@ -15,7 +17,7 @@ namespace rw::dat
    /**
     * @brief Node of a settings tree.
     */
-   class SettingsNode
+   class RW_API SettingsNode
    {
    public:
       /**

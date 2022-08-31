@@ -6,7 +6,7 @@
 
 namespace rw::events
 {
-   struct ButtonPressEvent : public BaseEvent
+   struct RW_API ButtonPressEvent : public BaseEvent
    {
       static constexpr auto event_id{ static_cast<EventID>(BaseEvent::ReservedEventId::button_press) };
 
