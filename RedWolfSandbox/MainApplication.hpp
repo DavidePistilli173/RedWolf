@@ -47,7 +47,8 @@ private:
    rw::time::Timer     timer_;            /**< Timer. */
    std::atomic<size_t> timerCount_{ 0U }; /**< Number of times the timer was called since the last main loop iteration. */
 
-   rw::net::UdpSocket socket_; /**< UDP socket. */
+   rw::net::UdpSocket  socket_;            /**< UDP socket. */
+   std::atomic<size_t> packetCount_{ 0U }; /**< Number of received packets. */
 };
 
 #endif

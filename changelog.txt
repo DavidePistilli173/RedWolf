@@ -15,6 +15,9 @@ Version 0.5.0
         - Add utility string functions.
         - Add loading of INI settings files.
         - Add BaseSocket class.
+        - Add UdpSocket class.
+        - Add DataReadyEvent.
+        - Add custom formatter for std::vector<std::byte>.
         - Fix Timer destructor.
         - Fix sign of the time of day in the DateTime structure.
         - Improve comments.

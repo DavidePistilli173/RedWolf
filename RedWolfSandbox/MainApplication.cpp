@@ -14,8 +14,9 @@ void MainApplication::userHandle_(const rw::events::BaseEvent& evnt, const BaseO
       break;
    case static_cast<unsigned char>(rw::events::BaseEvent::ReservedEventId::data_ready):
    {
-      auto eventData = reinterpret_cast<const rw::events::DataReadyEvent*>(&evnt);
-      logger_->trace("Received data from {}:{} -> {}.", eventData->address, eventData->port, eventData->data);
+      auto        eventData = reinterpret_cast<const rw::events::DataReadyEvent*>(&evnt);
+      std::string testData{ std::format("{}", eventData->data) };
+      ++packetCount_;
    }
    break;
    default:
@@ -75,7 +76,7 @@ void MainApplication::userInit_()
 void MainApplication::userRun_()
 {
    ++mainLoopIteration_;
-   logger_->relInfo("Iteration: {}, timer called {} times since the last update.", mainLoopIteration_, timerCount_.load());
+   logger_->relInfo("Iteration: {}, timer calls {}, packets received {}.", mainLoopIteration_, timerCount_.load(), packetCount_.load());
    timerCount_ = 0U;
 
    if (mainLoopIteration_ > totalIterations_)
