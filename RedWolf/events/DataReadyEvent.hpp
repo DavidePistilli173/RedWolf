@@ -19,9 +19,9 @@ namespace rw::events
       DataReadyEvent(const std::vector<std::byte>& sourceData, const std::string& sourceAddress, const std::string& sourcePort) :
          BaseEvent(event_id), data{ sourceData }, address{ sourceAddress }, port{ sourcePort } {};
 
-      std::vector<std::byte> data;
-      std::string            address;
-      std::string            port;
+      std::vector<std::byte> data;    /**< Raw data. */
+      std::string            address; /**< Address of the data source. */
+      std::string            port;    /**< Port of the data source. */
    };
 } // namespace rw::events
 

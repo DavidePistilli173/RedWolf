@@ -10,7 +10,7 @@ namespace rw::events
    {
       static constexpr auto event_id{ static_cast<EventID>(BaseEvent::ReservedEventId::button_press) };
 
-      explicit ButtonPressEvent((ButtonPressEvent*) nullptr) : BaseEvent() {}
+      explicit ButtonPressEvent((ButtonPressEvent*) nullptr) : BaseEvent(event_id) {}
 
       int btnId{ 0 };
    };
