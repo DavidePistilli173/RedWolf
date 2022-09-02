@@ -4,6 +4,7 @@
 #include "RedWolf/common.hpp"
 #include "RedWolf/dat/LogMsg.hpp"
 #include "RedWolf/io/concepts.hpp"
+#include "RedWolf/io/custom_formatters.hpp"
 
 #include <atomic>
 #include <chrono>

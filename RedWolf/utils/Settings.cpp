@@ -89,7 +89,7 @@ namespace rw::utils
          }
 
          // Trim the line.
-         trimmedLine = rw::text::trim(val.value());
+         trimmedLine = rw::text::trim(trimmedLine);
          if (!trimmedLine.empty())
          {
             // Check new section start.

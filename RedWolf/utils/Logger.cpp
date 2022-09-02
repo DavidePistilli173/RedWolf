@@ -12,7 +12,6 @@ namespace rw::utils
          instance_->relInfo("Created logger instance.");
       }
 
-      instance_->trace("Providing logger instance.");
       return instance_.get();
    }
 

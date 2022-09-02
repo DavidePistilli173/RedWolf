@@ -1,9 +1,10 @@
 #ifndef RWSANDBOX_MAINAPPLICATION_HPP
 #define RWSANDBOX_MAINAPPLICATION_HPP
 
-#include "RedWolf/core/BaseApplication.hpp"
-#include "RedWolf/time/Timer.hpp"
-#include "RedWolf/utils/Logger.hpp"
+#include <RedWolf/core/BaseApplication.hpp>
+#include <RedWolf/net/UdpSocket.hpp>
+#include <RedWolf/time/Timer.hpp>
+#include <RedWolf/utils/Logger.hpp>
 
 /**
  * @brief Main application of the RedWolfSandbox program.
@@ -45,6 +46,8 @@ private:
 
    rw::time::Timer     timer_;            /**< Timer. */
    std::atomic<size_t> timerCount_{ 0U }; /**< Number of times the timer was called since the last main loop iteration. */
+
+   rw::net::UdpSocket socket_; /**< UDP socket. */
 };
 
 #endif

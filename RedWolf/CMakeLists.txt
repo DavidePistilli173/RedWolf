@@ -45,6 +45,7 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "dat/SettingsNode.cpp"
     "io/File.cpp"
     "net/BaseSocket.cpp"
+    "net/UdpSocket.cpp"
     "text/string_utils.cpp"
     "thread/ThreadPool.cpp"
     "time/DateTime.cpp"

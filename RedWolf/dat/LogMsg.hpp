@@ -55,22 +55,22 @@ struct std::formatter<rw::dat::LogMsg::Level> : std::formatter<std::string>
       switch (lvl)
       {
       case rw::dat::LogMsg::Level::trace:
-         return std::formatter<std::string>::format(std::format("{}", "TRACE"), ctx);
+         return std::formatter<std::string>::format("TRACE", ctx);
          break;
       case rw::dat::LogMsg::Level::info:
-         return std::formatter<std::string>::format(std::format("{}", "INFO"), ctx);
+         return std::formatter<std::string>::format("INFO", ctx);
          break;
       case rw::dat::LogMsg::Level::warning:
-         return std::formatter<std::string>::format(std::format("{}", "WARNING"), ctx);
+         return std::formatter<std::string>::format("WARNING", ctx);
          break;
       case rw::dat::LogMsg::Level::error:
-         return std::formatter<std::string>::format(std::format("{}", "ERROR"), ctx);
+         return std::formatter<std::string>::format("ERROR", ctx);
          break;
       case rw::dat::LogMsg::Level::fatal:
-         return std::formatter<std::string>::format(std::format("{}", "FATAL"), ctx);
+         return std::formatter<std::string>::format("FATAL", ctx);
          break;
       }
-      return std::formatter<std::string>::format(std::format("{}", "INVALID"), ctx);
+      return std::formatter<std::string>::format("INVALID", ctx);
    }
 };
 

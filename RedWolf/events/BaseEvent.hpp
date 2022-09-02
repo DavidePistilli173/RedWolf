@@ -26,7 +26,7 @@ namespace rw::events
          button_press,
          mouse_movement,
          timeout,
-         reserved_4,
+         data_ready,
          reserved_5,
          reserved_6,
          reserved_7,

@@ -1,5 +1,6 @@
 #include "MainApplication.hpp"
 
+#include <RedWolf/events/DataReadyEvent.hpp>
 #include <RedWolf/utils/Settings.hpp>
 
 MainApplication::MainApplication(int argc, char** argv) : BaseApplication(argc, argv), logger_{ rw::utils::Logger::instance() } {}
@@ -11,6 +12,12 @@ void MainApplication::userHandle_(const rw::events::BaseEvent& evnt, const BaseO
    case static_cast<unsigned char>(rw::events::BaseEvent::ReservedEventId::timeout):
       ++timerCount_;
       break;
+   case static_cast<unsigned char>(rw::events::BaseEvent::ReservedEventId::data_ready):
+   {
+      auto eventData = reinterpret_cast<const rw::events::DataReadyEvent*>(&evnt);
+      logger_->trace("Received data from {}:{} -> {}.", eventData->address, eventData->port, eventData->data);
+   }
+   break;
    default:
       break;
    }
@@ -24,6 +31,10 @@ void MainApplication::userInit_()
 
    static constexpr std::string_view timer_section{ "TIMER" };
    static constexpr std::string_view timer_frequency{ "frequency" };
+
+   static constexpr std::string_view socket_section{ "SOCKET" };
+   static constexpr std::string_view socket_local_address{ "local_address" };
+   static constexpr std::string_view socket_local_port{ "local_port" };
 
    rw::utils::Settings* settings{ rw::utils::Settings::instance() };
 
@@ -47,6 +58,18 @@ void MainApplication::userInit_()
    timer_.setFrequency(std::atof(timerSettings->attribute(timer_frequency, "10.0").c_str()));
    timer_.subscribe<rw::events::TimeoutEvent>(this);
    timer_.start();
+
+   // Set up the socket.
+   rw::utils::Settings::Node* socketSettings{ settings->root()->child(socket_section) };
+   if (socketSettings == nullptr)
+   {
+      logger_->relFatal("Failed to load socket settings.");
+   }
+
+   if (socket_.open(socketSettings->attribute(socket_local_address, "10.0.0.1"), socketSettings->attribute(socket_local_port, "4321")))
+   {
+      socket_.subscribe<rw::events::DataReadyEvent>(this);
+   }
 }
 
 void MainApplication::userRun_()

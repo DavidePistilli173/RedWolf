@@ -3,24 +3,23 @@
 namespace rw::net
 {
 #ifdef WIN32
-   bool   BaseSocket::winsockInitialised_{ false };
-   size_t BaseSocket::winsockActiveSockets_{ 0U };
+   bool       BaseSocket::winsockInitialised_{ false };
+   size_t     BaseSocket::winsockActiveSockets_{ 0U };
+   std::mutex BaseSocket::winsockMutex_;
 #endif
 
-   BaseSocket::BaseSocket() : logger_{ rw::utils::Logger::instance() }
+   BaseSocket::BaseSocket(BaseObject* parent) : BaseObject(parent), logger_{ rw::utils::Logger::instance() }
    {
 #ifdef _WIN32
       initWinsock_();
-      ++winsockActiveSockets_;
 #endif
    }
 
-   BaseSocket::BaseSocket(std::string_view localAddress, std::string_view localPort, Protocol protocol, Family family) :
-      logger_{ rw::utils::Logger::instance() }
+   BaseSocket::BaseSocket(std::string_view localAddress, std::string_view localPort, Protocol protocol, Family family, BaseObject* parent) :
+      BaseObject(parent), logger_{ rw::utils::Logger::instance() }
    {
 #ifdef _WIN32
       initWinsock_();
-      ++winsockActiveSockets_;
 #endif
 
       open(localAddress, localPort, protocol, family);
@@ -28,23 +27,29 @@ namespace rw::net
 
    BaseSocket::~BaseSocket()
    {
-      if (!close())
-      {
-         logger_->relErr("Failed to close socket {}:{}.", localAddress_, localPort_);
-      }
+      close();
 
 #ifdef WIN32
+      std::scoped_lock lck{ winsockMutex_ };
       --winsockActiveSockets_;
       if (winsockActiveSockets_ == 0U)
       {
-         WSACleanup();
-         logger_->relInfo("Winsock library cleaned-up.");
+         if (WSACleanup() != 0)
+         {
+            logger_->relErr("Failed to clean-up Winsock.");
+         }
+         else
+         {
+            logger_->relInfo("Winsock library cleaned-up.");
+            winsockInitialised_ = false;
+         }
       }
 #endif
    }
 
    bool BaseSocket::close()
    {
+      std::scoped_lock lck{ socketMutex_ };
       if (isOpen())
       {
 #ifdef WIN32
@@ -67,11 +72,25 @@ namespace rw::net
       return socketOpen_;
    }
 
+   std::string BaseSocket::localAddress() const
+   {
+      std::shared_lock lck{ socketMutex_ };
+      return localAddress_;
+   }
+
+   std::string BaseSocket::localPort() const
+   {
+      std::shared_lock lck{ socketMutex_ };
+      return localPort_;
+   }
+
    bool BaseSocket::open(std::string_view localAddress, std::string_view localPort, Protocol protocol, Family family)
    {
-      if (!close())
+      std::scoped_lock lck{ socketMutex_ };
+      if (isOpen())
       {
-         logger_->relErr("Failed to close socket {}:{}.", localAddress_, localPort_);
+         logger_->relWarn("Socket already open on {}:{}, cannot open again on {}:{}.", localAddress_, localPort_, localAddress, localPort);
+         return false;
       }
 
       localAddress_ = localAddress;
@@ -144,9 +163,13 @@ namespace rw::net
       return true;
    }
 
+   void BaseSocket::userHandle_(const rw::events::BaseEvent&, const rw::core::BaseObject*) {}
+
 #ifdef _WIN32
    void BaseSocket::initWinsock_()
    {
+      std::scoped_lock lck{ winsockMutex_ };
+
       if (!winsockInitialised_)
       {
          WSADATA wsaData;
@@ -156,10 +179,10 @@ namespace rw::net
             logger_->relFatal("Failed to initialise Winsock library.");
          }
 
-         logger_->relInfo("Winsock library initialised.");
-
          winsockInitialised_ = true;
+         logger_->relInfo("Winsock library initialised.");
       }
+      ++winsockActiveSockets_;
    }
 #endif
 } // namespace rw::net

@@ -55,7 +55,6 @@ namespace rw::thread
          defaultPool_->logger_->relInfo("Default thread pool created.");
       }
 
-      defaultPool_->logger_->trace("Default thread pool retrieved.");
       return defaultPool_.get();
    }
 

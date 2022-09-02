@@ -155,49 +155,49 @@ struct std::formatter<rw::io::File::Format> : std::formatter<std::string>
       switch (format)
       {
       case rw::io::File::Format::bin:
-         return std::formatter<std::string>::format(std::format("{}", "bin"), ctx);
+         return std::formatter<std::string>::format("bin", ctx);
          break;
       case rw::io::File::Format::bmp:
-         return std::formatter<std::string>::format(std::format("{}", "bmp"), ctx);
+         return std::formatter<std::string>::format("bmp", ctx);
          break;
       case rw::io::File::Format::cab:
-         return std::formatter<std::string>::format(std::format("{}", "cab"), ctx);
+         return std::formatter<std::string>::format("cab", ctx);
          break;
       case rw::io::File::Format::dll:
-         return std::formatter<std::string>::format(std::format("{}", "dll"), ctx);
+         return std::formatter<std::string>::format("dll", ctx);
          break;
       case rw::io::File::Format::exe:
-         return std::formatter<std::string>::format(std::format("{}", "exe"), ctx);
+         return std::formatter<std::string>::format("exe", ctx);
          break;
       case rw::io::File::Format::ini:
-         return std::formatter<std::string>::format(std::format("{}", "ini"), ctx);
+         return std::formatter<std::string>::format("ini", ctx);
          break;
       case rw::io::File::Format::jpg:
-         return std::formatter<std::string>::format(std::format("{}", "jpg"), ctx);
+         return std::formatter<std::string>::format("jpg", ctx);
          break;
       case rw::io::File::Format::msi:
-         return std::formatter<std::string>::format(std::format("{}", "msi"), ctx);
+         return std::formatter<std::string>::format("msi", ctx);
          break;
       case rw::io::File::Format::png:
-         return std::formatter<std::string>::format(std::format("{}", "png"), ctx);
+         return std::formatter<std::string>::format("png", ctx);
          break;
       case rw::io::File::Format::sh:
-         return std::formatter<std::string>::format(std::format("{}", "sh"), ctx);
+         return std::formatter<std::string>::format("sh", ctx);
          break;
       case rw::io::File::Format::txt:
-         return std::formatter<std::string>::format(std::format("{}", "txt"), ctx);
+         return std::formatter<std::string>::format("txt", ctx);
          break;
       case rw::io::File::Format::xml:
-         return std::formatter<std::string>::format(std::format("{}", "xml"), ctx);
+         return std::formatter<std::string>::format("xml", ctx);
          break;
       case rw::io::File::Format::zip:
-         return std::formatter<std::string>::format(std::format("{}", "zip"), ctx);
+         return std::formatter<std::string>::format("zip", ctx);
          break;
       case rw::io::File::Format::unknown:
-         return std::formatter<std::string>::format(std::format("{}", "unknown"), ctx);
+         return std::formatter<std::string>::format("unknown", ctx);
          break;
       }
-      return std::formatter<std::string>::format(std::format("{}", "INVALID"), ctx);
+      return std::formatter<std::string>::format("INVALID", ctx);
    }
 };
 
