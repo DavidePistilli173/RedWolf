@@ -67,6 +67,11 @@ namespace rw::net
       return true;
    }
 
+   BaseSocket::Family BaseSocket::family() const
+   {
+      return family_;
+   }
+
    bool BaseSocket::isOpen() const
    {
       return socketOpen_;

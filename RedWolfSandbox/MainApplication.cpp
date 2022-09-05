@@ -14,8 +14,10 @@ void MainApplication::userHandle_(const rw::events::BaseEvent& evnt, const BaseO
       break;
    case static_cast<unsigned char>(rw::events::BaseEvent::ReservedEventId::data_ready):
    {
-      auto        eventData = reinterpret_cast<const rw::events::DataReadyEvent*>(&evnt);
-      std::string testData{ std::format("{}", eventData->data) };
+      auto             eventData = reinterpret_cast<const rw::events::DataReadyEvent*>(&evnt);
+      std::scoped_lock lck{ packetSenderMutex_ };
+      senderAddress_ = eventData->address;
+      senderPort_ = eventData->port;
       ++packetCount_;
    }
    break;
@@ -97,5 +99,16 @@ void MainApplication::userRun_()
    {
       timer_.stop();
       logger_->info("Timer stopped.");
+   }
+
+   // Send a packet back.
+   if (packetCount_ > 0U)
+   {
+      std::scoped_lock lck{ packetSenderMutex_ };
+      if (socket_.send(senderAddress_, senderPort_, "REPLY FROM REDWOLF APPLICATION!"))
+      {
+         logger_->info("Sent reply to {}:{}.", senderAddress_, senderPort_);
+      }
+      packetCount_ = 0U;
    }
 }

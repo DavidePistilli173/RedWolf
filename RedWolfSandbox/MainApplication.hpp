@@ -49,6 +49,9 @@ private:
 
    rw::net::UdpSocket  socket_;            /**< UDP socket. */
    std::atomic<size_t> packetCount_{ 0U }; /**< Number of received packets. */
+   std::mutex          packetSenderMutex_; /**< Mutex for protecting the packet sender information. */
+   std::string         senderAddress_;     /**< IP address of the packet sender. */
+   std::string         senderPort_;        /**< Port of the packet sender. */
 };
 
 #endif

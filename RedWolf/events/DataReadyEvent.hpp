@@ -16,6 +16,17 @@ namespace rw::events
    {
       static constexpr auto event_id{ static_cast<EventID>(BaseEvent::ReservedEventId::data_ready) }; /**< Event ID. */
 
+      /**
+       * @brief Default constructor.
+       */
+      DataReadyEvent() : BaseEvent(event_id){};
+
+      /**
+       * @brief Constructor.
+       * @param sourceData Raw data produced.
+       * @param sourceAddress Source address of the data.
+       * @param sourcePort Source port of the data.
+       */
       DataReadyEvent(const std::vector<std::byte>& sourceData, const std::string& sourceAddress, const std::string& sourcePort) :
          BaseEvent(event_id), data{ sourceData }, address{ sourceAddress }, port{ sourcePort } {};
 

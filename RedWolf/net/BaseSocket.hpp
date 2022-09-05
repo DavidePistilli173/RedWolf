@@ -6,6 +6,7 @@
 #include "RedWolf/utils/Logger.hpp"
 
 #include <mutex>
+#include <optional>
 #include <shared_mutex>
 #include <string>
 #include <string_view>
@@ -88,6 +89,12 @@ namespace rw::net
        * @return true on success, false otherwise.
        */
       bool close();
+
+      /**
+       * @brief Get the address family of the socket.
+       * @return Address family of the socket.
+       */
+      Family family() const;
 
       /**
        * @brief Check whether the socket is open or not.

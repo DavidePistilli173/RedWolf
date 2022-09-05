@@ -56,6 +56,43 @@ namespace rw::net
        */
       bool open(std::string_view localAddress, std::string_view localPort, Family family = Family::ipv4);
 
+      /**
+       * @brief Send a string to a remote IP address.
+       * @param destinationAddress IP address to send the data to.
+       * @param destinationPort IP port to send the data to.
+       * @param string String to send.
+       * @return true on success, false otherwise.
+       */
+      bool send(std::string_view destinationAddress, std::string_view destinationPort, std::string_view string);
+
+      /**
+       * @brief Send an object to a remote IP address.
+       * @tparam T Type of object to send.
+       * @param destinationAddress IP address to send the data to.
+       * @param destinationPort IP port to send the data to.
+       * @param object Object to send.
+       * @return true on success, false otherwise.
+       */
+      template<typename T>
+      bool send(std::string_view destinationAddress, std::string_view destinationPort, const T& object)
+      {
+         return sendInternal_(destinationAddress, destinationPort, reinterpret_cast<const char*>(&object), sizeof(T));
+      }
+
+      /**
+       * @brief Send a vector of objects to a remote IP address.
+       * @tparam T Type of objects to send.
+       * @param destinationAddress IP address to send the data to.
+       * @param destinationPort IP port to send the data to.
+       * @param data Raw data to send.
+       * @return true on success, false otherwise.
+       */
+      template<typename T>
+      bool send(std::string_view destinationAddress, std::string_view destinationPort, const std::vector<T>& data)
+      {
+         return sendInternal_(destinationAddress, destinationPort, reinterpret_cast<const char*>(data.data()), data.size() * sizeof(T));
+      }
+
    protected:
       /**
        * @brief Implementation of the userHandle_ function from BaseObject.
@@ -65,6 +102,16 @@ namespace rw::net
       virtual void userHandle_(const rw::events::BaseEvent& evnt, const rw::core::BaseObject* sender) override;
 
    private:
+      /**
+       * @brief Internal function for sending data to a remote IP address.
+       * @param destinationAddress IP address to send the data to.
+       * @param destinationPort IP port to send the data to.
+       * @param buff Pointer to the data buffer.
+       * @param buffLen Length in bytes of the buffer.
+       * @return true on success, false otherwise.
+       */
+      bool sendInternal_(std::string_view destinationAddress, std::string_view destinationPort, const char* buff, int buffLen);
+
       /**
        * @brief Utility function to start the worker thread of the socket.
        */
