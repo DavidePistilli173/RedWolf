@@ -1,7 +1,9 @@
 #ifndef RWSANDBOX_MAINAPPLICATION_HPP
 #define RWSANDBOX_MAINAPPLICATION_HPP
 
-#include <RedWolf/core/BaseApplication.hpp>
+#include "MainWindow.hpp"
+
+#include <RedWolf/core/BaseGUIApplication.hpp>
 #include <RedWolf/net/UdpSocket.hpp>
 #include <RedWolf/time/Timer.hpp>
 #include <RedWolf/utils/Logger.hpp>
@@ -9,7 +11,7 @@
 /**
  * @brief Main application of the RedWolfSandbox program.
  */
-class MainApplication : public rw::core::BaseApplication
+class MainApplication : public rw::core::BaseGUIApplication
 {
 public:
    /**
@@ -52,6 +54,8 @@ private:
    std::mutex          packetSenderMutex_; /**< Mutex for protecting the packet sender information. */
    std::string         senderAddress_;     /**< IP address of the packet sender. */
    std::string         senderPort_;        /**< Port of the packet sender. */
+
+   MainWindow mainWindow_; /**< Main window of the application. */
 };
 
 #endif

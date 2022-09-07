@@ -3,7 +3,10 @@
 #include <RedWolf/events/DataReadyEvent.hpp>
 #include <RedWolf/utils/Settings.hpp>
 
-MainApplication::MainApplication(int argc, char** argv) : BaseApplication(argc, argv), logger_{ rw::utils::Logger::instance() } {}
+MainApplication::MainApplication(int argc, char** argv) :
+   BaseGUIApplication(&mainWindow_, argc, argv), logger_{ rw::utils::Logger::instance() }
+{
+}
 
 void MainApplication::userHandle_(const rw::events::BaseEvent& evnt, const BaseObject*)
 {
@@ -110,5 +113,11 @@ void MainApplication::userRun_()
          logger_->info("Sent reply to {}:{}.", senderAddress_, senderPort_);
       }
       packetCount_ = 0U;
+   }
+
+   // Check whether the main window is open or not.
+   if (!mainWindow_.isOpen())
+   {
+      stop();
    }
 }
