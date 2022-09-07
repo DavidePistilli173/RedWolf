@@ -36,9 +36,10 @@ namespace rw::core
          auto endTime = std::chrono::high_resolution_clock::now();
 
          // Sleep for the remaining time if sleeping is enabled.
-         if (cycleDuration_ != cycle_control_value_)
+         auto remainingTime{ cycleDuration_ - std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime) };
+         if (remainingTime > std::chrono::microseconds(0))
          {
-            std::this_thread::sleep_for(cycleDuration_ - std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime));
+            waitForNextCycle_(remainingTime);
          }
       }
    }
@@ -65,5 +66,26 @@ namespace rw::core
    {
       running_ = false;
       logger_->trace("Main loop stopped.");
+   }
+
+   void BaseApplication::waitForNextCycle_(std::chrono::microseconds remainingTime)
+   {
+      auto startTime = std::chrono::high_resolution_clock::now();
+
+      if (remainingTime < busy_waiting_threshold)
+      {
+         // Busy waiting.
+         auto startTime = std::chrono::high_resolution_clock::now();
+
+         while (cycleDuration_ -
+                   std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - startTime) >
+                std::chrono::microseconds(0))
+         {
+         }
+      }
+      else
+      {
+         std::this_thread::sleep_for(remainingTime);
+      }
    }
 } // namespace rw::core

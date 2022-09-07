@@ -35,10 +35,11 @@ namespace rw::core
          // Get the end time of the current loop
          auto endTime = std::chrono::high_resolution_clock::now();
 
-         // Sleep for the remaining time if sleeping is enabled.
-         if (cycleDuration_ != cycle_control_value_)
+         // Sleep/wait for the remaining time if sleeping is enabled.
+         auto remainingTime{ cycleDuration_ - std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime) };
+         if (remainingTime > std::chrono::microseconds(0))
          {
-            std::this_thread::sleep_for(cycleDuration_ - std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime));
+            waitForNextCycle_(remainingTime);
          }
       }
    }

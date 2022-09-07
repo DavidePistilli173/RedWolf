@@ -20,6 +20,11 @@ namespace rw::core
    {
    public:
       /**
+       * @brief Lower intervals will be dealt with through busy waiting.
+       */
+      static constexpr std::chrono::microseconds busy_waiting_threshold{ 50000 };
+
+      /**
        * @brief Constructor.
        * @param argc Number of command line arguments.
        * @param argv List of command line arguments.
@@ -109,6 +114,12 @@ namespace rw::core
        * @details To be implemented in derived classes.
        */
       virtual void userRun_() = 0;
+
+      /**
+       * @brief Let the thread wait for the next main loop cycle.
+       * @param remainingTime Time left until the next cycle begins.
+       */
+      void waitForNextCycle_(std::chrono::microseconds remainingTime);
 
       // Loop-related variables.
       std::atomic<bool>                          running_{ false };         /**< Loop control variable. If false, the main loop stops. */

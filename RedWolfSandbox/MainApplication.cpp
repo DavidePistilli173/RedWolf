@@ -32,7 +32,7 @@ void MainApplication::userHandle_(const rw::events::BaseEvent& evnt, const BaseO
 void MainApplication::userInit_()
 {
    static constexpr std::string_view application_section{ "APPLICATION" };
-   static constexpr std::string_view application_cycle_duration{ "cycle_duration" };
+   static constexpr std::string_view application_cycle_frequency{ "cycle_frequency" };
    static constexpr std::string_view application_total_iterations{ "total_iterations" };
 
    static constexpr std::string_view timer_section{ "TIMER" };
@@ -51,7 +51,7 @@ void MainApplication::userInit_()
       logger_->relFatal("Failed to load application settings.");
    }
 
-   setCycleDuration(std::chrono::seconds(std::atoi(applicationSettings->attribute(application_cycle_duration, "2").c_str())));
+   setCycleFrequency(std::atof(applicationSettings->attribute(application_cycle_frequency, "1.0").c_str()));
    totalIterations_ = std::atoi(applicationSettings->attribute(application_total_iterations, "5").c_str());
 
    // Set up the timer.
