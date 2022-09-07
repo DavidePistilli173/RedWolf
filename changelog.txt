@@ -18,6 +18,9 @@ Version 0.5.0
         - Add UdpSocket class.
         - Add DataReadyEvent.
         - Add custom formatter for std::vector<std::byte>.
+        - Add GlfwManager class.
+        - Add BaseWindow class.
+        - Add BaseGUIApplication class.
         - Fix Timer destructor.
         - Fix sign of the time of day in the DateTime structure.
         - Improve comments.
@@ -25,6 +28,7 @@ Version 0.5.0
 
      RedWolfSandbox:
         - Add config file.
+        - Add main window.
 
 Version 0.4.0
     Notes: the only compiler that works right now is the latest version of msvc (G++ and Clang do not support all the used features).

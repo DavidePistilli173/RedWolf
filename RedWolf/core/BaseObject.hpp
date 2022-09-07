@@ -50,15 +50,10 @@ namespace rw::core
 
       /**
        * @brief Handle an incoming event.
-       * @tparam Event Type of event to handle.
        * @param evnt Event data.
        * @param sender Sender of the event.
        */
-      template<rw::events::HasEventID Event>
-      void handle(const Event& evnt, const BaseObject* sender)
-      {
-         userHandle_(evnt, sender);
-      }
+      virtual void handle(const rw::events::BaseEvent& evnt, const BaseObject* sender);
 
       /**
        * @brief Set a new parent for the object.

@@ -6,6 +6,7 @@
 #include "RedWolf/time/concepts.hpp"
 #include "RedWolf/utils/Logger.hpp"
 
+#include <atomic>
 #include <chrono>
 #include <string>
 #include <vector>
@@ -20,6 +21,8 @@ namespace rw::core
    public:
       /**
        * @brief Constructor.
+       * @param argc Number of command line arguments.
+       * @param argv List of command line arguments.
        */
       BaseApplication(int argc = 0, char** argv = nullptr);
 
@@ -51,14 +54,14 @@ namespace rw::core
       /**
        * @brief Perform initialisation operations for the application. Calls userInit_().
        */
-      void init();
+      virtual void init();
 
       /**
        * @brief Run the application.
        * @details The main loop does not use a rw::time::Timer because it must be executed by the main thread to support input events in
        * graphical applications.
        */
-      void run();
+      virtual void run();
 
       /**
        * @brief Set the duration of each main loop cycle.
@@ -86,9 +89,14 @@ namespace rw::core
       void setCycleFrequency(double hertz);
 
       /**
+       * @brief Perform a step of the application (one single execution of the main loop contained in run).
+       */
+      virtual void step();
+
+      /**
        * @brief Stop the main loop, if it is running.
        */
-      void stop();
+      virtual void stop();
 
    protected:
       /**
@@ -102,14 +110,14 @@ namespace rw::core
        */
       virtual void userRun_() = 0;
 
+      // Loop-related variables.
+      std::atomic<bool>                          running_{ false };         /**< Loop control variable. If false, the main loop stops. */
+      static constexpr std::chrono::microseconds cycle_control_value_{ 0 }; /**< Value to check against to verify if waiting is disabled.*/
+      std::chrono::microseconds                  cycleDuration_{ 0 };       /**< Duration of each cycle of the main loop in microseconds. */
+
    private:
       std::vector<std::string> arguments_;         /**< Command line arguments passed at the start of the application. */
       rw::utils::Logger*       logger_{ nullptr }; /**< Logger. */
-
-      // Loop-related variables.
-      bool                                       running_{ false };         /**< Loop control variable. If false, the main loop stops. */
-      static constexpr std::chrono::microseconds cycle_control_value_{ 0 }; /**< Value to check against to verify if waiting is disabled.*/
-      std::chrono::microseconds                  cycleDuration_{ 0 };       /**< Duration of each cycle of the main loop in microseconds. */
    };
 } // namespace rw::core
 

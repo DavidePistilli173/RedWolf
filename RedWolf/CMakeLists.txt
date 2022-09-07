@@ -12,6 +12,9 @@ set(CMAKE_INSTALL_PREFIX "${RW_BIN_DIR}/${PROJECT_NAME}/${CMAKE_BUILD_TYPE}")
 # Third-party libraries
 set(RW_THIRD_PARTY_DIR "${PROJECT_SOURCE_DIR}/third_party")
 
+# Vulkan
+find_package(Vulkan REQUIRED FATAL_ERROR)
+
 # GLFW
 set(RW_GLFW_DIR "${RW_THIRD_PARTY_DIR}/glfw")
 set(RW_GLFW_INCLUDE_DIR "${RW_THIRD_PARTY_DIR}/glfw/include")
@@ -34,22 +37,26 @@ endif (WIN32)
 # Build the library.
 include_directories(
     "${RW_ROOT_DIR}"
+    "${Vulkan_INCLUDE_DIRS}"
     "${RW_GLFW_INCLUDE_DIR}"
     "${RW_GLM_INCLUDE_DIR}"
 )
 
 add_library("${RW_LIB_TARGET_NAME}" SHARED
     "core/BaseApplication.cpp"
+    "core/BaseGUIApplication.cpp"
     "core/BaseObject.cpp"
     "dat/LogMsg.cpp"
     "dat/SettingsNode.cpp"
     "io/File.cpp"
+    "libif/GlfwManager.cpp"
     "net/BaseSocket.cpp"
     "net/UdpSocket.cpp"
     "text/string_utils.cpp"
     "thread/ThreadPool.cpp"
     "time/DateTime.cpp"
     "time/Timer.cpp"
+    "ui/BaseWindow.cpp"
     "utils/Logger.cpp"
     "utils/Settings.cpp"
 )
@@ -60,10 +67,12 @@ if (WIN32)
     target_link_libraries("${RW_LIB_TARGET_NAME}" 
         "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/glfw3.lib"
         "Ws2_32.lib"
+        "${Vulkan_LIBRARIES}"
     )
 else (WIN32)
     target_link_libraries("${RW_LIB_TARGET_NAME}" 
         "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/glfw3.lib"
+        "${Vulkan_LIBRARIES}"
     )
 endif (WIN32)
 

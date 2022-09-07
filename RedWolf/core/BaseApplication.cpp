@@ -2,7 +2,7 @@
 
 namespace rw::core
 {
-   BaseApplication::BaseApplication(int argc, char** argv) : logger_{ rw::utils::Logger::instance() }
+   BaseApplication::BaseApplication(int argc, char** argv) : BaseObject(), logger_{ rw::utils::Logger::instance() }
    {
       // Save the command-line arguments for later use, if present.
       if (argc > 0 && argv != nullptr)
@@ -19,11 +19,7 @@ namespace rw::core
 
    void BaseApplication::init()
    {
-      logger_->trace("Initialising.");
-
       userInit_();
-
-      logger_->trace("Init complete.");
    }
 
    void BaseApplication::run()
@@ -34,7 +30,7 @@ namespace rw::core
          // Get the start time of the current loop.
          auto startTime = std::chrono::high_resolution_clock::now();
 
-         userRun_(); // Call the user-defined run function.
+         step();
 
          // Get the end time of the current loop
          auto endTime = std::chrono::high_resolution_clock::now();
@@ -58,6 +54,11 @@ namespace rw::core
       {
          logger_->err("Main loop frequency must be a positive float or 0, but {} was passed.", hertz);
       }
+   }
+
+   void BaseApplication::step()
+   {
+      userRun_(); // Call the user-defined run function.
    }
 
    void BaseApplication::stop()

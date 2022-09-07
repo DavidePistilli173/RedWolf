@@ -3,6 +3,9 @@
 #ifndef RW_COMMON_HPP
 #define RW_COMMON_HPP
 
+// Defines
+#define GLFW_INCLUDE_VULKAN /**< Used so that GLFW automatically includes Vulkan headers. */
+
 namespace rw
 {
    /**
