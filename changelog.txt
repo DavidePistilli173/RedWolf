@@ -21,6 +21,7 @@ Version 0.5.0
         - Add GlfwManager class.
         - Add BaseWindow class.
         - Add BaseGUIApplication class.
+        - Add VulkanManager class.
         - Fix Timer destructor.
         - Fix sign of the time of day in the DateTime structure.
         - Improve comments.
