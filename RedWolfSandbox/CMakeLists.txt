@@ -12,9 +12,13 @@ set(CMAKE_INSTALL_PREFIX "${RW_BIN_DIR}/${PROJECT_NAME}/${CMAKE_BUILD_TYPE}")
 include(CheckIPOSupported)
 check_ipo_supported(RESULT supported OUTPUT error)
 
+# Vulkan
+find_package(Vulkan REQUIRED FATAL_ERROR)
+
 include_directories(
     ${RW_ROOT_DIR}
     "${RW_LIB_DIR}/include"
+    "${Vulkan_INCLUDE_DIRS}"
 )
 
 add_executable("${PROJECT_NAME}"

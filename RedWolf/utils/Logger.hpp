@@ -228,7 +228,8 @@ namespace rw::utils
        */
       Logger();
 
-      static std::unique_ptr<Logger> instance_; /**< Current instance of the logger. */
+      static std::mutex              instanceMtx_; /**< Mutex for protecting the logger instance. */
+      static std::unique_ptr<Logger> instance_;    /**< Current instance of the logger. */
 
       std::mutex         mtx_;                   /**< Logging mutex. */
       std::atomic<Level> level_{ Level::trace }; /**< Logging level. */

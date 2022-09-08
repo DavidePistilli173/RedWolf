@@ -3,7 +3,8 @@
 
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseObject.hpp"
-#include "RedWolf/libif/GlfwManager.hpp"
+#include "RedWolf/libif/glfw/GlfwManager.hpp"
+#include "RedWolf/libif/glfw/GlfwWindow.hpp"
 
 #include <atomic>
 #include <mutex>
@@ -22,7 +23,7 @@ namespace rw::ui
       static constexpr int              default_window_height{ 600 };                  /**< Default window height. */
 
       /**
-       * @brief Default constructor.
+       * @brief Default constructor. The window is NOT automatically opened.
        * @detail This function must be called from the main thread.
        * @param title Title of the window.
        * @param width Width of the window.
@@ -52,7 +53,7 @@ namespace rw::ui
        * @brief Close the currently open window.
        * @detail This function must be called from the main thread.
        */
-      void closeWindow();
+      void close();
 
       /**
        * @brief Open the window.
@@ -63,7 +64,7 @@ namespace rw::ui
        * @param resizable If true, the window will be resizable.
        * @return true on success, false otherwise.
        */
-      bool openWindow(
+      bool open(
          std::string_view title = default_window_title,
          int              width = default_window_width,
          int              height = default_window_height,
@@ -76,8 +77,8 @@ namespace rw::ui
       [[nodiscard]] bool isOpen() const;
 
    private:
-      rw::libif::GlfwManager glfwManager_;     /**< Manager for the GLFW library. */
-      std::atomic<bool>      isOpen_{ false }; /**< True if the window is currently open. */
+      rw::libif::GlfwManager* glfwManager_{ nullptr }; /**< Manager for the GLFW library. */
+      rw::libif::GlfwWindow   window_;                 /**< Raw window. */
    };
 } // namespace rw::ui
 

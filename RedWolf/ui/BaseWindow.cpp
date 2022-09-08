@@ -4,44 +4,34 @@
 
 namespace rw::ui
 {
-   BaseWindow::BaseWindow(std::string_view title, int width, int height, bool resizable, BaseObject* parent) : BaseObject(parent)
+   BaseWindow::BaseWindow(std::string_view title, int width, int height, bool resizable, BaseObject* parent) :
+      BaseObject(parent), glfwManager_{ rw::libif::GlfwManager::instance() }, window_{ title, width, height, resizable }
    {
-      if (!openWindow(title, width, height, resizable))
-      {
-         throw std::exception{ "Failed to create window." };
-      }
    }
 
    void BaseWindow::checkEvents()
    {
-      if (glfwManager_.checkWindowClose())
+      if (window_.checkWindowClose())
       {
-         closeWindow();
+         close();
          generateEvent(rw::events::WindowCloseEvent());
       }
 
-      glfwManager_.pollEvents();
+      glfwManager_->pollEvents();
    }
 
-   void BaseWindow::closeWindow()
+   void BaseWindow::close()
    {
-      glfwManager_.closeWindow();
-      isOpen_ = false;
+      window_.close();
    }
 
-   bool BaseWindow::openWindow(std::string_view title, int width, int height, bool resizable)
+   bool BaseWindow::open(std::string_view title, int width, int height, bool resizable)
    {
-      if (isOpen_) closeWindow();
-      if (glfwManager_.createWindow(title, width, height, resizable))
-      {
-         isOpen_ = true;
-      }
-
-      return isOpen_;
+      return window_.open();
    }
 
    bool BaseWindow::isOpen() const
    {
-      return isOpen_;
+      return window_.isOpen();
    }
 } // namespace rw::ui

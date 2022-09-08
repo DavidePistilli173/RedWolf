@@ -1,15 +1,15 @@
 #ifndef RW_LIBIF_GLFWMANAGER_HPP
 #define RW_LIBIF_GLFWMANAGER_HPP
 
+#include "RedWolf/common.hpp"
 #include "RedWolf/utils/Logger.hpp"
 
+#include <GLFW/glfw3.h>
 #include <memory>
 #include <mutex>
 #include <string>
 #include <string_view>
 #include <utility>
-
-class GLFWwindow;
 
 namespace rw::libif
 {
@@ -21,25 +21,16 @@ namespace rw::libif
    {
    public:
       /**
-       * @brief Constructor.
+       * @brief Get the instance of the GLFW library manager.
        */
-      GlfwManager();
+      [[nodiscard]] static GlfwManager* instance();
 
       /**
-       * @brief Destructor.
-       */
-      ~GlfwManager();
-
-      /**
-       * @brief Check whether the currently open window should close or not.
+       * @brief Check whether a window should close or not.
+       * @param window Window to check.
        * @return true if the currently open window should close, false otherwise.
        */
-      bool checkWindowClose();
-
-      /**
-       * @brief Close the currently open window.
-       */
-      void closeWindow();
+      bool checkWindowClose(GLFWwindow* window);
 
       /**
        * @brief Create a window.
@@ -49,7 +40,13 @@ namespace rw::libif
        * @param resizable If true, the window will be resizable.
        * @return true on success, false otherwise.
        */
-      bool createWindow(std::string_view title, int width, int height, bool resizable);
+      GLFWwindow* createWindow(std::string_view title, int width, int height, bool resizable);
+
+      /**
+       * @brief Destroy a window.
+       * @param window Window to destroy.
+       */
+      void destroyWindow(GLFWwindow* window);
 
       /**
        * @brief Get the required Vulkan extensions for GLFW.
@@ -65,16 +62,19 @@ namespace rw::libif
 
    private:
       /**
-       * @brief Deleter for a GLFW window.
-       * @param win Window to delete.
+       * @brief Constructor.
        */
-      static void windowDeleter_(GLFWwindow* win);
+      GlfwManager();
 
-      static std::mutex mtx_;         /**< Mutex for protecting concurrent access to the library. */
-      static size_t     activeUsers_; /**< Number of currently active users. */
+      /**
+       * @brief Destructor.
+       */
+      ~GlfwManager();
 
-      rw::utils::Logger*                                 logger_; /**< Logger instance. */
-      std::unique_ptr<GLFWwindow, void (*)(GLFWwindow*)> window_; /**< Pointer to the window of the current GLFW manager. */
+      static std::mutex                                           mtx_;      /**< Mutex for protecting access to the instance. */
+      static std::unique_ptr<GlfwManager, void (*)(GlfwManager*)> instance_; /**< Instance of the manager. */
+
+      rw::utils::Logger* logger_; /**< Logger instance. */
    };
 }; // namespace rw::libif
 

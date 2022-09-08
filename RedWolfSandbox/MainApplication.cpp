@@ -4,7 +4,9 @@
 #include <RedWolf/utils/Settings.hpp>
 
 MainApplication::MainApplication(int argc, char** argv) :
-   BaseGUIApplication(&mainWindow_, argc, argv), logger_{ rw::utils::Logger::instance() }, vulkanManager_{ "RedWolf Sandbox", 0, 5, 0 }
+   BaseGUIApplication(&mainWindow_, argc, argv), logger_{ rw::utils::Logger::instance() }, vulkanManager_{
+      rw::libif::VulkanManager::instance("RedWolf Sandbox", 0, 5, 0)
+   }
 {
 }
 
@@ -75,6 +77,11 @@ void MainApplication::userInit_()
    if (socket_.open(socketSettings->attribute(socket_local_address, "10.0.0.1"), socketSettings->attribute(socket_local_port, "4321")))
    {
       socket_.subscribe<rw::events::DataReadyEvent>(this);
+   }
+
+   if (!mainWindow_.open())
+   {
+      logger_->relFatal("Failed to open the main window.");
    }
 }
 

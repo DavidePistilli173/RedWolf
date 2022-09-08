@@ -1,11 +1,13 @@
 #include "Logger.hpp"
 
-std::unique_ptr<rw::utils::Logger> rw::utils::Logger::instance_; // Definition of the logger's instance.
-
 namespace rw::utils
 {
+   std::mutex              Logger::instanceMtx_;
+   std::unique_ptr<Logger> Logger::instance_;
+
    Logger* Logger::instance()
    {
+      std::scoped_lock instanceMtx_;
       if (instance_ == nullptr)
       {
          instance_.reset(new Logger());
