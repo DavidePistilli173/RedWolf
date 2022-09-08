@@ -36,9 +36,9 @@ namespace rw
    #define RW_API
 #endif
 
-    constexpr int version_major{ 0 };
-    constexpr int version_minor{ 5 };
-    constexpr int version_patch{ 0 };
+    constexpr int version_major{ @RedWolf_VERSION_MAJOR@ };
+    constexpr int version_minor{ @RedWolf_VERSION_MINOR@ };
+    constexpr int version_patch{ @RedWolf_VERSION_PATCH@ };
 } // namespace rw
 
 #endif

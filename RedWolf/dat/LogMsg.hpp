@@ -52,25 +52,8 @@ struct std::formatter<rw::dat::LogMsg::Level> : std::formatter<std::string>
 {
    auto format(rw::dat::LogMsg::Level lvl, std::format_context& ctx)
    {
-      switch (lvl)
-      {
-      case rw::dat::LogMsg::Level::trace:
-         return std::formatter<std::string>::format("TRACE", ctx);
-         break;
-      case rw::dat::LogMsg::Level::info:
-         return std::formatter<std::string>::format("INFO", ctx);
-         break;
-      case rw::dat::LogMsg::Level::warning:
-         return std::formatter<std::string>::format("WARNING", ctx);
-         break;
-      case rw::dat::LogMsg::Level::error:
-         return std::formatter<std::string>::format("ERROR", ctx);
-         break;
-      case rw::dat::LogMsg::Level::fatal:
-         return std::formatter<std::string>::format("FATAL", ctx);
-         break;
-      }
-      return std::formatter<std::string>::format("INVALID", ctx);
+      std::string val{ std::to_string(static_cast<int>(lvl)) };
+      return std::formatter<std::string>::format(val, ctx);
    }
 };
 

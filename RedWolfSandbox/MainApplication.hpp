@@ -4,6 +4,7 @@
 #include "MainWindow.hpp"
 
 #include <RedWolf/core/BaseGUIApplication.hpp>
+#include <RedWolf/libif/VulkanManager.hpp>
 #include <RedWolf/net/UdpSocket.hpp>
 #include <RedWolf/time/Timer.hpp>
 #include <RedWolf/utils/Logger.hpp>
@@ -55,7 +56,8 @@ private:
    std::string         senderAddress_;     /**< IP address of the packet sender. */
    std::string         senderPort_;        /**< Port of the packet sender. */
 
-   MainWindow mainWindow_; /**< Main window of the application. */
+   MainWindow               mainWindow_;    /**< Main window of the application. */
+   rw::libif::VulkanManager vulkanManager_; /**< Manager for the Vulkan library. */
 };
 
 #endif

@@ -25,6 +25,7 @@ Version 0.5.0
         - Fix sign of the time of day in the DateTime structure.
         - Improve comments.
         - [PLANNED] Add Vulkan support.
+        - [PLANNED] Add Winsock interface.
 
      RedWolfSandbox:
         - Add config file.

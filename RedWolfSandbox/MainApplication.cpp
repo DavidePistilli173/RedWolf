@@ -4,7 +4,7 @@
 #include <RedWolf/utils/Settings.hpp>
 
 MainApplication::MainApplication(int argc, char** argv) :
-   BaseGUIApplication(&mainWindow_, argc, argv), logger_{ rw::utils::Logger::instance() }
+   BaseGUIApplication(&mainWindow_, argc, argv), logger_{ rw::utils::Logger::instance() }, vulkanManager_{ "RedWolf Sandbox", 0, 5, 0 }
 {
 }
 
@@ -81,24 +81,23 @@ void MainApplication::userInit_()
 void MainApplication::userRun_()
 {
    ++mainLoopIteration_;
-   logger_->relInfo("Iteration: {}, timer calls {}, packets received {}.", mainLoopIteration_, timerCount_.load(), packetCount_.load());
    timerCount_ = 0U;
 
    if (mainLoopIteration_ > totalIterations_)
    {
       stop();
    }
-   else if (mainLoopIteration_ == 10U)
+   else if (mainLoopIteration_ == 100U)
    {
       timer_.unsubscribe<rw::events::TimeoutEvent>(this);
       logger_->info("Unsubscribed from timer.");
    }
-   else if (mainLoopIteration_ == 20U)
+   else if (mainLoopIteration_ == 200U)
    {
       timer_.subscribe<rw::events::TimeoutEvent>(this);
       logger_->info("Subscribed to timer.");
    }
-   else if (mainLoopIteration_ == 30U)
+   else if (mainLoopIteration_ == 300U)
    {
       timer_.stop();
       logger_->info("Timer stopped.");

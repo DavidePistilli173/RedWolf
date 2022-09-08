@@ -5,7 +5,9 @@
 
 #include <memory>
 #include <mutex>
+#include <string>
 #include <string_view>
+#include <utility>
 
 class GLFWwindow;
 
@@ -15,7 +17,7 @@ namespace rw::libif
     * @brief Interface for the GLFW library.
     * @detail Each interface can support one window.
     */
-   class GlfwManager
+   class RW_API GlfwManager
    {
    public:
       /**
@@ -29,6 +31,17 @@ namespace rw::libif
       ~GlfwManager();
 
       /**
+       * @brief Check whether the currently open window should close or not.
+       * @return true if the currently open window should close, false otherwise.
+       */
+      bool checkWindowClose();
+
+      /**
+       * @brief Close the currently open window.
+       */
+      void closeWindow();
+
+      /**
        * @brief Create a window.
        * @param title Title of the window.
        * @param width Width of the window.
@@ -39,15 +52,10 @@ namespace rw::libif
       bool createWindow(std::string_view title, int width, int height, bool resizable);
 
       /**
-       * @brief Check whether the currently open window should close or not.
-       * @return true if the currently open window should close, false otherwise.
+       * @brief Get the required Vulkan extensions for GLFW.
+       * @return Vector containing the pointers to the names of all required extensions.
        */
-      bool checkWindowClose();
-
-      /**
-       * @brief Close the currently open window.
-       */
-      void closeWindow();
+      [[nodiscard]] std::vector<const char*> getRequiredVulkanInstanceExtensions();
 
       /**
        * @brief Process all waiting events.
@@ -62,7 +70,7 @@ namespace rw::libif
        */
       static void windowDeleter_(GLFWwindow* win);
 
-      static std::mutex mtx_;         /**< Mutex for protecting concurrent access to the singleton. */
+      static std::mutex mtx_;         /**< Mutex for protecting concurrent access to the library. */
       static size_t     activeUsers_; /**< Number of currently active users. */
 
       rw::utils::Logger*                                 logger_; /**< Logger instance. */

@@ -9,6 +9,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${RW_BIN_DIR}/${PROJECT_NAME}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${RW_BIN_DIR}/${PROJECT_NAME}")
 set(CMAKE_INSTALL_PREFIX "${RW_BIN_DIR}/${PROJECT_NAME}/${CMAKE_BUILD_TYPE}")
 
+configure_file("${PROJECT_SOURCE_DIR}/common.hpp.in" "${PROJECT_SOURCE_DIR}/common.hpp")
+
 # Third-party libraries
 set(RW_THIRD_PARTY_DIR "${PROJECT_SOURCE_DIR}/third_party")
 
@@ -50,6 +52,7 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "dat/SettingsNode.cpp"
     "io/File.cpp"
     "libif/GlfwManager.cpp"
+    "libif/VulkanManager.cpp"
     "net/BaseSocket.cpp"
     "net/UdpSocket.cpp"
     "text/string_utils.cpp"

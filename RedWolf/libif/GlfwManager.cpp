@@ -14,8 +14,12 @@ namespace rw::libif
       std::scoped_lock lck{ mtx_ };
       if (activeUsers_ == 0U)
       {
-         glfwInit();
+         if (glfwInit() == GLFW_FALSE)
+         {
+            logger_->relFatal("Failed to initialise GLFW.");
+         }
          glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Required to disable OpenGL in GLFW.
+         logger_->relInfo("GLFW initialised.");
       }
       ++activeUsers_;
    }
@@ -24,7 +28,21 @@ namespace rw::libif
    {
       std::scoped_lock lck{ mtx_ };
       --activeUsers_;
-      if (activeUsers_ == 0U) glfwTerminate();
+      if (activeUsers_ == 0U)
+      {
+         glfwTerminate();
+         logger_->relInfo("GLFW cleaned-up.");
+      }
+   }
+
+   bool GlfwManager::checkWindowClose()
+   {
+      return glfwWindowShouldClose(window_.get());
+   }
+
+   void GlfwManager::closeWindow()
+   {
+      window_.reset();
    }
 
    bool GlfwManager::createWindow(std::string_view title, int width, int height, bool resizable)
@@ -49,14 +67,19 @@ namespace rw::libif
       return true;
    }
 
-   bool GlfwManager::checkWindowClose()
+   std::vector<const char*> GlfwManager::getRequiredVulkanInstanceExtensions()
    {
-      return glfwWindowShouldClose(window_.get());
-   }
+      uint32_t     glfwExtensionCount{ 0U };
+      const char** glfwExtensions;
+      glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-   void GlfwManager::closeWindow()
-   {
-      window_.reset();
+      std::vector<const char*> retVal;
+      for (uint32_t i{ 0U }; i < glfwExtensionCount; ++i)
+      {
+         retVal.emplace_back(glfwExtensions[i]);
+      }
+
+      return retVal;
    }
 
    void GlfwManager::pollEvents()
