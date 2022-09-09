@@ -1,6 +1,7 @@
 #ifndef RW_TIME_TIMER_HPP
 #define RW_TIME_TIMER_HPP
 
+#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseObject.hpp"
 #include "RedWolf/events/TimeoutEvent.hpp"
@@ -31,8 +32,10 @@ namespace rw::time
 
       /**
        * @brief Default constructor.
+       * @param manager RedWolf library manager.
+       * @param parent Parent of the current object.
        */
-      explicit Timer(rw::core::BaseObject* parent = nullptr);
+      explicit Timer(RedWolfManager& manager, rw::core::BaseObject* parent = nullptr);
 
       /**
        * @brief Construct a timer with a given interval and a singleShot setting.
@@ -175,7 +178,7 @@ namespace rw::time
        */
       void createTimerThread_();
 
-      rw::utils::Logger* logger_; /**< Message logger. */
+      rw::utils::Logger& logger_; /**< Message logger. */
 
       bool                      singleShot_{ false }; /**< If true, the timer only runs once. */
       std::chrono::microseconds interval_{ 0 };       /**< Timer interval. */

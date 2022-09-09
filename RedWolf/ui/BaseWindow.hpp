@@ -1,6 +1,7 @@
 #ifndef RW_UI_BASEWINDOW_HPP
 #define RW_UI_BASEWINDOW_HPP
 
+#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseObject.hpp"
 #include "RedWolf/libif/glfw/GlfwManager.hpp"
@@ -25,6 +26,7 @@ namespace rw::ui
       /**
        * @brief Default constructor. The window is NOT automatically opened.
        * @detail This function must be called from the main thread.
+       * @param manager RedWolf library manager.
        * @param title Title of the window.
        * @param width Width of the window.
        * @param height Height of the window.
@@ -32,6 +34,7 @@ namespace rw::ui
        * @param parent Parent of the window.
        */
       BaseWindow(
+         RedWolfManager&  manager,
          std::string_view title = default_window_title,
          int              width = default_window_width,
          int              height = default_window_height,
@@ -77,8 +80,8 @@ namespace rw::ui
       [[nodiscard]] bool isOpen() const;
 
    private:
-      rw::libif::GlfwManager* glfwManager_{ nullptr }; /**< Manager for the GLFW library. */
-      rw::libif::GlfwWindow   window_;                 /**< Raw window. */
+      rw::libif::GlfwManager& glfwManager_; /**< Manager for the GLFW library. */
+      rw::libif::GlfwWindow   window_;      /**< Raw window. */
    };
 } // namespace rw::ui
 

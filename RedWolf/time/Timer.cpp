@@ -4,7 +4,9 @@
 
 namespace rw::time
 {
-   Timer::Timer(rw::core::BaseObject* parent) : rw::core::BaseObject(parent), logger_{ rw::utils::Logger::instance() } {}
+   Timer::Timer(RedWolfManager& manager, rw::core::BaseObject* parent) : rw::core::BaseObject(manager, parent), logger_{ manager.logger() }
+   {
+   }
 
    Timer::~Timer()
    {
@@ -74,11 +76,11 @@ namespace rw::time
       {
          std::scoped_lock lck(mtx_);
          interval_ = std::chrono::microseconds(static_cast<long long>(microseconds_per_second / hertz));
-         logger_->trace("Timer frequency set to {}Hz (interval_ = {})", hertz, interval_);
+         logger_.trace("Timer frequency set to {}Hz (interval_ = {})", hertz, interval_);
       }
       else
       {
-         logger_->err("Timer frequency must be a positive double or 0, but {} was passed.", hertz);
+         logger_.err("Timer frequency must be a positive double or 0, but {} was passed.", hertz);
       }
    }
 

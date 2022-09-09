@@ -2,20 +2,22 @@
 
 namespace rw::utils
 {
-   std::mutex              Logger::instanceMtx_;
-   std::unique_ptr<Logger> Logger::instance_;
-
-   Logger* Logger::instance()
+   Logger::Logger()
    {
-      std::scoped_lock instanceMtx_;
-      if (instance_ == nullptr)
+      std::ios_base::sync_with_stdio(false); // Stop syncing stdio and iostream, for speed.
+
+      // Default log levels for debug and release builds.
+      if constexpr (rw::debug)
       {
-         instance_.reset(new Logger());
-         instance_->relInfo("Created logger instance.");
+         level_ = Level::trace;
+      }
+      else
+      {
+         level_ = Level::warning;
       }
 
-      return instance_.get();
-   }
+      relInfo("Logger created.");
+   };
 
    Logger::Level Logger::level() const
    {
@@ -39,21 +41,6 @@ namespace rw::utils
          level_ = level;
       }
    }
-
-   Logger::Logger()
-   {
-      std::ios_base::sync_with_stdio(false); // Stop syncing stdio and iostream, for speed.
-
-      // Default log levels for debug and release builds.
-      if constexpr (rw::debug)
-      {
-         level_ = Level::trace;
-      }
-      else
-      {
-         level_ = Level::warning;
-      }
-   };
 
    // Explicit template instantiation for common types.
    template void Logger::trace(const MessageWithLocation&);

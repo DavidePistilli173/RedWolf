@@ -1,12 +1,18 @@
 #ifndef RW_LIBIF_VULKANMANAGER_HPP
 #define RW_LIBIF_VULKANMANAGER_HPP
 
+#include "RedWolf/libif/glfw/GlfwManager.hpp"
 #include "RedWolf/utils/Logger.hpp"
 
 #include <memory>
 #include <mutex>
 #include <string_view>
 #include <vulkan/vulkan.h>
+
+namespace rw
+{
+   class RedWolfManager;
+}
 
 namespace rw::libif
 {
@@ -17,30 +23,21 @@ namespace rw::libif
    {
    public:
       /**
-       * @brief Get the instance of the vulkan manager.
-       * @param appName Name of the application.
-       * @param verMajor Major version number.
-       * @param verMinor Minor version number.
-       * @param verPatch Patch version number.
-       * @return Instance of the vulkan manager.
-       */
-      static VulkanManager* instance(std::string_view appName, int verMajor, int verMinor, int verPatch);
-
-   private:
-      /**
        * @brief Constructor.
+       * @param manager RedWolf library manager.
        * @param appName Name of the application.
        * @param verMajor Major version number.
        * @param verMinor Minor version number.
        * @param verPatch Patch version number.
        */
-      VulkanManager(std::string_view appName, int verMajor, int verMinor, int verPatch);
+      VulkanManager(RedWolfManager& manager, std::string_view appName, int verMajor, int verMinor, int verPatch);
 
       /**
        * @brief Destructor.
        */
       ~VulkanManager();
 
+   private:
       /**
        * @brief Create the Vulkan instance.
        * @param appName Name of the application.
@@ -69,15 +66,14 @@ namespace rw::libif
        * @param instance Vulkan instance.
        * @param function Variable where to store the function pointer.
        * @param functionName Name of the function to initialise.
-       * @param logger Logger instance.
        */
       template<typename FunctionT>
-      void initialiseFunction_(VkInstance instance, FunctionT& function, std::string_view functionName, rw::utils::Logger* logger)
+      void initialiseFunction_(VkInstance instance, FunctionT& function, std::string_view functionName)
       {
          function = reinterpret_cast<FunctionT>(vkGetInstanceProcAddr(instance, functionName.data()));
          if (function == nullptr)
          {
-            logger->relFatal("Failed to initialise Vulkan function {}.", functionName);
+            logger_.relFatal("Failed to initialise Vulkan function {}.", functionName);
          }
       }
 
@@ -86,10 +82,8 @@ namespace rw::libif
        */
       void initialiseFunctions_();
 
-      static std::mutex                                               mtx_;      /**< Mutex for protecting access to the manager. */
-      static std::unique_ptr<VulkanManager, void (*)(VulkanManager*)> instance_; /**< Instance of the manager. */
-
-      rw::utils::Logger* logger_; /**< Logger instance. */
+      rw::utils::Logger&      logger_;      /**< Logger instance. */
+      rw::libif::GlfwManager& glfwManager_; /**< GLFW library manager. */
 
       VkInstance vulkanInstance_; /**< Vulkan instance. */
 

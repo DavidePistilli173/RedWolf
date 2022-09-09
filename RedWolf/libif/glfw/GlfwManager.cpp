@@ -1,18 +1,23 @@
 #include "GlfwManager.hpp"
 
+#include "RedWolf/RedWolfManager.hpp"
+
 namespace rw::libif
 {
-   std::mutex                                           GlfwManager::mtx_;
-   std::unique_ptr<GlfwManager, void (*)(GlfwManager*)> GlfwManager::instance_{ nullptr, nullptr };
-
-   GlfwManager* GlfwManager::instance()
+   GlfwManager::GlfwManager(RedWolfManager& manager) : logger_{ manager.logger() }
    {
-      std::scoped_lock lck{ mtx_ };
-      if (instance_ == nullptr)
+      if (glfwInit() == GLFW_FALSE)
       {
-         instance_ = std::unique_ptr<GlfwManager, void (*)(GlfwManager*)>(new GlfwManager(), [](GlfwManager* manager) { delete manager; });
+         logger_.relFatal("Failed to initialise GLFW.");
       }
-      return instance_.get();
+      glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Required to disable OpenGL in GLFW.
+      logger_.relInfo("GLFW initialised.");
+   }
+
+   GlfwManager::~GlfwManager()
+   {
+      glfwTerminate();
+      logger_.relInfo("GLFW cleaned-up.");
    }
 
    bool GlfwManager::checkWindowClose(GLFWwindow* window)
@@ -57,21 +62,5 @@ namespace rw::libif
    void GlfwManager::pollEvents()
    {
       glfwPollEvents();
-   }
-
-   GlfwManager::GlfwManager() : logger_{ rw::utils::Logger::instance() }
-   {
-      if (glfwInit() == GLFW_FALSE)
-      {
-         logger_->relFatal("Failed to initialise GLFW.");
-      }
-      glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Required to disable OpenGL in GLFW.
-      logger_->relInfo("GLFW initialised.");
-   }
-
-   GlfwManager::~GlfwManager()
-   {
-      glfwTerminate();
-      logger_->relInfo("GLFW cleaned-up.");
    }
 } // namespace rw::libif

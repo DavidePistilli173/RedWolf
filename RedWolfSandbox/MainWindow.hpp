@@ -1,6 +1,7 @@
 #ifndef RWSANDBOX_MAINWINDOW_HPP
 #define RWSANDBOX_MAINWINDOW_HPP
 
+#include <RedWolf/RedWolfManager.hpp>
 #include <RedWolf/ui/BaseWindow.hpp>
 #include <string_view>
 
@@ -13,8 +14,9 @@ public:
 
    /**
     * @brief Constructor.
+    * @param rw RedWolf library manager.
     */
-   MainWindow();
+   MainWindow(rw::RedWolfManager& rw);
 
 protected:
    /**

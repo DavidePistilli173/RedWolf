@@ -1,6 +1,7 @@
 #ifndef RW_NET_BASESOCKET_HPP
 #define RW_NET_BASESOCKET_HPP
 
+#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseObject.hpp"
 #include "RedWolf/utils/Logger.hpp"
@@ -45,19 +46,27 @@ namespace rw::net
 
       /**
        * @brief Construct an empty socket.
+       * @param manager RedWolf library manager.
        * @param parent Parent of the object.
        */
-      BaseSocket(BaseObject* parent = nullptr);
+      BaseSocket(RedWolfManager& manager, BaseObject* parent = nullptr);
 
       /**
        * @brief Construct a socket and also open it, if possible.
+       * @param manager RedWolf library manager.
        * @param localAddress Local IP address to bind the socket to.
        * @param localPort Local port to bind the socket to.
        * @param protocol Protocol to use with this socket.
        * @param family Address family for the socket's address.
        * @param parent Parent of the socket.
        */
-      BaseSocket(std::string_view localAddress, std::string_view localPort, Protocol protocol, Family family, BaseObject* parent = nullptr);
+      BaseSocket(
+         RedWolfManager&  manager,
+         std::string_view localAddress,
+         std::string_view localPort,
+         Protocol         protocol,
+         Family           family,
+         BaseObject*      parent = nullptr);
 
       /**
        * @brief Destructor
@@ -147,7 +156,7 @@ namespace rw::net
       void initWinsock_();
 #endif
 
-      rw::utils::Logger* logger_{ nullptr }; /**< Logger instance. */
+      rw::utils::Logger& logger_; /**< Logger instance. */
 
       bool        socketOpen_{ false };       /**< True if the socket is currently open. */
       std::string localAddress_;              /**< Socket local address. */

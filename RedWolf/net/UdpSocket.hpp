@@ -1,6 +1,7 @@
 #ifndef RW_NET_UDPSOCKET_HPP
 #define RW_NET_UDPSOCKET_HPP
 
+#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/net/BaseSocket.hpp"
 #include "RedWolf/utils/Logger.hpp"
@@ -24,17 +25,25 @@ namespace rw::net
 
       /**
        * @brief Construct an empty UDP socket.
+       * @param manager RedWolf library manager.
+       * @param parent Parent of the current object.
        */
-      UdpSocket(BaseObject* parent = nullptr);
+      UdpSocket(RedWolfManager& manager, BaseObject* parent = nullptr);
 
       /**
        * @brief Constructor that also opens the socket, if it is able to.
+       * @param manager RedWolf library manager.
        * @param localAddress Local IP address to bind the socket to.
        * @param localPort Local port to bind the socket to.
        * @param family Address family for the socket's address.
        * @param parent Parent of the socket.
        */
-      UdpSocket(std::string_view localAddress, std::string_view localPort, Family family = Family::ipv4, BaseObject* parent = nullptr);
+      UdpSocket(
+         RedWolfManager&  manager,
+         std::string_view localAddress,
+         std::string_view localPort,
+         Family           family = Family::ipv4,
+         BaseObject*      parent = nullptr);
 
       /**
        * @brief Destructor.
@@ -117,7 +126,7 @@ namespace rw::net
        */
       void startWorkerThread_();
 
-      rw::utils::Logger* logger_{ nullptr }; /**< Logger instance. */
+      rw::utils::Logger& logger_; /**< Logger instance. */
 
       std::thread workerThread_;           /**< Worker thread for receiving messages. */
       bool        workerRunning_{ false }; /**< True if the worker thread is running. */

@@ -2,7 +2,8 @@
 
 namespace rw::core
 {
-   BaseGUIApplication::BaseGUIApplication(BaseWindow* window, int argc, char** argv) : BaseApplication(argc, argv)
+   BaseGUIApplication::BaseGUIApplication(RedWolfManager& manager, BaseWindow* window, int argc, char** argv) :
+      BaseApplication(manager, argc, argv)
    {
       if (window != nullptr)
       {

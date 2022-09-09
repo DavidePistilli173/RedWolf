@@ -1,32 +1,18 @@
 #include "VulkanManager.hpp"
 
+#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
-#include "RedWolf/libif/glfw/GlfwManager.hpp"
 
 #include <string>
 #include <vector>
 
 namespace rw::libif
 {
-   std::mutex                                               VulkanManager::mtx_;
-   std::unique_ptr<VulkanManager, void (*)(VulkanManager*)> VulkanManager::instance_{ nullptr, nullptr };
-
-   VulkanManager* VulkanManager::instance(std::string_view appName, int verMajor, int verMinor, int verPatch)
-   {
-      std::scoped_lock lck{ mtx_ };
-      if (instance_ == nullptr)
-      {
-         instance_ = std::unique_ptr<VulkanManager, void (*)(VulkanManager*)>(
-            new VulkanManager(appName, verMajor, verMinor, verPatch), [](VulkanManager* manager) { delete manager; });
-      }
-      return instance_.get();
-   }
-
-   VulkanManager::VulkanManager(std::string_view appName, int verMajor, int verMinor, int verPatch) :
-      logger_{ rw::utils::Logger::instance() }
+   VulkanManager::VulkanManager(RedWolfManager& manager, std::string_view appName, int verMajor, int verMinor, int verPatch) :
+      logger_{ manager.logger() }, glfwManager_{ manager.glfwManager() }
    {
       createInstance_(appName, verMajor, verMinor, verPatch);
-      logger_->relInfo("Vulkan initialised.");
+      logger_.relInfo("Vulkan initialised.");
    }
 
    VulkanManager::~VulkanManager()
@@ -38,7 +24,7 @@ namespace rw::libif
       }
 
       vkDestroyInstance(vulkanInstance_, nullptr);
-      logger_->relInfo("Vulkan cleaned-up.");
+      logger_.relInfo("Vulkan cleaned-up.");
    }
 
    void VulkanManager::createInstance_(std::string_view appName, int verMajor, int verMinor, int verPatch)
@@ -59,11 +45,10 @@ namespace rw::libif
       instanceInfo.pApplicationInfo = &appInfo;
 
       // Required GLFW extensions.
-      GlfwManager* glfwManager{ GlfwManager::instance() };
-      auto         requiredExtensions{ glfwManager->getRequiredVulkanInstanceExtensions() };
+      auto requiredExtensions{ glfwManager_.getRequiredVulkanInstanceExtensions() };
       if (requiredExtensions.empty())
       {
-         logger_->relFatal("Vulkan not supported on the current platform.");
+         logger_.relFatal("Vulkan not supported on the current platform.");
       }
 
       // Validation layers, enabled only for debug builds.
@@ -96,7 +81,7 @@ namespace rw::libif
          debugInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                                  VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
          debugInfo.pfnUserCallback = debugCallback_;
-         debugInfo.pUserData = rw::utils::Logger::instance();
+         debugInfo.pUserData = &logger_;
 
          instanceInfo.pNext = &debugInfo;
       }
@@ -104,7 +89,7 @@ namespace rw::libif
       // Create the instance.
       if (vkCreateInstance(&instanceInfo, nullptr, &vulkanInstance_) != VK_SUCCESS)
       {
-         logger_->fatal("Failed to create Vulkan instance.");
+         logger_.fatal("Failed to create Vulkan instance.");
       }
 
       // Initialise Vulkan function pointers.
@@ -116,7 +101,7 @@ namespace rw::libif
          if (VkResult result{ vkCreateDebugUtilsMessengerEXT_(vulkanInstance_, &debugInfo, nullptr, &debugMessenger_) };
              result != VK_SUCCESS)
          {
-            logger_->err("Failed to initialise Vulkan debug messenger, error code {}.", static_cast<int>(result));
+            logger_.err("Failed to initialise Vulkan debug messenger, error code {}.", static_cast<int>(result));
          }
       }
    }
@@ -151,19 +136,19 @@ namespace rw::libif
       switch (messageSeverity)
       {
       case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-         thisPtr->logger_->trace("|{}| {}", type, pCallbackData->pMessage);
+         thisPtr->logger_.trace("|{}| {}", type, pCallbackData->pMessage);
          break;
       case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-         thisPtr->logger_->info("|{}| {}", type, pCallbackData->pMessage);
+         thisPtr->logger_.info("|{}| {}", type, pCallbackData->pMessage);
          break;
       case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-         thisPtr->logger_->warn("|{}| {}", type, pCallbackData->pMessage);
+         thisPtr->logger_.warn("|{}| {}", type, pCallbackData->pMessage);
          break;
       case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-         thisPtr->logger_->err("|{}| {}", type, pCallbackData->pMessage);
+         thisPtr->logger_.err("|{}| {}", type, pCallbackData->pMessage);
          break;
       case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
-         thisPtr->logger_->fatal("|{}| {}", type, pCallbackData->pMessage);
+         thisPtr->logger_.fatal("|{}| {}", type, pCallbackData->pMessage);
          break;
       }
 
@@ -172,7 +157,7 @@ namespace rw::libif
 
    void VulkanManager::initialiseFunctions_()
    {
-      initialiseFunction_(vulkanInstance_, vkCreateDebugUtilsMessengerEXT_, "vkCreateDebugUtilsMessengerEXT", logger_);
-      initialiseFunction_(vulkanInstance_, vkDestroyDebugUtilsMessengerEXT_, "vkDestroyDebugUtilsMessengerEXT", logger_);
+      initialiseFunction_(vulkanInstance_, vkCreateDebugUtilsMessengerEXT_, "vkCreateDebugUtilsMessengerEXT");
+      initialiseFunction_(vulkanInstance_, vkDestroyDebugUtilsMessengerEXT_, "vkDestroyDebugUtilsMessengerEXT");
    }
 } // namespace rw::libif

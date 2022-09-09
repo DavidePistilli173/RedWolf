@@ -1,6 +1,7 @@
 #ifndef RW_THREAD_THREADPOOL_HPP
 #define RW_THREAD_THREADPOOL_HPP
 
+#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/utils/Logger.hpp"
 
@@ -78,9 +79,10 @@ namespace rw::thread
 
       /**
        * @brief Constructor.
+       * @param manager RedWolf library manager.
        * @param numThreads Number of starting threads of the pool. By default, matches the system's hardware concurrency, or at least 4.
        */
-      explicit ThreadPool(unsigned int numThreads = std::max(4U, std::thread::hardware_concurrency()));
+      explicit ThreadPool(RedWolfManager& manager, unsigned int numThreads = std::max(4U, std::thread::hardware_concurrency()));
 
       /**
        * @brief Custom destructor for joining all threads before destruction.
@@ -142,9 +144,10 @@ namespace rw::thread
 
       /**
        * @brief Get the default thread pool.
+       * @param manager RedWolf library manager.
        * @return Pointer to the default thread pool of the library.
        */
-      static ThreadPool* defaultPool();
+      static ThreadPool* defaultPool(RedWolfManager& manager);
 
       /**
        * @brief Get the current number of threads of the pool.
@@ -171,7 +174,7 @@ namespace rw::thread
        */
       void workerMainLoop_(Worker& thisWorker);
 
-      rw::utils::Logger* logger_{ nullptr }; /**< Logger instance. */
+      rw::utils::Logger& logger_; /**< Logger instance. */
 
       std::vector<Worker>     workers_;                 /**< Workers of the thread pool.  */
       std::condition_variable workerConditionVariable_; /**< Used for waking up workers when there are tasks to perform. */

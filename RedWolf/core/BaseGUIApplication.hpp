@@ -1,6 +1,7 @@
 #ifndef RW_CORE_BASEGUIAPPLICATION_HPP
 #define RW_CORE_BASEGUIAPPLICATION_HPP
 
+#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseApplication.hpp"
 #include "RedWolf/ui/BaseWindow.hpp"
@@ -21,11 +22,12 @@ namespace rw::core
 
       /**
        * @brief Constructor.
+       * @param manager RedWolf library manager.
        * @param window Pointer to a window of the application.
        * @param argc Number of command line arguments.
        * @param argv List of command line arguments.
        */
-      BaseGUIApplication(BaseWindow* window = nullptr, int argc = 0, char** argv = nullptr);
+      BaseGUIApplication(RedWolfManager& manager, BaseWindow* window = nullptr, int argc = 0, char** argv = nullptr);
 
       /**
        * @brief Add a new window to the application.

@@ -6,10 +6,12 @@
 
 namespace rw::net
 {
-   UdpSocket::UdpSocket(BaseObject* parent) : BaseSocket(parent), logger_{ rw::utils::Logger::instance() } {}
+   UdpSocket::UdpSocket(RedWolfManager& manager, BaseObject* parent) : BaseSocket(manager, parent), logger_{ manager.logger() } {}
 
-   UdpSocket::UdpSocket(std::string_view localAddress, std::string_view localPort, Family family, BaseObject* parent) :
-      BaseSocket(localAddress, localPort, BaseSocket::Protocol::udp, family, parent), logger_{ rw::utils::Logger::instance() }
+   UdpSocket::UdpSocket(
+      RedWolfManager& manager, std::string_view localAddress, std::string_view localPort, Family family, BaseObject* parent) :
+      BaseSocket(manager, localAddress, localPort, BaseSocket::Protocol::udp, family, parent),
+      logger_{ manager.logger() }
    {
    }
 
@@ -36,7 +38,7 @@ namespace rw::net
          // Set the socket as non-blocking.
          if (setsockopt(socket_, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&read_timeout), sizeof(read_timeout)) != 0)
          {
-            logger_->relErr(
+            logger_.relErr(
                "Failed to set socket {}:{} as non-blocking, error code {}.", this->localAddress(), this->localPort(), WSAGetLastError());
          }
 #endif
@@ -89,7 +91,7 @@ namespace rw::net
 
       if (numBytes < 0)
       {
-         logger_->relErr(
+         logger_.relErr(
             "Failed to send data from {}:{} to {}:{}, error code {}.",
             localAddress(),
             localPort(),
@@ -132,7 +134,7 @@ namespace rw::net
 #ifdef _WIN32
                if (int errorCode{ WSAGetLastError() }; numBytes < 0 && errorCode != WSAETIMEDOUT)
                {
-                  logger_->relErr("Read error on socket {}:{}, error code {}.", localAddress(), localPort(), errorCode);
+                  logger_.relErr("Read error on socket {}:{}, error code {}.", localAddress(), localPort(), errorCode);
                }
                else if (numBytes > 0)
                {

@@ -1,6 +1,7 @@
 #ifndef RW_LIBIF_GLFW_GLFWWINDOW_HPP
 #define RW_LIBIF_GLFW_GLFWWINDOW_HPP
 
+#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/libif/glfw/GlfwManager.hpp"
 #include "RedWolf/utils/Logger.hpp"
 
@@ -18,12 +19,13 @@ namespace rw::libif
    public:
       /**
        * @brief Constructor. The window is NOT opened automatically.
+       * @param manager RedWolf library manager.
        * @param title Title of the window.
        * @param width Width of the window.
        * @param height Height of the window.
        * @param resizable If true, the window will be resizable.
        */
-      GlfwWindow(std::string_view title, int width, int height, bool resizable);
+      GlfwWindow(RedWolfManager& manager, std::string_view title, int width, int height, bool resizable);
 
       /**
        * @brief Destructor.
@@ -54,10 +56,10 @@ namespace rw::libif
       [[nodiscard]] bool isOpen() const;
 
    private:
-      rw::utils::Logger* logger_; /**< Logger instance. */
+      rw::utils::Logger& logger_;      /**< Logger instance. */
+      GlfwManager&       glfwManager_; /**< Manager for the GLFW library. */
 
-      GlfwManager* glfwManager_{ nullptr }; /**< Manager for the GLFW library. */
-      GLFWwindow*  window_{ nullptr };      /**< Window handle. */
+      GLFWwindow* window_{ nullptr }; /**< Window handle. */
 
       std::string         title_;              /**< Title of the window. */
       std::pair<int, int> size_{ 0, 0 };       /**< Size of the window. */

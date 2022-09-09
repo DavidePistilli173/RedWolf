@@ -11,6 +11,11 @@
 #include <string_view>
 #include <utility>
 
+namespace rw
+{
+   class RedWolfManager;
+}
+
 namespace rw::libif
 {
    /**
@@ -21,9 +26,15 @@ namespace rw::libif
    {
    public:
       /**
-       * @brief Get the instance of the GLFW library manager.
+       * @brief Constructor.
+       * @param manager RedWolf library manager.
        */
-      [[nodiscard]] static GlfwManager* instance();
+      GlfwManager(RedWolfManager& manager);
+
+      /**
+       * @brief Destructor.
+       */
+      ~GlfwManager();
 
       /**
        * @brief Check whether a window should close or not.
@@ -61,20 +72,7 @@ namespace rw::libif
       void pollEvents();
 
    private:
-      /**
-       * @brief Constructor.
-       */
-      GlfwManager();
-
-      /**
-       * @brief Destructor.
-       */
-      ~GlfwManager();
-
-      static std::mutex                                           mtx_;      /**< Mutex for protecting access to the instance. */
-      static std::unique_ptr<GlfwManager, void (*)(GlfwManager*)> instance_; /**< Instance of the manager. */
-
-      rw::utils::Logger* logger_; /**< Logger instance. */
+      rw::utils::Logger& logger_; /**< Logger instance. */
    };
 }; // namespace rw::libif
 

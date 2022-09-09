@@ -2,12 +2,13 @@
 
 namespace rw::core
 {
-   BaseApplication::BaseApplication(int argc, char** argv) : BaseObject(), logger_{ rw::utils::Logger::instance() }
+   BaseApplication::BaseApplication(RedWolfManager& manager, int argc, char** argv, BaseObject* parent) :
+      BaseObject(manager, parent), logger_{ manager.logger() }
    {
       // Save the command-line arguments for later use, if present.
       if (argc > 0 && argv != nullptr)
       {
-         logger_->trace("Saving {} command-line arguments.", argc);
+         logger_.trace("Saving {} command-line arguments.", argc);
 
          arguments_.reserve(argc);
          for (int i = 0; i < argc; ++i)
@@ -49,11 +50,11 @@ namespace rw::core
       if (hertz >= 0.0F)
       {
          cycleDuration_ = std::chrono::microseconds(static_cast<long long>(1'000'000 / hertz));
-         logger_->trace("Main loop frequency set to {}Hz (cycleDuration_ = {})", hertz, cycleDuration_);
+         logger_.trace("Main loop frequency set to {}Hz (cycleDuration_ = {})", hertz, cycleDuration_);
       }
       else
       {
-         logger_->err("Main loop frequency must be a positive float or 0, but {} was passed.", hertz);
+         logger_.err("Main loop frequency must be a positive float or 0, but {} was passed.", hertz);
       }
    }
 
@@ -65,7 +66,7 @@ namespace rw::core
    void BaseApplication::stop()
    {
       running_ = false;
-      logger_->trace("Main loop stopped.");
+      logger_.trace("Main loop stopped.");
    }
 
    void BaseApplication::waitForNextCycle_(std::chrono::microseconds remainingTime)

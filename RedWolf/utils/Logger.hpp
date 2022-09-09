@@ -49,6 +49,11 @@ namespace rw::utils
       };
 
       /**
+       * @brief Default constructor.
+       */
+      Logger();
+
+      /**
        * @brief Log an error message only in debug builds.
        * @param msg Message to log. Supports the std::format syntax.
        * @param args Optional arguments to insert into the message.
@@ -81,12 +86,6 @@ namespace rw::utils
       {
          if constexpr (rw::debug) message_base(Level::info, msg, args...);
       }
-
-      /**
-       * @brief Get the logger's instance.
-       * @details Creates a new logger on the first call.
-       */
-      [[nodiscard]] static Logger* instance();
 
       /**
        * @brief Get the current log level.
@@ -223,14 +222,6 @@ namespace rw::utils
       }
 
    private:
-      /**
-       * @brief Default constructor.
-       */
-      Logger();
-
-      static std::mutex              instanceMtx_; /**< Mutex for protecting the logger instance. */
-      static std::unique_ptr<Logger> instance_;    /**< Current instance of the logger. */
-
       std::mutex         mtx_;                   /**< Logging mutex. */
       std::atomic<Level> level_{ Level::trace }; /**< Logging level. */
    };

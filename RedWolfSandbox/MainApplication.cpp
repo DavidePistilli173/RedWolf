@@ -3,10 +3,9 @@
 #include <RedWolf/events/DataReadyEvent.hpp>
 #include <RedWolf/utils/Settings.hpp>
 
-MainApplication::MainApplication(int argc, char** argv) :
-   BaseGUIApplication(&mainWindow_, argc, argv), logger_{ rw::utils::Logger::instance() }, vulkanManager_{
-      rw::libif::VulkanManager::instance("RedWolf Sandbox", 0, 5, 0)
-   }
+MainApplication::MainApplication(rw::RedWolfManager& rw, int argc, char** argv) :
+   BaseGUIApplication(rw, &mainWindow_, argc, argv), rw_{ rw }, logger_{ rw.logger() }, timer_{ rw, this }, socket_{ rw, this },
+   mainWindow_{ rw }
 {
 }
 
@@ -44,13 +43,13 @@ void MainApplication::userInit_()
    static constexpr std::string_view socket_local_address{ "local_address" };
    static constexpr std::string_view socket_local_port{ "local_port" };
 
-   rw::utils::Settings* settings{ rw::utils::Settings::instance() };
+   rw::utils::Settings* settings{ rw::utils::Settings::instance(rw_) };
 
    // Set up the main loop.
    rw::utils::Settings::Node* applicationSettings{ settings->root()->child(application_section) };
    if (applicationSettings == nullptr)
    {
-      logger_->relFatal("Failed to load application settings.");
+      logger_.relFatal("Failed to load application settings.");
    }
 
    setCycleFrequency(std::atof(applicationSettings->attribute(application_cycle_frequency, "1.0").c_str()));
@@ -60,7 +59,7 @@ void MainApplication::userInit_()
    rw::utils::Settings::Node* timerSettings{ settings->root()->child(timer_section) };
    if (timerSettings == nullptr)
    {
-      logger_->relFatal("Failed to load timer settings.");
+      logger_.relFatal("Failed to load timer settings.");
    }
 
    timer_.setFrequency(std::atof(timerSettings->attribute(timer_frequency, "10.0").c_str()));
@@ -71,7 +70,7 @@ void MainApplication::userInit_()
    rw::utils::Settings::Node* socketSettings{ settings->root()->child(socket_section) };
    if (socketSettings == nullptr)
    {
-      logger_->relFatal("Failed to load socket settings.");
+      logger_.relFatal("Failed to load socket settings.");
    }
 
    if (socket_.open(socketSettings->attribute(socket_local_address, "10.0.0.1"), socketSettings->attribute(socket_local_port, "4321")))
@@ -81,7 +80,7 @@ void MainApplication::userInit_()
 
    if (!mainWindow_.open())
    {
-      logger_->relFatal("Failed to open the main window.");
+      logger_.relFatal("Failed to open the main window.");
    }
 }
 
@@ -97,17 +96,17 @@ void MainApplication::userRun_()
    else if (mainLoopIteration_ == 100U)
    {
       timer_.unsubscribe<rw::events::TimeoutEvent>(this);
-      logger_->info("Unsubscribed from timer.");
+      logger_.info("Unsubscribed from timer.");
    }
    else if (mainLoopIteration_ == 200U)
    {
       timer_.subscribe<rw::events::TimeoutEvent>(this);
-      logger_->info("Subscribed to timer.");
+      logger_.info("Subscribed to timer.");
    }
    else if (mainLoopIteration_ == 300U)
    {
       timer_.stop();
-      logger_->info("Timer stopped.");
+      logger_.info("Timer stopped.");
    }
 
    // Send a packet back.
@@ -116,7 +115,7 @@ void MainApplication::userRun_()
       std::scoped_lock lck{ packetSenderMutex_ };
       if (socket_.send(senderAddress_, senderPort_, "REPLY FROM REDWOLF APPLICATION!"))
       {
-         logger_->info("Sent reply to {}:{}.", senderAddress_, senderPort_);
+         logger_.info("Sent reply to {}:{}.", senderAddress_, senderPort_);
       }
       packetCount_ = 0U;
    }

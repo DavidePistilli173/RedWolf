@@ -4,8 +4,8 @@
 
 namespace rw::ui
 {
-   BaseWindow::BaseWindow(std::string_view title, int width, int height, bool resizable, BaseObject* parent) :
-      BaseObject(parent), glfwManager_{ rw::libif::GlfwManager::instance() }, window_{ title, width, height, resizable }
+   BaseWindow::BaseWindow(RedWolfManager& manager, std::string_view title, int width, int height, bool resizable, BaseObject* parent) :
+      BaseObject(manager, parent), glfwManager_{ manager.glfwManager() }, window_{ manager, title, width, height, resizable }
    {
    }
 
@@ -17,7 +17,7 @@ namespace rw::ui
          generateEvent(rw::events::WindowCloseEvent());
       }
 
-      glfwManager_->pollEvents();
+      glfwManager_.pollEvents();
    }
 
    void BaseWindow::close()

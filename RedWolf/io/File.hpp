@@ -1,6 +1,7 @@
 #ifndef RW_IO_FILE_HPP
 #define RW_IO_FILE_HPP
 
+#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/cont/ConstexprMap.hpp"
 #include "RedWolf/utils/Logger.hpp"
@@ -65,11 +66,12 @@ namespace rw::io
 
       /**
        * @brief Constructor
+       * @param manager RedWolf library manager.
        * @param filePath Path to the file.
        * @param mode Mode to open the file with.
        * @param format Format of the file. If unknown, the class will try to deduce it from the file extension.
        */
-      File(std::string_view filePath, OpenMode mode = OpenMode::read, Format format = Format::unknown);
+      File(RedWolfManager& manager, std::string_view filePath, OpenMode mode = OpenMode::read, Format format = Format::unknown);
 
       /**
        * @brief Extract the extension of the file.
@@ -136,7 +138,7 @@ namespace rw::io
        */
       void computeFormat_();
 
-      mutable rw::utils::Logger* logger_{ nullptr }; /**< Logger instance. */
+      rw::utils::Logger& logger_; /**< Logger instance. */
 
       std::filesystem::path path_;                      /**< Path to the file. */
       std::fstream          fileStream_;                /**< File stream. */

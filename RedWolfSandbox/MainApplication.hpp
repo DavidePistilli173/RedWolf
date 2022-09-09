@@ -3,6 +3,7 @@
 
 #include "MainWindow.hpp"
 
+#include <RedWolf/RedWolfManager.hpp>
 #include <RedWolf/core/BaseGUIApplication.hpp>
 #include <RedWolf/libif/vulkan/VulkanManager.hpp>
 #include <RedWolf/net/UdpSocket.hpp>
@@ -17,10 +18,11 @@ class MainApplication : public rw::core::BaseGUIApplication
 public:
    /**
     * @brief Constructor.
+    * @param rw Manager for the RedWolf library.
     * @param argc Number of input arguments.
     * @param argv Input arguments.
     */
-   explicit MainApplication(int argc, char** argv);
+   explicit MainApplication(rw::RedWolfManager& rw, int argc, char** argv);
 
 protected:
    /**
@@ -42,7 +44,8 @@ protected:
    virtual void userRun_() override;
 
 private:
-   rw::utils::Logger* logger_{ nullptr }; /**< Application logger. */
+   rw::RedWolfManager& rw_;     /**< RedWolf library manager. */
+   rw::utils::Logger&  logger_; /**< Application logger. */
 
    size_t mainLoopIteration_{ 0U }; /**< Number of iterations of the main loop. */
    size_t totalIterations_{ 0U };   /**< Total number of iterations of the main loop. */
@@ -56,8 +59,7 @@ private:
    std::string         senderAddress_;     /**< IP address of the packet sender. */
    std::string         senderPort_;        /**< Port of the packet sender. */
 
-   MainWindow                mainWindow_;               /**< Main window of the application. */
-   rw::libif::VulkanManager* vulkanManager_{ nullptr }; /**< Manager for the Vulkan library. */
+   MainWindow mainWindow_; /**< Main window of the application. */
 };
 
 #endif

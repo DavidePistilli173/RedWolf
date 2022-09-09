@@ -1,6 +1,7 @@
 #ifndef RW_CORE_BASEAPPLICATION_HPP
 #define RW_CORE_BASEAPPLICATION_HPP
 
+#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseObject.hpp"
 #include "RedWolf/time/concepts.hpp"
@@ -26,10 +27,12 @@ namespace rw::core
 
       /**
        * @brief Constructor.
+       * @param manager RedWolf library manager.
        * @param argc Number of command line arguments.
        * @param argv List of command line arguments.
+       * @param parent Parent of the current object.
        */
-      BaseApplication(int argc = 0, char** argv = nullptr);
+      BaseApplication(RedWolfManager& manager, int argc = 0, char** argv = nullptr, BaseObject* parent = nullptr);
 
       /**
        * @brief Destructor.
@@ -127,8 +130,9 @@ namespace rw::core
       std::chrono::microseconds                  cycleDuration_{ 0 };       /**< Duration of each cycle of the main loop in microseconds. */
 
    private:
-      std::vector<std::string> arguments_;         /**< Command line arguments passed at the start of the application. */
-      rw::utils::Logger*       logger_{ nullptr }; /**< Logger. */
+      rw::utils::Logger& logger_; /**< Logger. */
+
+      std::vector<std::string> arguments_; /**< Command line arguments passed at the start of the application. */
    };
 } // namespace rw::core
 

@@ -1,5 +1,6 @@
 #include "MainApplication.hpp"
 
+#include <RedWolf/RedWolfManager.hpp>
 #include <RedWolf/core/BaseObject.hpp>
 #include <RedWolf/utils/Logger.hpp>
 #include <iostream>
@@ -11,20 +12,21 @@ int main(int argc, char** argv)
 {
    try
    {
-      Logger* logger{ Logger::instance() };
-      logger->setDebugLevel(LogLevel::trace);
-      logger->setReleaseLevel(LogLevel::info);
+      rw::RedWolfManager::Options rwOptions;
+      rwOptions.appName = "RedWolf Sandbox";
+      rwOptions.appVerMajor = 0;
+      rwOptions.appVerMinor = 5;
+      rwOptions.appVerPatch = 0;
 
-      if (argc > 0)
-      {
-         logger->trace("Welcome to: {}", argv[0]);
-      }
-      else
-      {
-         logger->trace("Welcome to: RedWolfSandbox!");
-      }
+      rw::RedWolfManager rw{ rwOptions };
 
-      MainApplication app(argc, argv);
+      Logger& logger{ rw.logger() };
+      logger.setDebugLevel(LogLevel::trace);
+      logger.setReleaseLevel(LogLevel::info);
+
+      logger.trace("Welcome to: {}!", rwOptions.appName);
+
+      MainApplication app(rw, argc, argv);
       app.init();
 
       app.run();

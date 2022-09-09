@@ -4,12 +4,12 @@
 
 namespace rw::io
 {
-   File::File(std::string_view filePath, OpenMode mode, Format format) :
-      logger_{ rw::utils::Logger::instance() }, path_{ filePath }, format_{ format }
+   File::File(RedWolfManager& manager, std::string_view filePath, OpenMode mode, Format format) :
+      logger_{ manager.logger() }, path_{ filePath }, format_{ format }
    {
       if (std::filesystem::exists(path_) && std::filesystem::is_directory(path_))
       {
-         logger_->relErr("The input path refers to a directory, not a file ({}).", path_.string());
+         logger_.relErr("The input path refers to a directory, not a file ({}).", path_.string());
          throw std::exception{ "The input path refers to a directory, not a file." };
       }
 
@@ -97,7 +97,7 @@ namespace rw::io
       std::ifstream f = std::ifstream(path_, std::ios_base::in);
       if (!f.is_open())
       {
-         logger_->relErr("Failed to open file {}.", path_.string());
+         logger_.relErr("Failed to open file {}.", path_.string());
          return std::string();
       }
 

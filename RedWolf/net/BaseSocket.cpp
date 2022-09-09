@@ -8,15 +8,22 @@ namespace rw::net
    std::mutex BaseSocket::winsockMutex_;
 #endif
 
-   BaseSocket::BaseSocket(BaseObject* parent) : BaseObject(parent), logger_{ rw::utils::Logger::instance() }
+   BaseSocket::BaseSocket(RedWolfManager& manager, BaseObject* parent) : BaseObject(manager, parent), logger_{ manager.logger() }
    {
 #ifdef _WIN32
       initWinsock_();
 #endif
    }
 
-   BaseSocket::BaseSocket(std::string_view localAddress, std::string_view localPort, Protocol protocol, Family family, BaseObject* parent) :
-      BaseObject(parent), logger_{ rw::utils::Logger::instance() }
+   BaseSocket::BaseSocket(
+      RedWolfManager&  manager,
+      std::string_view localAddress,
+      std::string_view localPort,
+      Protocol         protocol,
+      Family           family,
+      BaseObject*      parent) :
+      BaseObject(manager, parent),
+      logger_{ manager.logger() }
    {
 #ifdef _WIN32
       initWinsock_();
@@ -36,11 +43,11 @@ namespace rw::net
       {
          if (WSACleanup() != 0)
          {
-            logger_->relErr("Failed to clean-up Winsock.");
+            logger_.relErr("Failed to clean-up Winsock.");
          }
          else
          {
-            logger_->relInfo("Winsock library cleaned-up.");
+            logger_.relInfo("Winsock library cleaned-up.");
             winsockInitialised_ = false;
          }
       }
@@ -56,7 +63,7 @@ namespace rw::net
          int result{ closesocket(socket_) };
          if (result == SOCKET_ERROR)
          {
-            logger_->relErr("Failed to close socket {}:{}, error code {}.", localAddress_, localPort_, WSAGetLastError());
+            logger_.relErr("Failed to close socket {}:{}, error code {}.", localAddress_, localPort_, WSAGetLastError());
             return false;
          }
 #endif
@@ -94,7 +101,7 @@ namespace rw::net
       std::scoped_lock lck{ socketMutex_ };
       if (isOpen())
       {
-         logger_->relWarn("Socket already open on {}:{}, cannot open again on {}:{}.", localAddress_, localPort_, localAddress, localPort);
+         logger_.relWarn("Socket already open on {}:{}, cannot open again on {}:{}.", localAddress_, localPort_, localAddress, localPort);
          return false;
       }
 
@@ -138,7 +145,7 @@ namespace rw::net
       int result{ getaddrinfo(localAddress_.c_str(), localPort_.c_str(), &hints, &address) };
       if (result != 0)
       {
-         logger_->relErr("Failed to get socket information for {}:{}, error code {}.", localAddress_, localPort_, result);
+         logger_.relErr("Failed to get socket information for {}:{}, error code {}.", localAddress_, localPort_, result);
          return false;
       }
 
@@ -146,7 +153,7 @@ namespace rw::net
       socket_ = socket(address->ai_family, address->ai_socktype, address->ai_protocol);
       if (socket_ == INVALID_SOCKET)
       {
-         logger_->relErr("Failed to create socket {}:{}, error code {}.", localAddress_, localPort_, WSAGetLastError());
+         logger_.relErr("Failed to create socket {}:{}, error code {}.", localAddress_, localPort_, WSAGetLastError());
          freeaddrinfo(address);
          return false;
       }
@@ -155,7 +162,7 @@ namespace rw::net
       result = bind(socket_, address->ai_addr, static_cast<int>(address->ai_addrlen));
       if (result == SOCKET_ERROR)
       {
-         logger_->relErr("Failed to bind socket {}:{}, error code {}.", localAddress_, localPort_, WSAGetLastError());
+         logger_.relErr("Failed to bind socket {}:{}, error code {}.", localAddress_, localPort_, WSAGetLastError());
          freeaddrinfo(address);
          closesocket(socket_);
          return false;
@@ -181,11 +188,11 @@ namespace rw::net
          int     initResult{ WSAStartup(MAKEWORD(2, 2), &wsaData) };
          if (initResult != 0)
          {
-            logger_->relFatal("Failed to initialise Winsock library.");
+            logger_.relFatal("Failed to initialise Winsock library.");
          }
 
          winsockInitialised_ = true;
-         logger_->relInfo("Winsock library initialised.");
+         logger_.relInfo("Winsock library initialised.");
       }
       ++winsockActiveSockets_;
    }

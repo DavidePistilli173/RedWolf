@@ -1,6 +1,7 @@
 #ifndef RW_CORE_BASEOBJECT_HPP
 #define RW_CORE_BASEOBJECT_HPP
 
+#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/events/BaseEvent.hpp"
 #include "RedWolf/events/concepts.hpp"
@@ -24,9 +25,10 @@ namespace rw::core
    public:
       /**
        * @brief Constructor.
+       * @param manager RedWolf library manager.
        * @param parent Logical parent of the object. Not related to memory management like in other libraries (eg. QT).
        */
-      explicit BaseObject(BaseObject* parent = nullptr);
+      explicit BaseObject(RedWolfManager& manager, BaseObject* parent = nullptr);
 
       /**
        * @brief Generate an event and propagate it to all subscribers using a dedicated thread.

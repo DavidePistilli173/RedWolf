@@ -45,6 +45,7 @@ include_directories(
 )
 
 add_library("${RW_LIB_TARGET_NAME}" SHARED
+    "RedWolfManager.cpp"
     "core/BaseApplication.cpp"
     "core/BaseGUIApplication.cpp"
     "core/BaseObject.cpp"
