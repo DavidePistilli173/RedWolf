@@ -1,7 +1,6 @@
 #ifndef RW_THREAD_THREADPOOL_HPP
 #define RW_THREAD_THREADPOOL_HPP
 
-#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/utils/Logger.hpp"
 
@@ -16,6 +15,11 @@
 #include <shared_mutex>
 #include <thread>
 #include <vector>
+
+namespace rw
+{
+   class RedWolfManager;
+}
 
 namespace rw::thread
 {
@@ -143,13 +147,6 @@ namespace rw::thread
       void clearTasks();
 
       /**
-       * @brief Get the default thread pool.
-       * @param manager RedWolf library manager.
-       * @return Pointer to the default thread pool of the library.
-       */
-      static ThreadPool* defaultPool(RedWolfManager& manager);
-
-      /**
        * @brief Get the current number of threads of the pool.
        * @return size_t Current number of threads of the pool.
        */
@@ -181,8 +178,6 @@ namespace rw::thread
 
       std::mutex                        queueMtx_; /**< Mutex for protecting the tasks queue. */
       std::queue<std::function<void()>> tasks_;    /**< Queue containing pending tasks for the pool. */
-
-      static std::unique_ptr<ThreadPool> defaultPool_; /**< Default thread pool for RedWolf. */
    };
 } // namespace rw::thread
 

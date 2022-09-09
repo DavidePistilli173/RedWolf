@@ -1,7 +1,7 @@
 #include "MainApplication.hpp"
 
 #include <RedWolf/events/DataReadyEvent.hpp>
-#include <RedWolf/utils/Settings.hpp>
+#include <RedWolf/utils/SettingsManager.hpp>
 
 MainApplication::MainApplication(rw::RedWolfManager& rw, int argc, char** argv) :
    BaseGUIApplication(rw, &mainWindow_, argc, argv), rw_{ rw }, logger_{ rw.logger() }, timer_{ rw, this }, socket_{ rw, this },
@@ -43,10 +43,10 @@ void MainApplication::userInit_()
    static constexpr std::string_view socket_local_address{ "local_address" };
    static constexpr std::string_view socket_local_port{ "local_port" };
 
-   rw::utils::Settings* settings{ rw::utils::Settings::instance(rw_) };
+   rw::utils::SettingsManager& settings{ rw_.settingsManager() };
 
    // Set up the main loop.
-   rw::utils::Settings::Node* applicationSettings{ settings->root()->child(application_section) };
+   rw::utils::SettingsManager::Node* applicationSettings{ settings.get()->child(application_section) };
    if (applicationSettings == nullptr)
    {
       logger_.relFatal("Failed to load application settings.");
@@ -56,7 +56,7 @@ void MainApplication::userInit_()
    totalIterations_ = std::atoi(applicationSettings->attribute(application_total_iterations, "5").c_str());
 
    // Set up the timer.
-   rw::utils::Settings::Node* timerSettings{ settings->root()->child(timer_section) };
+   rw::utils::SettingsManager::Node* timerSettings{ settings.get()->child(timer_section) };
    if (timerSettings == nullptr)
    {
       logger_.relFatal("Failed to load timer settings.");
@@ -67,7 +67,7 @@ void MainApplication::userInit_()
    timer_.start();
 
    // Set up the socket.
-   rw::utils::Settings::Node* socketSettings{ settings->root()->child(socket_section) };
+   rw::utils::SettingsManager::Node* socketSettings{ settings.get()->child(socket_section) };
    if (socketSettings == nullptr)
    {
       logger_.relFatal("Failed to load socket settings.");

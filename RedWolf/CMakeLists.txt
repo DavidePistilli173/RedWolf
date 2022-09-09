@@ -63,7 +63,7 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "time/Timer.cpp"
     "ui/BaseWindow.cpp"
     "utils/Logger.cpp"
-    "utils/Settings.cpp"
+    "utils/SettingsManager.cpp"
 )
 set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)

@@ -1,7 +1,6 @@
 #ifndef RW_IO_FILE_HPP
 #define RW_IO_FILE_HPP
 
-#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/cont/ConstexprMap.hpp"
 #include "RedWolf/utils/Logger.hpp"
@@ -12,6 +11,11 @@
 #include <optional>
 #include <string>
 #include <string_view>
+
+namespace rw
+{
+   class RedWolfManager;
+}
 
 namespace rw::io
 {

@@ -1,9 +1,9 @@
 #include "ThreadPool.hpp"
 
+#include "RedWolf/RedWolfManager.hpp"
+
 namespace rw::thread
 {
-   std::unique_ptr<ThreadPool> ThreadPool::defaultPool_; /**< Default thread pool for RedWolf. */
-
    ThreadPool::ThreadPool(RedWolfManager& manager, unsigned int numThreads) : logger_{ manager.logger() }
    {
       workers_.reserve(numThreads);
@@ -45,17 +45,6 @@ namespace rw::thread
    {
       std::scoped_lock lck{ queueMtx_ };
       tasks_ = std::queue<std::function<void()>>();
-   }
-
-   ThreadPool* ThreadPool::defaultPool(RedWolfManager& manager)
-   {
-      if (defaultPool_ == nullptr)
-      {
-         defaultPool_.reset(new ThreadPool(manager));
-         defaultPool_->logger_.relInfo("Default thread pool created.");
-      }
-
-      return defaultPool_.get();
    }
 
    size_t ThreadPool::numberOfThreads() const

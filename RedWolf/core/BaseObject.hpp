@@ -38,7 +38,7 @@ namespace rw::core
       template<rw::events::HasEventID Event>
       void generateEvent(const Event& evnt)
       {
-         threadPool_->addTask(
+         threadPool_.addTask(
             [this, evnt]()
             {
                std::shared_lock lck_{ subscriberMutex_ };
@@ -113,8 +113,8 @@ namespace rw::core
        * @brief List of objects subscribed to the event handling system.
        */
       std::map<unsigned int, std::set<BaseObject*>> subscribers_;
-      std::shared_mutex                             subscriberMutex_;       /**< Mutex for protecting subscribe/unsubscribe operations. */
-      rw::thread::ThreadPool*                       threadPool_{ nullptr }; /**< Thread pool used for event propagation. */
+      std::shared_mutex                             subscriberMutex_; /**< Mutex for protecting subscribe/unsubscribe operations. */
+      rw::thread::ThreadPool&                       threadPool_;      /**< Thread pool used for event propagation. */
    };
 } // namespace rw::core
 

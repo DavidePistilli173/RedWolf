@@ -1,5 +1,7 @@
 #include "File.hpp"
 
+#include "RedWolf/RedWolfManager.hpp"
+
 #include <fstream>
 
 namespace rw::io

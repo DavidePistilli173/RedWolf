@@ -2,10 +2,7 @@
 
 namespace rw::core
 {
-   BaseObject::BaseObject(RedWolfManager& manager, BaseObject* parent) :
-      parent_{ parent }, threadPool_{ rw::thread::ThreadPool::defaultPool(manager) }
-   {
-   }
+   BaseObject::BaseObject(RedWolfManager& manager, BaseObject* parent) : parent_{ parent }, threadPool_{ manager.threadPool() } {}
 
    void BaseObject::handle(const rw::events::BaseEvent& evnt, const BaseObject* sender)
    {

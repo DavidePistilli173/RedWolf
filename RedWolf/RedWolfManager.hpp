@@ -4,7 +4,9 @@
 #include "RedWolf/common.hpp"
 #include "RedWolf/libif/glfw/GlfwManager.hpp"
 #include "RedWolf/libif/vulkan/VulkanManager.hpp"
+#include "RedWolf/thread/ThreadPool.hpp"
 #include "RedWolf/utils/Logger.hpp"
+#include "RedWolf/utils/SettingsManager.hpp"
 
 #include <string>
 
@@ -25,6 +27,8 @@ namespace rw
          int         appVerMajor; /**< Major version number of the user's application. */
          int         appVerMinor; /**< Minor version number of the user's application. */
          int         appVerPatch; /**< Patch version number of the user's application. */
+
+         unsigned int threadPoolThreads{ std::thread::hardware_concurrency() }; /**< Number of threads assigned to the thread pool. */
       };
 
       /**
@@ -46,13 +50,28 @@ namespace rw
       rw::utils::Logger& logger();
 
       /**
+       * @brief Get the library settings manager.
+       * @return Library settings manager.
+       */
+      rw::utils::SettingsManager& settingsManager();
+
+      /**
+       * @brief Get the library thread pool.
+       * @return Library thread pool.
+       */
+      rw::thread::ThreadPool& threadPool();
+
+      /**
        * @brief Get the manager of the Vulkan library.
        * @return Manager of the Vulkan library.
        */
       rw::libif::VulkanManager& vulkanManager();
 
    private:
-      rw::utils::Logger logger_; /**< Logger for the library. */
+      rw::utils::Logger          logger_;          /**< Logger for the library. */
+      rw::utils::SettingsManager settingsManager_; /**< Settings manager for the library. */
+
+      rw::thread::ThreadPool threadPool_; /**< Default thread pool for the library. */
 
       rw::libif::GlfwManager   glfwManager_;   /**< Manager for the GLFW library. */
       rw::libif::VulkanManager vulkanManager_; /**< Manager for the Vulkan library. */
