@@ -1,16 +1,24 @@
 #ifndef RW_CORE_BASEAPPLICATION_HPP
 #define RW_CORE_BASEAPPLICATION_HPP
 
-#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseObject.hpp"
 #include "RedWolf/time/concepts.hpp"
-#include "RedWolf/utils/Logger.hpp"
 
 #include <atomic>
 #include <chrono>
 #include <string>
 #include <vector>
+
+namespace rw
+{
+   class RedWolfManager;
+}
+
+namespace rw::utils
+{
+   class Logger;
+}
 
 namespace rw::core
 {

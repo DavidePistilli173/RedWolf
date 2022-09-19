@@ -12,6 +12,25 @@ but at the time of writing the only compiler which supports all used C++20 featu
         in different compilers or compiler versions).
         Because of this, RedWolf MUST be recompiled with the user's build-chain before use.
 
+### ********** CODE STRUCTURE **********
+All the code for the RedWolf library is contained inside the RedWolf directory.
+This contains the following sub-directories:
+    
+    - alg -> Algorithms;
+    - cont -> Containers;
+    - core -> Core classes;
+    - dat -> Simple structures;
+    - events -> Base and default events;
+    - io -> Input/Output classes;
+    - lif -> Library InterFaces for third_party dependencies;
+    - net -> Network;
+    - text -> String and text processing;
+    - third_party -> Third-party dependencies;
+    - thread -> Multi-threading;
+    - time -> Date and time;
+    - ui -> User Interace
+    - utils -> Utilities.
+
 ### ********** COMPILATION **********
 
 In order to compile the library, you need to install the Vulkan SDK from https://vulkan.lunarg.com/ (The currently tested version is 1.3.216.0).

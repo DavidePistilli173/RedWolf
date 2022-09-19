@@ -5,99 +5,98 @@
 
 #include <algorithm>
 
-namespace rw::utils
+using namespace rw::utils;
+
+SettingsManager::SettingsManager(RedWolfManager& manager) : manager_{ manager }, logger_{ manager.logger() } {}
+
+SettingsManager::Node* SettingsManager::get(std::string_view filePath, rw::io::File::Format format)
 {
-   SettingsManager::SettingsManager(RedWolfManager& manager) : manager_{ manager }, logger_{ manager.logger() } {}
+   std::scoped_lock lck{ mtx_ };
 
-   SettingsManager::Node* SettingsManager::get(std::string_view filePath, rw::io::File::Format format)
+   if (activeFiles_ == max_settings_files)
    {
-      std::scoped_lock lck{ mtx_ };
-
-      if (activeFiles_ == max_settings_files)
-      {
-         logger_.relErr("Maximum number of settings files reached: {}.", max_settings_files);
-         throw std::exception{ "Maximum number of settings files reached." };
-      }
-
-      auto instanceIt = std::find_if(
-         instances_.begin(),
-         instances_.end(),
-         [filePath, this](const rw::dat::KVPair<std::string, std::unique_ptr<Node>>& element) { return element.key == filePath; });
-      if (instanceIt == instances_.end())
-      {
-         instanceIt = load_(filePath, format);
-         logger_.relInfo("Created settings instance {}.", filePath);
-      }
-
-      logger_.trace("Providing settings instance.");
-      return instanceIt->value.get();
+      logger_.relErr("Maximum number of settings files reached: {}.", max_settings_files);
+      throw std::exception{ "Maximum number of settings files reached." };
    }
 
-   std::array<rw::dat::KVPair<std::string, std::unique_ptr<SettingsManager::Node>>, SettingsManager::max_settings_files>::iterator
-      SettingsManager::load_(std::string_view filePath, rw::io::File::Format format)
+   auto instanceIt = std::find_if(
+      instances_.begin(),
+      instances_.end(),
+      [filePath, this](const rw::dat::KVPair<std::string, std::unique_ptr<Node>>& element) { return element.key == filePath; });
+   if (instanceIt == instances_.end())
    {
-      rw::io::File file{ manager_, filePath, rw::io::File::OpenMode::read, format };
-
-      if (format == rw::io::File::Format::unknown)
-      {
-         format = file.format();
-      }
-
-      switch (format)
-      {
-      case rw::io::File::Format::ini:
-         return loadIni_(file);
-         break;
-      case rw::io::File::Format::xml:
-      default:
-         logger_.relFatal("Unsupported file format {} for settings file {}.", format, filePath);
-         break;
-      }
+      instanceIt = load_(filePath, format);
+      logger_.relInfo("Created settings instance {}.", filePath);
    }
 
-   std::array<rw::dat::KVPair<std::string, std::unique_ptr<SettingsManager::Node>>, SettingsManager::max_settings_files>::iterator
-      SettingsManager::loadIni_(rw::io::File& file)
+   logger_.trace("Providing settings instance.");
+   return instanceIt->value.get();
+}
+
+std::array<rw::dat::KVPair<std::string, std::unique_ptr<SettingsManager::Node>>, SettingsManager::max_settings_files>::iterator
+   SettingsManager::load_(std::string_view filePath, rw::io::File::Format format)
+{
+   rw::io::File file{ manager_, filePath, rw::io::File::OpenMode::read, format };
+
+   if (format == rw::io::File::Format::unknown)
    {
-      instances_[activeFiles_].key = file.path().string();
-      instances_[activeFiles_].value = std::unique_ptr<Node>(new Node(nullptr, "General", ""));
-      Node* generalSection = instances_[activeFiles_].value.get();
-      Node* activeSection = instances_[activeFiles_].value.get();
+      format = file.format();
+   }
 
-      for (auto val = file.readline(); val.has_value(); val = file.readline())
+   switch (format)
+   {
+   case rw::io::File::Format::ini:
+      return loadIni_(file);
+      break;
+   case rw::io::File::Format::xml:
+   default:
+      logger_.relFatal("Unsupported file format {} for settings file {}.", format, filePath);
+      break;
+   }
+}
+
+std::array<rw::dat::KVPair<std::string, std::unique_ptr<SettingsManager::Node>>, SettingsManager::max_settings_files>::iterator
+   SettingsManager::loadIni_(rw::io::File& file)
+{
+   instances_[activeFiles_].key = file.path().string();
+   instances_[activeFiles_].value = std::unique_ptr<Node>(new Node(nullptr, "General", ""));
+   Node* generalSection = instances_[activeFiles_].value.get();
+   Node* activeSection = instances_[activeFiles_].value.get();
+
+   for (auto val = file.readline(); val.has_value(); val = file.readline())
+   {
+      std::string trimmedLine = val.value();
+
+      // Remove comments
+      size_t commentIdx{ trimmedLine.find('#') };
+      if (commentIdx != std::string::npos)
       {
-         std::string trimmedLine = val.value();
+         trimmedLine = trimmedLine.substr(0U, commentIdx);
+      }
 
-         // Remove comments
-         size_t commentIdx{ trimmedLine.find('#') };
-         if (commentIdx != std::string::npos)
+      // Trim the line.
+      trimmedLine = rw::text::trim(trimmedLine);
+      if (!trimmedLine.empty())
+      {
+         // Check new section start.
+         if (trimmedLine[0] == '[' && trimmedLine[trimmedLine.length() - 1] == ']')
          {
-            trimmedLine = trimmedLine.substr(0U, commentIdx);
+            activeSection = generalSection->addChild(generalSection, trimmedLine.substr(1U, trimmedLine.length() - 2), "");
          }
-
-         // Trim the line.
-         trimmedLine = rw::text::trim(trimmedLine);
-         if (!trimmedLine.empty())
+         // Add the attribute to the current section.
+         else
          {
-            // Check new section start.
-            if (trimmedLine[0] == '[' && trimmedLine[trimmedLine.length() - 1] == ']')
+            size_t equalsIdx{ trimmedLine.find('=') };
+            if (equalsIdx != std::string::npos)
             {
-               activeSection = generalSection->addChild(generalSection, trimmedLine.substr(1U, trimmedLine.length() - 2), "");
-            }
-            // Add the attribute to the current section.
-            else
-            {
-               size_t equalsIdx{ trimmedLine.find('=') };
-               if (equalsIdx != std::string::npos)
-               {
-                  std::string attributeName{ rw::text::rightTrim(trimmedLine.substr(0U, equalsIdx)) };
-                  std::string attributeValue{ rw::text::leftTrim(trimmedLine.substr(equalsIdx + 1U, trimmedLine.length())) };
-                  activeSection->setAttribute(attributeName, attributeValue);
-               }
+               std::string attributeName{ rw::text::rightTrim(trimmedLine.substr(0U, equalsIdx)) };
+               std::string attributeValue{ rw::text::leftTrim(trimmedLine.substr(equalsIdx + 1U, trimmedLine.length())) };
+               activeSection->setAttribute(attributeName, attributeValue);
             }
          }
       }
-
-      ++activeFiles_;
-      return instances_.begin() + activeFiles_ - 1;
    }
-} // namespace rw::utils
+
+   ++activeFiles_;
+   return instances_.begin() + activeFiles_ - 1;
+}

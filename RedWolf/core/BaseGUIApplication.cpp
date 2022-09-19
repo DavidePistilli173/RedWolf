@@ -1,56 +1,58 @@
 #include "BaseGUIApplication.hpp"
 
-namespace rw::core
+#include "RedWolf/RedWolfManager.hpp"
+#include "RedWolf/ui/BaseWindow.hpp"
+
+using namespace rw::core;
+
+BaseGUIApplication::BaseGUIApplication(RedWolfManager& manager, BaseWindow* window, int argc, char** argv) :
+   BaseApplication(manager, argc, argv)
 {
-   BaseGUIApplication::BaseGUIApplication(RedWolfManager& manager, BaseWindow* window, int argc, char** argv) :
-      BaseApplication(manager, argc, argv)
+   if (window != nullptr)
    {
-      if (window != nullptr)
-      {
-         windows_.emplace_back(window);
-      }
+      windows_.emplace_back(window);
    }
+}
 
-   void BaseGUIApplication::addWindow(BaseWindow* window)
-   {
-      if (window != nullptr)
-      {
-         std::scoped_lock lck{ windowMtx_ };
-         windows_.emplace_back(window);
-      }
-   }
-
-   void BaseGUIApplication::run()
-   {
-      running_ = true;
-      while (running_)
-      {
-         // Get the start time of the current loop.
-         auto startTime = std::chrono::high_resolution_clock::now();
-
-         // Poll events for all windows.
-         updateWindows_();
-
-         BaseApplication::step(); // Step the main application.
-
-         // Get the end time of the current loop
-         auto endTime = std::chrono::high_resolution_clock::now();
-
-         // Sleep/wait for the remaining time if sleeping is enabled.
-         auto remainingTime{ cycleDuration_ - std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime) };
-         if (remainingTime > std::chrono::microseconds(0))
-         {
-            waitForNextCycle_(remainingTime);
-         }
-      }
-   }
-
-   void BaseGUIApplication::updateWindows_()
+void BaseGUIApplication::addWindow(BaseWindow* window)
+{
+   if (window != nullptr)
    {
       std::scoped_lock lck{ windowMtx_ };
-      for (auto win : windows_)
+      windows_.emplace_back(window);
+   }
+}
+
+void BaseGUIApplication::run()
+{
+   running_ = true;
+   while (running_)
+   {
+      // Get the start time of the current loop.
+      auto startTime = std::chrono::high_resolution_clock::now();
+
+      // Poll events for all windows.
+      updateWindows_();
+
+      BaseApplication::step(); // Step the main application.
+
+      // Get the end time of the current loop
+      auto endTime = std::chrono::high_resolution_clock::now();
+
+      // Sleep/wait for the remaining time if sleeping is enabled.
+      auto remainingTime{ cycleDuration_ - std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime) };
+      if (remainingTime > std::chrono::microseconds(0))
       {
-         win->checkEvents();
+         waitForNextCycle_(remainingTime);
       }
    }
-} // namespace rw::core
+}
+
+void BaseGUIApplication::updateWindows_()
+{
+   std::scoped_lock lck{ windowMtx_ };
+   for (auto win : windows_)
+   {
+      win->checkEvents();
+   }
+}

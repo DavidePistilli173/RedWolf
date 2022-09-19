@@ -1,7 +1,6 @@
 #ifndef RW_TIME_TIMER_HPP
 #define RW_TIME_TIMER_HPP
 
-#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseObject.hpp"
 #include "RedWolf/events/TimeoutEvent.hpp"
@@ -12,6 +11,11 @@
 #include <condition_variable>
 #include <mutex>
 #include <thread>
+
+namespace rw
+{
+   class RedWolfManager;
+}
 
 namespace rw::time
 {

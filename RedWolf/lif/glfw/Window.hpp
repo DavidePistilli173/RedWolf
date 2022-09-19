@@ -1,20 +1,28 @@
-#ifndef RW_LIBIF_GLFW_GLFWWINDOW_HPP
-#define RW_LIBIF_GLFW_GLFWWINDOW_HPP
+#ifndef RW_LIF_GLFW_WINDOW_HPP
+#define RW_LIF_GLFW_WINDOW_HPP
 
-#include "RedWolf/RedWolfManager.hpp"
-#include "RedWolf/libif/glfw/GlfwManager.hpp"
-#include "RedWolf/utils/Logger.hpp"
+#include "RedWolf/lif/glfw/GlfwManager.hpp"
 
 #include <string>
 #include <string_view>
 #include <utility>
 
-namespace rw::libif
+namespace rw
+{
+   class RedWolfManager;
+}
+
+namespace rw::utils
+{
+   class Logger;
+}
+
+namespace rw::lif::glfw
 {
    /**
     * @brief Wrapper for a GLFW window.
     */
-   class GlfwWindow
+   class Window
    {
    public:
       /**
@@ -25,12 +33,34 @@ namespace rw::libif
        * @param height Height of the window.
        * @param resizable If true, the window will be resizable.
        */
-      GlfwWindow(RedWolfManager& manager, std::string_view title, int width, int height, bool resizable);
+      Window(RedWolfManager& manager, std::string_view title, int width, int height, bool resizable);
 
       /**
        * @brief Destructor.
        */
-      ~GlfwWindow();
+      ~Window();
+
+      /**
+       * @brief Copy constructor.
+       */
+      Window(const Window&) = delete;
+
+      /**
+       * @brief Move constructor.
+       * @param other Window to move from.
+       */
+      Window(Window&& other);
+
+      /**
+       * @brief Copy-assignment operator.
+       */
+      Window& operator=(const Window&) = delete;
+
+      /**
+       * @brief Move-assignment operator.
+       * @param other Window to move from.
+       */
+      Window& operator=(Window&& other);
 
       /**
        * @brief Check whether the window needs to be closed or not.
@@ -42,6 +72,12 @@ namespace rw::libif
        * @brief Close the currently open window.
        */
       void close();
+
+      /**
+       * @brief Get the raw window handle.
+       * @return Raw window handle.
+       */
+      [[nodiscard]] GLFWwindow* handle();
 
       /**
        * @brief Open the window.
@@ -65,6 +101,6 @@ namespace rw::libif
       std::pair<int, int> size_{ 0, 0 };       /**< Size of the window. */
       bool                resizable_{ false }; /**< If true, the window is resizable. */
    };
-} // namespace rw::libif
+} // namespace rw::lif::glfw
 
 #endif

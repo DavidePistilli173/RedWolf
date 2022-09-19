@@ -23,15 +23,26 @@ Version 0.5.0
         - Add GlfwManager class.
         - Add BaseWindow class.
         - Add BaseGUIApplication class.
-        - Add VulkanManager class.
         - Add RedWolfManager class.
         - Move the default thread pool in the RedWolfManager class.
         - Move the Settings class in the RedWolfManager class.
+        - Add Vulkan Interface class.
+        - Add Vulkan InstanceBase class.
+        - Add Vulkan Instance class.
+        - Add Vulkan DebugUtilsMessenger class.
+        - Add Vulkan FunctionPointers struct.
+        - Add GraphicsDevice class.
+        - Add PhysicalDevice class.
+        - Add Surface class.
+        - Add QueueFamilies struct.
+        - Add PhysicalDeviceManager class.
+        - Add VersionInfo struct.
         - Fix Timer destructor.
         - Fix sign of the time of day in the DateTime structure.
         - Improve comments.
         - [IN PROGRESS] Add Vulkan support.
         - [PLANNED] Add Winsock interface to the RedWolfManager class.
+        - [PLANNED] Add logger to BaseObject as protected member and remove from child classes.
 
      RedWolfSandbox:
         - Add config file.

@@ -1,7 +1,6 @@
 #ifndef RW_CORE_BASEOBJECT_HPP
 #define RW_CORE_BASEOBJECT_HPP
 
-#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/events/BaseEvent.hpp"
 #include "RedWolf/events/concepts.hpp"
@@ -14,6 +13,11 @@
 #include <string_view>
 #include <thread>
 #include <utility>
+
+namespace rw
+{
+   class RedWolfManager;
+}
 
 namespace rw::core
 {

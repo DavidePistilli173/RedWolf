@@ -1,15 +1,22 @@
 #ifndef RW_UI_BASEWINDOW_HPP
 #define RW_UI_BASEWINDOW_HPP
 
-#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseObject.hpp"
-#include "RedWolf/libif/glfw/GlfwManager.hpp"
-#include "RedWolf/libif/glfw/GlfwWindow.hpp"
+#include "RedWolf/lif/glfw/GlfwManager.hpp"
+#include "RedWolf/lif/glfw/Window.hpp"
+#include "RedWolf/lif/vulkan/Instance.hpp"
+#include "RedWolf/lif/vulkan/Surface.hpp"
 
 #include <atomic>
+#include <memory>
 #include <mutex>
 #include <string_view>
+
+namespace rw
+{
+   class RedWolfManager;
+}
 
 namespace rw::ui
 {
@@ -80,8 +87,14 @@ namespace rw::ui
       [[nodiscard]] bool isOpen() const;
 
    private:
-      rw::libif::GlfwManager& glfwManager_; /**< Manager for the GLFW library. */
-      rw::libif::GlfwWindow   window_;      /**< Raw window. */
+      rw::utils::Logger&          logger_;      /**< Library logger. */
+      rw::lif::glfw::GlfwManager& glfwManager_; /**< Manager for the GLFW library. */
+
+      rw::lif::glfw::Window window_; /**< Raw window. */
+
+      rw::lif::vlk::Instance&                vulkanInstance_;            /**< Vulkan instance. */
+      rw::lif::vlk::PhysicalDevice*          physicalDevice_{ nullptr }; /**< Physical rendering device. */
+      std::unique_ptr<rw::lif::vlk::Surface> surface_;                   /**< Surface on which the window will be drawn. */
    };
 } // namespace rw::ui
 

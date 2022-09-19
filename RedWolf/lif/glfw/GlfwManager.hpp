@@ -1,8 +1,7 @@
-#ifndef RW_LIBIF_GLFWMANAGER_HPP
-#define RW_LIBIF_GLFWMANAGER_HPP
+#ifndef RW_LIF_GLFWMANAGER_HPP
+#define RW_LIF_GLFWMANAGER_HPP
 
 #include "RedWolf/common.hpp"
-#include "RedWolf/utils/Logger.hpp"
 
 #include <GLFW/glfw3.h>
 #include <memory>
@@ -10,13 +9,19 @@
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 namespace rw
 {
    class RedWolfManager;
 }
 
-namespace rw::libif
+namespace rw::utils
+{
+   class Logger;
+}
+
+namespace rw::lif::glfw
 {
    /**
     * @brief Interface for the GLFW library.
@@ -37,6 +42,26 @@ namespace rw::libif
       ~GlfwManager();
 
       /**
+       * @brief Copy constructor.
+       */
+      GlfwManager(const GlfwManager&) = delete;
+
+      /**
+       * @brief Move constructor.
+       */
+      GlfwManager(GlfwManager&&) = delete;
+
+      /**
+       * @brief Copy-assignment operator.
+       */
+      GlfwManager& operator=(const GlfwManager&) = delete;
+
+      /**
+       * @brief Move-assignment operator.
+       */
+      GlfwManager& operator=(GlfwManager&&) = delete;
+
+      /**
        * @brief Check whether a window should close or not.
        * @param window Window to check.
        * @return true if the currently open window should close, false otherwise.
@@ -52,6 +77,14 @@ namespace rw::libif
        * @return true on success, false otherwise.
        */
       GLFWwindow* createWindow(std::string_view title, int width, int height, bool resizable);
+
+      /**
+       * @brief Create a Vulkan rendering surface associated with a Window.
+       * @param vulkanInstance Instance of Vulkan.
+       * @param window Window to create the surface for.
+       * @return Vulkan rendering surface. Ownership goes to the caller.
+       */
+      VkSurfaceKHR createWindowSurface(VkInstance vulkanInstance, GLFWwindow* window);
 
       /**
        * @brief Destroy a window.
@@ -74,6 +107,6 @@ namespace rw::libif
    private:
       rw::utils::Logger& logger_; /**< Logger instance. */
    };
-}; // namespace rw::libif
+}; // namespace rw::lif::glfw
 
 #endif

@@ -4,7 +4,9 @@
 #define RW_COMMON_HPP
 
 // Defines
-#define GLFW_INCLUDE_VULKAN /**< Used so that GLFW automatically includes Vulkan headers. */
+#ifndef GLFW_INCLUDE_VULKAN
+    #define GLFW_INCLUDE_VULKAN /**< Used so that GLFW automatically includes Vulkan headers. */
+#endif
 
 namespace rw
 {
@@ -25,15 +27,19 @@ namespace rw
 #ifdef _WIN32
    constexpr bool windows{ true };
 
-   #ifdef RW_DLL
-      #define RW_API __declspec(dllexport)
-   #else
-      #define RW_API __declspec(dllimport)
-   #endif
+   #ifndef RW_API
+       #ifdef RW_DLL
+          #define RW_API __declspec(dllexport)
+       #else
+          #define RW_API __declspec(dllimport)
+       #endif
+    #endif
 #else
    constexpr bool windows{ false };
 
-   #define RW_API
+   #ifndef RW_API
+      #define RW_API
+   #endif
 #endif
 
     constexpr int version_major{ @RedWolf_VERSION_MAJOR@ };

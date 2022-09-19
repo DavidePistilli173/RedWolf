@@ -1,110 +1,109 @@
 #include "SettingsNode.hpp"
 
-namespace rw::dat
+using namespace rw::dat;
+
+SettingsNode::SettingsNode(SettingsNode* parent, std::string_view name, std::string_view value) :
+   parent_{ parent }, name_{ name }, value_{ value }
 {
-   SettingsNode::SettingsNode(SettingsNode* parent, std::string_view name, std::string_view value) :
-      parent_{ parent }, name_{ name }, value_{ value }
+}
+
+SettingsNode* SettingsNode::addChild(SettingsNode* parent, const std::string& name, std::string_view value)
+{
+   std::scoped_lock lck{ mtx_ };
+
+   auto it = children_.find(name);
+   if (it == children_.end())
    {
+      children_.emplace(name, std::vector<std::unique_ptr<SettingsNode>>());
    }
 
-   SettingsNode* SettingsNode::addChild(SettingsNode* parent, const std::string& name, std::string_view value)
-   {
-      std::scoped_lock lck{ mtx_ };
+   return children_[name].emplace_back(std::make_unique<SettingsNode>(parent, name, value)).get();
+}
 
-      auto it = children_.find(name);
-      if (it == children_.end())
-      {
-         children_.emplace(name, std::vector<std::unique_ptr<SettingsNode>>());
-      }
+std::optional<std::string> SettingsNode::attribute(std::string_view name) const
+{
+   std::shared_lock lck{ mtx_ };
 
-      return children_[name].emplace_back(std::make_unique<SettingsNode>(parent, name, value)).get();
-   }
+   auto it = attributes_.find(name);
+   if (it == attributes_.end()) return std::optional<std::string>();
 
-   std::optional<std::string> SettingsNode::attribute(std::string_view name) const
-   {
-      std::shared_lock lck{ mtx_ };
+   return it->second;
+}
 
-      auto it = attributes_.find(name);
-      if (it == attributes_.end()) return std::optional<std::string>();
+std::string SettingsNode::attribute(std::string_view name, std::string_view defaultValue) const
+{
+   std::shared_lock lck{ mtx_ };
 
-      return it->second;
-   }
+   auto it = attributes_.find(name);
+   if (it == attributes_.end()) return std::string(defaultValue);
 
-   std::string SettingsNode::attribute(std::string_view name, std::string_view defaultValue) const
-   {
-      std::shared_lock lck{ mtx_ };
+   return it->second;
+}
 
-      auto it = attributes_.find(name);
-      if (it == attributes_.end()) return std::string(defaultValue);
+SettingsNode* SettingsNode::child(std::string_view name, size_t index)
+{
+   std::shared_lock lck{ mtx_ };
 
-      return it->second;
-   }
+   auto it = children_.find(name);
+   if (it == children_.end()) return nullptr;
+   if (it->second.size() <= index) return nullptr;
 
-   SettingsNode* SettingsNode::child(std::string_view name, size_t index)
-   {
-      std::shared_lock lck{ mtx_ };
+   return it->second[index].get();
+}
 
-      auto it = children_.find(name);
-      if (it == children_.end()) return nullptr;
-      if (it->second.size() <= index) return nullptr;
+size_t SettingsNode::childNumber(std::string_view name) const
+{
+   std::shared_lock lck{ mtx_ };
 
-      return it->second[index].get();
-   }
+   auto it = children_.find(name);
+   if (it == children_.end()) return 0U;
+   return it->second.size();
+}
 
-   size_t SettingsNode::childNumber(std::string_view name) const
-   {
-      std::shared_lock lck{ mtx_ };
+std::string SettingsNode::name() const
+{
+   std::shared_lock lck{ mtx_ };
 
-      auto it = children_.find(name);
-      if (it == children_.end()) return 0U;
-      return it->second.size();
-   }
+   return name_;
+}
 
-   std::string SettingsNode::name() const
-   {
-      std::shared_lock lck{ mtx_ };
+SettingsNode* SettingsNode::parent()
+{
+   std::shared_lock lck{ mtx_ };
 
-      return name_;
-   }
+   return parent_;
+}
 
-   SettingsNode* SettingsNode::parent()
-   {
-      std::shared_lock lck{ mtx_ };
+const SettingsNode* SettingsNode::parent() const
+{
+   std::shared_lock lck{ mtx_ };
 
-      return parent_;
-   }
+   return parent_;
+}
 
-   const SettingsNode* SettingsNode::parent() const
-   {
-      std::shared_lock lck{ mtx_ };
+void SettingsNode::setAttribute(const std::string& name, std::string_view value)
+{
+   std::scoped_lock lck{ mtx_ };
+   attributes_[name] = value;
+}
 
-      return parent_;
-   }
+void SettingsNode::setName(std::string_view newName)
+{
+   std::scoped_lock lck{ mtx_ };
 
-   void SettingsNode::setAttribute(const std::string& name, std::string_view value)
-   {
-      std::scoped_lock lck{ mtx_ };
-      attributes_[name] = value;
-   }
+   name_ = newName;
+}
 
-   void SettingsNode::setName(std::string_view newName)
-   {
-      std::scoped_lock lck{ mtx_ };
+void SettingsNode::setValue(std::string_view newValue)
+{
+   std::scoped_lock lck{ mtx_ };
 
-      name_ = newName;
-   }
+   value_ = newValue;
+}
 
-   void SettingsNode::setValue(std::string_view newValue)
-   {
-      std::scoped_lock lck{ mtx_ };
+std::string SettingsNode::value() const
+{
+   std::shared_lock lck{ mtx_ };
 
-      value_ = newValue;
-   }
-
-   std::string SettingsNode::value() const
-   {
-      std::shared_lock lck{ mtx_ };
-
-      return value_;
-   }
-} // namespace rw::dat
+   return value_;
+}

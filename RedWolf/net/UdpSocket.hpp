@@ -1,13 +1,17 @@
 #ifndef RW_NET_UDPSOCKET_HPP
 #define RW_NET_UDPSOCKET_HPP
 
-#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/net/BaseSocket.hpp"
 #include "RedWolf/utils/Logger.hpp"
 
 #include <string_view>
 #include <thread>
+
+namespace rw
+{
+   class RedWolfManager;
+}
 
 namespace rw::net
 {

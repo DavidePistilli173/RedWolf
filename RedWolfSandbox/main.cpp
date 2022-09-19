@@ -14,9 +14,9 @@ int main(int argc, char** argv)
    {
       rw::RedWolfManager::Options rwOptions;
       rwOptions.appName = "RedWolf Sandbox";
-      rwOptions.appVerMajor = 0;
-      rwOptions.appVerMinor = 5;
-      rwOptions.appVerPatch = 0;
+      rwOptions.appVersion.major = 0;
+      rwOptions.appVersion.minor = 5;
+      rwOptions.appVersion.patch = 0;
 
       rw::RedWolfManager rw{ rwOptions };
 

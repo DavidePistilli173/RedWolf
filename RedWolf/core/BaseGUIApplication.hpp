@@ -1,14 +1,22 @@
 #ifndef RW_CORE_BASEGUIAPPLICATION_HPP
 #define RW_CORE_BASEGUIAPPLICATION_HPP
 
-#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseApplication.hpp"
-#include "RedWolf/ui/BaseWindow.hpp"
 
 #include <mutex>
 #include <optional>
 #include <vector>
+
+namespace rw
+{
+   class RedWolfManager;
+}
+
+namespace rw::ui
+{
+   class BaseWindow;
+}
 
 namespace rw::core
 {

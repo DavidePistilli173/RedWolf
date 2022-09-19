@@ -1,7 +1,6 @@
 #ifndef RW_NET_BASESOCKET_HPP
 #define RW_NET_BASESOCKET_HPP
 
-#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseObject.hpp"
 #include "RedWolf/utils/Logger.hpp"
@@ -17,6 +16,11 @@
    #include <WinSock2.h>
    #undef min // Incompatible with the usage of std::min
 #endif
+
+namespace rw
+{
+   class RedWolfManager;
+}
 
 namespace rw::net
 {

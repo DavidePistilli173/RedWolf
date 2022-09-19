@@ -3,7 +3,6 @@
 
 #include "RedWolf/common.hpp"
 #include "RedWolf/cont/ConstexprMap.hpp"
-#include "RedWolf/utils/Logger.hpp"
 
 #include <filesystem>
 #include <format>
@@ -15,6 +14,11 @@
 namespace rw
 {
    class RedWolfManager;
+}
+
+namespace rw::utils
+{
+   class Logger;
 }
 
 namespace rw::io
