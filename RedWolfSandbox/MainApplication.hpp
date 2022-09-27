@@ -5,7 +5,6 @@
 
 #include <RedWolf/RedWolfManager.hpp>
 #include <RedWolf/core/BaseGUIApplication.hpp>
-#include <RedWolf/libif/vulkan/VulkanManager.hpp>
 #include <RedWolf/net/UdpSocket.hpp>
 #include <RedWolf/time/Timer.hpp>
 #include <RedWolf/utils/Logger.hpp>
