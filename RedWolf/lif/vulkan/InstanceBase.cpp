@@ -24,6 +24,14 @@ InstanceBase::~InstanceBase()
    vulkanInterface_.destroyInstance(instance_);
 }
 
+InstanceBase::InstanceBase(InstanceBase&& other) :
+   manager_{ other.manager_ }, logger_{ other.logger_ }, vulkanInterface_{ other.vulkanInterface_ }, debugInfo_{ other.debugInfo_ },
+   appName_{ other.appName_ }, appVersion_{ other.appVersion_ }, additionalExtensions_{ other.additionalExtensions_ }
+{
+   instance_ = other.instance_;
+   other.instance_ = VK_NULL_HANDLE;
+}
+
 VkInstance InstanceBase::handle()
 {
    return instance_;
@@ -42,7 +50,7 @@ void InstanceBase::createInstance_(void* debugUserData)
    appInfo.pNext = nullptr;
 
    // Instance information.
-   VkInstanceCreateInfo instanceInfo;
+   VkInstanceCreateInfo instanceInfo{};
    instanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
    instanceInfo.pApplicationInfo = &appInfo;
 
@@ -51,8 +59,8 @@ void InstanceBase::createInstance_(void* debugUserData)
    {
       static std::vector<const char*> requiredValidationLayers{ "VK_LAYER_KHRONOS_validation" };
 
-      instanceInfo.enabledLayerCount = requiredValidationLayers.size();
-      instanceInfo.ppEnabledExtensionNames = requiredValidationLayers.data();
+      instanceInfo.enabledLayerCount = static_cast<uint32_t>(requiredValidationLayers.size());
+      instanceInfo.ppEnabledLayerNames = requiredValidationLayers.data();
 
       // Debug extension.
       additionalExtensions_.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -66,7 +74,7 @@ void InstanceBase::createInstance_(void* debugUserData)
    additionalExtensions_.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
    // Set enabled extensions
-   instanceInfo.enabledExtensionCount = additionalExtensions_.size();
+   instanceInfo.enabledExtensionCount = static_cast<uint32_t>(additionalExtensions_.size());
    instanceInfo.ppEnabledExtensionNames = additionalExtensions_.data();
 
    // Enable debug messages for create/destroy instance functions.

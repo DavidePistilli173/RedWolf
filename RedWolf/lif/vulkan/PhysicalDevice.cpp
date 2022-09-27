@@ -1,11 +1,11 @@
 #include "PhysicalDevice.hpp"
 
 #include "RedWolf/RedWolfManager.hpp"
+#include "RedWolf/lif/vulkan/GraphicsDevice.hpp"
 
 using namespace rw::lif::vlk;
 
-PhysicalDevice::PhysicalDevice(RedWolfManager& manager, VkPhysicalDevice device) :
-   logger_{ manager.logger() }, vulkanInterface_{ manager.vulkanInterface() }, device_{ device }
+PhysicalDevice::PhysicalDevice(RedWolfManager& manager, VkPhysicalDevice device) : BaseObject(manager), device_{ device }
 {
    if (device == VK_NULL_HANDLE)
    {
@@ -16,12 +16,14 @@ PhysicalDevice::PhysicalDevice(RedWolfManager& manager, VkPhysicalDevice device)
    properties_ = data.first;
    features_ = data.second;
 
-   auto queueFamilyProperties_ = vulkanInterface_.getPhysicalDeviceQueueFamilies(device_);
+   queueFamilyProperties_ = vulkanInterface_.getPhysicalDeviceQueueFamilies(device_);
    for (size_t i{ 0U }; i < queueFamilyProperties_.size(); ++i)
    {
-      if (!queueFamilies_.graphics.has_value() && queueFamilyProperties_[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+      if (
+         !queueFamilies_.queues[static_cast<size_t>(QueueFamilies::Id::graphics)].has_value() &&
+         queueFamilyProperties_[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
       {
-         queueFamilies_.graphics = i;
+         queueFamilies_.queues[static_cast<size_t>(QueueFamilies::Id::graphics)] = i;
       }
    }
 }
@@ -32,6 +34,11 @@ rw::lif::vlk::QueueFamilies PhysicalDevice::availableQueueFamilies() const
    return queueFamilies_;
 }
 
+std::unique_ptr<GraphicsDevice> PhysicalDevice::createGraphicsDevice(VkSurfaceKHR surface)
+{
+   return std::make_unique<GraphicsDevice>(manager_, *this);
+}
+
 VkPhysicalDevice PhysicalDevice::handle()
 {
    return device_;
@@ -39,20 +46,27 @@ VkPhysicalDevice PhysicalDevice::handle()
 
 bool PhysicalDevice::isOpCategorySupported(OpCategory cat) const
 {
-   return queueFamilies_.graphics.has_value();
+   switch (cat)
+   {
+   case OpCategory::graphics:
+      return queueFamilies_.queues[static_cast<size_t>(QueueFamilies::Id::graphics)].has_value();
+      break;
+   }
+
+   return false;
 }
 
 bool PhysicalDevice::isSurfaceSupported(VkSurfaceKHR surface)
 {
    std::scoped_lock lck{ mtx_ };
 
-   if (queueFamilies_.presentation.has_value()) return true;
+   if (queueFamilies_.queues[static_cast<size_t>(QueueFamilies::Id::presentation)].has_value()) return true;
 
-   for (size_t i{ 0U }; i < queueFamilyProperties_.size(); ++i)
+   for (uint32_t i{ 0U }; i < queueFamilyProperties_.size(); ++i)
    {
       if (vulkanInterface_.checkSurfaceSupport(device_, i, surface))
       {
-         queueFamilies_.presentation = i;
+         queueFamilies_.queues[static_cast<size_t>(QueueFamilies::Id::presentation)] = i;
          return true;
       }
    }

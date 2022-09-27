@@ -52,14 +52,34 @@ VkDevice Interface::createDevice(VkPhysicalDevice physicalDevice, const VkDevice
 
 VkInstance Interface::createInstance(const VkInstanceCreateInfo& info)
 {
-   VkInstance result;
+   VkInstance result{ VK_NULL_HANDLE };
+   VkResult   errorCode{ vkCreateInstance(&info, nullptr, &result) };
 
-   if (vkCreateInstance(&info, nullptr, &result) == VK_SUCCESS)
+   if (errorCode == VK_SUCCESS)
    {
       if (!initialiseFunctions_(result))
       {
          logger_.relErr("Failed to initialise instance function pointers.");
          destroyInstance(result);
+      }
+   }
+   else
+   {
+      logger_.relErr("Failed to create the instance, error code {}.", errorCode);
+   }
+
+   return result;
+}
+
+VkSwapchainKHR Interface::createSwapChain(VkDevice device, const VkSwapchainCreateInfoKHR& createInfo)
+{
+   VkSwapchainKHR result{ VK_NULL_HANDLE };
+
+   if (device != VK_NULL_HANDLE)
+   {
+      if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &result) != VK_SUCCESS)
+      {
+         logger_.relErr("Failed to create swap chain.");
       }
    }
 
@@ -81,9 +101,15 @@ void Interface::destroyInstance(VkInstance instance)
    functions_.erase(instance);
    vkDestroyInstance(instance, nullptr);
 }
+
 void Interface::destroySurface(VkInstance instance, VkSurfaceKHR surface)
 {
    vkDestroySurfaceKHR(instance, surface, nullptr);
+}
+
+void Interface::destroySwapChain(VkDevice device, VkSwapchainKHR swapChain)
+{
+   vkDestroySwapchainKHR(device, swapChain, nullptr);
 }
 
 VkQueue Interface::getDeviceQueue(VkDevice device, uint32_t familyIndex, uint32_t queueIndex) const
@@ -115,6 +141,7 @@ std::pair<VkPhysicalDeviceProperties, VkPhysicalDeviceFeatures> Interface::getPh
 std::vector<VkPhysicalDevice> Interface::getPhysicalDevices(VkInstance instance) const
 {
    std::vector<VkPhysicalDevice> result;
+   VkPhysicalDevice              dev;
 
    if (instance != VK_NULL_HANDLE)
    {
@@ -122,7 +149,7 @@ std::vector<VkPhysicalDevice> Interface::getPhysicalDevices(VkInstance instance)
       vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
       result.resize(deviceCount);
-      vkEnumeratePhysicalDevices(instance, &deviceCount, result.data());
+      vkEnumeratePhysicalDevices(instance, &deviceCount, &dev);
    }
 
    return result;

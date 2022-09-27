@@ -2,6 +2,7 @@
 #define RW_LIF_VULKAN_DEBUGUTILSMESSENGER_HPP
 
 #include "RedWolf/common.hpp"
+#include "RedWolf/lif/vulkan/BaseObject.hpp"
 #include "RedWolf/lif/vulkan/Interface.hpp"
 
 #include <mutex>
@@ -18,7 +19,7 @@ namespace rw::utils
 
 namespace rw::lif::vlk
 {
-   class RW_API DebugUtilsMessenger
+   class RW_API DebugUtilsMessenger : public BaseObject
    {
    public:
       /**
@@ -30,7 +31,7 @@ namespace rw::lif::vlk
       /**
        * @brief Destructor.
        */
-      ~DebugUtilsMessenger();
+      virtual ~DebugUtilsMessenger();
 
       /**
        * @brief Copy constructor.
@@ -67,18 +68,12 @@ namespace rw::lif::vlk
 
       /**
        * @brief Initialise the debug messenger.
-       * @param instance Vulkan instance that will own this object.
        * @param args Initialisation arguments.
        * @return true on success, false otherwise.
        */
-      bool initialise(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT& args);
+      bool initialise(const VkDebugUtilsMessengerCreateInfoEXT& args);
 
    private:
-      rw::utils::Logger& logger_;          /**< Library logger. */
-      Interface&         vulkanInterface_; /**< Interface to the Vulkan API. */
-
-      VkInstance vulkanInstance_{ VK_NULL_HANDLE }; /**< Vulkan instance this object refers to. */
-
       std::mutex               debugCallbackMutex_; /**< Mutex for protecting the debug callback. */
       VkDebugUtilsMessengerEXT messenger_;          /**< Raw messenger handle. */
    };

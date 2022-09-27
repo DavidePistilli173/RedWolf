@@ -93,6 +93,13 @@ namespace rw::lif::glfw
       void destroyWindow(GLFWwindow* window);
 
       /**
+       * @brief Get the size of the frame buffer in pixels for a given window.
+       * @param window Target window.
+       * @return pair containing the width and the height, in this order.
+       */
+      [[nodiscard]] std::pair<int, int> getFrameBufferSize(GLFWwindow* window) const;
+
+      /**
        * @brief Get the required Vulkan extensions for GLFW.
        * @return Vector containing the pointers to the names of all required extensions.
        */

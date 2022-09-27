@@ -5,6 +5,7 @@
 #include "RedWolf/core/BaseObject.hpp"
 #include "RedWolf/lif/glfw/GlfwManager.hpp"
 #include "RedWolf/lif/glfw/Window.hpp"
+#include "RedWolf/lif/vulkan/GraphicsDevice.hpp"
 #include "RedWolf/lif/vulkan/Instance.hpp"
 #include "RedWolf/lif/vulkan/Surface.hpp"
 
@@ -68,17 +69,9 @@ namespace rw::ui
       /**
        * @brief Open the window.
        * @detail This function must be called from the main thread.
-       * @param title Title of the window.
-       * @param width Width of the window.
-       * @param height Height of the window.
-       * @param resizable If true, the window will be resizable.
        * @return true on success, false otherwise.
        */
-      bool open(
-         std::string_view title = default_window_title,
-         int              width = default_window_width,
-         int              height = default_window_height,
-         bool             resizable = false);
+      bool open();
 
       /**
        * @brief Check whether the window is open or not.
@@ -87,14 +80,16 @@ namespace rw::ui
       [[nodiscard]] bool isOpen() const;
 
    private:
+      RedWolfManager&             manager_;     /**< RedWolf library manager. */
       rw::utils::Logger&          logger_;      /**< Library logger. */
       rw::lif::glfw::GlfwManager& glfwManager_; /**< Manager for the GLFW library. */
 
       rw::lif::glfw::Window window_; /**< Raw window. */
 
-      rw::lif::vlk::Instance&                vulkanInstance_;            /**< Vulkan instance. */
-      rw::lif::vlk::PhysicalDevice*          physicalDevice_{ nullptr }; /**< Physical rendering device. */
-      std::unique_ptr<rw::lif::vlk::Surface> surface_;                   /**< Surface on which the window will be drawn. */
+      rw::lif::vlk::Instance&                       vulkanInstance_;            /**< Vulkan instance. */
+      rw::lif::vlk::PhysicalDevice*                 physicalDevice_{ nullptr }; /**< Physical rendering device. */
+      std::unique_ptr<rw::lif::vlk::GraphicsDevice> graphicsDevice_;            /**< Logical rendering device. */
+      std::unique_ptr<rw::lif::vlk::Surface>        surface_;                   /**< Surface on which the window will be drawn. */
    };
 } // namespace rw::ui
 

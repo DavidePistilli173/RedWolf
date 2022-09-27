@@ -62,6 +62,18 @@ void GlfwManager::destroyWindow(GLFWwindow* window)
    glfwDestroyWindow(window);
 }
 
+std::pair<int, int> GlfwManager::getFrameBufferSize(GLFWwindow* window) const
+{
+   std::pair<int, int> result;
+
+   if (window != nullptr)
+   {
+      glfwGetFramebufferSize(window, &result.first, &result.second);
+   }
+
+   return result;
+}
+
 std::vector<const char*> GlfwManager::getRequiredVulkanInstanceExtensions()
 {
    uint32_t     glfwExtensionCount{ 0U };

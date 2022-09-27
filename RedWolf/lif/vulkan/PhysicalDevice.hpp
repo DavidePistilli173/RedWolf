@@ -1,10 +1,12 @@
 #ifndef RW_LIF_VULKAN_VULKANPHYSICALDEVICE_HPP
 #define RW_LIF_VULKAN_VULKANPHYSICALDEVICE_HPP
 
+#include "RedWolf/lif/vulkan/BaseObject.hpp"
 #include "RedWolf/lif/vulkan/Interface.hpp"
 #include "RedWolf/lif/vulkan/QueueFamilies.hpp"
 
 #include <map>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <vulkan/vulkan.h>
@@ -12,6 +14,11 @@
 namespace rw
 {
    class RedWolfManager;
+}
+
+namespace rw::lif::vlk
+{
+   class GraphicsDevice;
 }
 
 namespace rw::utils
@@ -24,7 +31,7 @@ namespace rw::lif::vlk
    /**
     * @brief Wrapper for a Vulkan physical device.
     */
-   class RW_API PhysicalDevice
+   class RW_API PhysicalDevice : public BaseObject
    {
    public:
       /**
@@ -48,6 +55,13 @@ namespace rw::lif::vlk
       [[nodiscard]] QueueFamilies availableQueueFamilies() const;
 
       /**
+       * @brief Create a graphics device from this physical device.
+       * @param surface Surface used for rendering.
+       * @return Owning pointer to the new graphics device.
+       */
+      [[nodiscard]] std::unique_ptr<GraphicsDevice> createGraphicsDevice(VkSurfaceKHR surface);
+
+      /**
        * @brief Get the device handle.
        * @return Handle of the physical device.
        */
@@ -68,9 +82,6 @@ namespace rw::lif::vlk
       [[nodiscard]] bool isSurfaceSupported(VkSurfaceKHR surface);
 
    private:
-      rw::utils::Logger& logger_;          /**< Logger. */
-      Interface&         vulkanInterface_; /**< Interface for the Vulkan API. */
-
       mutable std::mutex mtx_; /**< Device mutex. */
 
       VkPhysicalDevice           device_{ VK_NULL_HANDLE }; /**< Handle to the raw device. */

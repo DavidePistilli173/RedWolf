@@ -4,16 +4,13 @@
 
 using namespace rw::lif::vlk;
 
-DebugUtilsMessenger::DebugUtilsMessenger(RedWolfManager& manager) :
-   logger_{ manager.logger() }, vulkanInterface_{ manager.vulkanInterface() }
-{
-}
+DebugUtilsMessenger::DebugUtilsMessenger(RedWolfManager& manager) : BaseObject(manager) {}
 
 DebugUtilsMessenger::~DebugUtilsMessenger()
 {
-   if (vulkanInstance_ != VK_NULL_HANDLE && messenger_ != VK_NULL_HANDLE)
+   if (messenger_ != VK_NULL_HANDLE)
    {
-      vulkanInterface_.destroyDebugUtilsMessenger(vulkanInstance_, messenger_);
+      vulkanInterface_.destroyDebugUtilsMessenger(vulkanInstance_.handle(), messenger_);
    }
 }
 
@@ -66,18 +63,17 @@ VKAPI_ATTR VkBool32 VKAPI_CALL DebugUtilsMessenger::debugCallback(
    return VK_FALSE;
 }
 
-bool DebugUtilsMessenger::initialise(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT& args)
+bool DebugUtilsMessenger::initialise(const VkDebugUtilsMessengerCreateInfoEXT& args)
 {
-   if (instance == VK_NULL_HANDLE) return false;
+   std::scoped_lock lck{ debugCallbackMutex_ };
+
    if (messenger_ != VK_NULL_HANDLE)
    {
       logger_.warn("Vulkan debug messenger already initialised.");
       return false;
    }
 
-   vulkanInstance_ = instance;
-
-   auto messenger = vulkanInterface_.createDebugUtilsMessenger(vulkanInstance_, args);
+   auto messenger = vulkanInterface_.createDebugUtilsMessenger(vulkanInstance_.handle(), args);
    if (!messenger.has_value()) return false;
 
    messenger_ = messenger.value();

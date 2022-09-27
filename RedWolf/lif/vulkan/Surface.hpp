@@ -2,9 +2,12 @@
 #define RW_LIBIF_VULKAN_VULKANSURFACE_HPP
 
 #include "RedWolf/lif/glfw/GlfwManager.hpp"
+#include "RedWolf/lif/vulkan/BaseObject.hpp"
 #include "RedWolf/lif/vulkan/Interface.hpp"
+#include "RedWolf/lif/vulkan/SwapChain.hpp"
 
-#include <mutex>
+#include <memory>
+#include <shared_mutex>
 #include <vector>
 #include <vulkan/vulkan.h>
 
@@ -16,7 +19,8 @@ namespace rw
 namespace rw::lif::vlk
 {
    class Instance;
-}
+   class PhysicalDevice;
+} // namespace rw::lif::vlk
 
 namespace rw::utils
 {
@@ -28,7 +32,7 @@ namespace rw::lif::vlk
    /**
     * @brief Wrapper for a VkSurfaceKHR.
     */
-   class RW_API Surface
+   class RW_API Surface : public BaseObject
    {
    public:
       /**
@@ -51,7 +55,7 @@ namespace rw::lif::vlk
       /**
        * @brief Move constructor.
        */
-      Surface(Surface&& other);
+      Surface(Surface&&) = delete;
 
       /**
        * @brief Copy-assignment operator.
@@ -61,31 +65,19 @@ namespace rw::lif::vlk
       /**
        * @brief Move-assignment operator.
        */
-      Surface& operator=(Surface&& other);
+      Surface& operator=(Surface&&) = delete;
 
       /**
        * @brief Get the capabilities of the surface.
        * @return Capabilities of the surface.
        */
-      VkSurfaceCapabilitiesKHR capabilities() const;
+      [[nodiscard]] VkSurfaceCapabilitiesKHR capabilities() const;
 
       /**
        * @brief Get the formats supported by the surface.
        * @return Formats supported by the surface.
        */
-      std::vector<VkSurfaceFormatKHR> formats() const;
-
-      /**
-       * @brief Get the best format that the surface can support.
-       * @return Best format that the surface can support.
-       */
-      VkSurfaceFormatKHR getBestFormat() const;
-
-      /**
-       * @brief Get the best presentation mode that the surface can support.
-       * @return Best presentation mode that the surface can support.
-       */
-      VkPresentModeKHR getBestMode() const;
+      [[nodiscard]] std::vector<VkSurfaceFormatKHR> formats() const;
 
       /**
        * @brief Get the surface's raw handle.
@@ -94,29 +86,62 @@ namespace rw::lif::vlk
       [[nodiscard]] VkSurfaceKHR handle();
 
       /**
-       * @brief Initialise the surface.
-       * @param physicalDevice Device that will render to the surface.
-       */
-      bool init(VkPhysicalDevice physicalDevice);
-
-      /**
        * @brief Get the modes supported by the surface.
        * @return Modes supported by the surface.
        */
-      std::vector<VkPresentModeKHR> modes() const;
+      [[nodiscard]] std::vector<VkPresentModeKHR> modes() const;
+
+      /**
+       * @brief Get the currently selected extent for the surface.
+       * @return Currently selected extend for the surface.
+       */
+      [[nodiscard]] VkExtent2D selectedExtent() const;
+
+      /**
+       * @brief Get the currently selected format for the surface.
+       * @return Currently selected format for the surface.
+       */
+      [[nodiscard]] VkSurfaceFormatKHR selectedFormat() const;
+
+      /**
+       * @brief Get the currently selected presentation mode for the surface.
+       * @return Currently selected presentation mode for the surface.
+       */
+      [[nodiscard]] VkPresentModeKHR selectedMode() const;
+
+      /**
+       * @brief Set the physical and logical devices that will render on the surface.
+       * @param physicalDevice Physical device that will render to the surface.
+       * @param graphicsDevice Logical device that will render to the surface.
+       * @return true on success, false otherwise.
+       */
+      bool setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice);
 
    private:
-      rw::utils::Logger&          logger_;          /**< Library logger. */
-      rw::lif::glfw::GlfwManager& glfwManager_;     /**< GLFW library manager. */
-      Interface&                  vulkanInterface_; /**< Vulkan API interface. */
+      /**
+       * @brief Initialise the swap chain for this surface.
+       * @param physicalDevice Physical device that will present images to the swap chain.
+       * @param graphicsDevice Logical device that will present images to the swap chain.
+       * @return true on success, false otherwise.
+       */
+      bool initSwapChain_(PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice);
 
-      mutable std::mutex mtx_; /**< Surface mutex. */
+      rw::lif::glfw::GlfwManager& glfwManager_; /**< GLFW library manager. */
 
-      Instance&                       instance_;                  /**< Vulkan instance that owns this surface. */
-      VkSurfaceKHR                    surface_{ VK_NULL_HANDLE }; /**< Raw handle to the surface. */
-      VkSurfaceCapabilitiesKHR        capabilities_;              /**< Surface capabilities. */
-      std::vector<VkSurfaceFormatKHR> formats_;                   /**< Supported image formats. */
-      std::vector<VkPresentModeKHR>   modes_;                     /**< Present modes. */
+      mutable std::shared_mutex mtx_; /**< Surface mutex. */
+
+      GLFWwindow*  window_{ nullptr };         /**< Window that owns this surface. */
+      VkSurfaceKHR surface_{ VK_NULL_HANDLE }; /**< Raw handle to the surface. */
+
+      VkSurfaceCapabilitiesKHR        capabilities_; /**< Surface capabilities. */
+      std::vector<VkSurfaceFormatKHR> formats_;      /**< Supported image formats. */
+      std::vector<VkPresentModeKHR>   modes_;        /**< Present modes. */
+
+      VkSurfaceFormatKHR selectedFormat_; /**< Currently selected format. */
+      VkPresentModeKHR   selectedMode_;   /**< Currently selected presentation mode. */
+      VkExtent2D         selectedExtent_; /**< Currently selected surface resolution. */
+
+      std::unique_ptr<SwapChain> swapChain_; /**< Swap chain for the surface. */
    };
 } // namespace rw::lif::vlk
 

@@ -3,6 +3,7 @@
 
 #include "RedWolf/common.hpp"
 
+#include <array>
 #include <optional>
 
 namespace rw::lif::vlk
@@ -12,8 +13,17 @@ namespace rw::lif::vlk
     */
    struct RW_API QueueFamilies
    {
-      std::optional<uint32_t> graphics;     /**< Queue family for graphics commands. */
-      std::optional<uint32_t> presentation; /**< Queue family for image presentation to surfaces. */
+      /**
+       * @brief Queue IDs.
+       */
+      enum class Id
+      {
+         graphics,     /**< Queue family for graphics commands. */
+         presentation, /**< Queue family for image presentation to surfaces. */
+         num_elements
+      };
+
+      std::array<std::optional<uint32_t>, static_cast<size_t>(Id::num_elements)> queues; /**< Queue indices. */
    };
 } // namespace rw::lif::vlk
 #endif

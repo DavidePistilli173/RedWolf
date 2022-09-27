@@ -34,7 +34,7 @@ void Instance::init_()
    // Set up debug messages
    if constexpr (rw::debug)
    {
-      if (!debugMessenger_.initialise(instance_, debugInfo_))
+      if (!debugMessenger_.initialise(debugInfo_))
       {
          logger_.err("Failed to initialise Vulkan debug messenger.");
       }

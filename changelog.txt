@@ -37,6 +37,7 @@ Version 0.5.0
         - Add QueueFamilies struct.
         - Add PhysicalDeviceManager class.
         - Add VersionInfo struct.
+        - Add Vulkan BaseObject class.
         - Fix Timer destructor.
         - Fix sign of the time of day in the DateTime structure.
         - Improve comments.

@@ -1,6 +1,7 @@
 #ifndef RW_LIF_VULKAN_VULKANDEVICE_HPP
 #define RW_LIF_VULKAN_VULKANDEVICE_HPP
 
+#include "RedWolf/lif/vulkan/DeviceBase.hpp"
 #include "RedWolf/lif/vulkan/Interface.hpp"
 #include "RedWolf/lif/vulkan/QueueFamilies.hpp"
 
@@ -21,23 +22,27 @@ namespace rw::lif::vlk
 {
    class PhysicalDevice;
    class Surface;
+} // namespace rw::lif::vlk
 
+namespace rw::lif::vlk
+{
    /**
     * @brief Wrapper for a Vulkan logical device that supports the graphics pipeline.
     */
-   class RW_API GraphicsDevice
+   class RW_API GraphicsDevice : public DeviceBase
    {
    public:
-      friend class PhysicalDevice;
+      /**
+       * @brief Ids of the queue families required for a graphics device.
+       */
+      static constexpr std::array required_queues{ QueueFamilies::Id::graphics, QueueFamilies::Id::presentation };
 
-   private:
       /**
        * @brief Constructor.
        * @param manager RedWolf library manager.
        * @param physicalDevice The physical device that this logical device will reference.
-       * @param surface Surface that will be used with this device.
        */
-      GraphicsDevice(RedWolfManager& manager, PhysicalDevice& physicalDevice, Surface& surface);
+      GraphicsDevice(RedWolfManager& manager, PhysicalDevice& physicalDevice);
 
       /**
        * @brief Destructor.
@@ -51,8 +56,9 @@ namespace rw::lif::vlk
 
       /**
        * @brief Move constructor.
+       * @param other Device to move from.
        */
-      GraphicsDevice(GraphicsDevice& other);
+      GraphicsDevice(GraphicsDevice&& other);
 
       /**
        * @brief Copy-assignment operator.
@@ -62,22 +68,15 @@ namespace rw::lif::vlk
       /**
        * @brief Move-assignment operator.
        */
-      GraphicsDevice& operator=(GraphicsDevice&& other);
+      GraphicsDevice& operator=(GraphicsDevice&&) = delete;
 
       /**
-       * @brief Initialise the queue data for device creation.
-       * @param availableQueueFamilies List of available queues.
+       * @brief Get the raw handle of the device.
+       * @return Raw handle of the device.
        */
-      [[nodiscard]] std::vector<VkDeviceQueueCreateInfo> initialiseQueueData_(const QueueFamilies& availableQueueFamilies);
+      [[nodiscard]] VkDevice handle();
 
-      rw::utils::Logger& logger_;          /**< Library logger. */
-      Interface&         vulkanInterface_; /**< Vulkan library manager. */
-
-      VkPhysicalDevice physicalDevice_; /**< Physical device that owns this logical device. */
-
-      VkDevice device_{ VK_NULL_HANDLE };            /**< Raw handle to the logical device. */
-      VkQueue  graphicsQueue_{ VK_NULL_HANDLE };     /**< Handle to the graphics queue. */
-      VkQueue  presentationQueue_{ VK_NULL_HANDLE }; /**< Handle to the image presentation queue. */
+   private:
    };
 } // namespace rw::lif::vlk
 

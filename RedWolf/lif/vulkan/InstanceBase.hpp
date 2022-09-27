@@ -48,6 +48,27 @@ namespace rw::lif::vlk
       virtual ~InstanceBase();
 
       /**
+       * @brief Copy constructor.
+       */
+      InstanceBase(const InstanceBase&) = delete;
+
+      /**
+       * @brief Move constructor.
+       * @param other Instance to move from.
+       */
+      InstanceBase(InstanceBase&& other);
+
+      /**
+       * @brief Copy-assignment operator.
+       */
+      InstanceBase& operator=(const InstanceBase&) = delete;
+
+      /**
+       * @brief Move-assignment operator.
+       */
+      InstanceBase& operator=(InstanceBase&) = delete;
+
+      /**
        * @brief Get the raw handle to the instance.
        * @return Raw handle to the instance.
        */

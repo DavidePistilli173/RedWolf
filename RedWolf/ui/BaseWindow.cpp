@@ -6,27 +6,9 @@
 using namespace rw::ui;
 
 BaseWindow::BaseWindow(RedWolfManager& manager, std::string_view title, int width, int height, bool resizable, BaseObject* parent) :
-   BaseObject(manager, parent), logger_{ manager.logger() },
+   BaseObject(manager, parent), manager_{ manager }, logger_{ manager.logger() },
    glfwManager_{ manager.glfwManager() }, window_{ manager, title, width, height, resizable }, vulkanInstance_{ manager.vulkanInstance() }
 {
-   // Create a surface.
-   surface_ = std::make_unique<rw::lif::vlk::Surface>(manager, window_.handle());
-
-   // Get the physical device for rendering.
-   bool done{ false };
-   while (!done)
-   {
-      physicalDevice_ = vulkanInstance_.getNextPhysicalDevice(rw::lif::vlk::PhysicalDevice::OpCategory::graphics, physicalDevice_);
-      if (physicalDevice_ == nullptr)
-      {
-         logger_.relFatal("No physical device supports the graphics pipeline.");
-      }
-
-      if (physicalDevice_->isSurfaceSupported(surface_->handle()) && surface_->init(physicalDevice_->handle()))
-      {
-         done = true;
-      }
-   }
 }
 
 void BaseWindow::checkEvents()
@@ -42,12 +24,36 @@ void BaseWindow::checkEvents()
 
 void BaseWindow::close()
 {
+   surface_.reset();
    window_.close();
 }
 
-bool BaseWindow::open(std::string_view title, int width, int height, bool resizable)
+bool BaseWindow::open()
 {
-   return window_.open();
+   if (!window_.open()) return false;
+
+   // Create a surface.
+   surface_ = std::make_unique<rw::lif::vlk::Surface>(manager_, window_.handle());
+
+   // Get the physical device for rendering.
+   bool done{ false };
+   while (!done)
+   {
+      physicalDevice_ = vulkanInstance_.getNextPhysicalDevice(rw::lif::vlk::PhysicalDevice::OpCategory::graphics, physicalDevice_);
+      if (physicalDevice_ == nullptr)
+      {
+         logger_.relErr("No physical device supports the graphics pipeline.");
+      }
+
+      graphicsDevice_ = physicalDevice_->createGraphicsDevice(surface_->handle());
+
+      if (physicalDevice_->isSurfaceSupported(surface_->handle()) && surface_->setDevices(*physicalDevice_, *graphicsDevice_))
+      {
+         done = true;
+      }
+   }
+
+   return true;
 }
 
 bool BaseWindow::isOpen() const

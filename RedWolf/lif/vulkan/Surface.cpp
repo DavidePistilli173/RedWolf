@@ -2,15 +2,17 @@
 
 #include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/lif/vulkan/Instance.hpp"
+#include "RedWolf/lif/vulkan/PhysicalDevice.hpp"
+
+#include <algorithm>
+#include <array>
 
 using namespace rw::lif::vlk;
 
 Surface::Surface(RedWolfManager& manager, GLFWwindow* window) :
-   logger_{ manager.logger() }, glfwManager_{ manager.glfwManager() }, vulkanInterface_{ manager.vulkanInterface() }, instance_{
-      manager.vulkanInstance()
-   }
+   BaseObject(manager), glfwManager_{ manager.glfwManager() }, window_{ window }
 {
-   surface_ = glfwManager_.createWindowSurface(instance_.handle(), window);
+   surface_ = glfwManager_.createWindowSurface(vulkanInstance_.handle(), window_);
    if (surface_ == VK_NULL_HANDLE)
    {
       logger_.relFatal("Failed to create window surface.");
@@ -19,74 +21,19 @@ Surface::Surface(RedWolfManager& manager, GLFWwindow* window) :
 
 Surface::~Surface()
 {
-   vulkanInterface_.destroySurface(instance_.handle(), surface_);
-}
-
-Surface::Surface(Surface&& other) :
-   logger_{ other.logger_ }, glfwManager_{ other.glfwManager_ }, vulkanInterface_{ other.vulkanInterface_ }, instance_{ other.instance_ }
-{
-   surface_ = other.surface_;
-   other.surface_ = VK_NULL_HANDLE;
-
-   capabilities_ = other.capabilities_;
-   formats_ = other.formats_;
-   modes_ = other.modes_;
-}
-
-Surface& Surface::operator=(Surface&& other)
-{
-   if (surface_ != VK_NULL_HANDLE)
-   {
-      vulkanInterface_.destroySurface(instance_.handle(), surface_);
-   }
-
-   surface_ = other.surface_;
-   other.surface_ = VK_NULL_HANDLE;
-
-   capabilities_ = other.capabilities_;
-   formats_ = other.formats_;
-   modes_ = other.modes_;
-
-   return *this;
+   vulkanInterface_.destroySurface(vulkanInstance_.handle(), surface_);
 }
 
 VkSurfaceCapabilitiesKHR Surface::capabilities() const
 {
-   std::scoped_lock lck{ mtx_ };
+   std::shared_lock lck{ mtx_ };
    return capabilities_;
 }
 
 std::vector<VkSurfaceFormatKHR> Surface::formats() const
 {
-   std::scoped_lock lck{ mtx_ };
+   std::shared_lock lck{ mtx_ };
    return formats_;
-}
-
-VkSurfaceFormatKHR Surface::getBestFormat() const
-{
-   std::scoped_lock lck{ mtx_ };
-
-   for (const auto& format : formats_)
-   {
-      if (format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-      {
-         return format;
-      }
-   }
-
-   return formats_[0];
-}
-
-VkPresentModeKHR Surface::getBestMode() const
-{
-   std::scoped_lock lck{ mtx_ };
-
-   for (const auto& mode : modes_)
-   {
-      if (mode == VK_PRESENT_MODE_MAILBOX_KHR) return mode;
-   }
-
-   return VK_PRESENT_MODE_FIFO_KHR;
 }
 
 VkSurfaceKHR Surface::handle()
@@ -94,11 +41,37 @@ VkSurfaceKHR Surface::handle()
    return surface_;
 }
 
-bool Surface::init(VkPhysicalDevice physicalDevice)
+std::vector<VkPresentModeKHR> Surface::modes() const
 {
-   capabilities_ = vulkanInterface_.getSurfaceCapabilities(physicalDevice, surface_);
-   formats_ = vulkanInterface_.getSurfaceFormats(physicalDevice, surface_);
-   modes_ = vulkanInterface_.getSurfacePresentationModes(physicalDevice, surface_);
+   std::shared_lock lck{ mtx_ };
+   return modes_;
+}
+
+[[nodiscard]] VkExtent2D Surface::selectedExtent() const
+{
+   std::shared_lock lck{ mtx_ };
+   return selectedExtent_;
+}
+
+[[nodiscard]] VkSurfaceFormatKHR Surface::selectedFormat() const
+{
+   std::shared_lock lck{ mtx_ };
+   return selectedFormat_;
+}
+
+[[nodiscard]] VkPresentModeKHR Surface::selectedMode() const
+{
+   std::shared_lock lck{ mtx_ };
+   return selectedMode_;
+}
+
+bool Surface::setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice)
+{
+   std::scoped_lock lck{ mtx_ };
+
+   capabilities_ = vulkanInterface_.getSurfaceCapabilities(physicalDevice.handle(), surface_);
+   formats_ = vulkanInterface_.getSurfaceFormats(physicalDevice.handle(), surface_);
+   modes_ = vulkanInterface_.getSurfacePresentationModes(physicalDevice.handle(), surface_);
 
    if (formats_.empty() || modes_.empty())
    {
@@ -106,11 +79,39 @@ bool Surface::init(VkPhysicalDevice physicalDevice)
       return false;
    }
 
-   return true;
+   // Compute the best image format.
+   bool   done{ false };
+   size_t i{ 0U };
+   while (i < formats_.size() && !done)
+   {
+      if (formats_[i].format == VK_FORMAT_B8G8R8A8_SRGB && formats_[i].colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+      {
+         selectedFormat_ = formats_[i];
+         done = true;
+      }
+   }
+   if (!done) selectedFormat_ = formats_[0];
+
+   // Compute the best presentation mode.
+   done = false;
+   i = 0U;
+   while (i < modes_.size() && !done)
+   {
+      if (modes_[i] == VK_PRESENT_MODE_MAILBOX_KHR) selectedMode_ = modes_[i];
+   }
+   if (!done) selectedMode_ = VK_PRESENT_MODE_FIFO_KHR;
+
+   // Compute the surface resolution.
+   auto [width, height] = glfwManager_.getFrameBufferSize(window_);
+   selectedExtent_ = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
+   selectedExtent_.width = std::clamp(selectedExtent_.width, capabilities_.minImageExtent.width, capabilities_.maxImageExtent.width);
+   selectedExtent_.height = std::clamp(selectedExtent_.height, capabilities_.minImageExtent.height, capabilities_.maxImageExtent.height);
+
+   return initSwapChain_(physicalDevice, graphicsDevice);
 }
 
-std::vector<VkPresentModeKHR> Surface::modes() const
+bool Surface::initSwapChain_(PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice)
 {
-   std::scoped_lock lck{ mtx_ };
-   return modes_;
+   swapChain_ = std::make_unique<SwapChain>(manager_, physicalDevice, graphicsDevice, *this);
+   return true;
 }
