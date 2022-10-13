@@ -173,7 +173,7 @@ std::vector<VkQueueFamilyProperties> Interface::getPhysicalDeviceQueueFamilies(V
 
 VkSurfaceCapabilitiesKHR Interface::getSurfaceCapabilities(VkPhysicalDevice device, VkSurfaceKHR surface) const
 {
-   VkSurfaceCapabilitiesKHR result;
+   VkSurfaceCapabilitiesKHR result{ VkResult::VK_ERROR_UNKNOWN };
 
    if (device != VK_NULL_HANDLE && surface != VK_NULL_HANDLE)
    {
@@ -189,7 +189,7 @@ std::vector<VkSurfaceFormatKHR> Interface::getSurfaceFormats(VkPhysicalDevice de
 
    if (device != VK_NULL_HANDLE && surface != VK_NULL_HANDLE)
    {
-      uint32_t formatCount;
+      uint32_t formatCount{ 0U };
       vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
       if (formatCount > 0U)
       {
@@ -207,12 +207,30 @@ std::vector<VkPresentModeKHR> Interface::getSurfacePresentationModes(VkPhysicalD
 
    if (device != VK_NULL_HANDLE && surface != VK_NULL_HANDLE)
    {
-      uint32_t modeCount;
+      uint32_t modeCount{ 0U };
       vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &modeCount, nullptr);
       if (modeCount > 0U)
       {
          result.resize(modeCount);
          vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &modeCount, result.data());
+      }
+   }
+
+   return result;
+}
+
+std::vector<VkImage> Interface::getSwapChainImages(VkDevice device, VkSwapchainKHR swapChain) const
+{
+   std::vector<VkImage> result;
+
+   if (device != VK_NULL_HANDLE && swapChain != VK_NULL_HANDLE)
+   {
+      uint32_t imageCount{ 0U };
+      vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
+      if (imageCount > 0U)
+      {
+         result.resize(imageCount);
+         vkGetSwapchainImagesKHR(device, swapChain, &imageCount, result.data());
       }
    }
 

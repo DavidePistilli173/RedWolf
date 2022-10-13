@@ -187,6 +187,14 @@ namespace rw::lif::vlk
        */
       [[nodiscard]] std::vector<VkPresentModeKHR> getSurfacePresentationModes(VkPhysicalDevice device, VkSurfaceKHR surface) const;
 
+      /**
+       * @brief Get the list of image handles of a specific swap chain.
+       * @param device The logical device the swap chain is bound to.
+       * @param swapChain The target swap chain.
+       * @return List of raw handles to the swap chain's images.
+       */
+      [[nodiscard]] std::vector<VkImage> getSwapChainImages(VkDevice device, VkSwapchainKHR swapChain) const;
+
    private:
       /**
        * @brief Initialise a single Vulkan function.

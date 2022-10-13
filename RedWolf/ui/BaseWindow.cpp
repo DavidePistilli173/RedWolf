@@ -13,23 +13,26 @@ BaseWindow::BaseWindow(RedWolfManager& manager, std::string_view title, int widt
 
 void BaseWindow::checkEvents()
 {
+   glfwManager_.pollEvents();
+
    if (window_.checkWindowClose())
    {
       close();
       generateEvent(rw::events::WindowCloseEvent());
    }
-
-   glfwManager_.pollEvents();
 }
 
 void BaseWindow::close()
 {
    surface_.reset();
+   graphicsDevice_.reset();
    window_.close();
 }
 
 bool BaseWindow::open()
 {
+   if (isOpen()) return true;
+
    if (!window_.open()) return false;
 
    // Create a surface.

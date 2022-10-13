@@ -56,6 +56,12 @@ SwapChain::SwapChain(RedWolfManager& manager, PhysicalDevice& physicalDevice, Gr
    {
       logger_.relFatal("Failed to create swap chain.");
    }
+
+   images_ = vulkanInterface_.getSwapChainImages(graphicsDevice_.handle(), swapChain_);
+   if (images_.empty())
+   {
+      logger_.relFatal("No images available in the swap chain.");
+   }
 }
 
 SwapChain::~SwapChain()
