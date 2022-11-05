@@ -63,23 +63,12 @@ void ThreadPool::workerMainLoop_(Worker& thisWorker)
       std::unique_lock lck{ queueMtx_ };
       if (tasks_.empty())
       {
-         workerConditionVariable_.wait(
-            lck,
-            [this, &pop, &task, &thisWorker]
-            {
-               if (thisWorker.running && !tasks_.empty())
-               {
-                  pop = true;
-                  task = tasks_.front();
-                  tasks_.pop();
-                  return !thisWorker.running || pop;
-               }
-               return !thisWorker.running;
-            });
+         pop = workerConditionVariable_.wait_for(
+            lck, wait_timeout, [this, &pop, &task, &thisWorker] { return !thisWorker.running || !tasks_.empty(); });
       }
-      else
+
+      if (pop && !tasks_.empty())
       {
-         pop = true;
          task = tasks_.front();
          tasks_.pop();
       }

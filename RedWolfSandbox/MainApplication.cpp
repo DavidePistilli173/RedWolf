@@ -4,8 +4,8 @@
 #include <RedWolf/utils/SettingsManager.hpp>
 
 MainApplication::MainApplication(rw::RedWolfManager& rw, int argc, char** argv) :
-   BaseGUIApplication(rw, &mainWindow_, argc, argv), rw_{ rw }, logger_{ rw.logger() }, timer_{ rw, this }, socket_{ rw, this },
-   mainWindow_{ rw }
+   BaseGUIApplication(rw, &mainWindow_, argc, argv), rw_{ rw }, logger_{ rw.logger() },
+   timer_{ std::make_unique<rw::time::Timer>(rw, this) }, socket_{ std::make_unique<rw::net::UdpSocket>(rw, this) }, mainWindow_{ rw }
 {
 }
 
@@ -62,9 +62,9 @@ void MainApplication::userInit_()
       logger_.relFatal("Failed to load timer settings.");
    }
 
-   timer_.setFrequency(std::atof(timerSettings->attribute(timer_frequency, "10.0").c_str()));
-   timer_.subscribe<rw::events::TimeoutEvent>(this);
-   timer_.start();
+   timer_->setFrequency(std::atof(timerSettings->attribute(timer_frequency, "10.0").c_str()));
+   timer_->subscribe<rw::events::TimeoutEvent>(this);
+   timer_->start();
 
    // Set up the socket.
    rw::utils::SettingsManager::Node* socketSettings{ settings.get()->child(socket_section) };
@@ -73,9 +73,9 @@ void MainApplication::userInit_()
       logger_.relFatal("Failed to load socket settings.");
    }
 
-   if (socket_.open(socketSettings->attribute(socket_local_address, "10.0.0.1"), socketSettings->attribute(socket_local_port, "4321")))
+   if (socket_->open(socketSettings->attribute(socket_local_address, "10.0.0.1"), socketSettings->attribute(socket_local_port, "4321")))
    {
-      socket_.subscribe<rw::events::DataReadyEvent>(this);
+      socket_->subscribe<rw::events::DataReadyEvent>(this);
    }
 
    if (!mainWindow_.open())
@@ -95,17 +95,17 @@ void MainApplication::userRun_()
    }
    else if (mainLoopIteration_ == 100U)
    {
-      timer_.unsubscribe<rw::events::TimeoutEvent>(this);
+      timer_->unsubscribe<rw::events::TimeoutEvent>(this);
       logger_.info("Unsubscribed from timer.");
    }
    else if (mainLoopIteration_ == 200U)
    {
-      timer_.subscribe<rw::events::TimeoutEvent>(this);
+      timer_->subscribe<rw::events::TimeoutEvent>(this);
       logger_.info("Subscribed to timer.");
    }
    else if (mainLoopIteration_ == 300U)
    {
-      timer_.stop();
+      timer_->stop();
       logger_.info("Timer stopped.");
    }
 
@@ -113,7 +113,7 @@ void MainApplication::userRun_()
    if (packetCount_ > 0U)
    {
       std::scoped_lock lck{ packetSenderMutex_ };
-      if (socket_.send(senderAddress_, senderPort_, "REPLY FROM REDWOLF APPLICATION!"))
+      if (socket_->send(senderAddress_, senderPort_, "REPLY FROM REDWOLF APPLICATION!"))
       {
          logger_.info("Sent reply to {}:{}.", senderAddress_, senderPort_);
       }

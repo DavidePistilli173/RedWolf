@@ -173,7 +173,6 @@ std::pair<VkPhysicalDeviceProperties, VkPhysicalDeviceFeatures> Interface::getPh
 std::vector<VkPhysicalDevice> Interface::getPhysicalDevices(VkInstance instance) const
 {
    std::vector<VkPhysicalDevice> result;
-   VkPhysicalDevice              dev;
 
    if (instance != VK_NULL_HANDLE)
    {
@@ -181,7 +180,7 @@ std::vector<VkPhysicalDevice> Interface::getPhysicalDevices(VkInstance instance)
       callVulkanFunction_(vkEnumeratePhysicalDevices, instance, &deviceCount, nullptr);
 
       result.resize(deviceCount);
-      callVulkanFunction_(vkEnumeratePhysicalDevices, instance, &deviceCount, &dev);
+      callVulkanFunction_(vkEnumeratePhysicalDevices, instance, &deviceCount, result.data());
    }
 
    return result;

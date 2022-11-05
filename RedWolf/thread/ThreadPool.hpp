@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <chrono>
 #include <condition_variable>
 #include <functional>
 #include <future>
@@ -80,6 +81,11 @@ namespace rw::thread
          std::atomic<bool> running{ true }; /**< If true, the thread is active. */
          std::atomic<bool> busy{ false };   /**< If true, the thread is actually performing a task. Otherwise it is waiting. */
       };
+
+      /**
+       * @brief Timeout for threads waiting for tasks. Introduced to allow the program to quit cleanly.
+       */
+      static constexpr std::chrono::seconds wait_timeout{ 1 };
 
       /**
        * @brief Constructor.

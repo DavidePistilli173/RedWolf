@@ -46,12 +46,19 @@ bool BaseWindow::open()
       if (physicalDevice_ == nullptr)
       {
          logger_.relErr("No physical device supports the graphics pipeline.");
+         window_.close();
+         return false;
       }
 
-      graphicsDevice_ = physicalDevice_->createGraphicsDevice(surface_->handle());
-
-      if (physicalDevice_->isSurfaceSupported(surface_->handle()) && surface_->setDevices(*physicalDevice_, *graphicsDevice_))
+      if (physicalDevice_->isSurfaceSupported(surface_->handle()))
       {
+         graphicsDevice_ = physicalDevice_->createGraphicsDevice(surface_->handle());
+         if (!surface_->setDevices(*physicalDevice_, *graphicsDevice_))
+         {
+            logger_.relErr("Failed to set rendering devices for the window surface.");
+            window_.close();
+            return false;
+         }
          done = true;
       }
    }

@@ -38,6 +38,11 @@ namespace rw::lif::vlk
       static constexpr std::array required_queues{ QueueFamilies::Id::graphics, QueueFamilies::Id::presentation };
 
       /**
+       * @brief List of extensions required for a graphics device.
+       */
+      static constexpr std::array required_extensions{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+
+      /**
        * @brief Constructor.
        * @param manager RedWolf library manager.
        * @param physicalDevice The physical device that this logical device will reference.

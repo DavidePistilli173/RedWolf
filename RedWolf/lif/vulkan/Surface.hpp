@@ -119,6 +119,13 @@ namespace rw::lif::vlk
 
    private:
       /**
+       * @brief Initialise the physical and graphics devices.
+       * @param physicalDevice Physical device that will render to the surface.
+       * @return true on success, false otherwise.
+       */
+      bool initDevices_(PhysicalDevice& physicalDevice);
+
+      /**
        * @brief Initialise the swap chain for this surface.
        * @param physicalDevice Physical device that will present images to the swap chain.
        * @param graphicsDevice Logical device that will present images to the swap chain.

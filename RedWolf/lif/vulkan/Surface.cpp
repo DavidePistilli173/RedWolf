@@ -21,6 +21,7 @@ Surface::Surface(RedWolfManager& manager, GLFWwindow* window) :
 
 Surface::~Surface()
 {
+   swapChain_.reset();
    vulkanInterface_.destroySurface(vulkanInstance_.handle(), surface_);
 }
 
@@ -67,6 +68,12 @@ std::vector<VkPresentModeKHR> Surface::modes() const
 
 bool Surface::setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice)
 {
+   if (!initDevices_(physicalDevice)) return false;
+   return initSwapChain_(physicalDevice, graphicsDevice);
+}
+
+bool Surface::initDevices_(PhysicalDevice& physicalDevice)
+{
    std::scoped_lock lck{ mtx_ };
 
    capabilities_ = vulkanInterface_.getSurfaceCapabilities(physicalDevice.handle(), surface_);
@@ -89,6 +96,7 @@ bool Surface::setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphic
          selectedFormat_ = formats_[i];
          done = true;
       }
+      ++i;
    }
    if (!done) selectedFormat_ = formats_[0];
 
@@ -98,6 +106,7 @@ bool Surface::setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphic
    while (i < modes_.size() && !done)
    {
       if (modes_[i] == VK_PRESENT_MODE_MAILBOX_KHR) selectedMode_ = modes_[i];
+      ++i;
    }
    if (!done) selectedMode_ = VK_PRESENT_MODE_FIFO_KHR;
 
@@ -106,8 +115,6 @@ bool Surface::setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphic
    selectedExtent_ = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
    selectedExtent_.width = std::clamp(selectedExtent_.width, capabilities_.minImageExtent.width, capabilities_.maxImageExtent.width);
    selectedExtent_.height = std::clamp(selectedExtent_.height, capabilities_.minImageExtent.height, capabilities_.maxImageExtent.height);
-
-   return initSwapChain_(physicalDevice, graphicsDevice);
 }
 
 bool Surface::initSwapChain_(PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice)

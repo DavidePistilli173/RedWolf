@@ -1,6 +1,7 @@
 #ifndef RW_LIF_VULKAN_DEVICEBASE_HPP
 #define RW_LIF_VULKAN_DEVICEBASE_HPP
 
+#include "RedWolf/cont/concepts.hpp"
 #include "RedWolf/lif/vulkan/BaseObject.hpp"
 #include "RedWolf/lif/vulkan/PhysicalDevice.hpp"
 #include "RedWolf/lif/vulkan/QueueFamilies.hpp"
@@ -20,14 +21,18 @@ namespace rw::lif::vlk
    public:
       /**
        * @brief Constructor.
-       * @tparam ListT Type of list used to specify the required queues.
+       * @tparam QueueListT Type of list used to specify the required queues.
+       * @tparam StringListT Type of list used to specify the required extensions.
        * @param manager RedWolf library manager.
        * @param physicalDevice Physical device this device is bound to.
        * @param requiredQueues List of queues that are required for this device.
+       * @param requiredExtensions List of extensions that are required for this device.
        */
-      template<IsQueueFamilyIdList ListT>
-      DeviceBase(RedWolfManager& manager, PhysicalDevice& physicalDevice, const ListT& requiredQueues) :
-         BaseObject(manager), physicalDevice_{ physicalDevice }
+      template<IsQueueFamilyIdList QueueListT, rw::cont::IsConstCharStarList StringListT>
+      DeviceBase(
+         RedWolfManager& manager, PhysicalDevice& physicalDevice, const QueueListT& requiredQueues, const StringListT& requiredExtensions) :
+         BaseObject(manager),
+         physicalDevice_{ physicalDevice }
       {
          // Queues.
          QueueFamilies                        availableQueueFamilies{ physicalDevice_.availableQueueFamilies() };
@@ -42,6 +47,8 @@ namespace rw::lif::vlk
          createInfo.pQueueCreateInfos = queueCreateInfos.data();
          createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
          createInfo.pEnabledFeatures = &deviceFeatures;
+         createInfo.enabledExtensionCount = requiredExtensions.size();
+         createInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
          device_ = vulkanInterface_.createDevice(physicalDevice_.handle(), createInfo);
          if (device_ == VK_NULL_HANDLE)

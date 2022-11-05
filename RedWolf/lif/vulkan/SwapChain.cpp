@@ -31,13 +31,14 @@ SwapChain::SwapChain(RedWolfManager& manager, PhysicalDevice& physicalDevice, Gr
    auto                     queueFamilyIndices{ physicalDevice.availableQueueFamilies() };
    std::array<uint32_t, 2U> indicesArray{ queueFamilyIndices.queues[static_cast<size_t>(QueueFamilies::Id::graphics)].value(),
                                           queueFamilyIndices.queues[static_cast<size_t>(QueueFamilies::Id::presentation)].value() };
+   createInfo.queueFamilyIndexCount = static_cast<uint32_t>(indicesArray.size());
+   createInfo.pQueueFamilyIndices = indicesArray.data();
+
    if (
       queueFamilyIndices.queues[static_cast<size_t>(QueueFamilies::Id::graphics)].value() !=
       queueFamilyIndices.queues[static_cast<size_t>(QueueFamilies::Id::presentation)].value())
    {
       createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-      createInfo.queueFamilyIndexCount = static_cast<uint32_t>(indicesArray.size());
-      createInfo.pQueueFamilyIndices = indicesArray.data();
    }
    else
    {
