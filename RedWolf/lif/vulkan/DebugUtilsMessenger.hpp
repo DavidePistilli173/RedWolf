@@ -74,8 +74,8 @@ namespace rw::lif::vlk
       bool initialise(const VkDebugUtilsMessengerCreateInfoEXT& args);
 
    private:
-      std::mutex               debugCallbackMutex_; /**< Mutex for protecting the debug callback. */
-      VkDebugUtilsMessengerEXT messenger_;          /**< Raw messenger handle. */
+      std::mutex               debugCallbackMutex_;          /**< Mutex for protecting the debug callback. */
+      VkDebugUtilsMessengerEXT messenger_{ VK_NULL_HANDLE }; /**< Raw messenger handle. */
    };
 } // namespace rw::lif::vlk
 

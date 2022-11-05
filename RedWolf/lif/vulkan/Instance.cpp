@@ -10,7 +10,7 @@ Instance::Instance(
    std::string_view                appName,
    const rw::dat::VersionInfo&     appVersion,
    const std::vector<const char*>& additionalExtensions) :
-   InstanceBase(manager, appName, appVersion, additionalExtensions, reinterpret_cast<void*>(&debugMessenger_)),
+   InstanceBase(manager, appName, appVersion, additionalExtensions),
    debugMessenger_{ manager }
 {
    init_();

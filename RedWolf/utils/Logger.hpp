@@ -115,7 +115,7 @@ namespace rw::utils
                std::cout << "\033[0m" << std::format("{}", message) << "\033[0m\n";
                break;
             case rw::utils::Logger::Level::info:
-               std::cout << "\033[37m" << std::format("{}", message) << "\033[0m\n";
+               std::cout << "\033[32m" << std::format("{}", message) << "\033[0m\n";
                break;
             case rw::utils::Logger::Level::warning:
                std::cout << "\033[33m" << std::format("{}", message) << "\033[0m\n";

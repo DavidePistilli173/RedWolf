@@ -9,13 +9,12 @@ InstanceBase::InstanceBase(
    RedWolfManager&                 manager,
    std::string_view                appName,
    const rw::dat::VersionInfo&     appVersion,
-   const std::vector<const char*>& additionalExtensions,
-   void*                           debugUserData) :
+   const std::vector<const char*>& additionalExtensions) :
    manager_{ manager },
    logger_{ manager.logger() }, vulkanInterface_{ manager.vulkanInterface() }, appName_{ appName }, appVersion_{ appVersion },
    additionalExtensions_{ additionalExtensions }
 {
-   createInstance_(debugUserData);
+   createInstance_();
    logger_.info("Vulkan instance created.");
 }
 
@@ -37,7 +36,7 @@ VkInstance InstanceBase::handle()
    return instance_;
 }
 
-void InstanceBase::createInstance_(void* debugUserData)
+void InstanceBase::createInstance_()
 {
    // Application information.
    VkApplicationInfo appInfo{};
@@ -46,7 +45,7 @@ void InstanceBase::createInstance_(void* debugUserData)
    appInfo.applicationVersion = VK_MAKE_VERSION(appVersion_.major, appVersion_.minor, appVersion_.patch);
    appInfo.pEngineName = "RedWolf";
    appInfo.engineVersion = VK_MAKE_VERSION(rw::version_major, rw::version_minor, rw::version_patch);
-   appInfo.apiVersion = VK_API_VERSION_1_3;
+   appInfo.apiVersion = VK_API_VERSION_1_2;
    appInfo.pNext = nullptr;
 
    // Instance information.
@@ -70,9 +69,6 @@ void InstanceBase::createInstance_(void* debugUserData)
       instanceInfo.enabledLayerCount = 0U;
    }
 
-   // Swap chain extension.
-   additionalExtensions_.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-
    // Set enabled extensions
    instanceInfo.enabledExtensionCount = static_cast<uint32_t>(additionalExtensions_.size());
    instanceInfo.ppEnabledExtensionNames = additionalExtensions_.data();
@@ -86,7 +82,7 @@ void InstanceBase::createInstance_(void* debugUserData)
       debugInfo_.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                                VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
       debugInfo_.pfnUserCallback = DebugUtilsMessenger::debugCallback;
-      debugInfo_.pUserData = debugUserData;
+      debugInfo_.pUserData = &logger_;
 
       instanceInfo.pNext = &debugInfo_;
    }

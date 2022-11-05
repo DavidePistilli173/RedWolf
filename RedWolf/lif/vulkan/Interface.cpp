@@ -12,7 +12,7 @@ bool Interface::checkSurfaceSupport(VkPhysicalDevice device, uint32_t queueFamil
 
    if (device != VK_NULL_HANDLE && surface != VK_NULL_HANDLE)
    {
-      vkGetPhysicalDeviceSurfaceSupportKHR(device, queueFamily, surface, &presentSupport);
+      callVulkanFunction_(vkGetPhysicalDeviceSurfaceSupportKHR, device, queueFamily, surface, &presentSupport);
    }
 
    return presentSupport;
@@ -42,10 +42,7 @@ VkDevice Interface::createDevice(VkPhysicalDevice physicalDevice, const VkDevice
 
    VkDevice result;
 
-   if (vkCreateDevice(physicalDevice, &deviceInfo, nullptr, &result) != VK_SUCCESS)
-   {
-      logger_.relErr("Failed to create logical device.");
-   }
+   callVulkanFunction_(vkCreateDevice, physicalDevice, &deviceInfo, nullptr, &result);
 
    return result;
 }
@@ -77,10 +74,7 @@ VkSwapchainKHR Interface::createSwapChain(VkDevice device, const VkSwapchainCrea
 
    if (device != VK_NULL_HANDLE)
    {
-      if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &result) != VK_SUCCESS)
-      {
-         logger_.relErr("Failed to create swap chain.");
-      }
+      callVulkanFunction_(vkCreateSwapchainKHR, device, &createInfo, nullptr, &result);
    }
 
    return result;
@@ -110,6 +104,44 @@ void Interface::destroySurface(VkInstance instance, VkSurfaceKHR surface)
 void Interface::destroySwapChain(VkDevice device, VkSwapchainKHR swapChain)
 {
    vkDestroySwapchainKHR(device, swapChain, nullptr);
+}
+
+std::vector<VkExtensionProperties> Interface::enumerateDeviceExtensionProperties(VkPhysicalDevice device)
+{
+   std::vector<VkExtensionProperties> result;
+
+   if (device == VK_NULL_HANDLE)
+   {
+      logger_.relErr("Null device handle.");
+      return result;
+   }
+
+   uint32_t count{ 0U };
+   callVulkanFunction_(vkEnumerateDeviceExtensionProperties, device, nullptr, &count, nullptr);
+
+   if (count > 0U)
+   {
+      result.resize(count);
+      callVulkanFunction_(vkEnumerateDeviceExtensionProperties, device, nullptr, &count, result.data());
+   }
+
+   return result;
+}
+
+std::vector<VkExtensionProperties> Interface::enumerateInstanceExtensionProperties()
+{
+   std::vector<VkExtensionProperties> result;
+
+   uint32_t count{ 0U };
+   callVulkanFunction_(vkEnumerateInstanceExtensionProperties, nullptr, &count, nullptr);
+
+   if (count > 0U)
+   {
+      result.resize(count);
+      callVulkanFunction_(vkEnumerateInstanceExtensionProperties, nullptr, &count, result.data());
+   }
+
+   return result;
 }
 
 VkQueue Interface::getDeviceQueue(VkDevice device, uint32_t familyIndex, uint32_t queueIndex) const
@@ -146,10 +178,10 @@ std::vector<VkPhysicalDevice> Interface::getPhysicalDevices(VkInstance instance)
    if (instance != VK_NULL_HANDLE)
    {
       uint32_t deviceCount;
-      vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+      callVulkanFunction_(vkEnumeratePhysicalDevices, instance, &deviceCount, nullptr);
 
       result.resize(deviceCount);
-      vkEnumeratePhysicalDevices(instance, &deviceCount, &dev);
+      callVulkanFunction_(vkEnumeratePhysicalDevices, instance, &deviceCount, &dev);
    }
 
    return result;
@@ -177,7 +209,7 @@ VkSurfaceCapabilitiesKHR Interface::getSurfaceCapabilities(VkPhysicalDevice devi
 
    if (device != VK_NULL_HANDLE && surface != VK_NULL_HANDLE)
    {
-      vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &result);
+      callVulkanFunction_(vkGetPhysicalDeviceSurfaceCapabilitiesKHR, device, surface, &result);
    }
 
    return result;
@@ -190,11 +222,12 @@ std::vector<VkSurfaceFormatKHR> Interface::getSurfaceFormats(VkPhysicalDevice de
    if (device != VK_NULL_HANDLE && surface != VK_NULL_HANDLE)
    {
       uint32_t formatCount{ 0U };
-      vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+      callVulkanFunction_(vkGetPhysicalDeviceSurfaceFormatsKHR, device, surface, &formatCount, nullptr);
+
       if (formatCount > 0U)
       {
          result.resize(formatCount);
-         vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, result.data());
+         callVulkanFunction_(vkGetPhysicalDeviceSurfaceFormatsKHR, device, surface, &formatCount, result.data());
       }
    }
 
@@ -208,11 +241,12 @@ std::vector<VkPresentModeKHR> Interface::getSurfacePresentationModes(VkPhysicalD
    if (device != VK_NULL_HANDLE && surface != VK_NULL_HANDLE)
    {
       uint32_t modeCount{ 0U };
-      vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &modeCount, nullptr);
+      callVulkanFunction_(vkGetPhysicalDeviceSurfacePresentModesKHR, device, surface, &modeCount, nullptr);
+
       if (modeCount > 0U)
       {
          result.resize(modeCount);
-         vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &modeCount, result.data());
+         callVulkanFunction_(vkGetPhysicalDeviceSurfacePresentModesKHR, device, surface, &modeCount, result.data());
       }
    }
 
@@ -226,11 +260,12 @@ std::vector<VkImage> Interface::getSwapChainImages(VkDevice device, VkSwapchainK
    if (device != VK_NULL_HANDLE && swapChain != VK_NULL_HANDLE)
    {
       uint32_t imageCount{ 0U };
-      vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
+      callVulkanFunction_(vkGetSwapchainImagesKHR, device, swapChain, &imageCount, nullptr);
+
       if (imageCount > 0U)
       {
          result.resize(imageCount);
-         vkGetSwapchainImagesKHR(device, swapChain, &imageCount, result.data());
+         callVulkanFunction_(vkGetSwapchainImagesKHR, device, swapChain, &imageCount, result.data());
       }
    }
 

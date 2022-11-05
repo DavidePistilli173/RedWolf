@@ -3,22 +3,19 @@
 
 #include "RedWolf/common.hpp"
 #include "RedWolf/lif/vulkan/FunctionPointers.hpp"
+#include "RedWolf/utils/Logger.hpp"
 
 #include <format>
 #include <map>
 #include <optional>
 #include <string_view>
+#include <utility>
 #include <vector>
 #include <vulkan/vulkan.h>
 
 namespace rw
 {
    class RedWolfManager;
-}
-
-namespace rw::utils
-{
-   class Logger;
 }
 
 namespace rw::lif::vlk
@@ -135,6 +132,19 @@ namespace rw::lif::vlk
       void destroySwapChain(VkDevice device, VkSwapchainKHR swapChain);
 
       /**
+       * @brief Retrieve the properties of all extensions supported by a given physical device.
+       * @param device Physical device to check extension properties of.
+       * @return List of properties of all extensions supported by the device.
+       */
+      [[nodiscard]] std::vector<VkExtensionProperties> enumerateDeviceExtensionProperties(VkPhysicalDevice device);
+
+      /**
+       * @brief Retrieve the properties of all extensions supported by Vulkan instances.
+       * @return List of properties of all extensions supported by Vulkan instances.
+       */
+      [[nodiscard]] std::vector<VkExtensionProperties> enumerateInstanceExtensionProperties();
+
+      /**
        * @brief Get a specific queue for a given device.
        * @param device Device from which to get the queue.
        * @param familyIndex Index of the queue family.
@@ -196,6 +206,30 @@ namespace rw::lif::vlk
       [[nodiscard]] std::vector<VkImage> getSwapChainImages(VkDevice device, VkSwapchainKHR swapChain) const;
 
    private:
+      /**
+       * @brief Call a Vulkan function with error logging only if in debug mode.
+       * @tparam FunctionT Function type to call.
+       * @tparam Args Types of arguments of the Vulkan function.
+       * @param function Actual function to call.
+       * @param args Actual Vulkan function arguments.
+       */
+      template<typename FunctionT, typename... Args>
+      void callVulkanFunction_(FunctionT function, Args&&... args) const
+      {
+         if constexpr (rw::debug)
+         {
+            VkResult errorCode{ function(std::forward<Args>(args)...) };
+            if (errorCode != VK_SUCCESS)
+            {
+               logger_.warn("Vulkan error: {}.", errorCode);
+            }
+         }
+         else
+         {
+            function(std::forward<Args>(args)...);
+         }
+      }
+
       /**
        * @brief Initialise a single Vulkan function.
        * @tparam FunctionT Function pointer type.

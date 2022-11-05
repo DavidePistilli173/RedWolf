@@ -37,6 +37,8 @@ In order to compile the library, you need to install the Vulkan SDK from https:/
 GLFW sources are already included in the CMake project and are located in the third_party folder.
 GLM sources are already included in the CMake project and are located in the third_party folder.
 
+You must first build the RedWolf library project, then RedWolfSandbox.
+
 ### ********** DOCUMENTATION **********
 
 The documentation can be generated using Doxygen and the Doxyfile located in the root folder of the project.

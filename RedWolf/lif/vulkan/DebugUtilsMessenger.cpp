@@ -20,9 +20,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL DebugUtilsMessenger::debugCallback(
    const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
    void*                                       pUserData)
 {
-   auto thisPtr{ reinterpret_cast<DebugUtilsMessenger*>(pUserData) };
-
-   std::scoped_lock lck{ thisPtr->debugCallbackMutex_ };
+   auto logger{ reinterpret_cast<rw::utils::Logger*>(pUserData) };
 
    std::string type;
    switch (messageType)
@@ -44,19 +42,19 @@ VKAPI_ATTR VkBool32 VKAPI_CALL DebugUtilsMessenger::debugCallback(
    switch (messageSeverity)
    {
    case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-      thisPtr->logger_.trace("|{}| {}", type, pCallbackData->pMessage);
+      logger->trace("|{}| {}", type, pCallbackData->pMessage);
       break;
    case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-      thisPtr->logger_.info("|{}| {}", type, pCallbackData->pMessage);
+      logger->info("|{}| {}", type, pCallbackData->pMessage);
       break;
    case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-      thisPtr->logger_.warn("|{}| {}", type, pCallbackData->pMessage);
+      logger->warn("|{}| {}", type, pCallbackData->pMessage);
       break;
    case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-      thisPtr->logger_.err("|{}| {}", type, pCallbackData->pMessage);
+      logger->err("|{}| {}", type, pCallbackData->pMessage);
       break;
    case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
-      thisPtr->logger_.fatal("|{}| {}", type, pCallbackData->pMessage);
+      logger->fatal("|{}| {}", type, pCallbackData->pMessage);
       break;
    }
 

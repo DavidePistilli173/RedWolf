@@ -33,14 +33,12 @@ namespace rw::lif::vlk
        * @param appName Name of the application.
        * @param appVersion Version number of the application.
        * @param additionalExtensions Additional Vulkan extensions that have to be enabled.
-       * @param debugUserData User data to provide to the debug callback.
        */
       InstanceBase(
          RedWolfManager&                 manager,
          std::string_view                appName,
          const rw::dat::VersionInfo&     appVersion,
-         const std::vector<const char*>& additionalExtensions,
-         void*                           debugUserData);
+         const std::vector<const char*>& additionalExtensions);
 
       /**
        * @brief Destructor.
@@ -90,9 +88,8 @@ namespace rw::lif::vlk
    private:
       /**
        * @brief Create the Vulkan instance.
-       * @param debugUserData User data to provide to the debug callback.
        */
-      void createInstance_(void* debugUserData);
+      void createInstance_();
    };
 } // namespace rw::lif::vlk
 

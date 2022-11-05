@@ -3,6 +3,8 @@
 #include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/lif/vulkan/GraphicsDevice.hpp"
 
+#include <algorithm>
+
 using namespace rw::lif::vlk;
 
 PhysicalDevice::PhysicalDevice(RedWolfManager& manager, VkPhysicalDevice device) : BaseObject(manager), device_{ device }
@@ -60,16 +62,31 @@ bool PhysicalDevice::isSurfaceSupported(VkSurfaceKHR surface)
 {
    std::scoped_lock lck{ mtx_ };
 
-   if (queueFamilies_.queues[static_cast<size_t>(QueueFamilies::Id::presentation)].has_value()) return true;
-
-   for (uint32_t i{ 0U }; i < queueFamilyProperties_.size(); ++i)
+   if (!queueFamilies_.queues[static_cast<size_t>(QueueFamilies::Id::presentation)].has_value())
    {
-      if (vulkanInterface_.checkSurfaceSupport(device_, i, surface))
+      uint32_t i{ 0U };
+      while (i < queueFamilyProperties_.size() && !vulkanInterface_.checkSurfaceSupport(device_, i, surface))
       {
-         queueFamilies_.queues[static_cast<size_t>(QueueFamilies::Id::presentation)] = i;
-         return true;
+         ++i;
       }
+
+      if (i >= queueFamilyProperties_.size())
+      {
+         return false;
+      }
+      queueFamilies_.queues[static_cast<size_t>(QueueFamilies::Id::presentation)] = i;
    }
 
-   return false;
+   // Swap chain extension.
+   std::vector<VkExtensionProperties> supportedExtensions{ vulkanInterface_.enumerateDeviceExtensionProperties(device_) };
+
+   if (!std::any_of(
+          supportedExtensions.begin(),
+          supportedExtensions.end(),
+          [](const VkExtensionProperties& elem) { return strcmp(elem.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME); }))
+   {
+      return false;
+   }
+
+   return true;
 }
