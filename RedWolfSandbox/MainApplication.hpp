@@ -1,6 +1,7 @@
 #ifndef RWSANDBOX_MAINAPPLICATION_HPP
 #define RWSANDBOX_MAINAPPLICATION_HPP
 
+#include "EventTester.hpp"
 #include "MainWindow.hpp"
 
 #include <RedWolf/RedWolfManager.hpp>
@@ -60,6 +61,8 @@ private:
    std::string                         senderPort_;        /**< Port of the packet sender. */
 
    MainWindow mainWindow_; /**< Main window of the application. */
+
+   std::unique_ptr<EventTester> eventTester_; /**< Speed tester for the event system. */
 };
 
 #endif

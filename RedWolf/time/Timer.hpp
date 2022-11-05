@@ -44,13 +44,13 @@ namespace rw::time
       /**
        * @brief Construct a timer with a given interval and a singleShot setting.
        * @tparam T Data type used for the time interval.
+       * @param manager RedWolf library manager.
        * @param interval Time interval in microseconds or any compatible std::chrono::duration.
        * @param singleShot If true, the timer will run only once for each call to start.
        */
       template<IsConvertibleToChronoDuration T>
-      explicit Timer(T interval, bool singleShot = false, rw::core::BaseObject* parent = nullptr) :
-         rw::core::BaseObject(parent), logger_{ rw::utils::Logger::instance() }, interval_{ std::chrono::microseconds(interval) },
-         singleShot_{ singleShot }
+      explicit Timer(RedWolfManager& manager, T interval, bool singleShot = false, rw::core::BaseObject* parent = nullptr) :
+         rw::core::BaseObject(manager, parent), interval_{ std::chrono::microseconds(interval) }, singleShot_{ singleShot }
       {
       }
 
@@ -181,8 +181,6 @@ namespace rw::time
        * @brief Create the timer thread with the settings currently stored in the timer.
        */
       void createTimerThread_();
-
-      rw::utils::Logger& logger_; /**< Message logger. */
 
       bool                      singleShot_{ false }; /**< If true, the timer only runs once. */
       std::chrono::microseconds interval_{ 0 };       /**< Timer interval. */

@@ -4,7 +4,8 @@
 
 using namespace rw::core;
 
-BaseObject::BaseObject(RedWolfManager& manager, BaseObject* parent) : parent_{ parent }, eventHandler_{ manager.eventHandler() }
+BaseObject::BaseObject(RedWolfManager& manager, BaseObject* parent) :
+   parent_{ parent }, logger_{ manager.logger() }, threadPool_{ manager.threadPool() }, eventHandler_{ manager.eventHandler() }
 {
    eventHandler_.addObject(this);
 }

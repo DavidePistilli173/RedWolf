@@ -82,6 +82,9 @@ void MainApplication::userInit_()
    {
       logger_.relFatal("Failed to open the main window.");
    }
+
+   eventTester_ = std::make_unique<EventTester>(rw_);
+   eventTester_->runTest();
 }
 
 void MainApplication::userRun_()

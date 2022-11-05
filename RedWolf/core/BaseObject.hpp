@@ -5,6 +5,8 @@
 #include "RedWolf/events/BaseEvent.hpp"
 #include "RedWolf/events/EventHandler.hpp"
 #include "RedWolf/events/concepts.hpp"
+#include "RedWolf/thread/ThreadPool.hpp"
+#include "RedWolf/utils/Logger.hpp"
 
 #include <iostream>
 #include <map>
@@ -116,6 +118,9 @@ namespace rw::core
        * @param sender Sender of the event.
        */
       virtual void userHandle_(const rw::events::BaseEvent& evnt, const BaseObject* sender) = 0;
+
+      rw::utils::Logger&      logger_;     /**< RedWolf logger for convenient use in derived classes. */
+      rw::thread::ThreadPool& threadPool_; /**< RedWolf thread pool, for convenient use in derived classes. */
 
    private:
       BaseObject* parent_{ nullptr }; /**< Logical parent of the object. */
