@@ -21,8 +21,8 @@ int main(int argc, char** argv)
       rw::RedWolfManager rw{ rwOptions };
 
       Logger& logger{ rw.logger() };
-      logger.setDebugLevel(LogLevel::trace);
-      logger.setReleaseLevel(LogLevel::info);
+      logger.setDebugLevel(LogLevel::info);
+      logger.setReleaseLevel(LogLevel::warning);
 
       logger.trace("Welcome to: {}!", rwOptions.appName);
 

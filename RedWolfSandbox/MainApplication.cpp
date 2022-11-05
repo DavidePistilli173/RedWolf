@@ -87,6 +87,8 @@ void MainApplication::userInit_()
 void MainApplication::userRun_()
 {
    ++mainLoopIteration_;
+
+   logger_.relWarn("Timer called {} times since the last iteration.", timerCount_.load());
    timerCount_ = 0U;
 
    if (mainLoopIteration_ > totalIterations_)

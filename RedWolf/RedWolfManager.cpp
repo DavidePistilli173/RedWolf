@@ -3,12 +3,22 @@
 using namespace rw;
 
 RedWolfManager::RedWolfManager(const Options& options) :
-   logger_{}, settingsManager_{ *this }, threadPool_{ *this, options.threadPoolThreads }, glfwManager_{ *this },
+   logger_{}, settingsManager_{ *this }, threadPool_{ *this, options.threadPoolThreads }, eventHandler_{ *this }, glfwManager_{ *this },
    vulkanInterface_{
       *this,
    },
    vulkanInstance_{ *this, options.appName, options.appVersion, glfwManager_.getRequiredVulkanInstanceExtensions() }
 {
+}
+
+RedWolfManager::~RedWolfManager()
+{
+   threadPool_.stopAllThreads();
+}
+
+rw::events::EventHandler& RedWolfManager::eventHandler()
+{
+   return eventHandler_;
 }
 
 rw::lif::glfw::GlfwManager& RedWolfManager::glfwManager()

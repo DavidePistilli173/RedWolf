@@ -41,15 +41,21 @@ void ThreadPool::addTask(std::function<void()>&& func)
    workerConditionVariable_.notify_one();
 }
 
-void ThreadPool::clearTasks()
-{
-   std::scoped_lock lck{ queueMtx_ };
-   tasks_ = std::queue<std::function<void()>>();
-}
-
 size_t ThreadPool::numberOfThreads() const
 {
    return workers_.size();
+}
+
+void ThreadPool::stopAllThreads()
+{
+   for (auto& worker : workers_)
+   {
+      worker.running = false;
+      if (worker.thread.joinable())
+      {
+         worker.thread.join();
+      }
+   }
 }
 
 void ThreadPool::workerMainLoop_(Worker& thisWorker)
@@ -59,16 +65,18 @@ void ThreadPool::workerMainLoop_(Worker& thisWorker)
    auto getNewTask = [this, &task, &thisWorker]() -> bool
    {
       bool pop = false;
+      bool taskArrived{ true };
 
       std::unique_lock lck{ queueMtx_ };
       if (tasks_.empty())
       {
-         pop = workerConditionVariable_.wait_for(
+         taskArrived = workerConditionVariable_.wait_for(
             lck, wait_timeout, [this, &pop, &task, &thisWorker] { return !thisWorker.running || !tasks_.empty(); });
       }
 
-      if (pop && !tasks_.empty())
+      if (taskArrived && !tasks_.empty())
       {
+         pop = true;
          task = tasks_.front();
          tasks_.pop();
       }

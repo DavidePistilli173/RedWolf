@@ -148,15 +148,15 @@ namespace rw::thread
       }
 
       /**
-       * @brief Clear all pending tasks.
-       */
-      void clearTasks();
-
-      /**
        * @brief Get the current number of threads of the pool.
        * @return size_t Current number of threads of the pool.
        */
       size_t numberOfThreads() const;
+
+      /**
+       * @brief Stop all threads of the thread pool. This function is blocking.
+       */
+      void stopAllThreads();
 
    private:
       /**

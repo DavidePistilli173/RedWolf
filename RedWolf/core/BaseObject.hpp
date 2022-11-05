@@ -3,8 +3,8 @@
 
 #include "RedWolf/common.hpp"
 #include "RedWolf/events/BaseEvent.hpp"
+#include "RedWolf/events/EventHandler.hpp"
 #include "RedWolf/events/concepts.hpp"
-#include "RedWolf/thread/ThreadPool.hpp"
 
 #include <iostream>
 #include <map>
@@ -35,6 +35,31 @@ namespace rw::core
       explicit BaseObject(RedWolfManager& manager, BaseObject* parent = nullptr);
 
       /**
+       * @brief Destructor.
+       */
+      ~BaseObject();
+
+      /**
+       * @brief Copy constructor.
+       */
+      BaseObject(const BaseObject&) = delete;
+
+      /**
+       * @brief Move constructor.
+       */
+      BaseObject(BaseObject&&) = delete;
+
+      /**
+       * @brief Copy-assignment operator.
+       */
+      BaseObject& operator=(const BaseObject&) = delete;
+
+      /**
+       * @brief Move-assignment operator.
+       */
+      BaseObject& operator=(BaseObject&&) = delete;
+
+      /**
        * @brief Generate an event and propagate it to all subscribers using a dedicated thread.
        * @tparam Event Event type to generate.
        * @param evnt Event data to send.
@@ -42,16 +67,7 @@ namespace rw::core
       template<rw::events::HasEventID Event>
       void generateEvent(const Event& evnt)
       {
-         threadPool_.addTask(
-            [this, evnt]()
-            {
-               std::shared_lock lck_{ subscriberMutex_ };
-
-               for (auto& subscriber : subscribers_[evnt.id])
-               {
-                  subscriber->handle(evnt, this);
-               }
-            });
+         eventHandler_.generateEvent<Event>(this, evnt);
       }
 
       /**
@@ -77,11 +93,7 @@ namespace rw::core
       template<rw::events::HasEventID Event>
       void subscribe(BaseObject* object)
       {
-         std::scoped_lock lck_{ subscriberMutex_ };
-         if (!subscribers_[Event::event_id].contains(object))
-         {
-            subscribers_[Event::event_id].insert(object);
-         }
+         eventHandler_.subscribe<Event>(this, object);
       }
 
       /**
@@ -92,12 +104,7 @@ namespace rw::core
       template<rw::events::HasEventID Event>
       void unsubscribe(BaseObject* object)
       {
-         std::scoped_lock lck_{ subscriberMutex_ };
-         auto             subscriber = subscribers_[Event::event_id].find(object);
-         if (subscriber != subscribers_[Event::event_id].end())
-         {
-            subscribers_[Event::event_id].erase(subscriber);
-         }
+         eventHandler_.unsubscribe<Event>(this, object);
       }
 
    protected:
@@ -113,12 +120,7 @@ namespace rw::core
    private:
       BaseObject* parent_{ nullptr }; /**< Logical parent of the object. */
 
-      /**
-       * @brief List of objects subscribed to the event handling system.
-       */
-      std::map<unsigned int, std::set<BaseObject*>> subscribers_;
-      std::shared_mutex                             subscriberMutex_; /**< Mutex for protecting subscribe/unsubscribe operations. */
-      rw::thread::ThreadPool&                       threadPool_;      /**< Thread pool used for event propagation. */
+      rw::events::EventHandler& eventHandler_; /**< RedWolf event system handler. */
    };
 } // namespace rw::core
 

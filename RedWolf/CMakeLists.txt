@@ -51,6 +51,7 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "core/BaseObject.cpp"
     "dat/LogMsg.cpp"
     "dat/SettingsNode.cpp"
+    "events/EventHandler.cpp"
     "io/File.cpp"
     "lif/glfw/GlfwManager.cpp"
     "lif/glfw/Window.cpp"
