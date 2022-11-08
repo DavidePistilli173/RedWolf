@@ -1,8 +1,8 @@
 #ifndef RW_EVENTS_EVENTHANDLER_HPP
 #define RW_EVENTS_EVENTHANDLER_HPP
 
-#include "RedWolf/alg/Search.hpp"
-#include "RedWolf/alg/Sorting.hpp"
+#include "RedWolf/alg/search.hpp"
+#include "RedWolf/alg/sort.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/events/aliases.hpp"
 #include "RedWolf/events/concepts.hpp"

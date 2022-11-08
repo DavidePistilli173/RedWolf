@@ -41,6 +41,8 @@ Version 0.5.0
         - Add Vulkan ImageView class.
         - Add EventHandler class.
         - Reworked event system to use a library-wide event handler.
+        - Add binary search function.
+        - Rename alg header files.
         - Fix Timer destructor.
         - Fix sign of the time of day in the DateTime structure.
         - Improve comments.

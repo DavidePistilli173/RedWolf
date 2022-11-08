@@ -1,7 +1,7 @@
 #ifndef RW_CONT_CONSTEXPRMAP_HPP
 #define RW_CONT_CONSTEXPRMAP_HPP
 
-#include "RedWolf/alg/sorting.hpp"
+#include "RedWolf/alg/sort.hpp"
 #include "RedWolf/dat/KVPair.hpp"
 
 #include <algorithm>
