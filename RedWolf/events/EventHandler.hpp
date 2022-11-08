@@ -1,6 +1,8 @@
 #ifndef RW_EVENTS_EVENTHANDLER_HPP
 #define RW_EVENTS_EVENTHANDLER_HPP
 
+#include "RedWolf/alg/Search.hpp"
+#include "RedWolf/alg/Sorting.hpp"
 #include "RedWolf/common.hpp"
 #include "RedWolf/events/aliases.hpp"
 #include "RedWolf/events/concepts.hpp"
@@ -8,8 +10,8 @@
 #include "RedWolf/utils/Logger.hpp"
 
 #include <map>
-#include <set>
 #include <shared_mutex>
+#include <vector>
 
 namespace rw
 {
@@ -91,9 +93,10 @@ namespace rw::events
             return false;
          }
 
-         if (!objects_[generator][Event::event_id].contains(subscriber))
+         if (rw::alg::binarySearch(objects_[generator][Event::event_id], subscriber) != objects_[generator][Event::event_id].cend())
          {
-            objects_[generator][Event::event_id].insert(subscriber);
+            objects_[generator][Event::event_id].emplace_back(subscriber);
+            rw::alg::sortLastElement(objects_[generator][Event::event_id].begin(), objects_[generator][Event::event_id].end());
          }
 
          return true;
@@ -115,10 +118,10 @@ namespace rw::events
          }
 
          auto& eventMap = objects_[generator][Event::event_id];
-         auto  subscriberIterator = eventMap.find(subscriber);
-         if (subscriberIterator != eventMap.end())
+         auto  subscriberIterator = rw::alg::binarySearch(eventMap, subscriber);
+         if (subscriberIterator != eventMap.cend())
          {
-            eventMap.erase(subscriber);
+            eventMap.erase(subscriberIterator);
          }
       }
 
@@ -131,7 +134,7 @@ namespace rw::events
       /**
        * @brief Map of all RedWolf objects with all their subscribers for each event ID.
        */
-      std::map<rw::core::BaseObject*, std::map<EventID, std::set<rw::core::BaseObject*>>> objects_;
+      std::map<rw::core::BaseObject*, std::map<EventID, std::vector<rw::core::BaseObject*>>> objects_;
    };
 } // namespace rw::events
 
