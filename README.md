@@ -39,6 +39,12 @@ GLM sources are already included in the CMake project and are located in the thi
 
 You must first build the RedWolf library project, then RedWolfSandbox.
 
+## Shaders
+For compiling shaders, use the python script scripts/compileShaders.py, specifying the compiler folder, source folder and destination folder.
+For example, in Windows powershell, with **scripts** as working directory, you would run:
+
+    python .\compileShaders.py $env:VULKAN_SDK/Bin ..\RedWolf\shaders\ ..\bin\RedWolf\shaders
+
 ### ********** DOCUMENTATION **********
 
 The documentation can be generated using Doxygen and the Doxyfile located in the root folder of the project.
