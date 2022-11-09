@@ -40,9 +40,24 @@ VkDevice Interface::createDevice(VkPhysicalDevice physicalDevice, const VkDevice
       return VK_NULL_HANDLE;
    }
 
-   VkDevice result;
+   VkDevice result{ VK_NULL_HANDLE };
 
    callVulkanFunction_(vkCreateDevice, physicalDevice, &deviceInfo, nullptr, &result);
+
+   return result;
+}
+
+VkImageView Interface::createImageView(VkDevice device, const VkImageViewCreateInfo& viewInfo)
+{
+   if (device == VK_NULL_HANDLE)
+   {
+      logger_.relErr("Cannot create an image view from a null logical device.");
+      return VK_NULL_HANDLE;
+   }
+
+   VkImageView result{ VK_NULL_HANDLE };
+
+   callVulkanFunction_(vkCreateImageView, device, &viewInfo, nullptr, &result);
 
    return result;
 }
@@ -88,6 +103,11 @@ void Interface::destroyDebugUtilsMessenger(VkInstance instance, VkDebugUtilsMess
 void Interface::destroyDevice(VkDevice device)
 {
    vkDestroyDevice(device, nullptr);
+}
+
+void Interface::destroyImageView(VkDevice device, VkImageView imageView)
+{
+   vkDestroyImageView(device, imageView, nullptr);
 }
 
 void Interface::destroyInstance(VkInstance instance)
@@ -176,7 +196,7 @@ std::vector<VkPhysicalDevice> Interface::getPhysicalDevices(VkInstance instance)
 
    if (instance != VK_NULL_HANDLE)
    {
-      uint32_t deviceCount;
+      uint32_t deviceCount{ 0U };
       callVulkanFunction_(vkEnumeratePhysicalDevices, instance, &deviceCount, nullptr);
 
       result.resize(deviceCount);

@@ -3,6 +3,7 @@
 
 #include "RedWolf/common.hpp"
 #include "RedWolf/lif/vulkan/BaseObject.hpp"
+#include "RedWolf/lif/vulkan/ImageView.hpp"
 #include "RedWolf/lif/vulkan/Interface.hpp"
 
 #include <vector>
@@ -38,11 +39,31 @@ namespace rw::lif::vlk
        */
       ~SwapChain();
 
+      /**
+       * @brief Copy constructor.
+       */
+      SwapChain(const SwapChain&) = delete;
+
+      /**
+       * @brief Move constructor.
+       */
+      SwapChain(SwapChain&& other) noexcept;
+
+      /**
+       * @brief Copy-assignment operator.
+       */
+      SwapChain& operator=(const SwapChain&) = delete;
+
+      /**
+       * @brief Move-assignment operator.
+       */
+      SwapChain& operator=(SwapChain&&) = delete;
+
    private:
       GraphicsDevice& graphicsDevice_; /**< Logical device this swap chain is bound to. */
 
-      VkSwapchainKHR       swapChain_{ VK_NULL_HANDLE }; /**< Raw swap chain handle. */
-      std::vector<VkImage> images_;                      /**< Handles to the swap chain's images. */
+      VkSwapchainKHR         swapChain_{ VK_NULL_HANDLE }; /**< Raw swap chain handle. */
+      std::vector<ImageView> images_;                      /**< Swap chain images. */
    };
 } // namespace rw::lif::vlk
 

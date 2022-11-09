@@ -58,14 +58,28 @@ SwapChain::SwapChain(RedWolfManager& manager, PhysicalDevice& physicalDevice, Gr
       logger_.relFatal("Failed to create swap chain.");
    }
 
-   images_ = vulkanInterface_.getSwapChainImages(graphicsDevice_.handle(), swapChain_);
+   std::vector<VkImage> imageHandles{ vulkanInterface_.getSwapChainImages(graphicsDevice_.handle(), swapChain_) };
+   images_.reserve(imageHandles.size());
    if (images_.empty())
    {
       logger_.relFatal("No images available in the swap chain.");
+   }
+
+   for (const auto& imageHandle : imageHandles)
+   {
+      images_.emplace_back(manager_, graphicsDevice_, imageHandle, format.format);
    }
 }
 
 SwapChain::~SwapChain()
 {
    vulkanInterface_.destroySwapChain(graphicsDevice_.handle(), swapChain_);
+}
+
+SwapChain::SwapChain(SwapChain&& other) noexcept : BaseObject(other.manager_), graphicsDevice_{ other.graphicsDevice_ }
+{
+   swapChain_ = other.swapChain_;
+   other.swapChain_ = VK_NULL_HANDLE;
+
+   images_ = std::move(other.images_);
 }

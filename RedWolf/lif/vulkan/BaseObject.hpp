@@ -48,7 +48,7 @@ namespace rw::lif::vlk
       /**
        * @brief Move constructor.
        */
-      BaseObject(BaseObject&&) = default;
+      BaseObject(BaseObject&&) noexcept = default;
 
       /**
        * @brief Copy-assignment operator.

@@ -26,8 +26,34 @@ namespace rw::lif::vlk
        * @param manager RedWolf library manager.
        * @param graphicsDevice Logical device that will render to the image.
        * @param image Image the view is based on.
+       * @param format Image format.
        */
-      ImageView(RedWolfManager& manager, GraphicsDevice& graphicsDevice, VkImage image);
+      ImageView(RedWolfManager& manager, GraphicsDevice& graphicsDevice, VkImage image, VkFormat format);
+
+      /**
+       * @brief Destructor.
+       */
+      ~ImageView();
+
+      /**
+       * @brief Copy constructor.
+       */
+      ImageView(const ImageView&) = delete;
+
+      /**
+       * @brief Move constructor.
+       */
+      ImageView(ImageView&& other) noexcept;
+
+      /**
+       * @brief Copy-assignment operator.
+       */
+      ImageView& operator=(const ImageView&) = delete;
+
+      /**
+       * @brief Move-assignment operator.
+       */
+      ImageView& operator=(ImageView&&) = delete;
 
       /**
        * @brief Get the raw handle to the image view.
@@ -37,6 +63,9 @@ namespace rw::lif::vlk
 
    private:
       VkImageView view_{ VK_NULL_HANDLE }; /**< Raw handle to the image view. */
+
+      VkDevice device_{ VK_NULL_HANDLE }; /**< Raw handle of the device the image view is bound to. */
+      VkImage  image_{ VK_NULL_HANDLE };  /**< Raw image handle. */
    };
 } // namespace rw::lif::vlk
 

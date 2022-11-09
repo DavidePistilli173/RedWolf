@@ -84,6 +84,14 @@ namespace rw::lif::vlk
       [[nodiscard]] VkDevice createDevice(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo& deviceInfo);
 
       /**
+       * @brief Create an image view.
+       * @param device Logical device the image view is bound to.
+       * @param viewInfo Creation parameters.
+       * @return Handle to the created image view or VK_NULL_HANDLE in case of error.
+       */
+      [[nodiscard]] VkImageView createImageView(VkDevice device, const VkImageViewCreateInfo& viewInfo);
+
+      /**
        * @brief Create a Vulkan instance.
        * @param args Instance arguments.
        * @return Newly created instance or VK_NULL_HANDLE.
@@ -110,6 +118,13 @@ namespace rw::lif::vlk
        * @param device Device to destroy.
        */
       void destroyDevice(VkDevice device);
+
+      /**
+       * @brief Destroy an image view.
+       * @param device Device the image view is bound to.
+       * @param imageView Image view to destroy.
+       */
+      void destroyImageView(VkDevice device, VkImageView imageView);
 
       /**
        * @brief Destroy an instance.
