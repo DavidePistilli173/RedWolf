@@ -54,6 +54,7 @@ namespace rw::io
          msi,
          png,
          sh,
+         spv,
          txt,
          xml,
          zip,
@@ -67,7 +68,7 @@ namespace rw::io
       static constexpr rw::cont::ConstexprMap<std::string_view, Format, 32U> extension_map{
          { ".bin", Format::bin }, { ".bmp", Format::bmp }, { ".cab", Format::cab }, { ".dll", Format::dll }, { ".exe", Format::exe },
          { ".ini", Format::ini }, { ".jpg", Format::jpg }, { ".msi", Format::msi }, { ".png", Format::png }, { ".sh", Format::sh },
-         { ".txt", Format::txt }, { ".xml", Format::xml }, { ".zip", Format::zip }
+         { ".spv", Format::spv }, { ".txt", Format::txt }, { ".xml", Format::xml }, { ".zip", Format::zip }
       };
 
       static constexpr char extension_separator{ '.' }; /**< Separator character for determining the file extension. */
@@ -94,16 +95,28 @@ namespace rw::io
       [[nodiscard]] Format format() const;
 
       /**
+       * @brief Check whether the file is open or not.
+       * @return True if the file is currently open, false otherwise.
+       */
+      [[nodiscard]] bool isOpen() const;
+
+      /**
        * @brief Get the file path.
        * @return File path.
        */
       [[nodiscard]] std::filesystem::path path() const;
 
       /**
+       * @brief Read all file contents and store them in a byte array.
+       * @return Byte array with all file contents.
+       */
+      [[nodiscard]] std::vector<std::byte> readAllByteArray() const;
+
+      /**
        * @brief Read all file contents and store them in a string.
        * @return File contents.
        */
-      [[nodiscard]] std::string readAll() const;
+      [[nodiscard]] std::string readAllString() const;
 
       /**
        * @brief Read all file contents as binary data and cast them to a given object type.

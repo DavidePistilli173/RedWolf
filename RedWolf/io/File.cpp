@@ -11,8 +11,7 @@ File::File(RedWolfManager& manager, std::string_view filePath, OpenMode mode, Fo
 {
    if (std::filesystem::exists(path_) && std::filesystem::is_directory(path_))
    {
-      logger_.relErr("The input path refers to a directory, not a file ({}).", path_.string());
-      throw std::exception{ "The input path refers to a directory, not a file." };
+      logger_.relFatal("The input path refers to a directory, not a file ({}).", path_.string());
    }
 
    if (format == Format::unknown) computeFormat_();
@@ -85,31 +84,51 @@ File::Format File::format() const
    return format_;
 }
 
+bool File::isOpen() const
+{
+   return fileStream_.is_open();
+}
+
 std::filesystem::path File::path() const
 {
    return path_;
 }
 
-std::string File::readAll() const
+std::vector<std::byte> File::readAllByteArray() const
 {
-   static constexpr size_t read_size = 4096U;
+   if (!std::filesystem::exists(path_)) return std::vector<std::byte>();
 
+   std::ifstream f{ std::ifstream(path_, std::ios_base::in | std::ios_base::binary | std::ios_base::ate) };
+   if (!f.is_open())
+   {
+      logger_.relErr("Failed to open file {}.", path_.string());
+      return std::vector<std::byte>();
+   }
+
+   size_t                 fileSize{ static_cast<size_t>(f.tellg()) };
+   std::vector<std::byte> out(fileSize);
+   f.seekg(0U);
+   f.read(reinterpret_cast<char*>(out.data()), out.size());
+
+   return out;
+}
+
+std::string File::readAllString() const
+{
    if (!std::filesystem::exists(path_)) return std::string();
 
-   std::ifstream f = std::ifstream(path_, std::ios_base::in);
+   std::ifstream f{ std::ifstream(path_, std::ios_base::in | std::ios_base::ate) };
    if (!f.is_open())
    {
       logger_.relErr("Failed to open file {}.", path_.string());
       return std::string();
    }
 
-   std::string out;
-   std::string buf = std::string(read_size, '\0');
-   while (f.read(&buf[0], read_size))
-   {
-      out.append(buf, 0, f.gcount());
-   }
-   out.append(buf, 0, f.gcount());
+   size_t      fileSize{ static_cast<size_t>(f.tellg()) };
+   std::string out(fileSize, '\0');
+   f.seekg(0U);
+   f.read(out.data(), out.size());
+
    return out;
 }
 
