@@ -43,6 +43,7 @@ Version 0.5.0
         - Reworked event system to use a library-wide event handler.
         - Add binary search function.
         - Rename alg header files.
+        - Add Vulkan ShaderModule class.
         - Fix Timer destructor.
         - Fix sign of the time of day in the DateTime structure.
         - Improve comments.
