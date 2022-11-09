@@ -64,6 +64,7 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "lif/vulkan/InstanceBase.cpp"
     "lif/vulkan/Interface.cpp"
     "lif/vulkan/PhysicalDevice.cpp"
+    "lif/vulkan/ShaderModule.cpp"
     "lif/vulkan/Surface.cpp"
     "lif/vulkan/SwapChain.cpp"
     "net/BaseSocket.cpp"

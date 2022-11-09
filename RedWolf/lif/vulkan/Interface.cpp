@@ -83,6 +83,21 @@ VkInstance Interface::createInstance(const VkInstanceCreateInfo& info)
    return result;
 }
 
+VkShaderModule Interface::createShaderModule(VkDevice device, const VkShaderModuleCreateInfo& shaderInfo)
+{
+   if (device == VK_NULL_HANDLE)
+   {
+      logger_.relErr("Cannot create shader module from a null device.");
+      return VK_NULL_HANDLE;
+   }
+
+   VkShaderModule result{ VK_NULL_HANDLE };
+
+   callVulkanFunction_(vkCreateShaderModule, device, &shaderInfo, nullptr, &result);
+
+   return result;
+}
+
 VkSwapchainKHR Interface::createSwapChain(VkDevice device, const VkSwapchainCreateInfoKHR& createInfo)
 {
    VkSwapchainKHR result{ VK_NULL_HANDLE };
@@ -114,6 +129,11 @@ void Interface::destroyInstance(VkInstance instance)
 {
    functions_.erase(instance);
    vkDestroyInstance(instance, nullptr);
+}
+
+void Interface::destroyShaderModule(VkDevice device, VkShaderModule shader)
+{
+   vkDestroyShaderModule(device, shader, nullptr);
 }
 
 void Interface::destroySurface(VkInstance instance, VkSurfaceKHR surface)

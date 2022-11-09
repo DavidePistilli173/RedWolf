@@ -99,6 +99,14 @@ namespace rw::lif::vlk
       [[nodiscard]] VkInstance createInstance(const VkInstanceCreateInfo& args);
 
       /**
+       * @brief Create a Vulkan shader module.
+       * @param device Logical device that will use the shader.
+       * @param shaderInfo Shader parameters.
+       * @return Newly created shader module or VK_NULL_HANDLE>
+       */
+      [[nodiscard]] VkShaderModule createShaderModule(VkDevice device, const VkShaderModuleCreateInfo& shaderInfo);
+
+      /**
        * @brief Create a swap chain.
        * @param device Logical device the swap chain will be bound to.
        * @param createInfo Swap chain creation parameters.
@@ -131,6 +139,13 @@ namespace rw::lif::vlk
        * @param instance Instance to destroy.
        */
       void destroyInstance(VkInstance instance);
+
+      /**
+       * @brief Destroy a shader module.
+       * @param device Logical device that uses the shader.
+       * @param shader Shader to destroy.
+       */
+      void destroyShaderModule(VkDevice device, VkShaderModule shader);
 
       /**
        * @brief Destroy a window surface.
