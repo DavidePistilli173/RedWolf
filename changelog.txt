@@ -2,6 +2,7 @@ Future Releases
     RedWolf:
         - [PLANNED] Fix linux compatibility
         - [PLANNED] Use C++20 modules.
+        - [PLANNED] Add Winsock interface to the RedWolfManager class.
 
     RedWolfSandbox:
         - [PLANNED] Fix linux compatibility
@@ -40,16 +41,20 @@ Version 0.5.0
         - Add Vulkan BaseObject class.
         - Add Vulkan ImageView class.
         - Add EventHandler class.
-        - Reworked event system to use a library-wide event handler.
+        - Rework event system to use a library-wide event handler.
         - Add binary search function.
         - Rename alg header files.
         - Add Vulkan ShaderModule class.
+        - Add Vulkan PipelineLayout class.
+        - Add Vulkan GraphicsPipeline class.
+        - Add Vulkan RenderPass class.
         - Fix Timer destructor.
         - Fix sign of the time of day in the DateTime structure.
         - Improve comments.
+        - Add logger to BaseObject as protected member and remove from child classes.
+        - Improve File class and add file reading to vector of bytes.
         - [IN PROGRESS] Add Vulkan support.
-        - [PLANNED] Add Winsock interface to the RedWolfManager class.
-        - [PLANNED] Add logger to BaseObject as protected member and remove from child classes.
+        - [PLANNED] Uniform usage of Vulkan handles vs RedWolf objects in RedWolf classes.
 
      RedWolfSandbox:
         - Add config file.

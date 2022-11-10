@@ -59,11 +59,21 @@ namespace rw::lif::vlk
        */
       SwapChain& operator=(SwapChain&&) = delete;
 
+      /**
+       * @brief Get the current format of the swap chain.
+       * @return Current format of the swap chain.
+       */
+      [[nodiscard]] const VkSurfaceFormatKHR& format() const;
+
    private:
+      VkSwapchainKHR     swapChain_{ VK_NULL_HANDLE }; /**< Raw swap chain handle. */
+      VkSurfaceFormatKHR format_;                      /**< Current format of the swap chain. */
+      VkPresentModeKHR   mode_;                        /**< Current mode of the swap chain. */
+      VkExtent2D         extent_;                      /**< Current extent of the swap chain. */
+
       GraphicsDevice& graphicsDevice_; /**< Logical device this swap chain is bound to. */
 
-      VkSwapchainKHR         swapChain_{ VK_NULL_HANDLE }; /**< Raw swap chain handle. */
-      std::vector<ImageView> images_;                      /**< Swap chain images. */
+      std::vector<ImageView> images_; /**< Swap chain images. */
    };
 } // namespace rw::lif::vlk
 

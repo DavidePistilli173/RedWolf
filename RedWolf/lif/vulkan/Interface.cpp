@@ -83,6 +83,36 @@ VkInstance Interface::createInstance(const VkInstanceCreateInfo& info)
    return result;
 }
 
+VkPipelineLayout Interface::createPipelineLayout(VkDevice device, const VkPipelineLayoutCreateInfo& pipelineInfo)
+{
+   if (device == VK_NULL_HANDLE)
+   {
+      logger_.relErr("Cannot create pipeline layout from a null device.");
+      return VK_NULL_HANDLE;
+   }
+
+   VkPipelineLayout result{ VK_NULL_HANDLE };
+
+   callVulkanFunction_(vkCreatePipelineLayout, device, &pipelineInfo, nullptr, &result);
+
+   return result;
+}
+
+VkRenderPass Interface::createRenderPass(VkDevice device, const VkRenderPassCreateInfo& renderPassInfo)
+{
+   if (device == VK_NULL_HANDLE)
+   {
+      logger_.relErr("Cannot create render pass from a null device.");
+      return VK_NULL_HANDLE;
+   }
+
+   VkRenderPass result{ VK_NULL_HANDLE };
+
+   callVulkanFunction_(vkCreateRenderPass(device, &renderPassInfo, nullptr, &result));
+
+   return result;
+}
+
 VkShaderModule Interface::createShaderModule(VkDevice device, const VkShaderModuleCreateInfo& shaderInfo)
 {
    if (device == VK_NULL_HANDLE)
@@ -129,6 +159,16 @@ void Interface::destroyInstance(VkInstance instance)
 {
    functions_.erase(instance);
    vkDestroyInstance(instance, nullptr);
+}
+
+void Interface::destroyPipelineLayout(VkDevice device, VkPipelineLayout pipelineLayout)
+{
+   vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+}
+
+void destroyRenderPass(VkDevice device, VkRenderPass renderPass)
+{
+   vkDestroyRenderPass(device, renderPass, nullptr);
 }
 
 void Interface::destroyShaderModule(VkDevice device, VkShaderModule shader)

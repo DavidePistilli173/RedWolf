@@ -24,6 +24,8 @@ namespace rw::lif::vlk
    class RW_API ShaderModule : public BaseObject
    {
    public:
+      static constexpr std::string_view entry_point_name{ "main" }; /**< Name of the shader's entry point. */
+
       /**
        * @brief Constructor.
        * @param manager RedWolf library manager.
@@ -56,6 +58,12 @@ namespace rw::lif::vlk
        * @brief Move-assignment operator.
        */
       ShaderModule& operator=(ShaderModule&&) = delete;
+
+      /**
+       * @brief Get the raw shader handle.
+       * @return Raw shader handle.
+       */
+      [[nodiscard]] VkShaderModule handle();
 
    private:
       VkShaderModule shader_{ VK_NULL_HANDLE }; /**< Raw shader handle. */

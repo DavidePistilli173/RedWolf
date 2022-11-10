@@ -11,9 +11,9 @@ SwapChain::SwapChain(RedWolfManager& manager, PhysicalDevice& physicalDevice, Gr
    BaseObject(manager), graphicsDevice_{ graphicsDevice }
 {
    VkSurfaceCapabilitiesKHR capabilities{ surface.capabilities() };
-   VkSurfaceFormatKHR       format{ surface.selectedFormat() };
-   VkPresentModeKHR         mode{ surface.selectedMode() };
-   VkExtent2D               extent{ surface.selectedExtent() };
+   format_ = surface.selectedFormat();
+   mode_ = surface.selectedMode();
+   extent_ = surface.selectedExtent();
 
    uint32_t imageCount{ capabilities.minImageCount + 1U };
    imageCount = std::clamp(imageCount, 0U, capabilities.maxImageCount);
@@ -22,9 +22,9 @@ SwapChain::SwapChain(RedWolfManager& manager, PhysicalDevice& physicalDevice, Gr
    createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
    createInfo.surface = surface.handle();
    createInfo.minImageCount = imageCount;
-   createInfo.imageFormat = format.format;
-   createInfo.imageColorSpace = format.colorSpace;
-   createInfo.imageExtent = extent;
+   createInfo.imageFormat = format_.format;
+   createInfo.imageColorSpace = format_.colorSpace;
+   createInfo.imageExtent = extent_;
    createInfo.imageArrayLayers = 1U;
    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
@@ -47,7 +47,7 @@ SwapChain::SwapChain(RedWolfManager& manager, PhysicalDevice& physicalDevice, Gr
 
    createInfo.preTransform = capabilities.currentTransform;
    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-   createInfo.presentMode = mode;
+   createInfo.presentMode = mode_;
    createInfo.clipped = VK_TRUE;
 
    createInfo.oldSwapchain = VK_NULL_HANDLE; // TODO: Add support for swap chain recreation.
@@ -67,7 +67,7 @@ SwapChain::SwapChain(RedWolfManager& manager, PhysicalDevice& physicalDevice, Gr
 
    for (const auto& imageHandle : imageHandles)
    {
-      images_.emplace_back(manager_, graphicsDevice_, imageHandle, format.format);
+      images_.emplace_back(manager_, graphicsDevice_, imageHandle, format_.format);
    }
 }
 
@@ -82,4 +82,9 @@ SwapChain::SwapChain(SwapChain&& other) noexcept : BaseObject(other.manager_), g
    other.swapChain_ = VK_NULL_HANDLE;
 
    images_ = std::move(other.images_);
+}
+
+const VkSurfaceFormatKHR& SwapChain::format() const
+{
+   return format_;
 }

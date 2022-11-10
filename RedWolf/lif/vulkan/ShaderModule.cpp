@@ -39,3 +39,8 @@ ShaderModule::ShaderModule(ShaderModule&& other) : BaseObject(other.manager_), d
    shader_ = other.shader_;
    other.shader_ = VK_NULL_HANDLE;
 }
+
+VkShaderModule ShaderModule::handle()
+{
+   return shader_;
+}

@@ -99,6 +99,22 @@ namespace rw::lif::vlk
       [[nodiscard]] VkInstance createInstance(const VkInstanceCreateInfo& args);
 
       /**
+       * @brief Create a pipeline layout.
+       * @param device Logical device that will use the pipeline.
+       * @param pipelineInfo Pipeline creation parameters.
+       * @return Newly created pipeline layout, or VK_NULL_HANDLE.
+       */
+      [[nodiscard]] VkPipelineLayout createPipelineLayout(VkDevice device, const VkPipelineLayoutCreateInfo& pipelineInfo);
+
+      /**
+       * @brief Create a render pass.
+       * @param device Device to which the render pass will be bound.
+       * @param renderPassInfo Render pass creation parameters.
+       * @return Newly created render pass, or VK_NULL_HANDLE.
+       */
+      [[nodiscard]] VkRenderPass createRenderPass(VkDevice device, const VkRenderPassCreateInfo& renderPassInfo);
+
+      /**
        * @brief Create a Vulkan shader module.
        * @param device Logical device that will use the shader.
        * @param shaderInfo Shader parameters.
@@ -139,6 +155,20 @@ namespace rw::lif::vlk
        * @param instance Instance to destroy.
        */
       void destroyInstance(VkInstance instance);
+
+      /**
+       * @brief Destroy a pipeline layout.
+       * @param device Logical device the pipeline layout is bound to.
+       * @param pipelineLayout Pipeline layout to destroy.
+       */
+      void destroyPipelineLayout(VkDevice device, VkPipelineLayout pipelineLayout);
+
+      /**
+       * @brief Destroy a render pass.
+       * @param device Logical device the render pass is bound to.
+       * @param renderPass Render pass to destroy.
+       */
+      void destroyRenderPass(VkDevice device, VkRenderPass renderPass);
 
       /**
        * @brief Destroy a shader module.
