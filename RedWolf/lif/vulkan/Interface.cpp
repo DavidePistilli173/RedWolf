@@ -108,7 +108,7 @@ VkRenderPass Interface::createRenderPass(VkDevice device, const VkRenderPassCrea
 
    VkRenderPass result{ VK_NULL_HANDLE };
 
-   callVulkanFunction_(vkCreateRenderPass(device, &renderPassInfo, nullptr, &result));
+   callVulkanFunction_(vkCreateRenderPass, device, &renderPassInfo, nullptr, &result);
 
    return result;
 }
@@ -166,7 +166,7 @@ void Interface::destroyPipelineLayout(VkDevice device, VkPipelineLayout pipeline
    vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 }
 
-void destroyRenderPass(VkDevice device, VkRenderPass renderPass)
+void Interface::destroyRenderPass(VkDevice device, VkRenderPass renderPass)
 {
    vkDestroyRenderPass(device, renderPass, nullptr);
 }
