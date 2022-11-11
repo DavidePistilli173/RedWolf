@@ -82,7 +82,7 @@ namespace rw::lif::vlk
       /**
        * @brief Move constructor.
        */
-      DeviceBase(DeviceBase&& other);
+      DeviceBase(DeviceBase&& other) noexcept;
 
       /**
        * @brief Copy-assignment operator.

@@ -27,7 +27,7 @@ namespace rw
       struct Options
       {
          std::string          appName;                                          /**< Name of the user application. */
-         rw::dat::VersionInfo appVersion;                                       /**< Version of the user application. */
+         rw::dat::VersionInfo appVersion{ 0, 0, 0 };                            /**< Version of the user application. */
          unsigned int threadPoolThreads{ std::thread::hardware_concurrency() }; /**< Number of threads assigned to the thread pool. */
       };
 

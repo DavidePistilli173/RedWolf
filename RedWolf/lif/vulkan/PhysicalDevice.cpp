@@ -36,7 +36,7 @@ rw::lif::vlk::QueueFamilies PhysicalDevice::availableQueueFamilies() const
    return queueFamilies_;
 }
 
-std::unique_ptr<GraphicsDevice> PhysicalDevice::createGraphicsDevice(VkSurfaceKHR surface)
+std::unique_ptr<GraphicsDevice> PhysicalDevice::createGraphicsDevice()
 {
    return std::make_unique<GraphicsDevice>(manager_, *this);
 }

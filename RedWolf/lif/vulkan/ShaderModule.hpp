@@ -47,7 +47,7 @@ namespace rw::lif::vlk
       /**
        * @brief Move constructor.
        */
-      ShaderModule(ShaderModule&& other);
+      ShaderModule(ShaderModule&& other) noexcept;
 
       /**
        * @brief Copy-assignment operator.

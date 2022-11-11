@@ -4,6 +4,7 @@
 #include "RedWolf/common.hpp"
 #include "RedWolf/lif/vulkan/BaseObject.hpp"
 #include "RedWolf/lif/vulkan/PipelineLayout.hpp"
+#include "RedWolf/lif/vulkan/RenderPass.hpp"
 
 #include <string_view>
 
@@ -37,11 +38,37 @@ namespace rw::lif::vlk
       GraphicsPipeline(
          RedWolfManager& manager, GraphicsDevice& device, SwapChain& swapChain, std::string_view vertShader, std::string_view fragShader);
 
+      /**
+       * @brief Destructor.
+       */
+      ~GraphicsPipeline();
+
+      /**
+       * @brief Copy constructor.
+       */
+      GraphicsPipeline(const GraphicsPipeline&) = delete;
+
+      /**
+       * @brief Move constructor.
+       */
+      GraphicsPipeline(GraphicsPipeline&& other) noexcept;
+
+      /**
+       * @brief Copy-assignment operator.
+       */
+      GraphicsPipeline& operator=(const GraphicsPipeline&) = delete;
+
+      /**
+       * @brief Move-assignment operator.
+       */
+      GraphicsPipeline& operator=(GraphicsPipeline&&) = delete;
+
    private:
       VkPipeline pipeline_{ VK_NULL_HANDLE }; /**< Raw pipeline handle. */
 
-      GraphicsDevice& device_; /**< Graphics devic this pipeline is bound to. */
-      PipelineLayout  layout_; /**< Layout information for the pipeline. */
+      GraphicsDevice& graphicsDevice_; /**< Graphics devic this pipeline is bound to. */
+      PipelineLayout  layout_;         /**< Layout information for the pipeline. */
+      RenderPass      renderPass_;     /**< Render pass for the pipeline. */
    };
 } // namespace rw::lif::vlk
 

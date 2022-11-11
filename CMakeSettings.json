@@ -10,7 +10,16 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "enableClangTidyCodeAnalysis": true
+      "enableMicrosoftCodeAnalysis": true,
+      "enableClangTidyCodeAnalysis": true,
+      "clangTidyChecks": "*",
+      "variables": [
+        {
+          "name": "CMAKE_EXPORT_COMPILE_COMMANDS",
+          "value": "True",
+          "type": "BOOL"
+        }
+      ]
     },
     {
       "name": "x64-Release",
@@ -21,8 +30,10 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
+      "enableMicrosoftCodeAnalysis": true,
       "enableClangTidyCodeAnalysis": true,
-      "inheritEnvironments": [ "msvc_x64_x64" ]
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "clangTidyChecks": "*"
     }
   ]
 }

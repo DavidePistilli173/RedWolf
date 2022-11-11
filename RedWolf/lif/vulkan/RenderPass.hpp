@@ -44,7 +44,7 @@ namespace rw::lif::vlk
       /**
        * @brief Move constructor.
        */
-      RenderPass(RenderPass&& other);
+      RenderPass(RenderPass&& other) noexcept;
 
       /**
        * @brief Copy-assignment operator.
@@ -55,6 +55,12 @@ namespace rw::lif::vlk
        * @brief Move-assignment operator.
        */
       RenderPass& operator=(RenderPass&&) = delete;
+
+      /**
+       * @brief Get the raw handle to the render pass object.
+       * @return Raw handle to the render pass object.
+       */
+      [[nodiscard]] VkRenderPass handle();
 
    private:
       VkRenderPass renderPass_{ VK_NULL_HANDLE }; /**< Raw handle to the render pass. */

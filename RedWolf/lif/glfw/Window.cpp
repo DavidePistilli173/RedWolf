@@ -14,25 +14,13 @@ Window::~Window()
    close();
 }
 
-Window::Window(Window&& other) :
+Window::Window(Window&& other) noexcept :
    logger_{ other.logger_ }, glfwManager_{ other.glfwManager_ }, title_{ other.title_ }, size_{ other.size_ }, resizable_{
       other.resizable_
    }
 {
    window_ = other.window_;
    other.window_ = nullptr;
-}
-
-Window& Window::operator=(Window&& other)
-{
-   window_ = other.window_;
-   other.window_ = nullptr;
-
-   title_ = other.title_;
-   size_ = other.size_;
-   resizable_ = other.resizable_;
-
-   return *this;
 }
 
 bool Window::checkWindowClose() const

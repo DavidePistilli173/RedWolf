@@ -13,7 +13,7 @@ GraphicsDevice::GraphicsDevice(RedWolfManager& manager, PhysicalDevice& physical
 
 GraphicsDevice::~GraphicsDevice() {}
 
-GraphicsDevice::GraphicsDevice(GraphicsDevice&& other) :
+GraphicsDevice::GraphicsDevice(GraphicsDevice&& other) noexcept :
    DeviceBase(other.manager_, other.physicalDevice_, other.required_queues, other.required_extensions)
 {
 }

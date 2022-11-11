@@ -63,7 +63,7 @@ namespace rw::lif::vlk
        * @brief Move constructor.
        * @param other Device to move from.
        */
-      GraphicsDevice(GraphicsDevice&& other);
+      GraphicsDevice(GraphicsDevice&& other) noexcept;
 
       /**
        * @brief Copy-assignment operator.

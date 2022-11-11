@@ -21,9 +21,9 @@ namespace rw::dat
        */
       constexpr VersionInfo(int verMajor, int verMinor, int verPatch) : major{ verMajor }, minor{ verMinor }, patch{ verPatch } {};
 
-      int major; /**< Major version number. */
-      int minor; /**< Minor version number. */
-      int patch; /**< Patch version number. */
+      int major{ 0 }; /**< Major version number. */
+      int minor{ 0 }; /**< Minor version number. */
+      int patch{ 0 }; /**< Patch version number. */
    };
 } // namespace rw::dat
 

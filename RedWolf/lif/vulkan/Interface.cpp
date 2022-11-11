@@ -47,6 +47,21 @@ VkDevice Interface::createDevice(VkPhysicalDevice physicalDevice, const VkDevice
    return result;
 }
 
+VkPipeline Interface::createGraphicsPipeline(VkDevice device, const VkGraphicsPipelineCreateInfo& pipelineInfo)
+{
+   if (device == VK_NULL_HANDLE)
+   {
+      logger_.relErr("Cannot create graphics pipeline from a null logical device.");
+      return VK_NULL_HANDLE;
+   }
+
+   VkPipeline result{ VK_NULL_HANDLE };
+
+   callVulkanFunction_(vkCreateGraphicsPipelines, device, VK_NULL_HANDLE, 1U, &pipelineInfo, nullptr, &result);
+
+   return result;
+}
+
 VkImageView Interface::createImageView(VkDevice device, const VkImageViewCreateInfo& viewInfo)
 {
    if (device == VK_NULL_HANDLE)
@@ -159,6 +174,11 @@ void Interface::destroyInstance(VkInstance instance)
 {
    functions_.erase(instance);
    vkDestroyInstance(instance, nullptr);
+}
+
+void Interface::destroyPipeline(VkDevice device, VkPipeline pipeline)
+{
+   vkDestroyPipeline(device, pipeline, nullptr);
 }
 
 void Interface::destroyPipelineLayout(VkDevice device, VkPipelineLayout pipelineLayout)
@@ -284,7 +304,7 @@ std::vector<VkQueueFamilyProperties> Interface::getPhysicalDeviceQueueFamilies(V
 
 VkSurfaceCapabilitiesKHR Interface::getSurfaceCapabilities(VkPhysicalDevice device, VkSurfaceKHR surface) const
 {
-   VkSurfaceCapabilitiesKHR result{ VkResult::VK_ERROR_UNKNOWN };
+   VkSurfaceCapabilitiesKHR result{};
 
    if (device != VK_NULL_HANDLE && surface != VK_NULL_HANDLE)
    {

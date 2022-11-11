@@ -49,7 +49,7 @@ namespace rw::lif::glfw
        * @brief Move constructor.
        * @param other Window to move from.
        */
-      Window(Window&& other);
+      Window(Window&& other) noexcept;
 
       /**
        * @brief Copy-assignment operator.
@@ -58,9 +58,8 @@ namespace rw::lif::glfw
 
       /**
        * @brief Move-assignment operator.
-       * @param other Window to move from.
        */
-      Window& operator=(Window&& other);
+      Window& operator=(Window&&) = delete;
 
       /**
        * @brief Check whether the window needs to be closed or not.

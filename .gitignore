@@ -1,6 +1,7 @@
 # Directories
 .vs
 bin
+build
 out
 RedWolf/docs/RedWolf.doxygen
 RedWolf/.vscode/

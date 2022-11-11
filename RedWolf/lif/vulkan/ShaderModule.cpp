@@ -34,7 +34,7 @@ ShaderModule::~ShaderModule()
    vulkanInterface_.destroyShaderModule(device_, shader_);
 }
 
-ShaderModule::ShaderModule(ShaderModule&& other) : BaseObject(other.manager_), device_{ other.device_ }
+ShaderModule::ShaderModule(ShaderModule&& other) noexcept : BaseObject(other.manager_), device_{ other.device_ }
 {
    shader_ = other.shader_;
    other.shader_ = VK_NULL_HANDLE;

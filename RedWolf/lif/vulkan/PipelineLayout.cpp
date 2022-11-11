@@ -26,7 +26,7 @@ PipelineLayout::~PipelineLayout()
    vulkanInterface_.destroyPipelineLayout(device_.handle(), pipelineLayout_);
 }
 
-PipelineLayout::PipelineLayout(PipelineLayout&& other) : BaseObject(other.manager_), device_{ other.device_ }
+PipelineLayout::PipelineLayout(PipelineLayout&& other) noexcept : BaseObject(other.manager_), device_{ other.device_ }
 {
    pipelineLayout_ = other.pipelineLayout_;
    other.pipelineLayout_ = VK_NULL_HANDLE;

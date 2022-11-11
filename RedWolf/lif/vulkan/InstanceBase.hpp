@@ -54,7 +54,7 @@ namespace rw::lif::vlk
        * @brief Move constructor.
        * @param other Instance to move from.
        */
-      InstanceBase(InstanceBase&& other);
+      InstanceBase(InstanceBase&& other) noexcept;
 
       /**
        * @brief Copy-assignment operator.

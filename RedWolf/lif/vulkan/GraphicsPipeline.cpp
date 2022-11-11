@@ -12,7 +12,7 @@ using namespace rw::lif::vlk;
 GraphicsPipeline::GraphicsPipeline(
    RedWolfManager& manager, GraphicsDevice& device, SwapChain& swapChain, std::string_view vertShader, std::string_view fragShader) :
    BaseObject(manager),
-   device_{ device }, layout_{ manager, device }
+   graphicsDevice_{ device }, layout_{ manager, device }, renderPass_{ manager, device, swapChain }
 {
    // Load shaders.
    ShaderModule                    vertexShader(manager, device, vertShader);
@@ -94,14 +94,48 @@ GraphicsPipeline::GraphicsPipeline(
    colourBlendAttachmentInfo.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
    colourBlendAttachmentInfo.alphaBlendOp = VK_BLEND_OP_ADD;
 
-   VkPipelineColorBlendStateCreateInfo colorBlendInfo{};
-   colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-   colorBlendInfo.logicOpEnable = VK_FALSE;
-   colorBlendInfo.logicOp = VK_LOGIC_OP_COPY;
-   colorBlendInfo.attachmentCount = 1U;
-   colorBlendInfo.pAttachments = &colourBlendAttachmentInfo;
-   colorBlendInfo.blendConstants[0] = 0.0F;
-   colorBlendInfo.blendConstants[1] = 0.0F;
-   colorBlendInfo.blendConstants[2] = 0.0F;
-   colorBlendInfo.blendConstants[3] = 0.0F;
+   VkPipelineColorBlendStateCreateInfo colourBlendInfo{};
+   colourBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+   colourBlendInfo.logicOpEnable = VK_FALSE;
+   colourBlendInfo.logicOp = VK_LOGIC_OP_COPY;
+   colourBlendInfo.attachmentCount = 1U;
+   colourBlendInfo.pAttachments = &colourBlendAttachmentInfo;
+   colourBlendInfo.blendConstants[0] = 0.0F;
+   colourBlendInfo.blendConstants[1] = 0.0F;
+   colourBlendInfo.blendConstants[2] = 0.0F;
+   colourBlendInfo.blendConstants[3] = 0.0F;
+
+   // Pipeline creation.
+   VkGraphicsPipelineCreateInfo createInfo{};
+   createInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+   createInfo.stageCount = 2U;
+   createInfo.pStages = shaderStages;
+   createInfo.pVertexInputState = &vertexInputInfo;
+   createInfo.pInputAssemblyState = &inputAssemblyInfo;
+   createInfo.pViewportState = &viewportInfo;
+   createInfo.pRasterizationState = &rasterizerInfo;
+   createInfo.pMultisampleState = &multisamplingInfo;
+   createInfo.pDepthStencilState = nullptr;
+   createInfo.pColorBlendState = &colourBlendInfo;
+   createInfo.pDynamicState = &dynamicStateInfo;
+   createInfo.layout = layout_.handle();
+   createInfo.renderPass = renderPass_.handle();
+   createInfo.subpass = 0U;
+   createInfo.basePipelineHandle = VK_NULL_HANDLE;
+   createInfo.basePipelineIndex = -1;
+
+   pipeline_ = vulkanInterface_.createGraphicsPipeline(graphicsDevice_.handle(), createInfo);
+}
+
+GraphicsPipeline::~GraphicsPipeline()
+{
+   vulkanInterface_.destroyPipeline(graphicsDevice_.handle(), pipeline_);
+}
+
+GraphicsPipeline::GraphicsPipeline(GraphicsPipeline&& other) noexcept :
+   BaseObject(other.manager_), graphicsDevice_{ other.graphicsDevice_ }, layout_{ std::move(other.layout_) }, renderPass_{ std::move(
+                                                                                                                 other.renderPass_) }
+{
+   pipeline_ = other.pipeline_;
+   other.pipeline_ = VK_NULL_HANDLE;
 }

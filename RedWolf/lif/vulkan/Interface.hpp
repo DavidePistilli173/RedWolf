@@ -84,6 +84,14 @@ namespace rw::lif::vlk
       [[nodiscard]] VkDevice createDevice(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo& deviceInfo);
 
       /**
+       * @brief Create a graphics pipeline.
+       * @param device Logical device this pipeline will be used on.
+       * @param pipelineInfo Pipeline creation parameters.
+       * @return Handle to the newly created graphics pipeline, or VK_NULL_HANDLE.
+       */
+      [[nodiscard]] VkPipeline createGraphicsPipeline(VkDevice device, const VkGraphicsPipelineCreateInfo& pipelineInfo);
+
+      /**
        * @brief Create an image view.
        * @param device Logical device the image view is bound to.
        * @param viewInfo Creation parameters.
@@ -155,6 +163,13 @@ namespace rw::lif::vlk
        * @param instance Instance to destroy.
        */
       void destroyInstance(VkInstance instance);
+
+      /**
+       * @brief Destroy a pipeline.
+       * @param device Device the pipeline is bound to.
+       * @param pipeline Pipeline to destroy.
+       */
+      void destroyPipeline(VkDevice device, VkPipeline pipeline);
 
       /**
        * @brief Destroy a pipeline layout.

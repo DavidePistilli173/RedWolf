@@ -140,13 +140,13 @@ namespace rw::lif::vlk
       GLFWwindow*  window_{ nullptr };         /**< Window that owns this surface. */
       VkSurfaceKHR surface_{ VK_NULL_HANDLE }; /**< Raw handle to the surface. */
 
-      VkSurfaceCapabilitiesKHR        capabilities_; /**< Surface capabilities. */
-      std::vector<VkSurfaceFormatKHR> formats_;      /**< Supported image formats. */
-      std::vector<VkPresentModeKHR>   modes_;        /**< Present modes. */
+      VkSurfaceCapabilitiesKHR        capabilities_{}; /**< Surface capabilities. */
+      std::vector<VkSurfaceFormatKHR> formats_;        /**< Supported image formats. */
+      std::vector<VkPresentModeKHR>   modes_;          /**< Present modes. */
 
-      VkSurfaceFormatKHR selectedFormat_; /**< Currently selected format. */
-      VkPresentModeKHR   selectedMode_;   /**< Currently selected presentation mode. */
-      VkExtent2D         selectedExtent_; /**< Currently selected surface resolution. */
+      VkSurfaceFormatKHR selectedFormat_{ VK_FORMAT_UNDEFINED, VK_COLOR_SPACE_MAX_ENUM_KHR }; /**< Currently selected format. */
+      VkPresentModeKHR   selectedMode_{ VK_PRESENT_MODE_MAX_ENUM_KHR };                       /**< Currently selected presentation mode. */
+      VkExtent2D         selectedExtent_{ 0U, 0U };                                           /**< Currently selected surface resolution. */
 
       std::unique_ptr<SwapChain> swapChain_; /**< Swap chain for the surface. */
    };

@@ -80,8 +80,8 @@ namespace rw::time
       [[nodiscard]] std::chrono::year year() const;
 
    private:
-      std::chrono::year_month_day                 date_; /**< Date. */
-      std::chrono::hh_mm_ss<std::chrono::seconds> time_; /**< Time. */
+      std::chrono::year_month_day                 date_{}; /**< Date. */
+      std::chrono::hh_mm_ss<std::chrono::seconds> time_;   /**< Time. */
    };
 } // namespace rw::time
 

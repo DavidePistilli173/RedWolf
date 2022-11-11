@@ -56,10 +56,9 @@ namespace rw::lif::vlk
 
       /**
        * @brief Create a graphics device from this physical device.
-       * @param surface Surface used for rendering.
        * @return Owning pointer to the new graphics device.
        */
-      [[nodiscard]] std::unique_ptr<GraphicsDevice> createGraphicsDevice(VkSurfaceKHR surface);
+      [[nodiscard]] std::unique_ptr<GraphicsDevice> createGraphicsDevice();
 
       /**
        * @brief Get the device handle.

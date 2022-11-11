@@ -23,7 +23,7 @@ InstanceBase::~InstanceBase()
    vulkanInterface_.destroyInstance(instance_);
 }
 
-InstanceBase::InstanceBase(InstanceBase&& other) :
+InstanceBase::InstanceBase(InstanceBase&& other) noexcept :
    manager_{ other.manager_ }, logger_{ other.logger_ }, vulkanInterface_{ other.vulkanInterface_ }, debugInfo_{ other.debugInfo_ },
    appName_{ other.appName_ }, appVersion_{ other.appVersion_ }, additionalExtensions_{ other.additionalExtensions_ }
 {

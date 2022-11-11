@@ -42,7 +42,7 @@ namespace rw::lif::vlk
       /**
        * @brief Move constructor.
        */
-      PipelineLayout(PipelineLayout&& other);
+      PipelineLayout(PipelineLayout&& other) noexcept;
 
       /**
        * @brief Copy-assignment operator.

@@ -52,7 +52,7 @@ bool UdpSocket::open(std::string_view localAddress, std::string_view localPort, 
 
 bool UdpSocket::send(std::string_view destinationAddress, std::string_view destinationPort, std::string_view string)
 {
-   return sendInternal_(destinationAddress, destinationPort, string.data(), string.length());
+   return sendInternal_(destinationAddress, destinationPort, string.data(), static_cast<int>(string.length()));
 }
 
 void UdpSocket::userHandle_(const rw::events::BaseEvent&, const rw::core::BaseObject*) {}
@@ -60,24 +60,24 @@ void UdpSocket::userHandle_(const rw::events::BaseEvent&, const rw::core::BaseOb
 bool UdpSocket::sendInternal_(std::string_view destinationAddress, std::string_view destinationPort, const char* buff, int buffLen)
 {
 #ifdef _WIN32
-   sockaddr_storage destinationSocket;
+   sockaddr_storage destinationSocket{};
    sockaddr_in*     ipv4Data{ reinterpret_cast<sockaddr_in*>(&destinationSocket) };
    sockaddr_in6*    ipv6Data{ reinterpret_cast<sockaddr_in6*>(&destinationSocket) };
-   socklen_t        addrLen;
+   socklen_t        addrLen{ 0U };
 
    switch (family())
    {
    case Family::ipv4:
       destinationSocket.ss_family = AF_INET;
       ipv4Data->sin_family = AF_INET;
-      ipv4Data->sin_port = htons(atoi(destinationPort.data()));
+      ipv4Data->sin_port = htons(static_cast<unsigned short>(atoi(destinationPort.data())));
       inet_pton(AF_INET, destinationAddress.data(), &ipv4Data->sin_addr);
       addrLen = sizeof(sockaddr_in);
       break;
    case Family::ipv6:
       destinationSocket.ss_family = AF_INET6;
       ipv6Data->sin6_family = AF_INET6;
-      ipv6Data->sin6_port = htons(atoi(destinationPort.data()));
+      ipv6Data->sin6_port = htons(static_cast<unsigned short>(atoi(destinationPort.data())));
       inet_pton(AF_INET6, destinationAddress.data(), &ipv6Data->sin6_addr);
       addrLen = sizeof(sockaddr_in6);
       break;
@@ -138,7 +138,6 @@ void UdpSocket::startWorkerThread_()
             }
             else if (numBytes > 0)
             {
-               sockaddr_storage*          senderData{ reinterpret_cast<sockaddr_storage*>(&senderAddress) };
                rw::events::DataReadyEvent evnt;
 
                switch (senderAddress.sa_family)
