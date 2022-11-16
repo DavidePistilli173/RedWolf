@@ -3,7 +3,7 @@
 using namespace rw;
 
 RedWolfManager::RedWolfManager(const Options& options) :
-   logger_{}, settingsManager_{ *this }, threadPool_{ *this, options.threadPoolThreads }, eventHandler_{ *this }, glfwManager_{ *this },
+   settingsManager_{ *this }, threadPool_{ *this, options.threadPoolThreads }, eventHandler_{ *this }, glfwManager_{ *this },
    vulkanInterface_{
       *this,
    },

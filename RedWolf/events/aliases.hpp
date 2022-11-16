@@ -4,6 +4,6 @@
 namespace rw::events
 {
    using EventID = unsigned int;
-}
+} // namespace rw::events
 
 #endif

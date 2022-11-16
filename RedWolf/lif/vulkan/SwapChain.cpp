@@ -8,12 +8,11 @@
 using namespace rw::lif::vlk;
 
 SwapChain::SwapChain(RedWolfManager& manager, PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice, Surface& surface) :
-   BaseObject(manager), graphicsDevice_{ graphicsDevice }
+   BaseObject(manager), graphicsDevice_{ graphicsDevice }, format_{ surface.selectedFormat() }, mode_{ surface.selectedMode() }, extent_{
+      surface.selectedExtent()
+   }
 {
    VkSurfaceCapabilitiesKHR capabilities{ surface.capabilities() };
-   format_ = surface.selectedFormat();
-   mode_ = surface.selectedMode();
-   extent_ = surface.selectedExtent();
 
    uint32_t imageCount{ capabilities.minImageCount + 1U };
    imageCount = std::clamp(imageCount, 0U, capabilities.maxImageCount);
@@ -76,9 +75,9 @@ SwapChain::~SwapChain()
    vulkanInterface_.destroySwapChain(graphicsDevice_.handle(), swapChain_);
 }
 
-SwapChain::SwapChain(SwapChain&& other) noexcept : BaseObject(other.manager_), graphicsDevice_{ other.graphicsDevice_ }
+SwapChain::SwapChain(SwapChain&& other) noexcept :
+   BaseObject(other.manager_), graphicsDevice_{ other.graphicsDevice_ }, swapChain_{ other.swapChain_ }
 {
-   swapChain_ = other.swapChain_;
    other.swapChain_ = VK_NULL_HANDLE;
 
    images_ = std::move(other.images_);

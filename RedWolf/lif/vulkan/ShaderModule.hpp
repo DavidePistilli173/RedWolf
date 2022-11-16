@@ -9,12 +9,12 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::lif::vlk
 {
    class GraphicsDevice;
-}
+} // namespace rw::lif::vlk
 
 namespace rw::lif::vlk
 {
@@ -37,7 +37,7 @@ namespace rw::lif::vlk
       /**
        * @brief Destructor.
        */
-      ~ShaderModule();
+      ~ShaderModule() override;
 
       /**
        * @brief Copy constructor.

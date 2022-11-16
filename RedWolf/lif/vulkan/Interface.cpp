@@ -15,14 +15,14 @@ bool Interface::checkSurfaceSupport(VkPhysicalDevice device, uint32_t queueFamil
       callVulkanFunction_(vkGetPhysicalDeviceSurfaceSupportKHR, device, queueFamily, surface, &presentSupport);
    }
 
-   return presentSupport;
+   return static_cast<bool>(presentSupport);
 }
 
 std::optional<VkDebugUtilsMessengerEXT>
    Interface::createDebugUtilsMessenger(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT& args)
 {
    std::optional<VkDebugUtilsMessengerEXT> result;
-   VkDebugUtilsMessengerEXT                debugMessenger;
+   VkDebugUtilsMessengerEXT                debugMessenger{ VK_NULL_HANDLE };
 
    if (functions_[instance].vkCreateDebugUtilsMessengerEXT(instance, &args, nullptr, &debugMessenger) == VK_SUCCESS)
    {
@@ -79,8 +79,8 @@ VkImageView Interface::createImageView(VkDevice device, const VkImageViewCreateI
 
 VkInstance Interface::createInstance(const VkInstanceCreateInfo& info)
 {
-   VkInstance result{ VK_NULL_HANDLE };
-   VkResult   errorCode{ vkCreateInstance(&info, nullptr, &result) };
+   VkInstance     result{ VK_NULL_HANDLE };
+   const VkResult errorCode{ vkCreateInstance(&info, nullptr, &result) };
 
    if (errorCode == VK_SUCCESS)
    {
@@ -163,47 +163,56 @@ void Interface::destroyDebugUtilsMessenger(VkInstance instance, VkDebugUtilsMess
 void Interface::destroyDevice(VkDevice device)
 {
    vkDestroyDevice(device, nullptr);
+   logger_.trace("Destroyed logical device {}.", reinterpret_cast<void*>(device));
 }
 
 void Interface::destroyImageView(VkDevice device, VkImageView imageView)
 {
    vkDestroyImageView(device, imageView, nullptr);
+   logger_.trace("Destroyed image view {}.", reinterpret_cast<void*>(imageView));
 }
 
 void Interface::destroyInstance(VkInstance instance)
 {
    functions_.erase(instance);
    vkDestroyInstance(instance, nullptr);
+   logger_.trace("Destroyed instance {}.", reinterpret_cast<void*>(instance));
 }
 
 void Interface::destroyPipeline(VkDevice device, VkPipeline pipeline)
 {
    vkDestroyPipeline(device, pipeline, nullptr);
+   logger_.trace("Destroyed pipeline {}.", reinterpret_cast<void*>(pipeline));
 }
 
 void Interface::destroyPipelineLayout(VkDevice device, VkPipelineLayout pipelineLayout)
 {
    vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+   logger_.trace("Destroyed pipeline layout {}.", reinterpret_cast<void*>(pipelineLayout));
 }
 
 void Interface::destroyRenderPass(VkDevice device, VkRenderPass renderPass)
 {
    vkDestroyRenderPass(device, renderPass, nullptr);
+   logger_.trace("Destroyed render pass {}.", reinterpret_cast<void*>(renderPass));
 }
 
 void Interface::destroyShaderModule(VkDevice device, VkShaderModule shader)
 {
    vkDestroyShaderModule(device, shader, nullptr);
+   logger_.trace("Destroyed shader module {}.", reinterpret_cast<void*>(shader));
 }
 
 void Interface::destroySurface(VkInstance instance, VkSurfaceKHR surface)
 {
    vkDestroySurfaceKHR(instance, surface, nullptr);
+   logger_.trace("Destroyed surface {}.", reinterpret_cast<void*>(surface));
 }
 
 void Interface::destroySwapChain(VkDevice device, VkSwapchainKHR swapChain)
 {
    vkDestroySwapchainKHR(device, swapChain, nullptr);
+   logger_.trace("Destroyed swap chain {}.", reinterpret_cast<void*>(swapChain));
 }
 
 std::vector<VkExtensionProperties> Interface::enumerateDeviceExtensionProperties(VkPhysicalDevice device)
@@ -252,7 +261,7 @@ VkQueue Interface::getDeviceQueue(VkDevice device, uint32_t familyIndex, uint32_
       return VK_NULL_HANDLE;
    }
 
-   VkQueue result;
+   VkQueue result{ VK_NULL_HANDLE };
    vkGetDeviceQueue(device, familyIndex, queueIndex, &result);
    return result;
 }
@@ -260,6 +269,12 @@ VkQueue Interface::getDeviceQueue(VkDevice device, uint32_t familyIndex, uint32_
 std::pair<VkPhysicalDeviceProperties, VkPhysicalDeviceFeatures> Interface::getPhysicalDeviceData(VkPhysicalDevice device) const
 {
    std::pair<VkPhysicalDeviceProperties, VkPhysicalDeviceFeatures> result;
+
+   if (device == VK_NULL_HANDLE)
+   {
+      logger_.relErr("Null device handle.");
+      return result;
+   }
 
    if (device != VK_NULL_HANDLE)
    {
@@ -292,7 +307,7 @@ std::vector<VkQueueFamilyProperties> Interface::getPhysicalDeviceQueueFamilies(V
 
    if (device != VK_NULL_HANDLE)
    {
-      uint32_t queueFamilyCount;
+      uint32_t queueFamilyCount{ 0U };
       vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
 
       result.resize(queueFamilyCount);

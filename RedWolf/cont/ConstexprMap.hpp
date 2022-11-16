@@ -266,7 +266,7 @@ namespace rw::cont
        * @brief Construct a map from a list of (key, value) pairs.
        * @param initData List of initial (key, value) pairs.
        */
-      explicit constexpr ConstexprMap(std::initializer_list<value_type> initData, Compare comp = Compare()) :
+      constexpr ConstexprMap(std::initializer_list<value_type> initData, Compare comp = Compare()) :
          size_{ std::min(initData.size(), Capacity) }, comp_{ comp }
       {
          auto it = initData.begin();

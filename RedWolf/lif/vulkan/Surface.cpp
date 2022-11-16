@@ -10,9 +10,9 @@
 using namespace rw::lif::vlk;
 
 Surface::Surface(RedWolfManager& manager, GLFWwindow* window) :
-   BaseObject(manager), glfwManager_{ manager.glfwManager() }, window_{ window }
+   BaseObject(manager), glfwManager_{ manager.glfwManager() }, window_{ window }, surface_{ glfwManager_.createWindowSurface(
+                                                                                     vulkanInstance_.handle(), window_) }
 {
-   surface_ = glfwManager_.createWindowSurface(vulkanInstance_.handle(), window_);
    if (surface_ == VK_NULL_HANDLE)
    {
       logger_.relFatal("Failed to create window surface.");
@@ -27,13 +27,13 @@ Surface::~Surface()
 
 VkSurfaceCapabilitiesKHR Surface::capabilities() const
 {
-   std::shared_lock lck{ mtx_ };
+   const std::shared_lock lck{ mtx_ };
    return capabilities_;
 }
 
 std::vector<VkSurfaceFormatKHR> Surface::formats() const
 {
-   std::shared_lock lck{ mtx_ };
+   const std::shared_lock lck{ mtx_ };
    return formats_;
 }
 
@@ -44,25 +44,25 @@ VkSurfaceKHR Surface::handle()
 
 std::vector<VkPresentModeKHR> Surface::modes() const
 {
-   std::shared_lock lck{ mtx_ };
+   const std::shared_lock lck{ mtx_ };
    return modes_;
 }
 
 [[nodiscard]] VkExtent2D Surface::selectedExtent() const
 {
-   std::shared_lock lck{ mtx_ };
+   const std::shared_lock lck{ mtx_ };
    return selectedExtent_;
 }
 
 [[nodiscard]] VkSurfaceFormatKHR Surface::selectedFormat() const
 {
-   std::shared_lock lck{ mtx_ };
+   const std::shared_lock lck{ mtx_ };
    return selectedFormat_;
 }
 
 [[nodiscard]] VkPresentModeKHR Surface::selectedMode() const
 {
-   std::shared_lock lck{ mtx_ };
+   const std::shared_lock lck{ mtx_ };
    return selectedMode_;
 }
 
@@ -74,7 +74,7 @@ bool Surface::setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphic
 
 bool Surface::initDevices_(PhysicalDevice& physicalDevice)
 {
-   std::scoped_lock lck{ mtx_ };
+   const std::scoped_lock lck{ mtx_ };
 
    capabilities_ = vulkanInterface_.getSurfaceCapabilities(physicalDevice.handle(), surface_);
    formats_ = vulkanInterface_.getSurfaceFormats(physicalDevice.handle(), surface_);

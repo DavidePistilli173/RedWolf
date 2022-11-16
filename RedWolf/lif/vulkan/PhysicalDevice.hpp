@@ -14,17 +14,17 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::lif::vlk
 {
    class GraphicsDevice;
-}
+} // namespace rw::lif::vlk
 
 namespace rw::utils
 {
    class Logger;
-}
+} // namespace rw::utils
 
 namespace rw::lif::vlk
 {

@@ -20,7 +20,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL DebugUtilsMessenger::debugCallback(
    const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
    void*                                       pUserData)
 {
-   auto logger{ reinterpret_cast<rw::utils::Logger*>(pUserData) };
+   auto* logger{ reinterpret_cast<rw::utils::Logger*>(pUserData) };
 
    std::string type;
    switch (messageType)
@@ -63,7 +63,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL DebugUtilsMessenger::debugCallback(
 
 bool DebugUtilsMessenger::initialise(const VkDebugUtilsMessengerCreateInfoEXT& args)
 {
-   std::scoped_lock lck{ debugCallbackMutex_ };
+   const std::scoped_lock lck{ debugCallbackMutex_ };
 
    if (messenger_ != VK_NULL_HANDLE)
    {

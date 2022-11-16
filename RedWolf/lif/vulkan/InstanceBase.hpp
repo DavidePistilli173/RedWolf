@@ -11,12 +11,12 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::utils
 {
    class Logger;
-}
+} // namespace rw::utils
 
 namespace rw::lif::vlk
 {
@@ -64,7 +64,7 @@ namespace rw::lif::vlk
       /**
        * @brief Move-assignment operator.
        */
-      InstanceBase& operator=(InstanceBase&) = delete;
+      InstanceBase& operator=(InstanceBase&&) = delete;
 
       /**
        * @brief Get the raw handle to the instance.

@@ -14,12 +14,12 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::utils
 {
    class Logger;
-}
+} // namespace rw::utils
 
 namespace rw::io
 {
@@ -206,6 +206,9 @@ struct std::formatter<rw::io::File::Format> : std::formatter<std::string>
          break;
       case rw::io::File::Format::sh:
          return std::formatter<std::string>::format("sh", ctx);
+         break;
+      case rw::io::File::Format::spv:
+         return std::formatter<std::string>::format("spv", ctx);
          break;
       case rw::io::File::Format::txt:
          return std::formatter<std::string>::format("txt", ctx);

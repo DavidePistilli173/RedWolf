@@ -16,7 +16,7 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::utils
 {
@@ -35,7 +35,7 @@ namespace rw::utils
        * @brief Constructor.
        * @param manager RedWolf library manager.
        */
-      SettingsManager(RedWolfManager& manager);
+      explicit SettingsManager(RedWolfManager& manager);
 
       /**
        * @brief Get the root of a given settings tree.

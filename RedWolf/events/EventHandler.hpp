@@ -16,12 +16,12 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::core
 {
    class BaseObject;
-}
+} // namespace rw::core
 
 namespace rw::events
 {

@@ -11,7 +11,7 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::lif::vlk
 {
@@ -37,7 +37,7 @@ namespace rw::lif::vlk
       /**
        * @brief Destructor.
        */
-      ~SwapChain();
+      ~SwapChain() override;
 
       /**
        * @brief Copy constructor.

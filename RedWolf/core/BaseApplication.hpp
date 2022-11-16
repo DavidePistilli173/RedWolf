@@ -45,7 +45,7 @@ namespace rw::core
       /**
        * @brief Destructor.
        */
-      virtual ~BaseApplication() = default;
+      ~BaseApplication() override = default;
 
       /**
        * @brief Base applications cannot be copied.

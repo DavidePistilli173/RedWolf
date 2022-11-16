@@ -6,7 +6,7 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::lif::vlk
 {
@@ -33,7 +33,7 @@ namespace rw::lif::vlk
       /**
        * @brief Destructor.
        */
-      ~ImageView();
+      ~ImageView() override;
 
       /**
        * @brief Copy constructor.

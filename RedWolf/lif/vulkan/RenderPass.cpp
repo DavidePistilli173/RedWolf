@@ -47,9 +47,9 @@ RenderPass::~RenderPass()
    vulkanInterface_.destroyRenderPass(graphicsDevice_.handle(), renderPass_);
 }
 
-RenderPass::RenderPass(RenderPass&& other) noexcept : BaseObject(other.manager_), graphicsDevice_{ other.graphicsDevice_ }
+RenderPass::RenderPass(RenderPass&& other) noexcept :
+   BaseObject(other.manager_), renderPass_{ other.renderPass_ }, graphicsDevice_{ other.graphicsDevice_ }
 {
-   renderPass_ = other.renderPass_;
    other.renderPass_ = VK_NULL_HANDLE;
 }
 

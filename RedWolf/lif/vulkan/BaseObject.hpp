@@ -8,12 +8,12 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::utils
 {
    class Logger;
-}
+} // namespace rw::utils
 
 namespace rw::lif::vlk
 {
@@ -33,7 +33,7 @@ namespace rw::lif::vlk
        * @brief Constructor.
        * @param manager RedWolf library manager.
        */
-      BaseObject(RedWolfManager& manager);
+      explicit BaseObject(RedWolfManager& manager);
 
       /**
        * @brief Destructor.

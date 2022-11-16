@@ -39,7 +39,7 @@ namespace rw::core
       /**
        * @brief Destructor.
        */
-      ~BaseObject();
+      virtual ~BaseObject();
 
       /**
        * @brief Copy constructor.

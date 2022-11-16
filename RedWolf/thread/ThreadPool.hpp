@@ -20,7 +20,7 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::thread
 {
@@ -41,12 +41,18 @@ namespace rw::thread
          Worker() = default;
 
          /**
-          * @brief Constructor that accepts a thread.
+          * @brief Constructor that accepts a function.
+          * @param func Function that the worker will run.
           */
          template<typename Function>
-         explicit Worker(Function f) : thread{ f }
+         explicit Worker(Function func) : thread{ func }
          {
          }
+
+         /**
+          * @brief Destructor.
+          */
+         ~Worker() = default;
 
          /**
           * @brief Copy constructor. Workers are non-copyable.
@@ -65,8 +71,9 @@ namespace rw::thread
 
          /**
           * @brief Move assignment operator.
+          * @param other Worker that will be moved from.
           */
-         Worker& operator=(Worker& other) noexcept
+         Worker& operator=(Worker&& other) noexcept
          {
             if (&other != this)
             {
@@ -98,6 +105,26 @@ namespace rw::thread
        * @brief Custom destructor for joining all threads before destruction.
        */
       ~ThreadPool();
+
+      /**
+       * @brief Copy constructor.
+       */
+      ThreadPool(const ThreadPool&) = delete;
+
+      /**
+       * @brief Move constructor.
+       */
+      ThreadPool(ThreadPool&&) = delete;
+
+      /**
+       * @brief Copy-assignment operator.
+       */
+      ThreadPool& operator=(const ThreadPool&) = delete;
+
+      /**
+       * @brief Move-assignment operator.
+       */
+      ThreadPool& operator=(ThreadPool&&) = delete;
 
       /**
        * @brief Add a task for the pool to execute.
@@ -151,7 +178,7 @@ namespace rw::thread
        * @brief Get the current number of threads of the pool.
        * @return size_t Current number of threads of the pool.
        */
-      size_t numberOfThreads() const;
+      [[nodiscard]] size_t numberOfThreads() const;
 
       /**
        * @brief Stop all threads of the thread pool. This function is blocking.

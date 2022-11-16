@@ -10,12 +10,12 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::utils
 {
    class Logger;
-}
+} // namespace rw::utils
 
 namespace rw::lif::vlk
 {
@@ -26,12 +26,12 @@ namespace rw::lif::vlk
        * @brief Constructor.
        * @param manager RedWolf library manager.
        */
-      DebugUtilsMessenger(RedWolfManager& manager);
+      explicit DebugUtilsMessenger(RedWolfManager& manager);
 
       /**
        * @brief Destructor.
        */
-      virtual ~DebugUtilsMessenger();
+      ~DebugUtilsMessenger() override;
 
       /**
        * @brief Copy constructor.

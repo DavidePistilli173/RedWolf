@@ -11,12 +11,12 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::utils
 {
    class Logger;
-}
+} // namespace rw::utils
 
 namespace rw::lif::vlk
 {
@@ -52,7 +52,7 @@ namespace rw::lif::vlk
       /**
        * @brief Destructor.
        */
-      ~GraphicsDevice();
+      ~GraphicsDevice() override = default;
 
       /**
        * @brief Copy constructor.

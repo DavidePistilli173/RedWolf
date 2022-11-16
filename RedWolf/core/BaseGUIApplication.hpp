@@ -38,6 +38,31 @@ namespace rw::core
       BaseGUIApplication(RedWolfManager& manager, BaseWindow* window = nullptr, int argc = 0, char** argv = nullptr);
 
       /**
+       * @brief Destructor.
+       */
+      ~BaseGUIApplication() override = default;
+
+      /**
+       * @brief Copy constructor.
+       */
+      BaseGUIApplication(const BaseGUIApplication&) = delete;
+
+      /**
+       * @brief Move constructor.
+       */
+      BaseGUIApplication(BaseGUIApplication&&) = delete;
+
+      /**
+       * @brief Copy-assignment operator.
+       */
+      BaseGUIApplication& operator=(const BaseGUIApplication&) = delete;
+
+      /**
+       * @brief Move-assignment operator.
+       */
+      BaseGUIApplication& operator=(BaseGUIApplication&&) = delete;
+
+      /**
        * @brief Add a new window to the application.
        * @param window New window to add.
        */
@@ -46,7 +71,7 @@ namespace rw::core
       /**
        * @brief Run the application.
        */
-      virtual void run() override;
+      void run() override;
 
    protected:
    private:

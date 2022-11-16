@@ -16,7 +16,7 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::lif::vlk
 {
@@ -30,7 +30,7 @@ namespace rw::lif::vlk
        * @brief Constructor.
        * @param manager RedWolf library manager.
        */
-      Interface(RedWolfManager& manager);
+      explicit Interface(RedWolfManager& manager);
 
       /**
        * @brief Destructor.

@@ -9,7 +9,7 @@ using namespace rw::lif::vlk;
 ShaderModule::ShaderModule(RedWolfManager& manager, GraphicsDevice& device, std::string_view file) :
    BaseObject(manager), device_{ device.handle() }
 {
-   rw::io::File inputFile{ manager, file };
+   const rw::io::File inputFile{ manager, file };
    if (!inputFile.isOpen())
    {
       logger_.relFatal("Failed to open shader {}.", file);

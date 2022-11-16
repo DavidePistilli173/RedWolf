@@ -7,12 +7,12 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::lif::vlk
 {
    class GraphicsDevice;
-}
+} // namespace rw::lif::vlk
 
 namespace rw::lif::vlk
 {
@@ -32,7 +32,7 @@ namespace rw::lif::vlk
       /**
        * @brief Destructor.
        */
-      ~PipelineLayout();
+      ~PipelineLayout() override;
 
       /**
        * @brief Copy constructor.

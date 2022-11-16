@@ -41,9 +41,9 @@ ImageView::~ImageView()
    vulkanInterface_.destroyImageView(device_, view_);
 }
 
-ImageView::ImageView(ImageView&& other) noexcept : BaseObject(other.manager_), device_{ other.device_ }, image_{ other.image_ }
+ImageView::ImageView(ImageView&& other) noexcept :
+   BaseObject(other.manager_), view_{ other.view_ }, device_{ other.device_ }, image_{ other.image_ }
 {
-   view_ = other.view_;
    other.view_ = VK_NULL_HANDLE;
 }
 

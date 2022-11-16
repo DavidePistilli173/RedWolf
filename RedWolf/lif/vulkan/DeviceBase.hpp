@@ -72,7 +72,7 @@ namespace rw::lif::vlk
       /**
        * @brief Destructor.
        */
-      virtual ~DeviceBase();
+      ~DeviceBase() override;
 
       /**
        * @brief Copy constructor.
@@ -137,7 +137,7 @@ namespace rw::lif::vlk
          // Common parameters.
          VkDeviceQueueCreateInfo queueCreateInfo{};
          queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-         float queuePriority{ 1.0F };
+         const float queuePriority{ 1.0F };
          queueCreateInfo.pQueuePriorities = &queuePriority;
          queueCreateInfo.queueCount = 1U;
 

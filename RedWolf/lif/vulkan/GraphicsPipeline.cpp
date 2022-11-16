@@ -5,6 +5,7 @@
 #include "RedWolf/lif/vulkan/ShaderModule.hpp"
 #include "RedWolf/lif/vulkan/SwapChain.hpp"
 
+#include <array>
 #include <vector>
 
 using namespace rw::lif::vlk;
@@ -29,7 +30,7 @@ GraphicsPipeline::GraphicsPipeline(
    fragShaderStageInfo.module = fragmentShader.handle();
    fragShaderStageInfo.pName = ShaderModule::entry_point_name.data();
 
-   VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+   std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages = { vertShaderStageInfo, fragShaderStageInfo };
 
    // Vertex input description.
    VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
@@ -108,8 +109,8 @@ GraphicsPipeline::GraphicsPipeline(
    // Pipeline creation.
    VkGraphicsPipelineCreateInfo createInfo{};
    createInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-   createInfo.stageCount = 2U;
-   createInfo.pStages = shaderStages;
+   createInfo.stageCount = static_cast<uint32_t>(shaderStages.size());
+   createInfo.pStages = shaderStages.data();
    createInfo.pVertexInputState = &vertexInputInfo;
    createInfo.pInputAssemblyState = &inputAssemblyInfo;
    createInfo.pViewportState = &viewportInfo;
@@ -133,9 +134,8 @@ GraphicsPipeline::~GraphicsPipeline()
 }
 
 GraphicsPipeline::GraphicsPipeline(GraphicsPipeline&& other) noexcept :
-   BaseObject(other.manager_), graphicsDevice_{ other.graphicsDevice_ }, layout_{ std::move(other.layout_) }, renderPass_{ std::move(
-                                                                                                                 other.renderPass_) }
+   BaseObject(other.manager_), pipeline_{ other.pipeline_ }, graphicsDevice_{ other.graphicsDevice_ }, layout_{ std::move(other.layout_) },
+   renderPass_{ std::move(other.renderPass_) }
 {
-   pipeline_ = other.pipeline_;
    other.pipeline_ = VK_NULL_HANDLE;
 }

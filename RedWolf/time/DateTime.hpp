@@ -25,7 +25,7 @@ namespace rw::time
        * @param timePoint Time point from which to create the object.
        */
       template<IsChronoClock T>
-      DateTime(std::chrono::time_point<T> timePoint) :
+      explicit DateTime(std::chrono::time_point<T> timePoint) :
          date_{ std::chrono::floor<std::chrono::days>(timePoint) }, time_{ std::chrono::duration_cast<std::chrono::seconds>(
                                                                        T::now() - std::chrono::floor<std::chrono::days>(timePoint)) }
       {

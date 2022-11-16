@@ -35,7 +35,7 @@ namespace rw
        * @brief Constructor.
        * @param options Initialisation options for the library.
        */
-      RedWolfManager(const Options& options);
+      explicit RedWolfManager(const Options& options);
 
       /**
        * @brief Destructor.

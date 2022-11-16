@@ -37,10 +37,13 @@ namespace rw::dat
        */
       LogMsg(Level lvl, std::source_location srcLoc, std::string_view msg);
 
-      Level                level;          /**< Level of the message. */
-      rw::time::DateTime   dateTime;       /**< Date and time of the message. */
-      std::source_location sourceLocation; /**< Info about the source code location where the message was generated. */
-      std::string          message;        /**< Actual message. */
+      Level              level{ Level::trace }; /**< Level of the message. */
+      rw::time::DateTime dateTime;              /**< Date and time of the message. */
+      /**
+       * @brief Info about the source code location where the message was generated.
+       */
+      std::source_location sourceLocation{ std::source_location::current() };
+      std::string          message; /**< Actual message. */
    };
 } // namespace rw::dat
 
@@ -52,7 +55,7 @@ struct std::formatter<rw::dat::LogMsg::Level> : std::formatter<std::string>
 {
    auto format(rw::dat::LogMsg::Level lvl, std::format_context& ctx)
    {
-      std::string val{ std::to_string(static_cast<int>(lvl)) };
+      const std::string val{ std::to_string(static_cast<int>(lvl)) };
       return std::formatter<std::string>::format(val, ctx);
    }
 };

@@ -14,7 +14,7 @@ struct std::formatter<std::vector<std::byte>> : std::formatter<std::string>
 {
    auto format(const std::vector<std::byte>& data, std::format_context& ctx)
    {
-      std::string result{ reinterpret_cast<const char*>(data.data()), data.size() };
+      const std::string result{ reinterpret_cast<const char*>(data.data()), data.size() };
       return std::formatter<std::string>::format(result, ctx);
    }
 };

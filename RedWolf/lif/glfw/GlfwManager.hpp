@@ -14,12 +14,12 @@
 namespace rw
 {
    class RedWolfManager;
-}
+} // namespace rw
 
 namespace rw::utils
 {
    class Logger;
-}
+} // namespace rw::utils
 
 namespace rw::lif::glfw
 {
@@ -34,7 +34,7 @@ namespace rw::lif::glfw
        * @brief Constructor.
        * @param manager RedWolf library manager.
        */
-      GlfwManager(RedWolfManager& manager);
+      explicit GlfwManager(RedWolfManager& manager);
 
       /**
        * @brief Destructor.
