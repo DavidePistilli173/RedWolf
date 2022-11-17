@@ -16,7 +16,7 @@ void EventHandler::addObject(rw::core::BaseObject* object)
    }
    else
    {
-      logger_.warn("Object {} already added to the event system.", reinterpret_cast<void*>(object));
+      logger_.warn("Object {} already added to the event system.", object);
    }
 }
 

@@ -163,56 +163,56 @@ void Interface::destroyDebugUtilsMessenger(VkInstance instance, VkDebugUtilsMess
 void Interface::destroyDevice(VkDevice device)
 {
    vkDestroyDevice(device, nullptr);
-   logger_.trace("Destroyed logical device {}.", reinterpret_cast<void*>(device));
+   logger_.trace("Destroyed logical device {}.", device);
 }
 
 void Interface::destroyImageView(VkDevice device, VkImageView imageView)
 {
    vkDestroyImageView(device, imageView, nullptr);
-   logger_.trace("Destroyed image view {}.", reinterpret_cast<void*>(imageView));
+   logger_.trace("Destroyed image view {}.", imageView);
 }
 
 void Interface::destroyInstance(VkInstance instance)
 {
    functions_.erase(instance);
    vkDestroyInstance(instance, nullptr);
-   logger_.trace("Destroyed instance {}.", reinterpret_cast<void*>(instance));
+   logger_.trace("Destroyed instance {}.", instance);
 }
 
 void Interface::destroyPipeline(VkDevice device, VkPipeline pipeline)
 {
    vkDestroyPipeline(device, pipeline, nullptr);
-   logger_.trace("Destroyed pipeline {}.", reinterpret_cast<void*>(pipeline));
+   logger_.trace("Destroyed pipeline {}.", pipeline);
 }
 
 void Interface::destroyPipelineLayout(VkDevice device, VkPipelineLayout pipelineLayout)
 {
    vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-   logger_.trace("Destroyed pipeline layout {}.", reinterpret_cast<void*>(pipelineLayout));
+   logger_.trace("Destroyed pipeline layout {}.", pipelineLayout);
 }
 
 void Interface::destroyRenderPass(VkDevice device, VkRenderPass renderPass)
 {
    vkDestroyRenderPass(device, renderPass, nullptr);
-   logger_.trace("Destroyed render pass {}.", reinterpret_cast<void*>(renderPass));
+   logger_.trace("Destroyed render pass {}.", renderPass);
 }
 
 void Interface::destroyShaderModule(VkDevice device, VkShaderModule shader)
 {
    vkDestroyShaderModule(device, shader, nullptr);
-   logger_.trace("Destroyed shader module {}.", reinterpret_cast<void*>(shader));
+   logger_.trace("Destroyed shader module {}.", shader);
 }
 
 void Interface::destroySurface(VkInstance instance, VkSurfaceKHR surface)
 {
    vkDestroySurfaceKHR(instance, surface, nullptr);
-   logger_.trace("Destroyed surface {}.", reinterpret_cast<void*>(surface));
+   logger_.trace("Destroyed surface {}.", surface);
 }
 
 void Interface::destroySwapChain(VkDevice device, VkSwapchainKHR swapChain)
 {
    vkDestroySwapchainKHR(device, swapChain, nullptr);
-   logger_.trace("Destroyed swap chain {}.", reinterpret_cast<void*>(swapChain));
+   logger_.trace("Destroyed swap chain {}.", swapChain);
 }
 
 std::vector<VkExtensionProperties> Interface::enumerateDeviceExtensionProperties(VkPhysicalDevice device)

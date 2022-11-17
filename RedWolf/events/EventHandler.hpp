@@ -59,7 +59,7 @@ namespace rw::events
 
                if (!objects_.contains(generator))
                {
-                  logger_.warn("Event generator {} already destroyed.", reinterpret_cast<void*>(generator));
+                  logger_.warn("Event generator {} already destroyed.", generator);
                   return;
                }
 
@@ -89,7 +89,7 @@ namespace rw::events
          std::scoped_lock lck_{ mtx_ };
          if (!objects_.contains(generator))
          {
-            logger_.warn("Pointer {} does not refer to a valid RedWolf object.", reinterpret_cast<void*>(generator));
+            logger_.warn("Pointer {} does not refer to a valid RedWolf object.", generator);
             return false;
          }
 
