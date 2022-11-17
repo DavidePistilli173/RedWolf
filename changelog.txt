@@ -21,6 +21,7 @@ Version 0.5.0
         - Add UdpSocket class.
         - Add DataReadyEvent.
         - Add custom formatter for std::vector<std::byte>.
+        - Add custom formatter for pointer types.
         - Add GlfwManager class.
         - Add BaseWindow class.
         - Add BaseGUIApplication class.
