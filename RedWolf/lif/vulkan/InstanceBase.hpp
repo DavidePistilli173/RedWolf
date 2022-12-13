@@ -70,7 +70,7 @@ namespace rw::lif::vlk
        * @brief Get the raw handle to the instance.
        * @return Raw handle to the instance.
        */
-      [[nodiscard]] VkInstance handle();
+      [[nodiscard]] VkInstance handle() const;
 
    protected:
       RedWolfManager&    manager_;         /**< RedWolf library manager. */

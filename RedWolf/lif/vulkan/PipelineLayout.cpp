@@ -32,7 +32,7 @@ PipelineLayout::PipelineLayout(PipelineLayout&& other) noexcept :
    other.pipelineLayout_ = VK_NULL_HANDLE;
 }
 
-VkPipelineLayout PipelineLayout::handle()
+VkPipelineLayout PipelineLayout::handle() const
 {
    return pipelineLayout_;
 }

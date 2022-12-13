@@ -139,3 +139,8 @@ GraphicsPipeline::GraphicsPipeline(GraphicsPipeline&& other) noexcept :
 {
    other.pipeline_ = VK_NULL_HANDLE;
 }
+
+VkPipeline GraphicsPipeline::handle() const
+{
+   return pipeline_;
+}

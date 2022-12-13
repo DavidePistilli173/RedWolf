@@ -98,7 +98,7 @@ namespace rw::lif::vlk
        * @brief Get the device's raw handle.
        * @return Device's raw handle.
        */
-      [[nodiscard]] VkDevice handle();
+      [[nodiscard]] VkDevice handle() const;
 
    protected:
       PhysicalDevice& physicalDevice_; /**< Physical device this device is bound to. */

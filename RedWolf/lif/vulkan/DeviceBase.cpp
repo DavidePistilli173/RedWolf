@@ -16,7 +16,7 @@ DeviceBase::DeviceBase(DeviceBase&& other) noexcept :
    other.device_ = VK_NULL_HANDLE;
 }
 
-VkDevice DeviceBase::handle()
+VkDevice DeviceBase::handle() const
 {
    return device_;
 }

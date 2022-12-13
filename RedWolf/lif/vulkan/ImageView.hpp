@@ -59,7 +59,7 @@ namespace rw::lif::vlk
        * @brief Get the raw handle to the image view.
        * @return Raw handle to the image view.
        */
-      [[nodiscard]] VkImageView handle();
+      [[nodiscard]] VkImageView handle() const;
 
    private:
       VkImageView view_{ VK_NULL_HANDLE }; /**< Raw handle to the image view. */

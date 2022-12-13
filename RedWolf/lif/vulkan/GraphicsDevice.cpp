@@ -15,8 +15,3 @@ GraphicsDevice::GraphicsDevice(GraphicsDevice&& other) noexcept :
    DeviceBase(other.manager_, other.physicalDevice_, required_queues, required_extensions)
 {
 }
-
-VkDevice GraphicsDevice::handle()
-{
-   return device_;
-}

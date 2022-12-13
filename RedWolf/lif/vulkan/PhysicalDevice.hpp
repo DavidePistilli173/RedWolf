@@ -64,7 +64,7 @@ namespace rw::lif::vlk
        * @brief Get the device handle.
        * @return Handle of the physical device.
        */
-      [[nodiscard]] VkPhysicalDevice handle();
+      [[nodiscard]] VkPhysicalDevice handle() const;
 
       /**
        * @brief Check whether the device supports operations from a specific category.

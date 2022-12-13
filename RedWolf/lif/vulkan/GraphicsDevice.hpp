@@ -75,12 +75,6 @@ namespace rw::lif::vlk
        */
       GraphicsDevice& operator=(GraphicsDevice&&) = delete;
 
-      /**
-       * @brief Get the raw handle of the device.
-       * @return Raw handle of the device.
-       */
-      [[nodiscard]] VkDevice handle();
-
    private:
    };
 } // namespace rw::lif::vlk

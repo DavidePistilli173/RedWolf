@@ -40,7 +40,7 @@ ShaderModule::ShaderModule(ShaderModule&& other) noexcept : BaseObject(other.man
    other.shader_ = VK_NULL_HANDLE;
 }
 
-VkShaderModule ShaderModule::handle()
+VkShaderModule ShaderModule::handle() const
 {
    return shader_;
 }

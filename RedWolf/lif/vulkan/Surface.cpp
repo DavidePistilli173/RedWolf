@@ -37,7 +37,7 @@ std::vector<VkSurfaceFormatKHR> Surface::formats() const
    return formats_;
 }
 
-VkSurfaceKHR Surface::handle()
+VkSurfaceKHR Surface::handle() const
 {
    return surface_;
 }
@@ -70,6 +70,11 @@ bool Surface::setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphic
 {
    if (!initDevices_(physicalDevice)) return false;
    return initSwapChain_(physicalDevice, graphicsDevice);
+}
+
+const SwapChain* Surface::swapChain() const
+{
+   return swapChain_.get();
 }
 
 bool Surface::initDevices_(PhysicalDevice& physicalDevice)

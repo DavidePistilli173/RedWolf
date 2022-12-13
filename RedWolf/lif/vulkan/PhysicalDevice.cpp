@@ -41,7 +41,7 @@ std::unique_ptr<GraphicsDevice> PhysicalDevice::createGraphicsDevice()
    return std::make_unique<GraphicsDevice>(manager_, *this);
 }
 
-VkPhysicalDevice PhysicalDevice::handle()
+VkPhysicalDevice PhysicalDevice::handle() const
 {
    return device_;
 }

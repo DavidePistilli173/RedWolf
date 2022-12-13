@@ -53,7 +53,7 @@ RenderPass::RenderPass(RenderPass&& other) noexcept :
    other.renderPass_ = VK_NULL_HANDLE;
 }
 
-VkRenderPass RenderPass::handle()
+VkRenderPass RenderPass::handle() const
 {
    return renderPass_;
 }

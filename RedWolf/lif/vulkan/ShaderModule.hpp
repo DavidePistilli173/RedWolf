@@ -63,7 +63,7 @@ namespace rw::lif::vlk
        * @brief Get the raw shader handle.
        * @return Raw shader handle.
        */
-      [[nodiscard]] VkShaderModule handle();
+      [[nodiscard]] VkShaderModule handle() const;
 
    private:
       VkShaderModule shader_{ VK_NULL_HANDLE }; /**< Raw shader handle. */

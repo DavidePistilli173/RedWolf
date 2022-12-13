@@ -31,7 +31,7 @@ InstanceBase::InstanceBase(InstanceBase&& other) noexcept :
    other.instance_ = VK_NULL_HANDLE;
 }
 
-VkInstance InstanceBase::handle()
+VkInstance InstanceBase::handle() const
 {
    return instance_;
 }

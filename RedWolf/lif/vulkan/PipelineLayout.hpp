@@ -58,7 +58,7 @@ namespace rw::lif::vlk
        * @brief Get the raw pipeline layout handle.
        * @return Raw pipeline layout handle.
        */
-      [[nodiscard]] VkPipelineLayout handle();
+      [[nodiscard]] VkPipelineLayout handle() const;
 
    private:
       VkPipelineLayout pipelineLayout_{ VK_NULL_HANDLE }; /**< Raw handle to the pipeline layout. */

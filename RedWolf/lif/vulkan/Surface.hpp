@@ -83,7 +83,7 @@ namespace rw::lif::vlk
        * @brief Get the surface's raw handle.
        * @return Raw handle to the surface.
        */
-      [[nodiscard]] VkSurfaceKHR handle();
+      [[nodiscard]] VkSurfaceKHR handle() const;
 
       /**
        * @brief Get the modes supported by the surface.
@@ -116,6 +116,12 @@ namespace rw::lif::vlk
        * @return true on success, false otherwise.
        */
       bool setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice);
+
+      /**
+       * @brief Get the swap chain of the surface.
+       * @return Swap chain of the surface.
+       */
+      const SwapChain* swapChain() const;
 
    private:
       /**

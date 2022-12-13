@@ -60,7 +60,7 @@ namespace rw::lif::vlk
        * @brief Get the raw handle to the render pass object.
        * @return Raw handle to the render pass object.
        */
-      [[nodiscard]] VkRenderPass handle();
+      [[nodiscard]] VkRenderPass handle() const;
 
    private:
       VkRenderPass renderPass_{ VK_NULL_HANDLE }; /**< Raw handle to the render pass. */

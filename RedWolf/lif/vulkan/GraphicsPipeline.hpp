@@ -63,6 +63,12 @@ namespace rw::lif::vlk
        */
       GraphicsPipeline& operator=(GraphicsPipeline&&) = delete;
 
+      /**
+       * @brief Get the raw pipeline handle.
+       * @return Raw pipeline handle.
+       */
+      [[nodiscard]] VkPipeline handle() const;
+
    private:
       VkPipeline pipeline_{ VK_NULL_HANDLE }; /**< Raw pipeline handle. */
 

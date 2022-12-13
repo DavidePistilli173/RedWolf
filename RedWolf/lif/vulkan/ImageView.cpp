@@ -47,7 +47,7 @@ ImageView::ImageView(ImageView&& other) noexcept :
    other.view_ = VK_NULL_HANDLE;
 }
 
-VkImageView ImageView::handle()
+VkImageView ImageView::handle() const
 {
    return view_;
 }

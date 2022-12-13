@@ -24,6 +24,7 @@ void BaseWindow::checkEvents()
 
 void BaseWindow::close()
 {
+   graphicsPipelines_.clear();
    surface_.reset();
    graphicsDevice_.reset();
    window_.close();
@@ -61,6 +62,13 @@ bool BaseWindow::open()
          }
          done = true;
       }
+   }
+
+   // Create the default graphics pipelines.
+   graphicsPipelines_.reserve(shader_map.size());
+   for (const auto& shader : shader_map)
+   {
+      graphicsPipelines_.emplace_back(manager_, *graphicsDevice_, *(surface_->swapChain()), shader.value.first, shader.value.second);
    }
 
    return true;
