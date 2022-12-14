@@ -31,18 +31,18 @@ protected:
     * @param evnt Event data.
     * @param sender Sender of the event.
     */
-   virtual void userHandle_(const rw::events::BaseEvent& evnt, const BaseObject* sender) override;
+   void userHandle_(const rw::events::BaseEvent& evnt, const BaseObject* sender) override;
 
    /**
     * @brief User initialisation function.
     */
-   virtual void userInit_() override;
+   void userInit_() override;
 
    /**
     * @brief User run function for custom operations that will be executed at each cycle by the main thread.
     * @details To be implemented in derived classes.
     */
-   virtual void userRun_() override;
+   void userRun_() override;
 
 private:
    rw::RedWolfManager& rw_;     /**< RedWolf library manager. */
