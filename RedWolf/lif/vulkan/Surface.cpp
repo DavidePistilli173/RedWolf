@@ -72,7 +72,7 @@ bool Surface::setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphic
    return initSwapChain_(physicalDevice, graphicsDevice);
 }
 
-const SwapChain* Surface::swapChain() const
+SwapChain* Surface::swapChain() const
 {
    return swapChain_.get();
 }

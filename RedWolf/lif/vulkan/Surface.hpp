@@ -121,7 +121,7 @@ namespace rw::lif::vlk
        * @brief Get the swap chain of the surface.
        * @return Swap chain of the surface.
        */
-      const SwapChain* swapChain() const;
+      SwapChain* swapChain() const;
 
    private:
       /**

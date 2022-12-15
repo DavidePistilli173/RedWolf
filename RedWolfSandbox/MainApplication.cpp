@@ -4,9 +4,11 @@
 #include <RedWolf/utils/SettingsManager.hpp>
 
 MainApplication::MainApplication(rw::RedWolfManager& rw, int argc, char** argv) :
-   BaseGUIApplication(rw, &mainWindow_, argc, argv), rw_{ rw }, logger_{ rw.logger() },
-   timer_{ std::make_unique<rw::time::Timer>(rw, this) }, socket_{ std::make_unique<rw::net::UdpSocket>(rw, this) }, mainWindow_{ rw }
+   BaseGUIApplication(rw, argc, argv), rw_{ rw }, logger_{ rw.logger() }, timer_{ std::make_unique<rw::time::Timer>(rw, this) }, socket_{
+      std::make_unique<rw::net::UdpSocket>(rw, this)
+   }
 {
+   mainWindow_ = makeWindow<MainWindow>(rw);
 }
 
 void MainApplication::userHandle_(const rw::events::BaseEvent& evnt, const BaseObject*)
@@ -78,7 +80,7 @@ void MainApplication::userInit_()
       socket_->subscribe<rw::events::DataReadyEvent>(this);
    }
 
-   if (!mainWindow_.open())
+   if (!mainWindow_->open())
    {
       logger_.relFatal("Failed to open the main window.");
    }
@@ -126,7 +128,7 @@ void MainApplication::userRun_()
    }
 
    // Check whether the main window is open or not.
-   if (!mainWindow_.isOpen())
+   if (!mainWindow_->isOpen())
    {
       stop();
    }

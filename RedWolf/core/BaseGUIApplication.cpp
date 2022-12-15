@@ -5,23 +5,7 @@
 
 using namespace rw::core;
 
-BaseGUIApplication::BaseGUIApplication(RedWolfManager& manager, BaseWindow* window, int argc, char** argv) :
-   BaseApplication(manager, argc, argv)
-{
-   if (window != nullptr)
-   {
-      windows_.emplace_back(window);
-   }
-}
-
-void BaseGUIApplication::addWindow(BaseWindow* window)
-{
-   if (window != nullptr)
-   {
-      std::scoped_lock lck{ windowMtx_ };
-      windows_.emplace_back(window);
-   }
-}
+BaseGUIApplication::BaseGUIApplication(RedWolfManager& manager, int argc, char** argv) : BaseApplication(manager, argc, argv) {}
 
 void BaseGUIApplication::run()
 {
@@ -51,7 +35,7 @@ void BaseGUIApplication::run()
 void BaseGUIApplication::updateWindows_()
 {
    std::scoped_lock lck{ windowMtx_ };
-   for (auto win : windows_)
+   for (auto& win : windows_)
    {
       win->checkEvents();
    }

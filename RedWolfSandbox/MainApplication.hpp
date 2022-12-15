@@ -60,7 +60,7 @@ private:
    std::string                         senderAddress_;     /**< IP address of the packet sender. */
    std::string                         senderPort_;        /**< Port of the packet sender. */
 
-   MainWindow mainWindow_; /**< Main window of the application. */
+   MainWindow* mainWindow_; /**< Main window of the application. */
 
    std::unique_ptr<EventTester> eventTester_; /**< Speed tester for the event system. */
 };

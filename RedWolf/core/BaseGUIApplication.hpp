@@ -4,6 +4,7 @@
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseApplication.hpp"
 
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <vector>
@@ -31,11 +32,10 @@ namespace rw::core
       /**
        * @brief Constructor.
        * @param manager RedWolf library manager.
-       * @param window Pointer to a window of the application.
        * @param argc Number of command line arguments.
        * @param argv List of command line arguments.
        */
-      BaseGUIApplication(RedWolfManager& manager, BaseWindow* window = nullptr, int argc = 0, char** argv = nullptr);
+      BaseGUIApplication(RedWolfManager& manager, int argc = 0, char** argv = nullptr);
 
       /**
        * @brief Destructor.
@@ -63,10 +63,18 @@ namespace rw::core
       BaseGUIApplication& operator=(BaseGUIApplication&&) = delete;
 
       /**
-       * @brief Add a new window to the application.
-       * @param window New window to add.
+       * @brief Create a new window of a specific type and add it to the application.
+       * @tparam Window Type of window to add. Must inherit from BaseWindow.
+       * @tparam Args Argument types for the window's constructor.
+       * @param args Arguments for the window's constructor.
+       * @return Non-owning pointer to the newly created window.
        */
-      void addWindow(BaseWindow* window);
+      template<typename Window, typename... Args>
+      Window* makeWindow(Args&&... args)
+      {
+         std::scoped_lock lck{ windowMtx_ };
+         return dynamic_cast<Window*>(windows_.emplace_back(std::make_unique<Window>(std::forward<Args>(args)...)).get());
+      }
 
       /**
        * @brief Run the application.
@@ -80,8 +88,8 @@ namespace rw::core
        */
       void updateWindows_();
 
-      std::mutex               windowMtx_; /**< Mutex for protecting windows access. */
-      std::vector<BaseWindow*> windows_;   /**< List of all windows associated with this application. */
+      std::mutex                               windowMtx_; /**< Mutex for protecting windows access. */
+      std::vector<std::unique_ptr<BaseWindow>> windows_;   /**< List of all windows associated with this application. */
    };
 } // namespace rw::core
 
