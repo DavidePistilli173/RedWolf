@@ -51,7 +51,7 @@ namespace rw::ui
 
       /**
        * @brief Default constructor. The window is NOT automatically opened.
-       * @detail This function must be called from the main thread.
+       * @details This function must be called from the main thread.
        * @param manager RedWolf library manager.
        * @param title Title of the window.
        * @param width Width of the window.
@@ -74,19 +74,19 @@ namespace rw::ui
 
       /**
        * @brief Check window events.
-       * @detail This function must be called from the main thread.
+       * @details This function must be called from the main thread.
        */
       void checkEvents();
 
       /**
        * @brief Close the currently open window.
-       * @detail This function must be called from the main thread.
+       * @details This function must be called from the main thread.
        */
       void close();
 
       /**
        * @brief Open the window.
-       * @detail This function must be called from the main thread.
+       * @details This function must be called from the main thread.
        * @return true on success, false otherwise.
        */
       bool open();

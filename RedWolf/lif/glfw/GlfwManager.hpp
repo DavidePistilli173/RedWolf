@@ -25,7 +25,7 @@ namespace rw::lif::glfw
 {
    /**
     * @brief Interface for the GLFW library.
-    * @detail Each interface can support one window.
+    * @details Each interface can support one window.
     */
    class RW_API GlfwManager
    {
@@ -107,7 +107,7 @@ namespace rw::lif::glfw
 
       /**
        * @brief Process all waiting events.
-       * @detail This function must be called from the main thread.
+       * @details This function must be called from the main thread.
        */
       void pollEvents();
 

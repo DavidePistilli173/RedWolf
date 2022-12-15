@@ -22,7 +22,7 @@ namespace rw::lif::vlk
 {
    /**
     * @brief Container for a raw VkInstance handler.
-    * @detail This class is necessary to ensure that the instance is destroyed after all objects that use it.
+    * @details This class is necessary to ensure that the instance is destroyed after all objects that use it.
     */
    class RW_API InstanceBase
    {

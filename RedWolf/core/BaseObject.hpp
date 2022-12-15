@@ -81,7 +81,7 @@ namespace rw::core
 
       /**
        * @brief Set a new parent for the object.
-       * @detail This function does not change the parent subscriptions from this object. For this, each derived class must override this
+       * @details This function does not change the parent subscriptions from this object. For this, each derived class must override this
        * method and add specific functionality.
        * @param parent New parent.
        */

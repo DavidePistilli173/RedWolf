@@ -12,7 +12,7 @@ namespace rw::events
 {
    /**
     * @brief Base event class for all events.
-    * @detail All events must derive from this class. All derived classes must have an unsigned int member called event_id, which is a
+    * @details All events must derive from this class. All derived classes must have an unsigned int member called event_id, which is a
     * unique identifier for the events that is used for event handling and propagation.
     */
    struct RW_API BaseEvent
