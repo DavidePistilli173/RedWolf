@@ -3,6 +3,7 @@
 
 #include "RedWolf/common.hpp"
 #include "RedWolf/core/BaseApplication.hpp"
+#include "RedWolf/ui/concepts.hpp"
 
 #include <memory>
 #include <mutex>
@@ -69,7 +70,7 @@ namespace rw::core
        * @param args Arguments for the window's constructor.
        * @return Non-owning pointer to the newly created window.
        */
-      template<typename Window, typename... Args>
+      template<rw::ui::IsDerivedFromBaseWindow Window, typename... Args>
       Window* makeWindow(Args&&... args)
       {
          std::scoped_lock lck{ windowMtx_ };

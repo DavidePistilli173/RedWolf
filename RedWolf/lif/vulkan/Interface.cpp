@@ -47,6 +47,21 @@ VkDevice Interface::createDevice(VkPhysicalDevice physicalDevice, const VkDevice
    return result;
 }
 
+VkFramebuffer Interface::createFramebuffer(VkDevice device, const VkFramebufferCreateInfo& framebufferInfo)
+{
+   if (device == VK_NULL_HANDLE)
+   {
+      logger_.relErr("Cannot create a framebuffer from a null logical device.");
+      return VK_NULL_HANDLE;
+   }
+
+   VkFramebuffer result{ VK_NULL_HANDLE };
+
+   callVulkanFunction_(vkCreateFramebuffer, device, &framebufferInfo, nullptr, &result);
+
+   return result;
+}
+
 VkPipeline Interface::createGraphicsPipeline(VkDevice device, const VkGraphicsPipelineCreateInfo& pipelineInfo)
 {
    if (device == VK_NULL_HANDLE)
@@ -164,6 +179,12 @@ void Interface::destroyDevice(VkDevice device)
 {
    vkDestroyDevice(device, nullptr);
    logger_.trace("Destroyed logical device {}.", device);
+}
+
+void Interface::destroyFramebuffer(VkDevice device, VkFramebuffer framebuffer)
+{
+   vkDestroyFramebuffer(device, framebuffer, nullptr);
+   logger_.trace("Destroyed framebuffer {}.", framebuffer);
 }
 
 void Interface::destroyImageView(VkDevice device, VkImageView imageView)

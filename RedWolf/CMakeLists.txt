@@ -58,6 +58,7 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "lif/vulkan/BaseObject.cpp"
     "lif/vulkan/DebugUtilsMessenger.cpp"
     "lif/vulkan/DeviceBase.cpp"
+    "lif/vulkan/FrameBuffer.cpp"
     "lif/vulkan/GraphicsDevice.cpp"
     "lif/vulkan/GraphicsPipeline.cpp"
     "lif/vulkan/ImageView.cpp"

@@ -84,6 +84,14 @@ namespace rw::lif::vlk
       [[nodiscard]] VkDevice createDevice(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo& deviceInfo);
 
       /**
+      * @brief Create a framebuffer.
+      * @param device Logical device this framebuffer will be used on.
+      * @param framebufferInfo Framebuffer creation parameters.
+      * @return Handle to the newly created framebuffer, or VK_NULL_HANDLE.
+      */
+      [[nodiscard]] VkFramebuffer createFramebuffer(VkDevice device, const VkFramebufferCreateInfo& framebufferInfo);
+
+      /**
        * @brief Create a graphics pipeline.
        * @param device Logical device this pipeline will be used on.
        * @param pipelineInfo Pipeline creation parameters.
@@ -150,6 +158,13 @@ namespace rw::lif::vlk
        * @param device Device to destroy.
        */
       void destroyDevice(VkDevice device);
+
+      /**
+      * @brief Destroy a framebuffer.
+      * @param device Device the framebuffer is bound to.
+      * @param framebuffer Framebuffer to destroy.
+      */
+      void destroyFramebuffer(VkDevice device, VkFramebuffer framebuffer);
 
       /**
        * @brief Destroy an image view.
