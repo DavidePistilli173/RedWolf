@@ -95,6 +95,12 @@ namespace rw::lif::vlk
       DeviceBase& operator=(DeviceBase&& other) = delete;
 
       /**
+       * @brief Get the available queue families for the current device.
+       * @return Data on the available queue families for the current device.
+       */
+      [[nodiscard]] QueueFamilies availableQueueFamilies() const;
+
+      /**
        * @brief Get the device's raw handle.
        * @return Device's raw handle.
        */

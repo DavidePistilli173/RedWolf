@@ -55,6 +55,7 @@ Version 0.5.0
         - Add logger to BaseObject as protected member and remove from child classes.
         - Improve File class and add file reading to vector of bytes.
         - Add Vulkan FrameBuffer class.
+        - Add Vulkan CommandPool class.
         - [IN PROGRESS] Add Vulkan support.
         - [PLANNED] Uniform usage of Vulkan handles vs RedWolf objects in RedWolf classes.
 

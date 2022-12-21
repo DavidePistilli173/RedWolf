@@ -67,6 +67,14 @@ namespace rw::lif::vlk
       [[nodiscard]] bool checkSurfaceSupport(VkPhysicalDevice device, uint32_t queueFamily, VkSurfaceKHR surface) const;
 
       /**
+       * @brief Create a command pool.
+       * @param device Logical device that will execute the commands from the pool.
+       * @param commandPoolInfo Command pool creation parameters.
+       * @return Handle to the newly created command pool, or VK_NULL_HANDLE.
+       */
+      [[nodiscard]] VkCommandPool createCommandPool(VkDevice device, const VkCommandPoolCreateInfo& commandPoolInfo);
+
+      /**
        * @brief Create a debug utils messenger for an instance.
        * @param instance Target instance.
        * @param args Debug messenger arguments.
@@ -84,11 +92,11 @@ namespace rw::lif::vlk
       [[nodiscard]] VkDevice createDevice(VkPhysicalDevice physicalDevice, const VkDeviceCreateInfo& deviceInfo);
 
       /**
-      * @brief Create a framebuffer.
-      * @param device Logical device this framebuffer will be used on.
-      * @param framebufferInfo Framebuffer creation parameters.
-      * @return Handle to the newly created framebuffer, or VK_NULL_HANDLE.
-      */
+       * @brief Create a framebuffer.
+       * @param device Logical device this framebuffer will be used on.
+       * @param framebufferInfo Framebuffer creation parameters.
+       * @return Handle to the newly created framebuffer, or VK_NULL_HANDLE.
+       */
       [[nodiscard]] VkFramebuffer createFramebuffer(VkDevice device, const VkFramebufferCreateInfo& framebufferInfo);
 
       /**
@@ -147,6 +155,13 @@ namespace rw::lif::vlk
       [[nodiscard]] VkSwapchainKHR createSwapChain(VkDevice device, const VkSwapchainCreateInfoKHR& createInfo);
 
       /**
+       * @brief Destroy a command pool.
+       * @param device Device the command pool is bound to.
+       * @param commanPool Command pool to destroy.
+       */
+      void destroyCommandPool(VkDevice device, VkCommandPool commandPool);
+
+      /**
        * @brief Destroy a debug utils messenger for an instance.
        * @param instance Target instance.
        * @param messenger Debug messenger to destroy.
@@ -160,10 +175,10 @@ namespace rw::lif::vlk
       void destroyDevice(VkDevice device);
 
       /**
-      * @brief Destroy a framebuffer.
-      * @param device Device the framebuffer is bound to.
-      * @param framebuffer Framebuffer to destroy.
-      */
+       * @brief Destroy a framebuffer.
+       * @param device Device the framebuffer is bound to.
+       * @param framebuffer Framebuffer to destroy.
+       */
       void destroyFramebuffer(VkDevice device, VkFramebuffer framebuffer);
 
       /**

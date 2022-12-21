@@ -16,6 +16,11 @@ DeviceBase::DeviceBase(DeviceBase&& other) noexcept :
    other.device_ = VK_NULL_HANDLE;
 }
 
+QueueFamilies DeviceBase::availableQueueFamilies() const
+{
+   return physicalDevice_.availableQueueFamilies();
+}
+
 VkDevice DeviceBase::handle() const
 {
    return device_;

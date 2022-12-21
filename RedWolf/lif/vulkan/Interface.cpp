@@ -18,6 +18,21 @@ bool Interface::checkSurfaceSupport(VkPhysicalDevice device, uint32_t queueFamil
    return static_cast<bool>(presentSupport);
 }
 
+VkCommandPool Interface::createCommandPool(VkDevice device, const VkCommandPoolCreateInfo& commandPoolInfo)
+{
+   if (device == VK_NULL_HANDLE)
+   {
+      logger_.relErr("Cannot create a command pool from a null device.");
+      return VK_NULL_HANDLE;
+   }
+
+   VkCommandPool result{ VK_NULL_HANDLE };
+
+   callVulkanFunction_(vkCreateCommandPool, device, &commandPoolInfo, nullptr, &result);
+
+   return result;
+}
+
 std::optional<VkDebugUtilsMessengerEXT>
    Interface::createDebugUtilsMessenger(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT& args)
 {
@@ -170,9 +185,16 @@ VkSwapchainKHR Interface::createSwapChain(VkDevice device, const VkSwapchainCrea
    return result;
 }
 
+void Interface::destroyCommandPool(VkDevice device, VkCommandPool commandPool)
+{
+   vkDestroyCommandPool(device, commandPool, nullptr);
+   logger_.trace("Destroyed command pool {}.", commandPool);
+}
+
 void Interface::destroyDebugUtilsMessenger(VkInstance instance, VkDebugUtilsMessengerEXT messenger)
 {
    functions_[instance].vkDestroyDebugUtilsMessengerEXT(instance, messenger, nullptr);
+   logger_.trace("Destroyed debug utils messenger {}.", messenger);
 }
 
 void Interface::destroyDevice(VkDevice device)
