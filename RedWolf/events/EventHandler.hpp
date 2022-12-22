@@ -32,6 +32,15 @@ namespace rw::events
    {
    public:
       /**
+       * @brief All supported policies for generating events.
+       */
+      enum class GenerationPolicy
+      {
+         asynchronous, /**< Event generation is performed asynchronously on another thread. */
+         synchronous   /**< Event generation is performed synchronously on the calling thread. */
+      };
+
+      /**
        * @brief Default constructor.
        * @param manager RedWolf library manager.
        */
@@ -48,26 +57,36 @@ namespace rw::events
        * @tparam Event Event type to generate.
        * @param generator Object that generated the event.
        * @param evnt Event data to send.
+       * @param policy Policy for the event generation.
        */
       template<rw::events::HasEventID Event>
-      void generateEvent(rw::core::BaseObject* generator, const Event& evnt)
+      void generateEvent(rw::core::BaseObject* generator, const Event& evnt, GenerationPolicy policy = GenerationPolicy::asynchronous)
       {
-         threadPool_.addTask(
-            [this, generator, evnt]()
+         auto propagateEvent = [this, generator, evnt]()
+         {
+            std::shared_lock lck_{ mtx_ };
+
+            if (!objects_.contains(generator))
             {
-               std::shared_lock lck_{ mtx_ };
+               logger_.warn("Event generator {} already destroyed.", generator);
+               return;
+            }
 
-               if (!objects_.contains(generator))
-               {
-                  logger_.warn("Event generator {} already destroyed.", generator);
-                  return;
-               }
+            for (auto& subscriber : objects_[generator][Event::event_id])
+            {
+               subscriber->handle(evnt, generator);
+            }
+         };
 
-               for (auto& subscriber : objects_[generator][Event::event_id])
-               {
-                  subscriber->handle(evnt, generator);
-               }
-            });
+         switch (policy)
+         {
+         case GenerationPolicy::asynchronous:
+            threadPool_.addTask(propagateEvent);
+            break;
+         case GenerationPolicy::synchronous:
+            propagateEvent();
+            break;
+         }
       }
 
       /**
@@ -86,6 +105,8 @@ namespace rw::events
       template<rw::events::HasEventID Event>
       bool subscribe(rw::core::BaseObject* generator, rw::core::BaseObject* subscriber)
       {
+         auto test = Event::event_id;
+
          std::scoped_lock lck_{ mtx_ };
          if (!objects_.contains(generator))
          {
@@ -93,7 +114,7 @@ namespace rw::events
             return false;
          }
 
-         if (rw::alg::binarySearch(objects_[generator][Event::event_id], subscriber) != objects_[generator][Event::event_id].cend())
+         if (rw::alg::binarySearch(objects_[generator][Event::event_id], subscriber) == objects_[generator][Event::event_id].cend())
          {
             objects_[generator][Event::event_id].emplace_back(subscriber);
             rw::alg::sortLastElement(objects_[generator][Event::event_id].begin(), objects_[generator][Event::event_id].end());
@@ -133,7 +154,7 @@ namespace rw::events
 
       /**
        * @brief Map of all RedWolf objects with all their subscribers for each event ID.
-       * @details This is a map containing all RedWolf objects. 
+       * @details This is a map containing all RedWolf objects.
        *          For each object, there is a map of all subscribers, divided by event ID.
        *          For each event ID, there is a vector of all objects subscribed to that event.
        */
