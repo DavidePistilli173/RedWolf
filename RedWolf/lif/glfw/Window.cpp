@@ -36,7 +36,7 @@ void Window::close()
    }
 }
 
-GLFWwindow* Window::handle()
+GLFWwindow* Window::handle() const
 {
    return window_;
 }

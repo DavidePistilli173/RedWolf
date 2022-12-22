@@ -5,7 +5,7 @@
 
 using namespace rw::time;
 
-Timer::Timer(RedWolfManager& manager, rw::core::BaseObject* parent) : rw::core::BaseObject(manager, parent) {}
+Timer::Timer(RedWolfManager& manager, rw::core::BaseObject* parent) : rw::core::BaseObject(manager) {}
 
 Timer::~Timer()
 {

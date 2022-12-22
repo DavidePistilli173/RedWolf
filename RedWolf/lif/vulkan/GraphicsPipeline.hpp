@@ -32,11 +32,19 @@ namespace rw::lif::vlk
        * @param manager RedWolf library manager.
        * @param device Graphics device this pipeline will be used on.
        * @param swapChain Swapchain this pipeline will be used on.
+       * @param renderPass Render pass this pipeline will be used on.
        * @param vertShader Path to the compiled vertex shader.
        * @param fragShader Path to the compiled fragment shader.
+       * @param id Pipeline ID.
        */
       GraphicsPipeline(
-         RedWolfManager& manager, GraphicsDevice& device, SwapChain& swapChain, std::string_view vertShader, std::string_view fragShader);
+         RedWolfManager&   manager,
+         GraphicsDevice&   device,
+         SwapChain&        swapChain,
+         const RenderPass& renderPass,
+         std::string_view  vertShader,
+         std::string_view  fragShader,
+         size_t            id);
 
       /**
        * @brief Destructor.
@@ -69,12 +77,18 @@ namespace rw::lif::vlk
        */
       [[nodiscard]] VkPipeline handle() const;
 
+      /**
+       * @brief Get the pipeline's ID.
+       * @return Pipeline's ID.
+       */
+      [[nodiscard]] size_t id() const;
+
    private:
-      VkPipeline pipeline_{ VK_NULL_HANDLE }; /**< Raw pipeline handle. */
+      VkPipeline   pipeline_{ VK_NULL_HANDLE }; /**< Raw pipeline handle. */
+      const size_t id_{ 0U };                   /**< Pipeline ID. */
 
       GraphicsDevice& graphicsDevice_; /**< Graphics devic this pipeline is bound to. */
       PipelineLayout  layout_;         /**< Layout information for the pipeline. */
-      RenderPass      renderPass_;     /**< Render pass for the pipeline. */
    };
 } // namespace rw::lif::vlk
 

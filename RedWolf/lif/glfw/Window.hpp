@@ -76,7 +76,7 @@ namespace rw::lif::glfw
        * @brief Get the raw window handle.
        * @return Raw window handle.
        */
-      [[nodiscard]] GLFWwindow* handle();
+      [[nodiscard]] GLFWwindow* handle() const;
 
       /**
        * @brief Open the window.

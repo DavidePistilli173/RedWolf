@@ -11,9 +11,15 @@
 using namespace rw::lif::vlk;
 
 GraphicsPipeline::GraphicsPipeline(
-   RedWolfManager& manager, GraphicsDevice& device, SwapChain& swapChain, std::string_view vertShader, std::string_view fragShader) :
+   RedWolfManager&   manager,
+   GraphicsDevice&   device,
+   SwapChain&        swapChain,
+   const RenderPass& renderPass,
+   std::string_view  vertShader,
+   std::string_view  fragShader,
+   size_t            id) :
    BaseObject(manager),
-   graphicsDevice_{ device }, layout_{ manager, device }, renderPass_{ manager, device, swapChain }
+   id_{ id }, graphicsDevice_{ device }, layout_{ manager, device }
 {
    // Load shaders.
    ShaderModule                    vertexShader(manager, device, vertShader);
@@ -120,7 +126,7 @@ GraphicsPipeline::GraphicsPipeline(
    createInfo.pColorBlendState = &colourBlendInfo;
    createInfo.pDynamicState = &dynamicStateInfo;
    createInfo.layout = layout_.handle();
-   createInfo.renderPass = renderPass_.handle();
+   createInfo.renderPass = renderPass.handle();
    createInfo.subpass = 0U;
    createInfo.basePipelineHandle = VK_NULL_HANDLE;
    createInfo.basePipelineIndex = -1;
@@ -134,8 +140,7 @@ GraphicsPipeline::~GraphicsPipeline()
 }
 
 GraphicsPipeline::GraphicsPipeline(GraphicsPipeline&& other) noexcept :
-   BaseObject(other.manager_), pipeline_{ other.pipeline_ }, graphicsDevice_{ other.graphicsDevice_ }, layout_{ std::move(other.layout_) },
-   renderPass_{ std::move(other.renderPass_) }
+   BaseObject(other.manager_), pipeline_{ other.pipeline_ }, graphicsDevice_{ other.graphicsDevice_ }, layout_{ std::move(other.layout_) }
 {
    other.pipeline_ = VK_NULL_HANDLE;
 }
@@ -143,4 +148,9 @@ GraphicsPipeline::GraphicsPipeline(GraphicsPipeline&& other) noexcept :
 VkPipeline GraphicsPipeline::handle() const
 {
    return pipeline_;
+}
+
+size_t GraphicsPipeline::id() const
+{
+   return id_;
 }

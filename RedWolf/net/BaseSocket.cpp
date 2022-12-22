@@ -10,7 +10,7 @@ size_t     BaseSocket::winsockActiveSockets_{ 0U };
 std::mutex BaseSocket::winsockMutex_;
 #endif
 
-BaseSocket::BaseSocket(RedWolfManager& manager, BaseObject* parent) : BaseObject(manager, parent), logger_{ manager.logger() }
+BaseSocket::BaseSocket(RedWolfManager& manager, BaseObject* parent) : BaseObject(manager), logger_{ manager.logger() }
 {
 #ifdef _WIN32
    initWinsock_();
@@ -24,7 +24,7 @@ BaseSocket::BaseSocket(
    Protocol         protocol,
    Family           family,
    BaseObject*      parent) :
-   BaseObject(manager, parent),
+   BaseObject(manager),
    logger_{ manager.logger() }
 {
 #ifdef _WIN32

@@ -58,6 +58,21 @@ namespace rw::lif::vlk
       Interface& operator=(Interface&&) = delete;
 
       /**
+       * @brief Allocate a new command buffer.
+       * @param device Graphics device that will execute the command buffer.
+       * @param commandBufferInfo Command buffer creation parameters.
+       */
+      [[nodiscard]] VkCommandBuffer allocateCommandBuffer(VkDevice device, const VkCommandBufferAllocateInfo& commandBufferInfo);
+
+      /**
+       * @brief Start recording a command buffer.
+       * @param commandBuffer Command buffer to start recording.
+       * @param beginInfo Command buffer recording parameters.
+       * @return true on success, false otherwise.
+       */
+      bool beginCommandBuffer(VkCommandBuffer commandBuffer, const VkCommandBufferBeginInfo& beginInfo);
+
+      /**
        * @brief Check whether a queue family of a physical device supports presenting images to a given surface.
        * @param device Device that owns the queue family.
        * @param queueFamily Index of the queue family to check.
@@ -65,6 +80,21 @@ namespace rw::lif::vlk
        * @return true if the queue family supports drawing to the given surface, false otherwise.
        */
       [[nodiscard]] bool checkSurfaceSupport(VkPhysicalDevice device, uint32_t queueFamily, VkSurfaceKHR surface) const;
+
+      /**
+       * @brief Begin a render pass.
+       * @param commandBuffer Command buffer to start the render pass on.
+       * @param renderPassInfo Render pass parameters.
+       */
+      void cmdBeginRenderPass(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo& renderPassInfo);
+
+      /**
+       * @brief Bind a pipeline to a command buffer.
+       * @param commandBuffer Command buffer to bind the pipeline to.
+       * @param pipeline Pipeline to bind to the command buffer.
+       * @param pipelineType Type of pipeline to bind.
+       */
+      void cmdBindPipeline(VkCommandBuffer commandBuffer, VkPipeline pipeline, VkPipelineBindPoint pipelineType);
 
       /**
        * @brief Create a command pool.

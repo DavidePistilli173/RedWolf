@@ -6,6 +6,39 @@ using namespace rw::lif::vlk;
 
 Interface::Interface(RedWolfManager& manager) : logger_{ manager.logger() } {}
 
+VkCommandBuffer Interface::allocateCommandBuffer(VkDevice device, const VkCommandBufferAllocateInfo& commandBufferInfo)
+{
+   if (device == VK_NULL_HANDLE)
+   {
+      logger_.relErr("Cannot create a command buffer for a null device.");
+      return VK_NULL_HANDLE;
+   }
+
+   VkCommandBuffer result{ VK_NULL_HANDLE };
+
+   callVulkanFunction_(vkAllocateCommandBuffers, device, &commandBufferInfo, &result);
+
+   return result;
+}
+
+bool Interface::beginCommandBuffer(VkCommandBuffer commandBuffer, const VkCommandBufferBeginInfo& beginInfo)
+{
+   if (commandBuffer == VK_NULL_HANDLE)
+   {
+      logger_.relErr("Cannot start recording a null command buffer.");
+      return false;
+   }
+
+   VkResult result{ vkBeginCommandBuffer(commandBuffer, &beginInfo) };
+   if (result != VK_SUCCESS)
+   {
+      logger_.relErr("Error while beginning a command buffer recording: {}.", result);
+      return false;
+   }
+
+   return true;
+}
+
 bool Interface::checkSurfaceSupport(VkPhysicalDevice device, uint32_t queueFamily, VkSurfaceKHR surface) const
 {
    VkBool32 presentSupport{ VK_FALSE };
@@ -16,6 +49,18 @@ bool Interface::checkSurfaceSupport(VkPhysicalDevice device, uint32_t queueFamil
    }
 
    return static_cast<bool>(presentSupport);
+}
+
+void Interface::cmdBeginRenderPass(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo& renderPassInfo)
+{
+   vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+   logger_.trace("Begun render pass on command buffer {}.", commandBuffer);
+}
+
+void Interface::cmdBindPipeline(VkCommandBuffer commandBuffer, VkPipeline pipeline, VkPipelineBindPoint pipelineType)
+{
+   vkCmdBindPipeline(commandBuffer, pipelineType, pipeline);
+   logger_.trace("Bound pipeline {}.", pipeline);
 }
 
 VkCommandPool Interface::createCommandPool(VkDevice device, const VkCommandPoolCreateInfo& commandPoolInfo)

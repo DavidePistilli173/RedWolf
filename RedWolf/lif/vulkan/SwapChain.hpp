@@ -18,6 +18,7 @@ namespace rw::lif::vlk
    class Surface;
    class PhysicalDevice;
    class GraphicsDevice;
+   class RenderPass;
 } // namespace rw::lif::vlk
 
 namespace rw::lif::vlk
@@ -64,6 +65,12 @@ namespace rw::lif::vlk
        * @return Current format of the swap chain.
        */
       [[nodiscard]] const VkSurfaceFormatKHR& format() const;
+
+      /**
+       * @brief Get the images of the swap chain.
+       * @return Images of the swap chain.
+       */
+      const std::vector<ImageView>& images() const;
 
    private:
       VkSwapchainKHR     swapChain_{ VK_NULL_HANDLE }; /**< Raw swap chain handle. */

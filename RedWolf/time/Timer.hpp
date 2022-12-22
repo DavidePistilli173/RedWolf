@@ -50,7 +50,7 @@ namespace rw::time
        */
       template<IsConvertibleToChronoDuration T>
       explicit Timer(RedWolfManager& manager, T interval, bool singleShot = false, rw::core::BaseObject* parent = nullptr) :
-         rw::core::BaseObject(manager, parent), interval_{ std::chrono::microseconds(interval) }, singleShot_{ singleShot }
+         rw::core::BaseObject(manager), interval_{ std::chrono::microseconds(interval) }, singleShot_{ singleShot }
       {
       }
 

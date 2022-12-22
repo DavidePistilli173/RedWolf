@@ -56,8 +56,11 @@ Version 0.5.0
         - Improve File class and add file reading to vector of bytes.
         - Add Vulkan FrameBuffer class.
         - Add Vulkan CommandPool class.
+        - Add Renderer class.
+        - Add Vulkan CommandBuffer class.
         - [IN PROGRESS] Add Vulkan support.
         - [PLANNED] Uniform usage of Vulkan handles vs RedWolf objects in RedWolf classes.
+        - [PLANNED] Retrieving Vulkan handles should be const.
 
      RedWolfSandbox:
         - Add config file.

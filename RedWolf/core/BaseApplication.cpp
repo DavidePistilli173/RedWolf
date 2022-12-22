@@ -5,7 +5,7 @@
 using namespace rw::core;
 
 BaseApplication::BaseApplication(RedWolfManager& manager, int argc, char** argv, BaseObject* parent) :
-   BaseObject(manager, parent), logger_{ manager.logger() }
+   BaseObject(manager), logger_{ manager.logger() }
 {
    // Save the command-line arguments for later use, if present.
    if (argc > 0 && argv != nullptr)

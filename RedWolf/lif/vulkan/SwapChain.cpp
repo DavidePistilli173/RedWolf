@@ -57,6 +57,7 @@ SwapChain::SwapChain(RedWolfManager& manager, PhysicalDevice& physicalDevice, Gr
       logger_.relFatal("Failed to create swap chain.");
    }
 
+   // Initialise the swap chain images.
    std::vector<VkImage> imageHandles{ vulkanInterface_.getSwapChainImages(graphicsDevice_.handle(), swapChain_) };
    images_.reserve(imageHandles.size());
    if (images_.empty())
@@ -86,4 +87,9 @@ SwapChain::SwapChain(SwapChain&& other) noexcept :
 const VkSurfaceFormatKHR& SwapChain::format() const
 {
    return format_;
+}
+
+const std::vector<ImageView>& SwapChain::images() const
+{
+   return images_;
 }

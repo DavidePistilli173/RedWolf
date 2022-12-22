@@ -28,7 +28,7 @@ namespace rw::events
          timeout,
          data_ready,
          window_close,
-         reserved_6,
+         draw,
          reserved_7,
          reserved_8,
          reserved_9,

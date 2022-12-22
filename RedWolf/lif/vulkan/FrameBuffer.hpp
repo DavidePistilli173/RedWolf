@@ -33,7 +33,12 @@ namespace rw::lif::vlk
        * @param imageView View on the image this frame buffer will reference.
        * @param surface Surface the image belongs to.
        */
-      FrameBuffer(RedWolfManager& manager, GraphicsDevice& graphicsDevice, RenderPass& renderPass, ImageView& imageView, Surface& surface);
+      FrameBuffer(
+         RedWolfManager&       manager,
+         const GraphicsDevice& graphicsDevice,
+         const RenderPass&     renderPass,
+         const ImageView&      imageView,
+         const Surface&        surface);
 
       /**
        * @brief Destructor.
@@ -61,10 +66,23 @@ namespace rw::lif::vlk
        */
       FrameBuffer& operator=(FrameBuffer&&) = delete;
 
+      /**
+       * @brief Get the extent of the frame buffer.
+       * @return Extent of the frame buffer.
+       */
+      [[nodiscard]] VkExtent2D extent() const;
+
+      /**
+       * @brief Get the raw handle to the frame buffer.
+       * @return Raw handle to the frame buffer.
+       */
+      [[nodiscard]] VkFramebuffer handle() const;
+
    private:
       VkFramebuffer framebuffer_; /**< Raw framebuffer handle. */
 
-      VkDevice device_{ VK_NULL_HANDLE }; /**< Raw handle of the device the framebuffer is bound to. */
+      VkDevice   device_{ VK_NULL_HANDLE }; /**< Raw handle of the device the framebuffer is bound to. */
+      VkExtent2D extent_{ 0, 0 };           /**< Extent of the frame buffer. */
    };
 } // namespace rw::lif::vlk
 

@@ -9,20 +9,23 @@
 using namespace rw::lif::vlk;
 
 FrameBuffer::FrameBuffer(
-   RedWolfManager& manager, GraphicsDevice& graphicsDevice, RenderPass& renderPass, ImageView& imageView, Surface& surface) :
+   RedWolfManager&       manager,
+   const GraphicsDevice& graphicsDevice,
+   const RenderPass&     renderPass,
+   const ImageView&      imageView,
+   const Surface&        surface) :
    BaseObject(manager),
-   device_{ graphicsDevice.handle() }
+   device_{ graphicsDevice.handle() }, extent_{ surface.selectedExtent() }
 {
    VkImageView attachments[] = { imageView.handle() };
-   auto [imageWidth, imageHeight] = surface.selectedExtent();
 
    VkFramebufferCreateInfo createInfo{};
    createInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
    createInfo.renderPass = renderPass.handle();
    createInfo.attachmentCount = 1U;
    createInfo.pAttachments = attachments;
-   createInfo.width = imageWidth;
-   createInfo.height = imageHeight;
+   createInfo.width = extent_.width;
+   createInfo.height = extent_.height;
    createInfo.layers = 1U;
 
    framebuffer_ = vulkanInterface_.createFramebuffer(device_, createInfo);
@@ -41,4 +44,14 @@ FrameBuffer::FrameBuffer(FrameBuffer&& other) noexcept :
    BaseObject(other.manager_), framebuffer_{ other.framebuffer_ }, device_{ other.device_ }
 {
    other.framebuffer_ = VK_NULL_HANDLE;
+}
+
+VkExtent2D FrameBuffer::extent() const
+{
+   return extent_;
+}
+
+VkFramebuffer FrameBuffer::handle() const
+{
+   return framebuffer_;
 }
