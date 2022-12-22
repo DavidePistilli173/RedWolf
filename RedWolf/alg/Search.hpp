@@ -20,7 +20,7 @@ namespace rw::alg
          container.cend(),
          value,
          [](Container::const_reference firstVal, Container::const_reference secondVal) { return firstVal < secondVal; });
-      if (!(element == container.cend()) && (value == *element)) return element;
+      if ((element != container.cend()) && (value == *element)) return element;
       return container.cend();
    }
 } // namespace rw::alg

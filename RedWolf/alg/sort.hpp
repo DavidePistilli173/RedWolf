@@ -18,6 +18,7 @@ namespace rw::alg
    constexpr Iterator sortLastElement(Iterator first, Iterator last)
    {
       if (first == last) return last;
+      if (last - first == 1) return first;
 
       --last;
       Iterator current = last - 1;
@@ -43,6 +44,7 @@ namespace rw::alg
    constexpr Iterator sortLastElement(Iterator first, Iterator last, Compare comp)
    {
       if (first == last) return last;
+      if (last - first == 1) return first;
 
       --last;
       Iterator current = last - 1;
