@@ -97,6 +97,12 @@ namespace rw::lif::vlk
       void cmdBindPipeline(VkCommandBuffer commandBuffer, VkPipeline pipeline, VkPipelineBindPoint pipelineType);
 
       /**
+       * @brief End the active render pass for a command buffer.
+       * @param commandBuffer Command buffer that needs to end the render pass.
+       */
+      void cmdEndRenderPass(VkCommandBuffer commandBuffer);
+
+      /**
        * @brief Create a command pool.
        * @param device Logical device that will execute the commands from the pool.
        * @param commandPoolInfo Command pool creation parameters.
@@ -265,6 +271,13 @@ namespace rw::lif::vlk
        * @param swapChain The swap chain to destroy.
        */
       void destroySwapChain(VkDevice device, VkSwapchainKHR swapChain);
+
+      /**
+       * @brief Stop the recording of a command buffer.
+       * @param commandBuffer Command buffer to stop recording.
+       * @return true on success, false otherwise.
+       */
+      bool endCommandBuffer(VkCommandBuffer commandBuffer);
 
       /**
        * @brief Retrieve the properties of all extensions supported by a given physical device.

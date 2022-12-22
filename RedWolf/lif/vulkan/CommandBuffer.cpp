@@ -58,6 +58,7 @@ void CommandBuffer::beginRenderPass(const RenderPass& renderPass, const FrameBuf
       beginInfo.pClearValues = &default_clear_colour;
 
       vulkanInterface_.cmdBeginRenderPass(commandBuffer_, beginInfo);
+      renderPassActive_ = true;
    }
 }
 
@@ -68,6 +69,20 @@ void CommandBuffer::endRecording()
 {
    if (recording_)
    {
+      if (!vulkanInterface_.endCommandBuffer())
+      {
+         logger_.relFatal("Failed to complete the Vulkan command buffer recording.");
+      }
+
       recording_ = false;
+   }
+}
+
+void CommandBuffer::endRenderPass()
+{
+   if (renderPassActive_)
+   {
+      vulkanInterface_.cmdEndRenderPass(commandBuffer_);
+      renderPassActive_ = false;
    }
 }

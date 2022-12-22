@@ -23,6 +23,7 @@ void Renderer::draw()
       generateEvent<rw::events::DrawEvent>(rw::events::DrawEvent(pipeline.id()), rw::events::EventHandler::GenerationPolicy::synchronous);
    }
 
+   // commandBuffer_->endRenderPass();
    commandBuffer_->endRecording();
 }
 

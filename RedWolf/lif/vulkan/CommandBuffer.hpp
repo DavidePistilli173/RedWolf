@@ -83,10 +83,16 @@ namespace rw::lif::vlk
        */
       void endRecording();
 
+      /**
+       * @brief End the ongoing render pass
+       */
+      void endRenderPass();
+
    private:
       VkCommandBuffer commandBuffer_{ VK_NULL_HANDLE }; /**< Raw handle to the command buffer. */
 
-      bool recording_{ false }; /**< If true, the command buffer is currently being recorded. */
+      bool recording_{ false };        /**< If true, the command buffer is currently being recorded. */
+      bool renderPassActive_{ false }; /**< If true, there is an active render pass. */
    };
 } // namespace rw::lif::vlk
 

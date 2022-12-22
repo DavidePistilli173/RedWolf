@@ -63,6 +63,11 @@ void Interface::cmdBindPipeline(VkCommandBuffer commandBuffer, VkPipeline pipeli
    logger_.trace("Bound pipeline {}.", pipeline);
 }
 
+void Interface::cmdEndRenderPass(VkCommandBuffer commandBuffer)
+{
+   vkCmdEndRenderPass(commandBuffer);
+}
+
 VkCommandPool Interface::createCommandPool(VkDevice device, const VkCommandPoolCreateInfo& commandPoolInfo)
 {
    if (device == VK_NULL_HANDLE)
@@ -301,6 +306,19 @@ void Interface::destroySwapChain(VkDevice device, VkSwapchainKHR swapChain)
 {
    vkDestroySwapchainKHR(device, swapChain, nullptr);
    logger_.trace("Destroyed swap chain {}.", swapChain);
+}
+
+bool Interface::endCommandBuffer(VkCommandBuffer commandBuffer)
+{
+   VkResult result{ vkEndCommandBuffer(commandBuffer) };
+
+   if (result != VK_SUCCESS)
+   {
+      logger_.relErr("Failed to end recording of command buffer {}.", commandBuffer);
+      return false;
+   }
+
+   return true;
 }
 
 std::vector<VkExtensionProperties> Interface::enumerateDeviceExtensionProperties(VkPhysicalDevice device)
