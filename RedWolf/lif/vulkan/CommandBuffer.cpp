@@ -69,7 +69,7 @@ void CommandBuffer::endRecording()
 {
    if (recording_)
    {
-      if (!vulkanInterface_.endCommandBuffer())
+      if (!vulkanInterface_.endCommandBuffer(commandBuffer_))
       {
          logger_.relFatal("Failed to complete the Vulkan command buffer recording.");
       }
