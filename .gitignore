@@ -5,3 +5,6 @@ build
 out
 RedWolf/docs/RedWolf.doxygen
 RedWolf/.vscode/
+.vscode/
+x64/
+packages/
