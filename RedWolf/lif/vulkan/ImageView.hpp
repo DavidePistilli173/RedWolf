@@ -10,7 +10,7 @@ namespace rw
 
 namespace rw::lif::vlk
 {
-   class GraphicsDevice;
+   class DeviceBase;
 } // namespace rw::lif::vlk
 
 namespace rw::lif::vlk
@@ -24,11 +24,11 @@ namespace rw::lif::vlk
       /**
        * @brief Create an image view object.
        * @param manager RedWolf library manager.
-       * @param graphicsDevice Logical device that will render to the image.
+       * @param device Logical device that will render to the image.
        * @param image Image the view is based on.
        * @param format Image format.
        */
-      ImageView(RedWolfManager& manager, GraphicsDevice& graphicsDevice, VkImage image, VkFormat format);
+      ImageView(RedWolfManager& manager, const DeviceBase& device, VkImage image, VkFormat format);
 
       /**
        * @brief Destructor.
@@ -64,8 +64,8 @@ namespace rw::lif::vlk
    private:
       VkImageView view_{ VK_NULL_HANDLE }; /**< Raw handle to the image view. */
 
-      VkDevice device_{ VK_NULL_HANDLE }; /**< Raw handle of the device the image view is bound to. */
-      VkImage  image_{ VK_NULL_HANDLE };  /**< Raw image handle. */
+      const DeviceBase& device_;                  /**< Logical device the image view is bound to. */
+      VkImage           image_{ VK_NULL_HANDLE }; /**< Raw image handle. */
    };
 } // namespace rw::lif::vlk
 

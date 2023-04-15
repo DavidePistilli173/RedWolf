@@ -11,7 +11,7 @@ namespace rw
 
 namespace rw::lif::vlk
 {
-   class GraphicsDevice;
+   class DeviceBase;
 } // namespace rw::lif::vlk
 
 namespace rw::lif::vlk
@@ -25,9 +25,9 @@ namespace rw::lif::vlk
       /**
        * @brief Constructor.
        * @param manager RedWolf library manager.
-       * @param device Graphics device that will use this pipeline layout.
+       * @param device Logical device that will use this pipeline layout.
        */
-      PipelineLayout(RedWolfManager& manager, GraphicsDevice& device);
+      PipelineLayout(RedWolfManager& manager, const DeviceBase& device);
 
       /**
        * @brief Destructor.
@@ -63,7 +63,7 @@ namespace rw::lif::vlk
    private:
       VkPipelineLayout pipelineLayout_{ VK_NULL_HANDLE }; /**< Raw handle to the pipeline layout. */
 
-      GraphicsDevice& device_; /**< Graphics device this pipeline layout is bound to. */
+      const DeviceBase& device_; /**< Logical device this pipeline layout is bound to. */
    };
 } // namespace rw::lif::vlk
 

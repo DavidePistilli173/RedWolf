@@ -38,9 +38,8 @@ namespace rw::core
        * @param manager RedWolf library manager.
        * @param argc Number of command line arguments.
        * @param argv List of command line arguments.
-       * @param parent Parent of the current object.
        */
-      BaseApplication(RedWolfManager& manager, int argc = 0, char** argv = nullptr, BaseObject* parent = nullptr);
+      BaseApplication(RedWolfManager& manager, i32 argc = 0, char** argv = nullptr);
 
       /**
        * @brief Destructor.
@@ -102,7 +101,7 @@ namespace rw::core
        * @brief Set the frequency of the main loop
        * @param hertz Main loop frequency in Hz.
        */
-      void setCycleFrequency(double hertz);
+      void setCycleFrequency(f64 hertz);
 
       /**
        * @brief Perform a step of the application (one single execution of the main loop contained in run).

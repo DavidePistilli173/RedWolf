@@ -12,7 +12,7 @@ void EventHandler::addObject(rw::core::BaseObject* object)
 
    if (!objects_.contains(object))
    {
-      objects_.emplace(object, std::map<EventID, std::vector<rw::core::BaseObject*>>());
+      objects_.emplace(object, std::unordered_map<EventID, std::vector<rw::core::BaseObject*>>());
    }
    else
    {

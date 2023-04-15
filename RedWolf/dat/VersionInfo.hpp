@@ -1,12 +1,14 @@
 #ifndef RW_DAT_VERSIONINFO_HPP
 #define RW_DAT_VERSIONINFO_HPP
 
+#include "RedWolf/common.hpp"
+
 namespace rw::dat
 {
    /**
     * @brief Aggregate for version numbers.
     */
-   struct VersionInfo
+   struct RW_API VersionInfo
    {
       /**
        * @brief Default constructor.
@@ -19,11 +21,11 @@ namespace rw::dat
        * @param verMinor Minor version number.
        * @param verPatch Patch version number.
        */
-      constexpr VersionInfo(int verMajor, int verMinor, int verPatch) : major{ verMajor }, minor{ verMinor }, patch{ verPatch } {};
+      constexpr VersionInfo(u8 verMajor, u8 verMinor, u8 verPatch) : major{ verMajor }, minor{ verMinor }, patch{ verPatch } {};
 
-      int major{ 0 }; /**< Major version number. */
-      int minor{ 0 }; /**< Minor version number. */
-      int patch{ 0 }; /**< Patch version number. */
+      u8 major{ 0U }; /**< Major version number. */
+      u8 minor{ 0U }; /**< Minor version number. */
+      u8 patch{ 0U }; /**< Patch version number. */
    };
 } // namespace rw::dat
 

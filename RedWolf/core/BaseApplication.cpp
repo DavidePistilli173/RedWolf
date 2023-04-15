@@ -4,8 +4,7 @@
 
 using namespace rw::core;
 
-BaseApplication::BaseApplication(RedWolfManager& manager, int argc, char** argv, BaseObject* parent) :
-   BaseObject(manager), logger_{ manager.logger() }
+BaseApplication::BaseApplication(RedWolfManager& manager, i32 argc, char** argv) : BaseObject(manager), logger_{ manager.logger() }
 {
    // Save the command-line arguments for later use, if present.
    if (argc > 0 && argv != nullptr)
@@ -13,7 +12,7 @@ BaseApplication::BaseApplication(RedWolfManager& manager, int argc, char** argv,
       logger_.trace("Saving {} command-line arguments.", argc);
 
       arguments_.reserve(argc);
-      for (int i = 0; i < argc; ++i)
+      for (size_t i = 0; i < argc; ++i)
       {
          arguments_.emplace_back(argv[i]);
       }
@@ -47,7 +46,7 @@ void BaseApplication::run()
    }
 }
 
-void BaseApplication::setCycleFrequency(double hertz)
+void BaseApplication::setCycleFrequency(f64 hertz)
 {
    if (hertz >= 0.0F)
    {

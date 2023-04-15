@@ -4,6 +4,7 @@
 #include "RedWolf/lif/vulkan/GraphicsDevice.hpp"
 #include "RedWolf/lif/vulkan/ShaderModule.hpp"
 #include "RedWolf/lif/vulkan/SwapChain.hpp"
+#include "RedWolf/lif/vulkan/Vertex.hpp"
 
 #include <array>
 #include <vector>
@@ -11,13 +12,12 @@
 using namespace rw::lif::vlk;
 
 GraphicsPipeline::GraphicsPipeline(
-   RedWolfManager&   manager,
-   GraphicsDevice&   device,
-   SwapChain&        swapChain,
-   const RenderPass& renderPass,
-   std::string_view  vertShader,
-   std::string_view  fragShader,
-   size_t            id) :
+   RedWolfManager&       manager,
+   const GraphicsDevice& device,
+   const RenderPass&     renderPass,
+   std::string_view      vertShader,
+   std::string_view      fragShader,
+   size_t                id) :
    BaseObject(manager),
    id_{ id }, graphicsDevice_{ device }, layout_{ manager, device }
 {
@@ -39,12 +39,16 @@ GraphicsPipeline::GraphicsPipeline(
    std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages = { vertShaderStageInfo, fragShaderStageInfo };
 
    // Vertex input description.
+   VkVertexInputBindingDescription                  vertexBindingDescription{ Vertex::bindingDescription() };
+   std::array<VkVertexInputAttributeDescription, 2> vertexAttributeDescriptions = { Vertex::positionAttributeDescription(),
+                                                                                    Vertex::colourAttributeDescription() };
+
    VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-   vertexInputInfo.vertexBindingDescriptionCount = 0U;
-   vertexInputInfo.pVertexBindingDescriptions = nullptr;
-   vertexInputInfo.vertexAttributeDescriptionCount = 0U;
-   vertexInputInfo.pVertexAttributeDescriptions = nullptr;
+   vertexInputInfo.vertexBindingDescriptionCount = 1U;
+   vertexInputInfo.pVertexBindingDescriptions = &vertexBindingDescription;
+   vertexInputInfo.vertexAttributeDescriptionCount = vertexAttributeDescriptions.size();
+   vertexInputInfo.pVertexAttributeDescriptions = vertexAttributeDescriptions.data();
 
    // Input assembly description.
    VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo{};
@@ -56,7 +60,7 @@ GraphicsPipeline::GraphicsPipeline(
    std::vector<VkDynamicState>      dynamicStates{ VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
    VkPipelineDynamicStateCreateInfo dynamicStateInfo{};
    dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-   dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+   dynamicStateInfo.dynamicStateCount = static_cast<u32>(dynamicStates.size());
    dynamicStateInfo.pDynamicStates = dynamicStates.data();
 
    // Viewport and scissor description.
@@ -115,7 +119,7 @@ GraphicsPipeline::GraphicsPipeline(
    // Pipeline creation.
    VkGraphicsPipelineCreateInfo createInfo{};
    createInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-   createInfo.stageCount = static_cast<uint32_t>(shaderStages.size());
+   createInfo.stageCount = static_cast<u32>(shaderStages.size());
    createInfo.pStages = shaderStages.data();
    createInfo.pVertexInputState = &vertexInputInfo;
    createInfo.pInputAssemblyState = &inputAssemblyInfo;
@@ -131,12 +135,16 @@ GraphicsPipeline::GraphicsPipeline(
    createInfo.basePipelineHandle = VK_NULL_HANDLE;
    createInfo.basePipelineIndex = -1;
 
-   pipeline_ = vulkanInterface_.createGraphicsPipeline(graphicsDevice_.handle(), createInfo);
+   pipeline_ = graphicsDevice_.createGraphicsPipeline(createInfo);
+   if (pipeline_ == VK_NULL_HANDLE)
+   {
+      logger_.relFatal("Failed to create graphics pipeline.");
+   }
 }
 
 GraphicsPipeline::~GraphicsPipeline()
 {
-   vulkanInterface_.destroyPipeline(graphicsDevice_.handle(), pipeline_);
+   graphicsDevice_.destroyPipeline(pipeline_);
 }
 
 GraphicsPipeline::GraphicsPipeline(GraphicsPipeline&& other) noexcept :

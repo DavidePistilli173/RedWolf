@@ -76,7 +76,7 @@ namespace rw::lif::glfw
        * @param resizable If true, the window will be resizable.
        * @return true on success, false otherwise.
        */
-      GLFWwindow* createWindow(std::string_view title, int width, int height, bool resizable);
+      GLFWwindow* createWindow(std::string_view title, i32 width, i32 height, bool resizable);
 
       /**
        * @brief Create a Vulkan rendering surface associated with a Window.
@@ -97,7 +97,7 @@ namespace rw::lif::glfw
        * @param window Target window.
        * @return pair containing the width and the height, in this order.
        */
-      [[nodiscard]] std::pair<int, int> getFrameBufferSize(GLFWwindow* window) const;
+      [[nodiscard]] std::pair<i32, i32> getFrameBufferSize(GLFWwindow* window) const;
 
       /**
        * @brief Get the required Vulkan extensions for GLFW.
@@ -106,10 +106,36 @@ namespace rw::lif::glfw
       [[nodiscard]] std::vector<const char*> getRequiredVulkanInstanceExtensions();
 
       /**
+       * @brief Get the user data associated with a given window.
+       * @param window Window to get the user data for.
+       */
+      [[nodiscard]] void* getWindowUserPointer(GLFWwindow* window);
+
+      /**
        * @brief Process all waiting events.
        * @details This function must be called from the main thread.
        */
       void pollEvents();
+
+      /**
+       * @brief Set the callback to call when a window is resized.
+       * @param window Window to associate to the callback.
+       * @param callback Callback to call when the specified window is resized.
+       */
+      void setFrameBufferResizeCallback(GLFWwindow* window, void (*callback)(GLFWwindow*, i32, i32));
+
+      /**
+       * @brief Set the user data associated to a window.
+       * @param window Window to associate the data to.
+       * @param userData User data to associate to the window.
+       */
+      void setWindowUserPointer(GLFWwindow* window, void* userData);
+
+      /**
+       * @brief Wait for at least an event to happen and then process it.
+       * @details Note that this call is blocking. and must be called from the main thread.
+       */
+      void waitEvents();
 
    private:
       rw::utils::Logger& logger_; /**< Logger instance. */

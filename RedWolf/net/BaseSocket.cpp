@@ -10,7 +10,7 @@ size_t     BaseSocket::winsockActiveSockets_{ 0U };
 std::mutex BaseSocket::winsockMutex_;
 #endif
 
-BaseSocket::BaseSocket(RedWolfManager& manager, BaseObject* parent) : BaseObject(manager), logger_{ manager.logger() }
+BaseSocket::BaseSocket(RedWolfManager& manager) : BaseObject(manager), logger_{ manager.logger() }
 {
 #ifdef _WIN32
    initWinsock_();
@@ -18,12 +18,7 @@ BaseSocket::BaseSocket(RedWolfManager& manager, BaseObject* parent) : BaseObject
 }
 
 BaseSocket::BaseSocket(
-   RedWolfManager&  manager,
-   std::string_view localAddress,
-   std::string_view localPort,
-   Protocol         protocol,
-   Family           family,
-   BaseObject*      parent) :
+   RedWolfManager& manager, std::string_view localAddress, std::string_view localPort, Protocol protocol, Family family) :
    BaseObject(manager),
    logger_{ manager.logger() }
 {
@@ -62,7 +57,7 @@ bool BaseSocket::close()
    if (isOpen())
    {
 #ifdef WIN32
-      int result{ closesocket(socket_) };
+      i32 result{ closesocket(socket_) };
       if (result == SOCKET_ERROR)
       {
          logger_.relErr("Failed to close socket {}:{}, error code {}.", localAddress_, localPort_, WSAGetLastError());
@@ -144,7 +139,7 @@ bool BaseSocket::open(std::string_view localAddress, std::string_view localPort,
    }
 
    // Resolve the address.
-   int result{ getaddrinfo(localAddress_.c_str(), localPort_.c_str(), &hints, &address) };
+   i32 result{ getaddrinfo(localAddress_.c_str(), localPort_.c_str(), &hints, &address) };
    if (result != 0)
    {
       logger_.relErr("Failed to get socket information for {}:{}, error code {}.", localAddress_, localPort_, result);

@@ -99,7 +99,7 @@ namespace rw::thread
        * @param manager RedWolf library manager.
        * @param numThreads Number of starting threads of the pool. By default, matches the system's hardware concurrency, or at least 4.
        */
-      explicit ThreadPool(RedWolfManager& manager, unsigned int numThreads = std::max(4U, std::thread::hardware_concurrency()));
+      explicit ThreadPool(RedWolfManager& manager, u32 numThreads = std::max(4U, std::thread::hardware_concurrency()));
 
       /**
        * @brief Custom destructor for joining all threads before destruction.

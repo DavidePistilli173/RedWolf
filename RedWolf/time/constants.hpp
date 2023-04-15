@@ -3,7 +3,7 @@
 
 namespace rw::time
 {
-   constexpr double microseconds_per_second{ 1'000'000.0 }; /**< Number of microseconds each second. */
+   constexpr f64 microseconds_per_second{ 1'000'000.0 }; /**< Number of microseconds each second. */
 }
 
 #endif

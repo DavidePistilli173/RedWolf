@@ -12,7 +12,7 @@ namespace rw::events
 
       explicit ButtonPressEvent((ButtonPressEvent*) nullptr) : BaseEvent(event_id) {}
 
-      int btnId{ 0 };
+      i32 btnId{ 0 };
    };
 } // namespace rw::events
 

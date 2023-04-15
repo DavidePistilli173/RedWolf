@@ -1,7 +1,7 @@
 #ifndef RW_UI_CONCEPTS_HPP
 #define RW_UI_CONCEPTS_HPP
 
-#include "BaseWindow.hpp"
+#include "RedWolf/ui/BaseWindow.hpp"
 
 #include <concepts>
 #include <type_traits>

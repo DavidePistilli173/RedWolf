@@ -1,6 +1,7 @@
 #include "Surface.hpp"
 
 #include "RedWolf/RedWolfManager.hpp"
+#include "RedWolf/lif/vulkan/GraphicsDevice.hpp"
 #include "RedWolf/lif/vulkan/Instance.hpp"
 #include "RedWolf/lif/vulkan/PhysicalDevice.hpp"
 
@@ -22,7 +23,7 @@ Surface::Surface(RedWolfManager& manager, GLFWwindow* window) :
 Surface::~Surface()
 {
    swapChain_.reset();
-   vulkanInterface_.destroySurface(vulkanInstance_.handle(), surface_);
+   vulkanInstance_.destroySurface(surface_);
 }
 
 VkSurfaceCapabilitiesKHR Surface::capabilities() const
@@ -66,7 +67,7 @@ std::vector<VkPresentModeKHR> Surface::modes() const
    return selectedMode_;
 }
 
-bool Surface::setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice)
+bool Surface::setDevices(const PhysicalDevice& physicalDevice, const GraphicsDevice& graphicsDevice)
 {
    if (!initDevices_(physicalDevice)) return false;
    return initSwapChain_(physicalDevice, graphicsDevice);
@@ -77,13 +78,35 @@ SwapChain* Surface::swapChain() const
    return swapChain_.get();
 }
 
-bool Surface::initDevices_(PhysicalDevice& physicalDevice)
+bool Surface::initDevices_(const PhysicalDevice& physicalDevice)
 {
    const std::scoped_lock lck{ mtx_ };
 
-   capabilities_ = vulkanInterface_.getSurfaceCapabilities(physicalDevice.handle(), surface_);
-   formats_ = vulkanInterface_.getSurfaceFormats(physicalDevice.handle(), surface_);
-   modes_ = vulkanInterface_.getSurfacePresentationModes(physicalDevice.handle(), surface_);
+   VkResult errCode{ vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice.handle(), surface_, &capabilities_) };
+   if (errCode != VK_SUCCESS)
+   {
+      logger_.relFatal("Failed to get surface capabilities: {}.", errCode);
+   }
+
+   u32 formatCount{ 0U };
+   errCode = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice.handle(), surface_, &formatCount, nullptr);
+   if (errCode == VK_SUCCESS && formatCount > 0U)
+   {
+      formats_.resize(formatCount);
+      errCode = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice.handle(), surface_, &formatCount, formats_.data());
+      if (errCode != VK_SUCCESS)
+      {
+         formats_.resize(0U);
+      }
+   }
+
+   u32 modeCount{ 0U };
+   errCode = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice.handle(), surface_, &modeCount, nullptr);
+   if (errCode == VK_SUCCESS && modeCount > 0U)
+   {
+      modes_.resize(modeCount);
+      errCode = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice.handle(), surface_, &modeCount, modes_.data());
+   }
 
    if (formats_.empty() || modes_.empty())
    {
@@ -110,20 +133,24 @@ bool Surface::initDevices_(PhysicalDevice& physicalDevice)
    i = 0U;
    while (i < modes_.size() && !done)
    {
-      if (modes_[i] == VK_PRESENT_MODE_MAILBOX_KHR) selectedMode_ = modes_[i];
+      if (modes_[i] == VK_PRESENT_MODE_FIFO_KHR)
+      {
+         selectedMode_ = modes_[i];
+         done = true;
+      }
       ++i;
    }
-   if (!done) selectedMode_ = VK_PRESENT_MODE_FIFO_KHR;
+   if (!done) selectedMode_ = VK_PRESENT_MODE_IMMEDIATE_KHR;
 
    // Compute the surface resolution.
    auto [width, height] = glfwManager_.getFrameBufferSize(window_);
-   selectedExtent_ = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
+   selectedExtent_ = { static_cast<u32>(width), static_cast<u32>(height) };
    selectedExtent_.width = std::clamp(selectedExtent_.width, capabilities_.minImageExtent.width, capabilities_.maxImageExtent.width);
    selectedExtent_.height = std::clamp(selectedExtent_.height, capabilities_.minImageExtent.height, capabilities_.maxImageExtent.height);
 }
 
-bool Surface::initSwapChain_(PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice)
+bool Surface::initSwapChain_(const PhysicalDevice& physicalDevice, const GraphicsDevice& graphicsDevice)
 {
-   swapChain_ = std::make_unique<SwapChain>(manager_, physicalDevice, graphicsDevice, *this);
+   swapChain_ = std::make_unique<SwapChain>(manager_, physicalDevice, graphicsDevice, *this, swapChain_.get());
    return true;
 }

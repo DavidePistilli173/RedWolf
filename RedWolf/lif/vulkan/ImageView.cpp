@@ -1,13 +1,13 @@
 #include "ImageView.hpp"
 
 #include "RedWolf/RedWolfManager.hpp"
-#include "RedWolf/lif/vulkan/GraphicsDevice.hpp"
+#include "RedWolf/lif/vulkan/DeviceBase.hpp"
 #include "RedWolf/lif/vulkan/SwapChain.hpp"
 
 using namespace rw::lif::vlk;
 
-ImageView::ImageView(RedWolfManager& manager, GraphicsDevice& graphicsDevice, VkImage image, VkFormat format) :
-   BaseObject(manager), device_{ graphicsDevice.handle() }, image_{ image }
+ImageView::ImageView(RedWolfManager& manager, const DeviceBase& device, VkImage image, VkFormat format) :
+   BaseObject(manager), device_{ device }, image_{ image }
 {
    if (image_ == VK_NULL_HANDLE)
    {
@@ -29,7 +29,7 @@ ImageView::ImageView(RedWolfManager& manager, GraphicsDevice& graphicsDevice, Vk
    createInfo.subresourceRange.baseArrayLayer = 0;
    createInfo.subresourceRange.layerCount = 1;
 
-   view_ = vulkanInterface_.createImageView(device_, createInfo);
+   view_ = device_.createImageView(createInfo);
    if (view_ == VK_NULL_HANDLE)
    {
       logger_.relFatal("Failed to create image view.");
@@ -38,7 +38,7 @@ ImageView::ImageView(RedWolfManager& manager, GraphicsDevice& graphicsDevice, Vk
 
 ImageView::~ImageView()
 {
-   vulkanInterface_.destroyImageView(device_, view_);
+   device_.destroyImageView(view_);
 }
 
 ImageView::ImageView(ImageView&& other) noexcept :

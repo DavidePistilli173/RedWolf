@@ -2,7 +2,6 @@
 #define RW_LIF_VULKAN_VULKANDEVICE_HPP
 
 #include "RedWolf/lif/vulkan/DeviceBase.hpp"
-#include "RedWolf/lif/vulkan/Interface.hpp"
 #include "RedWolf/lif/vulkan/QueueFamilies.hpp"
 
 #include <vector>
@@ -47,7 +46,7 @@ namespace rw::lif::vlk
        * @param manager RedWolf library manager.
        * @param physicalDevice The physical device that this logical device will reference.
        */
-      GraphicsDevice(RedWolfManager& manager, PhysicalDevice& physicalDevice);
+      GraphicsDevice(RedWolfManager& manager, const PhysicalDevice& physicalDevice);
 
       /**
        * @brief Destructor.
@@ -74,6 +73,25 @@ namespace rw::lif::vlk
        * @brief Move-assignment operator.
        */
       GraphicsDevice& operator=(GraphicsDevice&&) = delete;
+
+      /**
+       * @brief Create a graphics pipeline.
+       * @param pipelineInfo Pipeline creation parameters.
+       * @return Handle to the newly created graphics pipeline, or VK_NULL_HANDLE in case of an error.
+       */
+      [[nodiscard]] VkPipeline createGraphicsPipeline(const VkGraphicsPipelineCreateInfo& pipelineInfo) const;
+
+      /**
+       * @brief Get the graphics queue of the device.
+       * @return Graphics queue of the device.
+       */
+      [[nodiscard]] VkQueue graphicsQueue() const;
+
+      /**
+       * @brief Get the presentation queue of the device.
+       * @return Presentation queue of the device.
+       */
+      [[nodiscard]] VkQueue presentationQueue() const;
 
    private:
    };

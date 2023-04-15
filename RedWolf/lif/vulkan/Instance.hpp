@@ -3,7 +3,6 @@
 
 #include "RedWolf/common.hpp"
 #include "RedWolf/dat/VersionInfo.hpp"
-#include "RedWolf/lif/vulkan/DebugUtilsMessenger.hpp"
 #include "RedWolf/lif/vulkan/InstanceBase.hpp"
 #include "RedWolf/lif/vulkan/PhysicalDevice.hpp"
 
@@ -40,7 +39,7 @@ namespace rw::lif::vlk
       /**
        * @brief Destructor.
        */
-      ~Instance() override = default;
+      ~Instance() override;
 
       /**
        * @brief Copy constructor.
@@ -49,8 +48,9 @@ namespace rw::lif::vlk
 
       /**
        * @brief Move constructor.
+       * @param other Object to move from.
        */
-      Instance(Instance&&) = delete;
+      Instance(Instance&& other) noexcept;
 
       /**
        * @brief Copy-assignment operator.
@@ -61,6 +61,12 @@ namespace rw::lif::vlk
        * @brief Move-assignment operator.
        */
       Instance& operator=(Instance&& other) = delete;
+
+      /**
+       * @brief Destroy a surface that was created on this instance.
+       * @param surface Surface to destroy.
+       */
+      void destroySurface(VkSurfaceKHR surface);
 
       /**
        * @brief Get the first physical device that supports the required operations after the one specified.
@@ -77,7 +83,7 @@ namespace rw::lif::vlk
        */
       void init_();
 
-      DebugUtilsMessenger debugMessenger_; /**< Vulkan debug messenger. */
+      VkDebugUtilsMessengerEXT debugMessenger_{ VK_NULL_HANDLE }; /**< Vulkan debug messenger. */
 
       std::vector<std::unique_ptr<PhysicalDevice>> physicalDevices_; /**< List of all available physical devices. */
    };

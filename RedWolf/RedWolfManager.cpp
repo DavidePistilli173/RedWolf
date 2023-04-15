@@ -4,9 +4,6 @@ using namespace rw;
 
 RedWolfManager::RedWolfManager(const Options& options) :
    settingsManager_{ *this }, threadPool_{ *this, options.threadPoolThreads }, eventHandler_{ *this }, glfwManager_{ *this },
-   vulkanInterface_{
-      *this,
-   },
    vulkanInstance_{ *this, options.appName, options.appVersion, glfwManager_.getRequiredVulkanInstanceExtensions() }
 {
 }
@@ -31,6 +28,11 @@ rw::utils::Logger& RedWolfManager::logger()
    return logger_;
 }
 
+rw::utils::RandomGenerator& RedWolfManager::randomGenerator()
+{
+   return randomGenerator_;
+}
+
 rw::utils::SettingsManager& RedWolfManager::settingsManager()
 {
    return settingsManager_;
@@ -44,9 +46,4 @@ rw::thread::ThreadPool& RedWolfManager::threadPool()
 rw::lif::vlk::Instance& RedWolfManager::vulkanInstance()
 {
    return vulkanInstance_;
-}
-
-rw::lif::vlk::Interface& RedWolfManager::vulkanInterface()
-{
-   return vulkanInterface_;
 }

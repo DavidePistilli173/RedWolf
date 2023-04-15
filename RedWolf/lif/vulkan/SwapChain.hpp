@@ -4,7 +4,6 @@
 #include "RedWolf/common.hpp"
 #include "RedWolf/lif/vulkan/BaseObject.hpp"
 #include "RedWolf/lif/vulkan/ImageView.hpp"
-#include "RedWolf/lif/vulkan/Interface.hpp"
 
 #include <vector>
 
@@ -15,10 +14,12 @@ namespace rw
 
 namespace rw::lif::vlk
 {
-   class Surface;
+   class Fence;
+   class DeviceBase;
    class PhysicalDevice;
-   class GraphicsDevice;
    class RenderPass;
+   class Semaphore;
+   class Surface;
 } // namespace rw::lif::vlk
 
 namespace rw::lif::vlk
@@ -30,10 +31,16 @@ namespace rw::lif::vlk
        * @brief Constructor.
        * @param manager RedWolf library manager.
        * @param physicalDevice Physical device that will present images to the swap chain.
-       * @param graphicsDevice Graphics device that will present images to the swap chain.
+       * @param device Logical device that will present images to the swap chain.
        * @param surface Surface this swap chain is bound to.
+       * @param oldSwapchain Swapchain that needs to be replaced.
        */
-      SwapChain(RedWolfManager& manager, PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice, Surface& surface);
+      SwapChain(
+         RedWolfManager&       manager,
+         const PhysicalDevice& physicalDevice,
+         const DeviceBase&     device,
+         const Surface&        surface,
+         SwapChain*            oldSwapchain = nullptr);
 
       /**
        * @brief Destructor.
@@ -61,16 +68,36 @@ namespace rw::lif::vlk
       SwapChain& operator=(SwapChain&&) = delete;
 
       /**
+       * @brief Get the index of the next available image in the swap chain.
+       * @details After calling this function, the user should check whether the swap chain needs to be recreated with the ad-hoc function.
+       * @param semaphore Optional semaphore for the GPU to signal when the presentation engine has finished using the image.
+       * @param fence Optional fence for the GPU to signal when the presentation engine has finished using the image.
+       * @return Index of the next available image in the swap chain.
+       */
+      [[nodiscard]] u32 acquireNextImage(Semaphore* semaphore = nullptr, Fence* fence = nullptr);
+
+      /**
        * @brief Get the current format of the swap chain.
        * @return Current format of the swap chain.
        */
       [[nodiscard]] const VkSurfaceFormatKHR& format() const;
 
       /**
+       * @brief Get the raw handle to the swap chain.
+       */
+      [[nodiscard]] VkSwapchainKHR handle() const;
+
+      /**
        * @brief Get the images of the swap chain.
        * @return Images of the swap chain.
        */
-      const std::vector<ImageView>& images() const;
+      [[nodiscard]] const std::vector<ImageView>& images() const;
+
+      /**
+       * @brief Check whether the swap chain needs to be recreated or not.
+       * @return true if the swap chain needs to be recreated, false otherwise.
+       */
+      [[nodiscard]] bool needsRecreation() const;
 
    private:
       VkSwapchainKHR     swapChain_{ VK_NULL_HANDLE }; /**< Raw swap chain handle. */
@@ -78,9 +105,11 @@ namespace rw::lif::vlk
       VkPresentModeKHR   mode_;                        /**< Current mode of the swap chain. */
       VkExtent2D         extent_;                      /**< Current extent of the swap chain. */
 
-      GraphicsDevice& graphicsDevice_; /**< Logical device this swap chain is bound to. */
+      const DeviceBase& device_; /**< Logical device this swap chain is bound to. */
 
       std::vector<ImageView> images_; /**< Swap chain images. */
+
+      bool needsRecreation_{ false }; /**< If true, the swap chain needs to be recreated. */
    };
 } // namespace rw::lif::vlk
 

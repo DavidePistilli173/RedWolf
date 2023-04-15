@@ -13,7 +13,7 @@ namespace rw
 
 namespace rw::lif::vlk
 {
-   class GraphicsDevice;
+   class DeviceBase;
 } // namespace rw::lif::vlk
 
 namespace rw::lif::vlk
@@ -29,10 +29,10 @@ namespace rw::lif::vlk
       /**
        * @brief Constructor.
        * @param manager RedWolf library manager.
-       * @param device Graphics device that will use the shader.
+       * @param device Logical device that will use the shader.
        * @param file Path to the compiled shader file.
        */
-      ShaderModule(RedWolfManager& manager, GraphicsDevice& device, std::string_view file);
+      ShaderModule(RedWolfManager& manager, const DeviceBase& device, std::string_view file);
 
       /**
        * @brief Destructor.
@@ -68,7 +68,7 @@ namespace rw::lif::vlk
    private:
       VkShaderModule shader_{ VK_NULL_HANDLE }; /**< Raw shader handle. */
 
-      VkDevice device_{ VK_NULL_HANDLE }; /**< Raw handle to the device that will use the shader. */
+      const DeviceBase& device_; /**< Logical device that will use the shader. */
    };
 } // namespace rw::lif::vlk
 

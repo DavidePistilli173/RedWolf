@@ -32,8 +32,9 @@ namespace rw::lif::glfw
        * @param width Width of the window.
        * @param height Height of the window.
        * @param resizable If true, the window will be resizable.
+       * @param userData Data pointer to use in GLFW callbacks.
        */
-      Window(RedWolfManager& manager, std::string_view title, int width, int height, bool resizable);
+      Window(RedWolfManager& manager, std::string_view title, i32 width, i32 height, bool resizable, void* userData = nullptr);
 
       /**
        * @brief Destructor.
@@ -90,6 +91,12 @@ namespace rw::lif::glfw
        */
       [[nodiscard]] bool isOpen() const;
 
+      /**
+       * @brief Set the callback to call when the window is resized.
+       * @param callback Callback to call when the window is resized.
+       */
+      void setResizeCallback(void (*callback)(GLFWwindow*, i32, i32));
+
    private:
       rw::utils::Logger& logger_;      /**< Logger instance. */
       GlfwManager&       glfwManager_; /**< Manager for the GLFW library. */
@@ -97,8 +104,11 @@ namespace rw::lif::glfw
       GLFWwindow* window_{ nullptr }; /**< Window handle. */
 
       std::string         title_;              /**< Title of the window. */
-      std::pair<int, int> size_{ 0, 0 };       /**< Size of the window. */
+      std::pair<i32, i32> size_{ 0, 0 };       /**< Size of the window. */
       bool                resizable_{ false }; /**< If true, the window is resizable. */
+
+      void* userData_{ nullptr };                                /**< User data associated with the window. */
+      void (*resizeCallback_)(GLFWwindow*, i32, i32){ nullptr }; /**< Window resize callback. */
    };
 } // namespace rw::lif::glfw
 

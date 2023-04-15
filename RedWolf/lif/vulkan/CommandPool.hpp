@@ -7,7 +7,7 @@
 
 namespace rw::lif::vlk
 {
-   class GraphicsDevice;
+   class DeviceBase;
 }
 
 namespace rw::lif::vlk
@@ -21,10 +21,10 @@ namespace rw::lif::vlk
       /**
        * @brief Constructor.
        * @param manager RedWolf library manager.
-       * @param device Graphics device the commands will be delivered to.
+       * @param device Logical device the commands will be delivered to.
        * @param queueType Type of queue this commands will be delivered to.
        */
-      CommandPool(RedWolfManager& manager, GraphicsDevice& device, QueueFamilies::Id queueType);
+      CommandPool(RedWolfManager& manager, const DeviceBase& device, QueueFamilies::Id queueType);
 
       /**
        * @brief Destructor.
@@ -52,14 +52,21 @@ namespace rw::lif::vlk
       CommandPool& operator=(CommandPool&&) = delete;
 
       /**
+       * @brief Create a new command buffer.
+       * @param commandBufferInfo Command buffer creation parameters.
+       * @return Newly created command buffer, or VK_NULL_HANDLE in case of an error.
+       */
+      [[nodiscard]] VkCommandBuffer createCommandBuffer(const VkCommandBufferAllocateInfo& commandBufferInfo) const;
+
+      /**
        * @brief Get the raw handle of the command pool.
        * @return Raw handle of the command pool.
        */
       [[nodiscard]] VkCommandPool handle() const;
 
    private:
-      VkCommandPool   commandPool_{ VK_NULL_HANDLE }; /**< Raw handle to the command pool. */
-      GraphicsDevice& graphicsDevice_;                /**< Graphics device this command pool is bound to. */
+      VkCommandPool     commandPool_{ VK_NULL_HANDLE }; /**< Raw handle to the command pool. */
+      const DeviceBase& device_;                        /**< Logical device this command pool is bound to. */
    };
 } // namespace rw::lif::vlk
 

@@ -36,7 +36,7 @@ namespace rw::core
        * @param argc Number of command line arguments.
        * @param argv List of command line arguments.
        */
-      BaseGUIApplication(RedWolfManager& manager, int argc = 0, char** argv = nullptr);
+      BaseGUIApplication(RedWolfManager& manager, i32 argc = 0, char** argv = nullptr);
 
       /**
        * @brief Destructor.
@@ -71,11 +71,17 @@ namespace rw::core
        * @return Non-owning pointer to the newly created window.
        */
       template<rw::ui::IsDerivedFromBaseWindow Window, typename... Args>
-      Window* makeWindow(Args&&... args)
+      Window* addWindow(Args&&... args)
       {
          std::scoped_lock lck{ windowMtx_ };
          return dynamic_cast<Window*>(windows_.emplace_back(std::make_unique<Window>(std::forward<Args>(args)...)).get());
       }
+
+      /**
+       * @brief Remove a given window from the application.
+       * @param window Window to remove.
+       */
+      void removeWindow(BaseWindow* window);
 
       /**
        * @brief Run the application.

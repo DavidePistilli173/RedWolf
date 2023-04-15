@@ -25,7 +25,7 @@ bool GlfwManager::checkWindowClose(GLFWwindow* window)
    return glfwWindowShouldClose(window);
 }
 
-GLFWwindow* GlfwManager::createWindow(std::string_view title, int width, int height, bool resizable)
+GLFWwindow* GlfwManager::createWindow(std::string_view title, i32 width, i32 height, bool resizable)
 {
    if (resizable)
    {
@@ -62,9 +62,9 @@ void GlfwManager::destroyWindow(GLFWwindow* window)
    glfwDestroyWindow(window);
 }
 
-std::pair<int, int> GlfwManager::getFrameBufferSize(GLFWwindow* window) const
+std::pair<i32, i32> GlfwManager::getFrameBufferSize(GLFWwindow* window) const
 {
-   std::pair<int, int> result;
+   std::pair<i32, i32> result;
 
    if (window != nullptr)
    {
@@ -89,7 +89,45 @@ std::vector<const char*> GlfwManager::getRequiredVulkanInstanceExtensions()
    return retVal;
 }
 
+void* GlfwManager::getWindowUserPointer(GLFWwindow* window)
+{
+   if (window == nullptr)
+   {
+      logger_.relErr("Cannot get the user data for a null window.");
+      return nullptr;
+   }
+
+   return glfwGetWindowUserPointer(window);
+}
+
 void GlfwManager::pollEvents()
 {
    glfwPollEvents();
+}
+
+void GlfwManager::setFrameBufferResizeCallback(GLFWwindow* window, void (*callback)(GLFWwindow*, i32, i32))
+{
+   if (window == nullptr)
+   {
+      logger_.relErr("Cannot set the resize callback for a null window.");
+      return;
+   }
+
+   glfwSetFramebufferSizeCallback(window, callback);
+}
+
+void GlfwManager::setWindowUserPointer(GLFWwindow* window, void* userData)
+{
+   if (window == nullptr)
+   {
+      logger_.relErr("Cannot set the user data for a null window.");
+      return;
+   }
+
+   glfwSetWindowUserPointer(window, userData);
+}
+
+void GlfwManager::waitEvents()
+{
+   glfwWaitEvents();
 }

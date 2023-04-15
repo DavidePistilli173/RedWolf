@@ -1,11 +1,11 @@
 #include "PipelineLayout.hpp"
 
 #include "RedWolf/RedWolfManager.hpp"
-#include "RedWolf/lif/vulkan/GraphicsDevice.hpp"
+#include "RedWolf/lif/vulkan/DeviceBase.hpp"
 
 using namespace rw::lif::vlk;
 
-PipelineLayout::PipelineLayout(RedWolfManager& manager, GraphicsDevice& device) : BaseObject(manager), device_{ device }
+PipelineLayout::PipelineLayout(RedWolfManager& manager, const DeviceBase& device) : BaseObject(manager), device_{ device }
 {
    VkPipelineLayoutCreateInfo createInfo{};
    createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -14,7 +14,7 @@ PipelineLayout::PipelineLayout(RedWolfManager& manager, GraphicsDevice& device) 
    createInfo.pushConstantRangeCount = 0;
    createInfo.pPushConstantRanges = nullptr;
 
-   pipelineLayout_ = vulkanInterface_.createPipelineLayout(device_.handle(), createInfo);
+   pipelineLayout_ = device_.createPipelineLayout(createInfo);
    if (pipelineLayout_ == VK_NULL_HANDLE)
    {
       logger_.relFatal("Failed to create pipeline layout.");
@@ -23,7 +23,7 @@ PipelineLayout::PipelineLayout(RedWolfManager& manager, GraphicsDevice& device) 
 
 PipelineLayout::~PipelineLayout()
 {
-   vulkanInterface_.destroyPipelineLayout(device_.handle(), pipelineLayout_);
+   device_.destroyPipelineLayout(pipelineLayout_);
 }
 
 PipelineLayout::PipelineLayout(PipelineLayout&& other) noexcept :

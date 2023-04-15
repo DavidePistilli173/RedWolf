@@ -5,7 +5,14 @@
 
 using namespace rw::core;
 
-BaseGUIApplication::BaseGUIApplication(RedWolfManager& manager, int argc, char** argv) : BaseApplication(manager, argc, argv) {}
+BaseGUIApplication::BaseGUIApplication(RedWolfManager& manager, i32 argc, char** argv) : BaseApplication(manager, argc, argv) {}
+
+void BaseGUIApplication::removeWindow(BaseWindow* window)
+{
+   auto it =
+      std::find_if(windows_.begin(), windows_.end(), [window](const std::unique_ptr<BaseWindow>& win) { return win.get() == window; });
+   if (it != windows_.end()) windows_.erase(it);
+}
 
 void BaseGUIApplication::run()
 {

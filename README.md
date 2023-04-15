@@ -1,4 +1,4 @@
-![alt text](https://github.com/DavidePistilli173/RedWolf/blob/devel/RedWolf/logo/RedWolf.png?raw=true)
+![alt text](logo/RedWolf.png?raw=true)
 
 ### ********** INTRODUCTION **********
 
@@ -16,26 +16,29 @@ but at the time of writing the only compiler which supports all used C++20 featu
 All the code for the RedWolf library is contained inside the RedWolf directory.
 This contains the following sub-directories:
     
-    - alg -> Algorithms;
-    - cont -> Containers;
-    - core -> Core classes;
-    - dat -> Simple structures;
-    - events -> Base and default events;
-    - io -> Input/Output classes;
-    - lif -> Library InterFaces for third_party dependencies;
-    - net -> Network;
-    - text -> String and text processing;
+    - alg         -> Algorithms;
+    - cont        -> Containers;
+    - core        -> Core classes;
+    - dat         -> Simple structures;
+    - events      -> Base and default events;
+    - gfx         -> Graphics classes.
+    - io          -> Input/Output classes;
+    - lif         -> Library InterFaces for third_party dependencies;
+    - net         -> Network;
+    - shaders     -> Default shaders shipped with the library.
+    - text        -> String and text processing;
     - third_party -> Third-party dependencies;
-    - thread -> Multi-threading;
-    - time -> Date and time;
-    - ui -> User Interace
-    - utils -> Utilities.
+    - thread      -> Multi-threading;
+    - time        -> Date and time;
+    - ui          -> User Interace
+    - utils       -> Utilities.
 
 ### ********** COMPILATION **********
 
 In order to compile the library, you need to install the Vulkan SDK from https://vulkan.lunarg.com/ (The currently tested version is 1.3.216.0).
 GLFW sources are already included in the CMake project and are located in the third_party folder.
 GLM sources are already included in the CMake project and are located in the third_party folder.
+VMA sources are already included in the CMake project and are located in the third_party folder.
 
 You must first build the RedWolf library project, then RedWolfSandbox.
 

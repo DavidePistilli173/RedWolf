@@ -28,6 +28,9 @@ add_subdirectory("${RW_GLFW_DIR}")
 # GLM
 set(RW_GLM_INCLUDE_DIR "${RW_THIRD_PARTY_DIR}/glm")
 
+# VMA
+set(RW_VMA_INCLUDE_DIR "${RW_THIRD_PARTY_DIR}/vma/include")
+
 include(CheckIPOSupported)
 check_ipo_supported(RESULT supported OUTPUT error)
 
@@ -42,7 +45,10 @@ include_directories(
     "${Vulkan_INCLUDE_DIRS}"
     "${RW_GLFW_INCLUDE_DIR}"
     "${RW_GLM_INCLUDE_DIR}"
+    "${RW_VMA_INCLUDE_DIR}"
 )
+
+message("${RW_VMA_INCLUDE_DIR}")
 
 add_library("${RW_LIB_TARGET_NAME}" SHARED
     "RedWolfManager.cpp"
@@ -52,28 +58,33 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "dat/LogMsg.cpp"
     "dat/SettingsNode.cpp"
     "events/EventHandler.cpp"
+    "gfx/BaseEntity.cpp"
+    "gfx/Mesh.cpp"
     "gfx/Renderer.cpp"
     "io/File.cpp"
     "lif/glfw/GlfwManager.cpp"
     "lif/glfw/Window.cpp"
+    "lif/vma/Allocator.cpp"
+    "lif/vma/Initialiser.cpp"
     "lif/vulkan/BaseObject.cpp"
     "lif/vulkan/CommandBuffer.cpp"
     "lif/vulkan/CommandPool.cpp"
-    "lif/vulkan/DebugUtilsMessenger.cpp"
     "lif/vulkan/DeviceBase.cpp"
+    "lif/vulkan/Fence.cpp"
     "lif/vulkan/FrameBuffer.cpp"
     "lif/vulkan/GraphicsDevice.cpp"
     "lif/vulkan/GraphicsPipeline.cpp"
     "lif/vulkan/ImageView.cpp"
     "lif/vulkan/Instance.cpp"
     "lif/vulkan/InstanceBase.cpp"
-    "lif/vulkan/Interface.cpp"
     "lif/vulkan/PhysicalDevice.cpp"
     "lif/vulkan/PipelineLayout.cpp"
     "lif/vulkan/RenderPass.cpp"
+    "lif/vulkan/Semaphore.cpp"
     "lif/vulkan/ShaderModule.cpp"
     "lif/vulkan/Surface.cpp"
     "lif/vulkan/SwapChain.cpp"
+    "lif/vulkan/Vertex.cpp"
     "net/BaseSocket.cpp"
     "net/UdpSocket.cpp"
     "text/string_utils.cpp"
@@ -82,8 +93,9 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "time/Timer.cpp"
     "ui/BaseWindow.cpp"
     "utils/Logger.cpp"
-    "utils/SettingsManager.cpp"
- )
+    "utils/RandomGenerator.cpp"
+    "utils/SettingsManager.cpp" 
+)
 set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 
@@ -123,5 +135,12 @@ if (WIN32)
     add_custom_command(
         TARGET ${RW_LIB_TARGET_NAME} POST_BUILD
         COMMAND xcopy "${NATIVE_GLM_INCLUDE_DIR}\\glm" "${NATIVE_OUTPUT_DIR}\\include\\glm" /f /i /s /y 
+    )
+
+    # VMA
+    file(TO_NATIVE_PATH "${RW_VMA_INCLUDE_DIR}" NATIVE_VMA_INCLUDE_DIR)
+    add_custom_command(
+        TARGET ${RW_LIB_TARGET_NAME} POST_BUILD
+        COMMAND xcopy "${NATIVE_VMA_INCLUDE_DIR}\\*.h" "${NATIVE_OUTPUT_DIR}\\include" /f /i /s /y 
     )
 endif (WIN32)

@@ -11,7 +11,7 @@ namespace rw
 
 namespace rw::lif::vlk
 {
-   class GraphicsDevice;
+   class DeviceBase;
    class SwapChain;
 } // namespace rw::lif::vlk
 
@@ -26,10 +26,10 @@ namespace rw::lif::vlk
       /**
        * @brief Constructor.
        * @param manager RedWolf library manager.
-       * @param device Graphics device this render pass will be used on.
+       * @param device Logical device this render pass will be used on.
        * @param swapChain Swap chain this render pass will be used on.
        */
-      RenderPass(RedWolfManager& manager, GraphicsDevice& device, SwapChain& swapChain);
+      RenderPass(RedWolfManager& manager, const DeviceBase& device, const SwapChain& swapChain);
 
       /**
        * @brief Destructor.
@@ -65,7 +65,7 @@ namespace rw::lif::vlk
    private:
       VkRenderPass renderPass_{ VK_NULL_HANDLE }; /**< Raw handle to the render pass. */
 
-      GraphicsDevice& graphicsDevice_; /**< Graphics device this render pass is bound to. */
+      const DeviceBase& device_; /**< Logical device this render pass is bound to. */
    };
 } // namespace rw::lif::vlk
 

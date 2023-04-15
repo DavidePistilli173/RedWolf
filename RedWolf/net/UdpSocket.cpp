@@ -7,12 +7,10 @@
 
 using namespace rw::net;
 
-UdpSocket::UdpSocket(RedWolfManager& manager, BaseObject* parent) : BaseSocket(manager, parent), logger_{ manager.logger() } {}
+UdpSocket::UdpSocket(RedWolfManager& manager) : BaseSocket(manager), logger_{ manager.logger() } {}
 
-UdpSocket::UdpSocket(
-   RedWolfManager& manager, std::string_view localAddress, std::string_view localPort, Family family, BaseObject* parent) :
-   BaseSocket(manager, localAddress, localPort, BaseSocket::Protocol::udp, family, parent),
-   logger_{ manager.logger() }
+UdpSocket::UdpSocket(RedWolfManager& manager, std::string_view localAddress, std::string_view localPort, Family family) :
+   BaseSocket(manager, localAddress, localPort, BaseSocket::Protocol::udp, family), logger_{ manager.logger() }
 {
 }
 
@@ -122,7 +120,7 @@ void UdpSocket::startWorkerThread_()
             int numBytes;
 #ifdef _WIN32
             sockaddr senderAddress;
-            int      senderAddressLen{ sizeof(sockaddr) };
+            i32      senderAddressLen{ sizeof(sockaddr) };
             memset(&senderAddress, 0, sizeof(sockaddr));
 
             {
@@ -132,7 +130,7 @@ void UdpSocket::startWorkerThread_()
 #endif
 
 #ifdef _WIN32
-            if (int errorCode{ WSAGetLastError() }; numBytes < 0 && errorCode != WSAETIMEDOUT)
+            if (i32 errorCode{ WSAGetLastError() }; numBytes < 0 && errorCode != WSAETIMEDOUT)
             {
                logger_.relErr("Read error on socket {}:{}, error code {}.", localAddress(), localPort(), errorCode);
             }

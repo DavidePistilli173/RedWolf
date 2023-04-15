@@ -4,7 +4,7 @@
 
 using namespace rw::thread;
 
-ThreadPool::ThreadPool(RedWolfManager& manager, unsigned int numThreads) : logger_{ manager.logger() }
+ThreadPool::ThreadPool(RedWolfManager& manager, u32 numThreads) : logger_{ manager.logger() }
 {
    workers_.reserve(numThreads);
    for (size_t i = 0; i < numThreads; ++i)

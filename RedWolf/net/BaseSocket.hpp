@@ -51,9 +51,8 @@ namespace rw::net
       /**
        * @brief Construct an empty socket.
        * @param manager RedWolf library manager.
-       * @param parent Parent of the object.
        */
-      BaseSocket(RedWolfManager& manager, BaseObject* parent = nullptr);
+      BaseSocket(RedWolfManager& manager);
 
       /**
        * @brief Construct a socket and also open it, if possible.
@@ -62,15 +61,8 @@ namespace rw::net
        * @param localPort Local port to bind the socket to.
        * @param protocol Protocol to use with this socket.
        * @param family Address family for the socket's address.
-       * @param parent Parent of the socket.
        */
-      BaseSocket(
-         RedWolfManager&  manager,
-         std::string_view localAddress,
-         std::string_view localPort,
-         Protocol         protocol,
-         Family           family,
-         BaseObject*      parent = nullptr);
+      BaseSocket(RedWolfManager& manager, std::string_view localAddress, std::string_view localPort, Protocol protocol, Family family);
 
       /**
        * @brief Destructor

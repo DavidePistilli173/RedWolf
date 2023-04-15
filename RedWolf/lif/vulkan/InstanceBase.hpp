@@ -3,7 +3,7 @@
 
 #include "RedWolf/common.hpp"
 #include "RedWolf/dat/VersionInfo.hpp"
-#include "RedWolf/lif/vulkan/Interface.hpp"
+#include "RedWolf/lif/vulkan/FunctionPointers.hpp"
 
 #include <string>
 #include <vector>
@@ -73,11 +73,11 @@ namespace rw::lif::vlk
       [[nodiscard]] VkInstance handle() const;
 
    protected:
-      RedWolfManager&    manager_;         /**< RedWolf library manager. */
-      rw::utils::Logger& logger_;          /**< Library logger. */
-      Interface&         vulkanInterface_; /**< Interface to the Vulkan API. */
+      RedWolfManager&    manager_; /**< RedWolf library manager. */
+      rw::utils::Logger& logger_;  /**< Library logger. */
 
-      VkInstance instance_{ VK_NULL_HANDLE }; /**< Raw instance handle. */
+      VkInstance       instance_{ VK_NULL_HANDLE }; /**< Raw instance handle. */
+      FunctionPointers functions_;                  /**< Additional function pointers that will be loaded at runtime. */
 
       VkDebugUtilsMessengerCreateInfoEXT debugInfo_{}; /**< Settings for the debug messenger. */
 
@@ -90,6 +90,38 @@ namespace rw::lif::vlk
        * @brief Create the Vulkan instance.
        */
       void createInstance_();
+
+      /**
+       * @brief Callback for Vulkan debug validation layers.
+       * @param messageSeverity Severity of the debug message.
+       * @param messageType Type of the debug message.
+       * @param pCallbackData Actual message and related data.
+       * @param pUserData Custom user data.
+       */
+      static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+         VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
+         VkDebugUtilsMessageTypeFlagsEXT             messageType,
+         const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+         void*                                       pUserData);
+
+      /**
+       * @brief Initialise a single Vulkan function.
+       * @tparam FunctionT Function pointer type.
+       * @param address Address to store the pointer.
+       * @param functionName Name of the function to initialise.
+       * @return true on success, false otherwise.
+       */
+      template<typename FunctionT>
+      [[nodiscard]] bool getFunctionPointer_(FunctionT& address, std::string_view functionName)
+      {
+         address = reinterpret_cast<FunctionT>(vkGetInstanceProcAddr(instance_, functionName.data()));
+         return address != nullptr;
+      }
+
+      /**
+       * @brief Initialise the function pointers.
+       */
+      [[nodiscard]] bool initialiseFunctions_();
    };
 } // namespace rw::lif::vlk
 

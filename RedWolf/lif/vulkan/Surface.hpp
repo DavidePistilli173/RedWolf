@@ -3,7 +3,6 @@
 
 #include "RedWolf/lif/glfw/GlfwManager.hpp"
 #include "RedWolf/lif/vulkan/BaseObject.hpp"
-#include "RedWolf/lif/vulkan/Interface.hpp"
 #include "RedWolf/lif/vulkan/SwapChain.hpp"
 
 #include <memory>
@@ -20,6 +19,7 @@ namespace rw::lif::vlk
 {
    class Instance;
    class PhysicalDevice;
+   class GraphicsDevice;
 } // namespace rw::lif::vlk
 
 namespace rw::utils
@@ -115,7 +115,7 @@ namespace rw::lif::vlk
        * @param graphicsDevice Logical device that will render to the surface.
        * @return true on success, false otherwise.
        */
-      bool setDevices(PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice);
+      bool setDevices(const PhysicalDevice& physicalDevice, const GraphicsDevice& graphicsDevice);
 
       /**
        * @brief Get the swap chain of the surface.
@@ -129,7 +129,7 @@ namespace rw::lif::vlk
        * @param physicalDevice Physical device that will render to the surface.
        * @return true on success, false otherwise.
        */
-      bool initDevices_(PhysicalDevice& physicalDevice);
+      bool initDevices_(const PhysicalDevice& physicalDevice);
 
       /**
        * @brief Initialise the swap chain for this surface.
@@ -137,7 +137,7 @@ namespace rw::lif::vlk
        * @param graphicsDevice Logical device that will present images to the swap chain.
        * @return true on success, false otherwise.
        */
-      bool initSwapChain_(PhysicalDevice& physicalDevice, GraphicsDevice& graphicsDevice);
+      bool initSwapChain_(const PhysicalDevice& physicalDevice, const GraphicsDevice& graphicsDevice);
 
       rw::lif::glfw::GlfwManager& glfwManager_; /**< GLFW library manager. */
 

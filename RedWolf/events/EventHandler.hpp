@@ -105,8 +105,6 @@ namespace rw::events
       template<rw::events::HasEventID Event>
       bool subscribe(rw::core::BaseObject* generator, rw::core::BaseObject* subscriber)
       {
-         auto test = Event::event_id;
-
          std::scoped_lock lck_{ mtx_ };
          if (!objects_.contains(generator))
          {
@@ -158,7 +156,7 @@ namespace rw::events
        *          For each object, there is a map of all subscribers, divided by event ID.
        *          For each event ID, there is a vector of all objects subscribed to that event.
        */
-      std::map<rw::core::BaseObject*, std::map<EventID, std::vector<rw::core::BaseObject*>>> objects_;
+      std::unordered_map<rw::core::BaseObject*, std::unordered_map<EventID, std::vector<rw::core::BaseObject*>>> objects_;
    };
 } // namespace rw::events
 

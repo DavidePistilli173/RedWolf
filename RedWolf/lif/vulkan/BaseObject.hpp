@@ -18,7 +18,6 @@ namespace rw::utils
 namespace rw::lif::vlk
 {
    class Instance;
-   class Interface;
 } // namespace rw::lif::vlk
 
 namespace rw::lif::vlk
@@ -61,10 +60,9 @@ namespace rw::lif::vlk
       BaseObject& operator=(BaseObject&&) = delete;
 
    protected:
-      RedWolfManager&    manager_;         /**< RedWolf library manager. */
-      rw::utils::Logger& logger_;          /**< Library logger. */
-      Interface&         vulkanInterface_; /**< Library Vulkan interface. */
-      Instance&          vulkanInstance_;  /**< Library Vulkan instance. */
+      RedWolfManager&    manager_;        /**< RedWolf library manager. */
+      rw::utils::Logger& logger_;         /**< Library logger. */
+      Instance&          vulkanInstance_; /**< Library Vulkan instance. */
    };
 } // namespace rw::lif::vlk
 

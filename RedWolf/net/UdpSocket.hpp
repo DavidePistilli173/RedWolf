@@ -21,7 +21,7 @@ namespace rw::net
       using Family = BaseSocket::Family;
 
 #ifdef _WIN32
-      static constexpr int read_timeout{ 1000U }; /**< Timeout on each read call [ms]. */
+      static constexpr i32 read_timeout{ 1000U }; /**< Timeout on each read call [ms]. */
 #else
       static constexpr timeval read_timeout{ 0U, 1000U }; /**< Timeout on each read call. */
 #endif
@@ -30,9 +30,8 @@ namespace rw::net
       /**
        * @brief Construct an empty UDP socket.
        * @param manager RedWolf library manager.
-       * @param parent Parent of the current object.
        */
-      UdpSocket(RedWolfManager& manager, BaseObject* parent = nullptr);
+      UdpSocket(RedWolfManager& manager);
 
       /**
        * @brief Constructor that also opens the socket, if it is able to.
@@ -40,14 +39,8 @@ namespace rw::net
        * @param localAddress Local IP address to bind the socket to.
        * @param localPort Local port to bind the socket to.
        * @param family Address family for the socket's address.
-       * @param parent Parent of the socket.
        */
-      UdpSocket(
-         RedWolfManager&  manager,
-         std::string_view localAddress,
-         std::string_view localPort,
-         Family           family = Family::ipv4,
-         BaseObject*      parent = nullptr);
+      UdpSocket(RedWolfManager& manager, std::string_view localAddress, std::string_view localPort, Family family = Family::ipv4);
 
       /**
        * @brief Destructor.

@@ -25,7 +25,7 @@ namespace rw::events
        */
       DrawEvent(size_t pPipelineId) : BaseEvent(event_id), pipelineId{ pPipelineId } {};
 
-      size_t pipelineId;
+      size_t pipelineId{ 0U };
    };
 } // namespace rw::events
 

@@ -2,13 +2,14 @@
 #define RW_LIF_VULKAN_VULKANPHYSICALDEVICE_HPP
 
 #include "RedWolf/lif/vulkan/BaseObject.hpp"
-#include "RedWolf/lif/vulkan/Interface.hpp"
 #include "RedWolf/lif/vulkan/QueueFamilies.hpp"
+#include "RedWolf/lif/vulkan/custom_formatters.hpp"
 
 #include <map>
 #include <memory>
 #include <mutex>
 #include <string>
+#include <vector>
 #include <vulkan/vulkan.h>
 
 namespace rw
@@ -55,16 +56,28 @@ namespace rw::lif::vlk
       [[nodiscard]] QueueFamilies availableQueueFamilies() const;
 
       /**
+       * @brief Create a logical device.
+       * @param deviceInfo Settings for the new device.
+       * @return Handle to the new logical device or VK_NULL_HANDLE in case of an error.
+       */
+      [[nodiscard]] VkDevice createDevice(const VkDeviceCreateInfo& deviceInfo) const;
+
+      /**
        * @brief Create a graphics device from this physical device.
        * @return Owning pointer to the new graphics device.
        */
-      [[nodiscard]] std::unique_ptr<GraphicsDevice> createGraphicsDevice();
+      [[nodiscard]] std::unique_ptr<GraphicsDevice> createGraphicsDevice() const;
 
       /**
        * @brief Get the device handle.
        * @return Handle of the physical device.
        */
       [[nodiscard]] VkPhysicalDevice handle() const;
+
+      /**
+       * @brief Get the memory properties of the device.
+       */
+      [[nodiscard]] const VkPhysicalDeviceMemoryProperties& memoryProperties() const;
 
       /**
        * @brief Check whether the device supports operations from a specific category.
@@ -80,12 +93,19 @@ namespace rw::lif::vlk
        */
       [[nodiscard]] bool isSurfaceSupported(VkSurfaceKHR surface);
 
+      /**
+       * @brief Get the properties of a physical device.
+       * @return Properties of the physical device.
+       */
+      [[nodiscard]] const VkPhysicalDeviceProperties& properties() const;
+
    private:
       mutable std::mutex mtx_; /**< Device mutex. */
 
-      VkPhysicalDevice           device_{ VK_NULL_HANDLE }; /**< Handle to the raw device. */
-      VkPhysicalDeviceProperties properties_;               /**< Device properties. */
-      VkPhysicalDeviceFeatures   features_;                 /**< Device features. */
+      VkPhysicalDevice                 device_{ VK_NULL_HANDLE }; /**< Handle to the raw device. */
+      VkPhysicalDeviceProperties       properties_;               /**< Device properties. */
+      VkPhysicalDeviceFeatures         features_;                 /**< Device features. */
+      VkPhysicalDeviceMemoryProperties memoryProperties_;         /**< Device memory properties. */
 
       std::vector<VkQueueFamilyProperties> queueFamilyProperties_; /**< Properties of all queue families supported by this device. */
       QueueFamilies                        queueFamilies_;         /**< Indices of the device's queue families. */

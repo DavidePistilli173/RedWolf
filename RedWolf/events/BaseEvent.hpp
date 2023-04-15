@@ -29,7 +29,7 @@ namespace rw::events
          data_ready,
          window_close,
          draw,
-         reserved_7,
+         window_resize,
          reserved_8,
          reserved_9,
          reserved_10,

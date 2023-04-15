@@ -11,7 +11,7 @@ namespace rw
 
 namespace rw::lif::vlk
 {
-   class GraphicsDevice;
+   class DeviceBase;
    class ImageView;
    class RenderPass;
    class Surface;
@@ -28,17 +28,17 @@ namespace rw::lif::vlk
       /**
        * @brief Construct a Vulkan framebuffer.
        * @param manager RedWolf library manager.
-       * @param graphicsDevice Graphics device this frame buffer will belong to.
+       * @param device Logical device this frame buffer will belong to.
        * @param renderPass Render pass that this frame buffer will be compatible to.
        * @param imageView View on the image this frame buffer will reference.
        * @param surface Surface the image belongs to.
        */
       FrameBuffer(
-         RedWolfManager&       manager,
-         const GraphicsDevice& graphicsDevice,
-         const RenderPass&     renderPass,
-         const ImageView&      imageView,
-         const Surface&        surface);
+         RedWolfManager&   manager,
+         const DeviceBase& device,
+         const RenderPass& renderPass,
+         const ImageView&  imageView,
+         const Surface&    surface);
 
       /**
        * @brief Destructor.
@@ -81,8 +81,8 @@ namespace rw::lif::vlk
    private:
       VkFramebuffer framebuffer_; /**< Raw framebuffer handle. */
 
-      VkDevice   device_{ VK_NULL_HANDLE }; /**< Raw handle of the device the framebuffer is bound to. */
-      VkExtent2D extent_{ 0, 0 };           /**< Extent of the frame buffer. */
+      const DeviceBase& device_;         /**< Logical device the framebuffer is bound to. */
+      VkExtent2D        extent_{ 0, 0 }; /**< Extent of the frame buffer. */
    };
 } // namespace rw::lif::vlk
 

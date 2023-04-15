@@ -23,7 +23,7 @@ namespace rw::lif::vlk
          num_elements
       };
 
-      std::array<std::optional<uint32_t>, static_cast<size_t>(Id::num_elements)> queues; /**< Queue indices. */
+      std::array<std::optional<u32>, static_cast<size_t>(Id::num_elements)> queues; /**< Queue indices. */
    };
 } // namespace rw::lif::vlk
 #endif

@@ -1,8 +1,11 @@
 #ifndef RWSANDBOX_MAINWINDOW_HPP
 #define RWSANDBOX_MAINWINDOW_HPP
 
+#include "TestEntity.hpp"
+
 #include <RedWolf/RedWolfManager.hpp>
 #include <RedWolf/ui/BaseWindow.hpp>
+#include <memory>
 #include <string_view>
 
 class MainWindow : public rw::ui::BaseWindow
@@ -25,6 +28,9 @@ protected:
     * @param sender Sender of the event.
     */
    virtual void userHandle_(const rw::events::BaseEvent& evnt, const rw::core::BaseObject* sender) override;
+
+private:
+   std::unique_ptr<TestEntity> testEntity_; /**< Test entity. */
 };
 
 #endif

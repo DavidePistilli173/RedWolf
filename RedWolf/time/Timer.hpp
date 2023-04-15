@@ -37,9 +37,8 @@ namespace rw::time
       /**
        * @brief Default constructor.
        * @param manager RedWolf library manager.
-       * @param parent Parent of the current object.
        */
-      explicit Timer(RedWolfManager& manager, rw::core::BaseObject* parent = nullptr);
+      explicit Timer(RedWolfManager& manager);
 
       /**
        * @brief Construct a timer with a given interval and a singleShot setting.
@@ -49,7 +48,7 @@ namespace rw::time
        * @param singleShot If true, the timer will run only once for each call to start.
        */
       template<IsConvertibleToChronoDuration T>
-      explicit Timer(RedWolfManager& manager, T interval, bool singleShot = false, rw::core::BaseObject* parent = nullptr) :
+      explicit Timer(RedWolfManager& manager, T interval, bool singleShot = false) :
          rw::core::BaseObject(manager), interval_{ std::chrono::microseconds(interval) }, singleShot_{ singleShot }
       {
       }
@@ -85,7 +84,7 @@ namespace rw::time
        * @brief Get the current frequency of the timer.
        * @return Frequency in Hz.
        */
-      [[nodiscard]] double frequency() const;
+      [[nodiscard]] f64 frequency() const;
 
       /**
        * @brief Get the current interval of the timer.
@@ -132,7 +131,7 @@ namespace rw::time
        * @brief Set the frequency of the main loop
        * @param hertz Main loop frequency in Hz.
        */
-      void setFrequency(double hertz);
+      void setFrequency(f64 hertz);
 
       /**
        * @brief Set the timer interval.

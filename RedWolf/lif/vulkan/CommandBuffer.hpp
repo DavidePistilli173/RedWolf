@@ -5,7 +5,6 @@
 #include "RedWolf/lif/vulkan/BaseObject.hpp"
 #include "RedWolf/lif/vulkan/CommandPool.hpp"
 #include "RedWolf/lif/vulkan/FrameBuffer.hpp"
-#include "RedWolf/lif/vulkan/RenderPass.hpp"
 
 namespace rw
 {
@@ -15,17 +14,18 @@ namespace rw
 namespace rw::lif::vlk
 {
    class GraphicsDevice;
-}
+} // namespace rw::lif::vlk
 
 namespace rw::lif::vlk
 {
    /**
     * @brief Wrapper for a Vulkan VkCommandBuffer.
+    * @details All instances created from a single command pool must be used from the same thread.
     */
    class RW_API CommandBuffer : public BaseObject
    {
    public:
-      static constexpr VkClearValue default_clear_colour{ { { 0.0F, 0.0F, 0.0F, 1.0F } } }; /**< Default clear colour. */
+      static constexpr VkClearValue default_clear_colour{ { { 0.2F, 0.0F, 0.0F, 1.0F } } }; /**< Default clear colour. */
 
       /**
        * @brief Constructor.
@@ -47,8 +47,9 @@ namespace rw::lif::vlk
 
       /**
        * @brief Move constructor.
+       * @param other Command buffer to move from.
        */
-      CommandBuffer(CommandBuffer&&) = delete;
+      CommandBuffer(CommandBuffer&& other) noexcept;
 
       /**
        * @brief Copy-assignment operator.
@@ -76,7 +77,37 @@ namespace rw::lif::vlk
        * @param renderPass Render pass to begin.
        * @param frameBuffer Frame buffer to render on.
        */
-      void beginRenderPass(const RenderPass& renderPass, const FrameBuffer& frameBuffer);
+      void beginRenderPass(VkRenderPass renderPass, const FrameBuffer& frameBuffer);
+
+      /**
+       * @brief Bind a pipeline to the command buffer.
+       * @param pipeline Pipeline to bind.
+       * @param pipelineType Type of pipeline to bind.
+       */
+      void bindPipeline(VkPipeline pipeline, VkPipelineBindPoint pipelineType);
+
+      /**
+       * @brief Bind a vertex buffer to the command buffer.
+       * @param buffer Vertex buffer to bind.
+       */
+      void bindVertexBuffer(VkBuffer buffer);
+
+      /**
+       * @brief Copy data from a buffer to another.
+       * @param dstBuffer Destination buffer.
+       * @param srcBuffer Source buffer.
+       * @param copyInfo Copy parameters.
+       */
+      void copyBuffer(VkBuffer dstBuffer, VkBuffer srcBuffer, const VkBufferCopy& copyInfo);
+
+      /**
+       * @brief Draw vertices.
+       * @param vertexCount Number of vertices to draw.
+       * @param instanceCount Number of instances of the same set of vertices to draw.
+       * @param firstVertex Offset in the vertex buffer for the first vertex to draw.
+       * @param firstInstance Offset in the set of instances for the first instance to draw.
+       */
+      void draw(u32 vertexCount, u32 instanceCount, u32 firstVertex, u32 firstInstance);
 
       /**
        * @brief Stop recording this command buffer.
@@ -87,6 +118,23 @@ namespace rw::lif::vlk
        * @brief End the ongoing render pass
        */
       void endRenderPass();
+
+      /**
+       * @brief Reset the command buffer.
+       */
+      void reset();
+
+      /**
+       * @brief Set the scissor for the command buffer.
+       * @param scissor Scissor to set.
+       */
+      void setScissor(const VkRect2D& scissor);
+
+      /**
+       * @brief Set the viewport for the command buffer.
+       * @param viewport Viewport to set.
+       */
+      void setViewport(const VkViewport& viewport);
 
    private:
       VkCommandBuffer commandBuffer_{ VK_NULL_HANDLE }; /**< Raw handle to the command buffer. */

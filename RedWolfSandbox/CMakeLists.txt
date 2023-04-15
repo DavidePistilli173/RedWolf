@@ -26,6 +26,7 @@ add_executable("${PROJECT_NAME}"
     "EventTester.cpp"
     "MainApplication.cpp"
     "MainWindow.cpp"
+    "TestEntity.cpp"
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
@@ -51,6 +52,12 @@ if (WIN32)
     add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND xcopy "${NATIVE_RW_LIB_DIR}\\${RW_LIB_TARGET_NAME}.dll" "${NATIVE_OUTPUT_DIR}" /f /i /s /y
+    )
+
+    # RedWolf shaders
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND xcopy "${NATIVE_RW_LIB_DIR}\\shaders" "${NATIVE_OUTPUT_DIR}\\shaders" /f /i /s /y
     )
 
     # Redwolf pdb

@@ -5,7 +5,7 @@
 
 using namespace rw::time;
 
-Timer::Timer(RedWolfManager& manager, rw::core::BaseObject* parent) : rw::core::BaseObject(manager) {}
+Timer::Timer(RedWolfManager& manager) : rw::core::BaseObject(manager) {}
 
 Timer::~Timer()
 {
@@ -16,7 +16,7 @@ Timer::~Timer()
    }
 }
 
-double Timer::frequency() const
+f64 Timer::frequency() const
 {
    return microseconds_per_second / interval_.count();
 }
@@ -69,12 +69,12 @@ bool Timer::running() const
    return (running_ && timerThread_.joinable());
 }
 
-void Timer::setFrequency(double hertz)
+void Timer::setFrequency(f64 hertz)
 {
    if (hertz >= 0.0F)
    {
       std::scoped_lock lck(mtx_);
-      interval_ = std::chrono::microseconds(static_cast<long long>(microseconds_per_second / hertz));
+      interval_ = std::chrono::microseconds(static_cast<i64>(microseconds_per_second / hertz));
       logger_.trace("Timer frequency set to {}Hz (interval_ = {})", hertz, interval_);
    }
    else

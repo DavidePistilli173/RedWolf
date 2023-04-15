@@ -1,7 +1,7 @@
 #include "FrameBuffer.hpp"
 
 #include "RedWolf/RedWolfManager.hpp"
-#include "RedWolf/lif/vulkan/GraphicsDevice.hpp"
+#include "RedWolf/lif/vulkan/DeviceBase.hpp"
 #include "RedWolf/lif/vulkan/ImageView.hpp"
 #include "RedWolf/lif/vulkan/RenderPass.hpp"
 #include "RedWolf/lif/vulkan/Surface.hpp"
@@ -9,13 +9,9 @@
 using namespace rw::lif::vlk;
 
 FrameBuffer::FrameBuffer(
-   RedWolfManager&       manager,
-   const GraphicsDevice& graphicsDevice,
-   const RenderPass&     renderPass,
-   const ImageView&      imageView,
-   const Surface&        surface) :
+   RedWolfManager& manager, const DeviceBase& device, const RenderPass& renderPass, const ImageView& imageView, const Surface& surface) :
    BaseObject(manager),
-   device_{ graphicsDevice.handle() }, extent_{ surface.selectedExtent() }
+   device_{ device }, extent_{ surface.selectedExtent() }
 {
    VkImageView attachments[] = { imageView.handle() };
 
@@ -28,7 +24,7 @@ FrameBuffer::FrameBuffer(
    createInfo.height = extent_.height;
    createInfo.layers = 1U;
 
-   framebuffer_ = vulkanInterface_.createFramebuffer(device_, createInfo);
+   framebuffer_ = device_.createFramebuffer(createInfo);
    if (framebuffer_ == VK_NULL_HANDLE)
    {
       logger_.relFatal("Failed to create framebuffer.");
@@ -37,11 +33,11 @@ FrameBuffer::FrameBuffer(
 
 FrameBuffer::~FrameBuffer()
 {
-   vulkanInterface_.destroyFramebuffer(device_, framebuffer_);
+   device_.destroyFramebuffer(framebuffer_);
 }
 
 FrameBuffer::FrameBuffer(FrameBuffer&& other) noexcept :
-   BaseObject(other.manager_), framebuffer_{ other.framebuffer_ }, device_{ other.device_ }
+   BaseObject(other.manager_), framebuffer_{ other.framebuffer_ }, device_{ other.device_ }, extent_{ other.extent_ }
 {
    other.framebuffer_ = VK_NULL_HANDLE;
 }

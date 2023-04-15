@@ -8,14 +8,19 @@
 namespace rw::cont
 {
    /**
-    * @brief Concept for a list of contiguous const char*.
+    * @brief Concept for a contiguous container.
+    * @tparam T Container type.
     */
    template<typename T>
-   concept IsConstCharStarList = requires(T list)
-   {
-      std::is_same_v<decltype(list[0]), const char*>;
-      std::contiguous_iterator<decltype(std::begin(list))>;
-   };
+   concept IsContiguousContainer = requires(T container) { std::contiguous_iterator<decltype(std::begin(container))>; };
+
+   /**
+    * @brief Concept for a contiguous container of a specific type.
+    * @tparam T Container type.
+    * @tparam U Stored type.
+    */
+   template<typename T, typename U>
+   concept IsContiguousContainerOf = IsContiguousContainer<T> && requires(T list) { std::is_same_v<decltype(list[0]), U>; };
 } // namespace rw::cont
 
 #endif

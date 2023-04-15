@@ -1,13 +1,10 @@
 #ifndef RWSANDBOX_MAINAPPLICATION_HPP
 #define RWSANDBOX_MAINAPPLICATION_HPP
 
-#include "EventTester.hpp"
 #include "MainWindow.hpp"
 
 #include <RedWolf/RedWolfManager.hpp>
 #include <RedWolf/core/BaseGUIApplication.hpp>
-#include <RedWolf/net/UdpSocket.hpp>
-#include <RedWolf/time/Timer.hpp>
 #include <RedWolf/utils/Logger.hpp>
 #include <memory>
 
@@ -51,18 +48,7 @@ private:
    size_t mainLoopIteration_{ 0U }; /**< Number of iterations of the main loop. */
    size_t totalIterations_{ 0U };   /**< Total number of iterations of the main loop. */
 
-   std::unique_ptr<rw::time::Timer> timer_;            /**< Timer. */
-   std::atomic<size_t>              timerCount_{ 0U }; /**< Number of times the timer was called since the last main loop iteration. */
-
-   std::unique_ptr<rw::net::UdpSocket> socket_;            /**< UDP socket. */
-   std::atomic<size_t>                 packetCount_{ 0U }; /**< Number of received packets. */
-   std::mutex                          packetSenderMutex_; /**< Mutex for protecting the packet sender information. */
-   std::string                         senderAddress_;     /**< IP address of the packet sender. */
-   std::string                         senderPort_;        /**< Port of the packet sender. */
-
    MainWindow* mainWindow_; /**< Main window of the application. */
-
-   std::unique_ptr<EventTester> eventTester_; /**< Speed tester for the event system. */
 };
 
 #endif

@@ -6,9 +6,9 @@
 #include "RedWolf/events/EventHandler.hpp"
 #include "RedWolf/lif/glfw/GlfwManager.hpp"
 #include "RedWolf/lif/vulkan/Instance.hpp"
-#include "RedWolf/lif/vulkan/Interface.hpp"
 #include "RedWolf/thread/ThreadPool.hpp"
 #include "RedWolf/utils/Logger.hpp"
+#include "RedWolf/utils/RandomGenerator.hpp"
 #include "RedWolf/utils/SettingsManager.hpp"
 
 #include <string>
@@ -26,9 +26,9 @@ namespace rw
        */
       struct Options
       {
-         std::string          appName;                                          /**< Name of the user application. */
-         rw::dat::VersionInfo appVersion{ 0, 0, 0 };                            /**< Version of the user application. */
-         unsigned int threadPoolThreads{ std::thread::hardware_concurrency() }; /**< Number of threads assigned to the thread pool. */
+         std::string          appName;                                 /**< Name of the user application. */
+         rw::dat::VersionInfo appVersion{ 0, 0, 0 };                   /**< Version of the user application. */
+         u32 threadPoolThreads{ std::thread::hardware_concurrency() }; /**< Number of threads assigned to the thread pool. */
       };
 
       /**
@@ -81,6 +81,12 @@ namespace rw
       [[nodiscard]] rw::utils::Logger& logger();
 
       /**
+       * @brief Get the library random number generator.
+       * @return Library random number generator.
+       */
+      [[nodiscard]] rw::utils::RandomGenerator& randomGenerator();
+
+      /**
        * @brief Get the library settings manager.
        * @return Library settings manager.
        */
@@ -98,22 +104,16 @@ namespace rw
        */
       [[nodiscard]] rw::lif::vlk::Instance& vulkanInstance();
 
-      /**
-       * @brief Get the Vulkan API interface.
-       * @return Vulkan API interface.
-       */
-      [[nodiscard]] rw::lif::vlk::Interface& vulkanInterface();
-
    private:
       rw::utils::Logger          logger_;          /**< Logger for the library. */
+      rw::utils::RandomGenerator randomGenerator_; /**< Random number generator for the library. */
       rw::utils::SettingsManager settingsManager_; /**< Settings manager for the library. */
 
       rw::thread::ThreadPool threadPool_; /**< Default thread pool for the library. */
 
       rw::events::EventHandler eventHandler_; /**< Event handler for the library. */
 
-      rw::lif::glfw::GlfwManager glfwManager_;     /**< Manager for the GLFW library. */
-      rw::lif::vlk::Interface    vulkanInterface_; /**< Interface to the Vulkan API. */
+      rw::lif::glfw::GlfwManager glfwManager_; /**< Manager for the GLFW library. */
 
       rw::lif::vlk::Instance vulkanInstance_; /**< Vulkan instance used by the library. */
    };

@@ -4,8 +4,9 @@
 
 using namespace rw::lif::glfw;
 
-Window::Window(RedWolfManager& manager, std::string_view title, int width, int height, bool resizable) :
-   logger_{ manager.logger() }, glfwManager_{ manager.glfwManager() }, title_{ title }, size_{ width, height }, resizable_{ resizable }
+Window::Window(RedWolfManager& manager, std::string_view title, i32 width, i32 height, bool resizable, void* userData) :
+   logger_{ manager.logger() }, glfwManager_{ manager.glfwManager() }, userData_{ userData }, title_{ title }, size_{ width, height },
+   resizable_{ resizable }
 {
 }
 
@@ -33,6 +34,7 @@ void Window::close()
    if (window_ != nullptr)
    {
       glfwManager_.destroyWindow(window_);
+      window_ = nullptr;
    }
 }
 
@@ -52,10 +54,19 @@ bool Window::open()
       return false;
    }
 
+   glfwManager_.setWindowUserPointer(window_, userData_);
+   glfwManager_.setFrameBufferResizeCallback(window_, resizeCallback_);
+
    return true;
 }
 
 bool Window::isOpen() const
 {
    return window_ != nullptr;
+}
+
+void Window::setResizeCallback(void (*callback)(GLFWwindow*, i32, i32))
+{
+   resizeCallback_ = callback;
+   if (open()) glfwManager_.setFrameBufferResizeCallback(window_, callback);
 }
