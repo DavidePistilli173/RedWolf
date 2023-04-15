@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClCompile Include="core\aliases.ixx" />
     <ClCompile Include="core\Component.ixx" />
+    <ClCompile Include="core\concepts.ixx" />
+    <ClCompile Include="core\EntityDB.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.hpp" />

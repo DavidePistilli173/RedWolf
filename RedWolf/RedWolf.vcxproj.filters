@@ -24,6 +24,12 @@
     <ClCompile Include="core\aliases.ixx">
       <Filter>Source Files\core</Filter>
     </ClCompile>
+    <ClCompile Include="core\EntityDB.ixx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\concepts.ixx">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.hpp">
