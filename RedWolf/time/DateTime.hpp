@@ -15,21 +15,12 @@ namespace rw::time
    {
    public:
       /**
-       * @brief Default constructor.
-       */
-      DateTime() = default;
-
-      /**
        * @brief Construct a DateTime object from a given time point.
        * @tparam T Type of clock the time point is based on.
        * @param timePoint Time point from which to create the object.
        */
       template<IsChronoClock T>
-      explicit DateTime(std::chrono::time_point<T> timePoint) :
-         date_{ std::chrono::floor<std::chrono::days>(timePoint) }, time_{ std::chrono::duration_cast<std::chrono::seconds>(
-                                                                       T::now() - std::chrono::floor<std::chrono::days>(timePoint)) }
-      {
-      }
+      explicit DateTime(std::chrono::time_point<T> timePoint);
 
       /**
        * @brief Get the current date.
@@ -84,6 +75,14 @@ namespace rw::time
       std::chrono::hh_mm_ss<std::chrono::seconds> time_;   /**< Time. */
    };
 } // namespace rw::time
+
+// IMPLEMENTATION
+template<rw::time::IsChronoClock T>
+rw::time::DateTime::DateTime(std::chrono::time_point<T> timePoint) :
+   date_{ std::chrono::floor<std::chrono::days>(timePoint) }, time_{ std::chrono::duration_cast<std::chrono::seconds>(
+                                                                 T::now() - std::chrono::floor<std::chrono::days>(timePoint)) }
+{
+}
 
 /**
  * @brief std::formatter specialization for rw::time::DateTime

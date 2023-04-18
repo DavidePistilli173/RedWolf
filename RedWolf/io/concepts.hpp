@@ -17,7 +17,8 @@ namespace rw::io
     * @brief Concept for pointer types.
     */
    template<typename T>
-   concept IsPointer = std::is_pointer_v<T> && !std::is_same_v<T, const char*> && !std::is_same_v<T, void*>;
+   concept IsPointer = std::is_pointer_v<T> && !
+   std::is_same_v<T, const char*> && !std::is_same_v<T, void*>;
 } // namespace rw::io
 
 #endif

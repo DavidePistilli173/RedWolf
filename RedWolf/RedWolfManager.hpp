@@ -2,121 +2,59 @@
 #define RW_REDWOLFMANAGER_HPP
 
 #include "RedWolf/common.hpp"
-#include "RedWolf/dat/VersionInfo.hpp"
-#include "RedWolf/events/EventHandler.hpp"
-#include "RedWolf/lif/glfw/GlfwManager.hpp"
-#include "RedWolf/lif/vulkan/Instance.hpp"
-#include "RedWolf/thread/ThreadPool.hpp"
-#include "RedWolf/utils/Logger.hpp"
-#include "RedWolf/utils/RandomGenerator.hpp"
-#include "RedWolf/utils/SettingsManager.hpp"
+#include "RedWolf/core/Object.hpp"
+#include "RedWolf/core/concepts.hpp"
 
-#include <string>
+#include <memory>
+#include <mutex>
+#include <unordered_map>
 
 namespace rw
 {
    /**
-    * @brief Class for managing library resources and dependencies.
+    * @brief RedWolf library manager.
     */
    class RW_API RedWolfManager
    {
    public:
       /**
-       * @brief Options to be passed to the manager.
-       */
-      struct Options
-      {
-         std::string          appName;                                 /**< Name of the user application. */
-         rw::dat::VersionInfo appVersion{ 0, 0, 0 };                   /**< Version of the user application. */
-         u32 threadPoolThreads{ std::thread::hardware_concurrency() }; /**< Number of threads assigned to the thread pool. */
-      };
-
-      /**
        * @brief Constructor.
-       * @param options Initialisation options for the library.
        */
-      explicit RedWolfManager(const Options& options);
+      explicit RedWolfManager() = default;
 
       /**
-       * @brief Destructor.
+       * @brief Create a new RedWolf object.
+       * @tparam ...Args Types of arguments that will be passed to the object's constructor.
+       * @tparam T Type of object to create.
+       * @param ...args Arguments passed to the object's constructor.
+       * @return Non-owning pointer to the object.
        */
-      ~RedWolfManager();
+      template<rw::core::IsDerivedFrom<rw::core::Object> T, typename... Args>
+      [[nodisacard]] T* createObject(Args&&... args);
 
       /**
-       * @brief Copy constructor.
+       * @brief Destroy a RedWolf object.
+       * @param obj Pointer to the object to destroy.
        */
-      RedWolfManager(const RedWolfManager&) = delete;
-
-      /**
-       * @brief Move constructor.
-       */
-      RedWolfManager(RedWolfManager&&) = delete;
-
-      /**
-       * @brief Copy-assignment operator.
-       */
-      RedWolfManager& operator=(const RedWolfManager&) = delete;
-
-      /**
-       * @brief Move-assignment operator.
-       */
-      RedWolfManager& operator=(RedWolfManager&&) = delete;
-
-      /**
-       * @brief Get the library event handler.
-       * @return Library event handler.
-       */
-      [[nodiscard]] rw::events::EventHandler& eventHandler();
-
-      /**
-       * @brief Get the manager of the GLFW library.
-       * @return Manager of the GLFW library.
-       */
-      [[nodiscard]] rw::lif::glfw::GlfwManager& glfwManager();
-
-      /**
-       * @brief Get the library logger.
-       * @return Library logger.
-       */
-      [[nodiscard]] rw::utils::Logger& logger();
-
-      /**
-       * @brief Get the library random number generator.
-       * @return Library random number generator.
-       */
-      [[nodiscard]] rw::utils::RandomGenerator& randomGenerator();
-
-      /**
-       * @brief Get the library settings manager.
-       * @return Library settings manager.
-       */
-      [[nodiscard]] rw::utils::SettingsManager& settingsManager();
-
-      /**
-       * @brief Get the library thread pool.
-       * @return Library thread pool.
-       */
-      [[nodiscard]] rw::thread::ThreadPool& threadPool();
-
-      /**
-       * @brief Get the Vulkan instance of the library.
-       * @return Vulkan instance of the library.
-       */
-      [[nodiscard]] rw::lif::vlk::Instance& vulkanInstance();
+      void destroyObject(rw::core::Object* obj);
 
    private:
-      rw::utils::Logger          logger_;          /**< Logger for the library. */
-      rw::utils::RandomGenerator randomGenerator_; /**< Random number generator for the library. */
-      rw::utils::SettingsManager settingsManager_; /**< Settings manager for the library. */
+      std::mutex mtx_; /**< Mutex for protecting private variables. */
 
-      rw::thread::ThreadPool threadPool_; /**< Default thread pool for the library. */
-
-      rw::events::EventHandler eventHandler_; /**< Event handler for the library. */
-
-      rw::lif::glfw::GlfwManager glfwManager_; /**< Manager for the GLFW library. */
-
-      rw::lif::vlk::Instance vulkanInstance_; /**< Vulkan instance used by the library. */
+      std::unordered_map<rw::core::Object*, std::unique_ptr<rw::core::Object>> objects_; /**< All library-managed objects. */
    };
 } // namespace rw
+
+// IMPLEMENTATION
+using namespace rw;
+
+template<rw::core::IsDerivedFrom<rw::core::Object> T, typename... Args>
+[[nodiscard]] T* RedWolfManager::createObject(Args&&... args)
+{
+   auto obj = std::make_unique<T>(std::forward<Args>(args)...);
+   auto result = obj.get();
+   objects_.emplace(result, std::move(obj));
+   return result;
+}
 
 #endif

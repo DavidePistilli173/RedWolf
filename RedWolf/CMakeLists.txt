@@ -4,9 +4,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON) # Enable the target standard.
 
 project("RedWolf" VERSION "0.5.0" DESCRIPTION "Graphics and utility library for desktop applications.")
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${RW_BIN_DIR}/${PROJECT_NAME}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${RW_BIN_DIR}/${PROJECT_NAME}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${RW_BIN_DIR}/${PROJECT_NAME}")
 set(CMAKE_INSTALL_PREFIX "${RW_BIN_DIR}/${PROJECT_NAME}/${CMAKE_BUILD_TYPE}")
 
 configure_file("${PROJECT_SOURCE_DIR}/common.hpp.in" "${PROJECT_SOURCE_DIR}/common.hpp")
@@ -48,53 +45,13 @@ include_directories(
     "${RW_VMA_INCLUDE_DIR}"
 )
 
-message("${RW_VMA_INCLUDE_DIR}")
-
 add_library("${RW_LIB_TARGET_NAME}" SHARED
-    "RedWolfManager.cpp"
-    "core/BaseApplication.cpp"
-    "core/BaseGUIApplication.cpp"
-    "core/BaseObject.cpp"
+    "core/Object.cpp"
     "dat/LogMsg.cpp"
-    "dat/SettingsNode.cpp"
-    "events/EventHandler.cpp"
-    "gfx/BaseEntity.cpp"
-    "gfx/Mesh.cpp"
-    "gfx/Renderer.cpp"
-    "io/File.cpp"
-    "lif/glfw/GlfwManager.cpp"
-    "lif/glfw/Window.cpp"
-    "lif/vma/Allocator.cpp"
-    "lif/vma/Initialiser.cpp"
-    "lif/vulkan/BaseObject.cpp"
-    "lif/vulkan/CommandBuffer.cpp"
-    "lif/vulkan/CommandPool.cpp"
-    "lif/vulkan/DeviceBase.cpp"
-    "lif/vulkan/Fence.cpp"
-    "lif/vulkan/FrameBuffer.cpp"
-    "lif/vulkan/GraphicsDevice.cpp"
-    "lif/vulkan/GraphicsPipeline.cpp"
-    "lif/vulkan/ImageView.cpp"
-    "lif/vulkan/Instance.cpp"
-    "lif/vulkan/InstanceBase.cpp"
-    "lif/vulkan/PhysicalDevice.cpp"
-    "lif/vulkan/PipelineLayout.cpp"
-    "lif/vulkan/RenderPass.cpp"
-    "lif/vulkan/Semaphore.cpp"
-    "lif/vulkan/ShaderModule.cpp"
-    "lif/vulkan/Surface.cpp"
-    "lif/vulkan/SwapChain.cpp"
-    "lif/vulkan/Vertex.cpp"
-    "net/BaseSocket.cpp"
-    "net/UdpSocket.cpp"
-    "text/string_utils.cpp"
-    "thread/ThreadPool.cpp"
+    "evt/Event.cpp"
     "time/DateTime.cpp"
-    "time/Timer.cpp"
-    "ui/BaseWindow.cpp"
-    "utils/Logger.cpp"
-    "utils/RandomGenerator.cpp"
-    "utils/SettingsManager.cpp" 
+    "util/Logger.cpp"
+    "RedWolfManager.cpp"
 )
 set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
