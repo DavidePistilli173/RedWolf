@@ -4,5 +4,5 @@ using namespace rw;
 
 void RedWolfManager::destroyObject(rw::core::Object* obj)
 {
-   objects_.erase(obj);
+   if (obj != nullptr) objects_.erase(obj->id());
 }

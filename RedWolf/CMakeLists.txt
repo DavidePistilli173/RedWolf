@@ -49,6 +49,8 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "core/Object.cpp"
     "dat/LogMsg.cpp"
     "evt/Event.cpp"
+    "evt/EventHandler.cpp"
+    "thread/ThreadPool.cpp"
     "time/DateTime.cpp"
     "util/Logger.cpp"
     "RedWolfManager.cpp"

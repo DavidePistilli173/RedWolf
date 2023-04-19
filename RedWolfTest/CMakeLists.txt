@@ -32,6 +32,7 @@ add_executable("${PROJECT_NAME}"
     "core/test_Object.cpp"
     "dat/test_LogMsg.cpp"
     "evt/test_Event.cpp"
+    "thread/test_ThreadPool.cpp"
     "time/test_DateTime.cpp"
 )
 

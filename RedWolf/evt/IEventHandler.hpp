@@ -2,7 +2,7 @@
 #define RW_EVENT_IEVTHANDLER_HPP
 
 #include "RedWolf/common.hpp"
-#include "RedWolf/core/aliases.hpp"
+#include "RedWolf/core/IObject.hpp"
 #include "RedWolf/core/concepts.hpp"
 #include "RedWolf/evt/Event.hpp"
 
@@ -15,11 +15,22 @@ namespace rw::evt
    {
    public:
       /**
-       * @brief Generate an event.
-       * @param sender ID of the event generator.
-       * @param evt Event data.
+       * @brief All supported policies for generating events.
        */
-      void generateEvent(ObjectID sender, const Event& evt) const = 0;
+      enum class GenerationPolicy
+      {
+         asynchronous, /**< Event generation is performed asynchronously on another thread. */
+         synchronous   /**< Event generation is performed synchronously on the calling thread. */
+      };
+
+      /**
+       * @brief Generate an event.
+       * @param generator Event generator.
+       * @param evt Event data.
+       * @param policy Policy for the event generation.
+       */
+      virtual void
+         generateEvent(rw::core::IObject* generator, const Event& evt, GenerationPolicy policy = GenerationPolicy::asynchronous) const = 0;
    };
 } // namespace rw::evt
 

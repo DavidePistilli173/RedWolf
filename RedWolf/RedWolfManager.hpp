@@ -30,7 +30,7 @@ namespace rw
        * @return Non-owning pointer to the object.
        */
       template<rw::core::IsDerivedFrom<rw::core::Object> T, typename... Args>
-      [[nodisacard]] T* createObject(Args&&... args);
+      [[nodiscard]] T* createObject(Args&&... args);
 
       /**
        * @brief Destroy a RedWolf object.
@@ -41,7 +41,7 @@ namespace rw
    private:
       std::mutex mtx_; /**< Mutex for protecting private variables. */
 
-      std::unordered_map<rw::core::Object*, std::unique_ptr<rw::core::Object>> objects_; /**< All library-managed objects. */
+      std::unordered_map<rw::core::ObjectID, std::unique_ptr<rw::core::Object>> objects_; /**< All library-managed objects. */
    };
 } // namespace rw
 
@@ -53,7 +53,7 @@ template<rw::core::IsDerivedFrom<rw::core::Object> T, typename... Args>
 {
    auto obj = std::make_unique<T>(std::forward<Args>(args)...);
    auto result = obj.get();
-   objects_.emplace(result, std::move(obj));
+   objects_.emplace(result->id(), std::move(obj));
    return result;
 }
 
