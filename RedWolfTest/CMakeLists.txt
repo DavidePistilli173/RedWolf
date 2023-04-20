@@ -29,9 +29,13 @@ include_directories(
 )
 
 add_executable("${PROJECT_NAME}"
+    "cont/test_ConstexprMap.cpp"
     "core/test_Object.cpp"
+    "dat/test_KVPair.cpp"
     "dat/test_LogMsg.cpp"
+    "dat/test_VersionInfo.cpp"
     "evt/test_Event.cpp"
+    "evt/test_EventHandler.cpp"
     "thread/test_ThreadPool.cpp"
     "time/test_DateTime.cpp"
 )

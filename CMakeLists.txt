@@ -22,7 +22,7 @@ else()
 endif()
 
 if (MSVC)
-    set(CMAKE_CXX_FLAGS "/W4 /wd4251")
+    set(CMAKE_CXX_FLAGS "/W4 /wd4251 /EHsc")
 endif(MSVC)
 
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")

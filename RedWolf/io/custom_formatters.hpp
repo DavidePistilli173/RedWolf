@@ -25,11 +25,11 @@ struct std::formatter<std::vector<std::byte>> : std::formatter<std::string>
  * @brief std::formatter specialization for pointer types.
  */
 template<rw::io::IsPointer T>
-struct std::formatter<T> : std::formatter<void*>
+struct std::formatter<T> : std::formatter<const void*>
 {
    auto format(const T& data, std::format_context& ctx)
    {
-      return std::formatter<void*>::format(reinterpret_cast<void*>(data), ctx);
+      return std::formatter<const void*>::format(reinterpret_cast<const void*>(data), ctx);
    }
 };
 

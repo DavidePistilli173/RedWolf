@@ -46,8 +46,11 @@ include_directories(
 )
 
 add_library("${RW_LIB_TARGET_NAME}" SHARED
+    "core/Application.cpp"
+    "core/BaseObject.cpp"
     "core/Object.cpp"
     "dat/LogMsg.cpp"
+    "dat/VersionInfo.cpp"
     "evt/Event.cpp"
     "evt/EventHandler.cpp"
     "thread/ThreadPool.cpp"
