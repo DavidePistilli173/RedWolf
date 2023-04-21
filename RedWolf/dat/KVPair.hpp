@@ -22,11 +22,18 @@ namespace rw::dat
       constexpr KVPair(const Key& k, const Value& v);
 
       /**
+       * @brief Operator ==
+       * @param other KVPair to compare against.
+       * @return true if the current key is equal to the other key.
+       */
+      [[nodiscard]] constexpr bool operator==(const KVPair<Key, Value>& other) const;
+
+      /**
        * @brief Operator <=>
        * @param other KVPair to compare against.
        * @return true if the current key is less than the other's key.
        */
-      [[nodiscard]] constexpr bool operator<=>(const KVPair<Key, Value>& other) const;
+      [[nodiscard]] constexpr auto operator<=>(const KVPair<Key, Value>& other) const;
 
       Key   key{};   /**< Key. */
       Value value{}; /**< Associated value. */
@@ -40,7 +47,13 @@ constexpr rw::dat::KVPair<Key, Value>::KVPair(const Key& k, const Value& v) : ke
 }
 
 template<typename Key, typename Value>
-constexpr bool rw::dat::KVPair<Key, Value>::operator<=>(const KVPair<Key, Value>& other) const
+constexpr bool rw::dat::KVPair<Key, Value>::operator==(const KVPair<Key, Value>& other) const
+{
+   return key == other.key;
+}
+
+template<typename Key, typename Value>
+constexpr auto rw::dat::KVPair<Key, Value>::operator<=>(const KVPair<Key, Value>& other) const
 {
    return key <=> other.key;
 }

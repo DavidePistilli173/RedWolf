@@ -53,8 +53,10 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "dat/VersionInfo.cpp"
     "evt/Event.cpp"
     "evt/EventHandler.cpp"
+    "io/File.cpp"
     "thread/ThreadPool.cpp"
     "time/DateTime.cpp"
+    "time/Timer.cpp"
     "util/Logger.cpp"
     "RedWolfManager.cpp"
 )
