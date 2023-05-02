@@ -74,11 +74,6 @@ void Timer::setFrequency(f64 hertz)
    {
       std::scoped_lock lck(mtx_);
       interval_ = std::chrono::microseconds(static_cast<i64>(microseconds_per_second / hertz));
-      logger_.trace("Timer frequency set to {}Hz (interval_ = {})", hertz, interval_);
-   }
-   else
-   {
-      logger_.err("Timer frequency must be a positive double or 0, but {} was passed.", hertz);
    }
 }
 
@@ -106,7 +101,7 @@ void Timer::stop()
    timerConditionVariable_.notify_one();
 }
 
-void Timer::userHandle_(const rw::events::BaseEvent&, const BaseObject*) {}
+void Timer::userHandle_(const BaseObject* generator, const rw::evt::Event& evt) {}
 
 void Timer::createTimerThread_()
 {
@@ -125,7 +120,7 @@ void Timer::createTimerThread_()
                       std::chrono::microseconds(0))
                {
                }
-               generateEvent(rw::events::TimeoutEvent());
+               generateEvent(rw::evt::TimeoutEvent());
                if (singleShot_) running_ = false;
             }
             else
@@ -137,7 +132,7 @@ void Timer::createTimerThread_()
                if (timerConditionVariable_.wait_for(lck, remainingTime_) == std::cv_status::timeout)
                {
                   // If the sleep reached timeout, generate the timeout event.
-                  generateEvent(rw::events::TimeoutEvent());
+                  generateEvent(rw::evt::TimeoutEvent());
                   remainingTime_ = interval_;
                   if (singleShot_) running_ = false;
                }
