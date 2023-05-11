@@ -60,6 +60,7 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "time/DateTime.cpp"
     "time/Timer.cpp"
     "util/Logger.cpp"
+    "util/RandomGenerator.cpp"
     "RedWolfManager.cpp"
 )
 set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX)
