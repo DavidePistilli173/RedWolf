@@ -12,7 +12,7 @@ namespace rw::thread
     * @tparam T Type of object protected by the mutex.
     */
    template<typename T>
-   class RW_API Mutex
+   class Mutex
    {
    public:
       /**
@@ -28,6 +28,31 @@ namespace rw::thread
        * @brief Default constructor.
        */
       Mutex() = default;
+
+      /**
+       * @brief Destructor.
+       */
+      ~Mutex() = default;
+
+      /**
+       * @brief Copy constructor.
+       */
+      Mutex(const Mutex&) = delete;
+
+      /**
+       * @brief Move constructor.
+       */
+      Mutex(Mutex&&) = delete;
+
+      /**
+       * @brief Copy-assignment operator.
+       */
+      Mutex& operator=(const Mutex&) = delete;
+
+      /**
+       * @brief Move-assignment operator.
+       */
+      Mutex& operator=(Mutex&&) = delete;
 
       /**
        * @brief Construct an object and its protecting mutex.
@@ -57,7 +82,7 @@ rw::thread::Mutex<T>::Mutex(Args&&... args) : val_{ std::forward<Args>(args)... 
 }
 
 template<typename T>
-rw::thread::Mutex<T>::Guard rw::thread::Mutex<T>::lock()
+typename rw::thread::Mutex<T>::Guard rw::thread::Mutex<T>::lock()
 {
    return Guard(std::scoped_lock(mtx_), val_);
 }

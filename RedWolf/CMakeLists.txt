@@ -55,6 +55,7 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "evt/Event.cpp"
     "evt/EventHandler.cpp"
     "io/File.cpp"
+    "net/BaseSocket.cpp"
     "text/string_utils.cpp"
     "thread/ThreadPool.cpp"
     "time/DateTime.cpp"
