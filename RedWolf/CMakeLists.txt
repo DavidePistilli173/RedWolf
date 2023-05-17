@@ -56,12 +56,14 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "evt/EventHandler.cpp"
     "io/File.cpp"
     "net/BaseSocket.cpp"
+    "net/UdpSocket.cpp"
     "text/string_utils.cpp"
     "thread/ThreadPool.cpp"
     "time/DateTime.cpp"
     "time/Timer.cpp"
     "util/Logger.cpp"
     "util/RandomGenerator.cpp"
+    "util/SettingsManager.cpp"
     "RedWolfManager.cpp"
 )
 set_target_properties(${RW_LIB_TARGET_NAME} PROPERTIES LINKER_LANGUAGE CXX)
