@@ -2,7 +2,7 @@
 
 using namespace rw;
 
-RedWolfManager::RedWolfManager(const Options& options) : options_{ options }, eventHandler_{ logger_ } {}
+RedWolfManager::RedWolfManager(const Options& options) : options_{ options }, eventHandler_{ logger_ }, glfwManager_{ logger_ } {}
 
 void RedWolfManager::destroyObject(rw::core::Object* obj)
 {

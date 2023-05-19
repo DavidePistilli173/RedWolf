@@ -1,7 +1,5 @@
 #include "BaseSocket.hpp"
 
-#include "RedWolf/RedWolfManager.hpp"
-
 using namespace rw::net;
 
 #ifdef WIN32

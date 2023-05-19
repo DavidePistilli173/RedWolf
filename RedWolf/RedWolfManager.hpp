@@ -6,6 +6,7 @@
 #include "RedWolf/core/concepts.hpp"
 #include "RedWolf/dat/VersionInfo.hpp"
 #include "RedWolf/evt/EventHandler.hpp"
+#include "RedWolf/lif/glfw/Manager.hpp"
 #include "RedWolf/util/Logger.hpp"
 
 #include <memory>
@@ -100,6 +101,8 @@ namespace rw
 
       std::unordered_map<rw::core::Object*, std::unique_ptr<rw::core::Object>> objects_;      /**< All library-managed objects. */
       rw::evt::EventHandler                                                    eventHandler_; /**< Library event handler. */
+
+      rw::lif::glfw::Manager glfwManager_; /**< GLFW library manager. */
    };
 } // namespace rw
 

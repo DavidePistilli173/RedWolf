@@ -1,0 +1,8 @@
+#ifndef RW_LIF_VMA_INITIALISER_HPP
+#define RW_LIF_VMA_INITIALISER_HPP
+
+#define VMA_STATIC_VULKAN_FUNCTIONS  0
+#define VMA_DYNAMIC_VULKAN_FUNCTIONS 1
+#include <vk_mem_alloc.h>
+
+#endif

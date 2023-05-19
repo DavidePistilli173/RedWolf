@@ -1,7 +1,5 @@
 #include "ThreadPool.hpp"
 
-#include "RedWolf/RedWolfManager.hpp"
-
 using namespace rw::thread;
 
 ThreadPool::Worker::Worker(Worker&& other) noexcept :

@@ -1,6 +1,5 @@
 #include "SettingsManager.hpp"
 
-#include "RedWolf/RedWolfManager.hpp"
 #include "RedWolf/text/string_utils.hpp"
 
 #include <algorithm>
