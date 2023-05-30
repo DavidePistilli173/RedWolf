@@ -57,6 +57,7 @@ add_library("${RW_LIB_TARGET_NAME}" SHARED
     "io/File.cpp"
     "lif/glfw/Manager.cpp"
     "lif/glfw/Window.cpp"
+    "lif/vma/Allocator.cpp"
     "lif/vma/Initialiser.cpp"
     "lif/vulkan/Instance.cpp"
     "lif/vulkan/PhysicalDevice.cpp"
