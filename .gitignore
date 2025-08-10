@@ -6,3 +6,5 @@ out
 RedWolf/docs/RedWolf.doxygen
 RedWolf/.vscode/
 .vscode/
+/cmake-build-debug/
+/cmake-build-release
