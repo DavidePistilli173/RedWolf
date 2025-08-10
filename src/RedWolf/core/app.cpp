@@ -4,10 +4,7 @@
 
 #include "app.hpp"
 
-namespace rw::core {
-  void App::run() {
-   while(true) {
-   }
-  }
-
-} // rw
+void rw::core::App::run() {
+    while (true) {
+    }
+}

@@ -8,10 +8,40 @@
 #include <memory>
 
 namespace rw::core {
+    /**
+     * @brief Base class for a RedWolf applications.
+     */
     class App {
      public:
+        /**
+         * @brief Default constructor.
+         */
         App() = default;
+
+        /**
+         * @brief Destructor.
+         */
         virtual ~App() = default;
+
+        /**
+         * @brief Copy-constructor.
+         */
+        App(const App&) = delete;
+
+        /**
+         * @brief Copy-assignment operator.
+         */
+        App& operator=(const App&) = delete;
+
+        /**
+         * @brief Move-constructor.
+         */
+        App(App&&) = default;
+
+        /**
+         * @brief Move-assignment operator.
+         */
+        App& operator=(App&&) = default;
 
         void run();
 

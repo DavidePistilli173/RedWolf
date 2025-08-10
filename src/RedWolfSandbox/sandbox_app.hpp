@@ -11,6 +11,10 @@ class SandboxApp : public rw::core::App {
  public:
     SandboxApp() = default;
     ~SandboxApp() override = default;
+    SandboxApp(const SandboxApp&) = delete;
+    SandboxApp& operator=(const SandboxApp&) = delete;
+    SandboxApp(SandboxApp&&) = default;
+    SandboxApp& operator=(SandboxApp&&) = default;
 };
 
 #endif // SANDBOX_APP_HPP
