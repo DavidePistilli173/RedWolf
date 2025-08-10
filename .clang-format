@@ -21,7 +21,7 @@ AlwaysBreakBeforeMultilineStrings: 'false'
 AlwaysBreakTemplateDeclarations: 'Yes'
 BinPackArguments: 'false'
 BinPackParameters: 'false'
-BreakBeforeBraces: Allman
+BreakBeforeBraces: Attach
 BreakBeforeTernaryOperators: 'true'
 BreakConstructorInitializers: AfterColon
 BreakInheritanceList: AfterColon
@@ -29,8 +29,8 @@ BreakStringLiterals: 'false'
 ColumnLimit: '140'
 CompactNamespaces: 'false'
 ConstructorInitializerAllOnOneLineOrOnePerLine: 'false'
-ConstructorInitializerIndentWidth: '3'
-ContinuationIndentWidth: '3'
+ConstructorInitializerIndentWidth: '4'
+ContinuationIndentWidth: '4'
 Cpp11BracedListStyle: 'false'
 DerivePointerAlignment: 'false'
 DisableFormat: 'false'
@@ -39,7 +39,7 @@ FixNamespaceComments: 'true'
 IncludeBlocks: Regroup
 IndentCaseLabels: 'false'
 IndentPPDirectives: BeforeHash
-IndentWidth: '3'
+IndentWidth: '4'
 IndentWrappedFunctionNames: 'true'
 KeepEmptyLinesAtTheStartOfBlocks: 'false'
 Language: Cpp
@@ -66,7 +66,7 @@ SpacesInContainerLiterals: 'false'
 SpacesInParentheses: 'false'
 SpacesInSquareBrackets: 'false'
 Standard: Auto
-TabWidth: '3'
+TabWidth: '4'
 UseTab: Never
 
 ...

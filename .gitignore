@@ -3,8 +3,8 @@
 bin
 build
 out
-RedWolf/docs/RedWolf.doxygen
-RedWolf/.vscode/
+src/RedWolf/docs/RedWolf.doxygen
+src/RedWolf/.vscode/
 .vscode/
 /cmake-build-debug/
 /cmake-build-release
