@@ -1,8 +1,9 @@
 add_library(RedWolf STATIC)
 
 target_sources(RedWolf PRIVATE
-        core/app.cpp
-        core/entry_point.cpp
+        engine/app.cpp
+        engine/entry_point.cpp
+        thread/thread_pool.cpp
         time/date_time.cpp
         util/log_msg.cpp
         util/logger.cpp

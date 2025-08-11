@@ -5,11 +5,11 @@
 #ifndef SANDBOX_APP_HPP
 #define SANDBOX_APP_HPP
 
-#include <RedWolf/core/app.hpp>
+#include <RedWolf/engine/app.hpp>
 
-class SandboxApp : public rw::core::App {
+class SandboxApp : public rw::engine::App {
  public:
-    SandboxApp() = default;
+    SandboxApp();
     ~SandboxApp() override = default;
     SandboxApp(const SandboxApp&) = delete;
     SandboxApp& operator=(const SandboxApp&) = delete;

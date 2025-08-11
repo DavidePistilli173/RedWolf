@@ -9,7 +9,7 @@
 
 #include <memory>
 
-extern std::unique_ptr<rw::core::App> rw::core::create_app();
+extern std::unique_ptr<rw::engine::App> rw::engine::create_app();
 
 /**
  * @brief Entry point for any application using the RedWolf engine.

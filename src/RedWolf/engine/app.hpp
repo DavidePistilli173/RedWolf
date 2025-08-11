@@ -5,9 +5,11 @@
 #ifndef APP_HPP
 #define APP_HPP
 
+#include "../util/logger.hpp"
+
 #include <memory>
 
-namespace rw::core {
+namespace rw::engine {
     /**
      * @brief Base class for a RedWolf applications.
      */
@@ -43,9 +45,16 @@ namespace rw::core {
          */
         App& operator=(App&&) = default;
 
+        /**
+         * @brief Get the logger of the application.
+         * @return Logger for the application.
+         */
+        [[nodiscard]] rw::util::Logger& logger();
+
         void run();
 
      private:
+        rw::util::Logger logger_; /**< Application logger. */
     };
 
     /**
@@ -55,6 +64,6 @@ namespace rw::core {
      */
     [[nodiscard]] std::unique_ptr<App> create_app();
 
-} // namespace rw::core
+} // namespace rw::engine
 
 #endif // APP_HPP

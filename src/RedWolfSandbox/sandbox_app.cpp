@@ -6,7 +6,10 @@
 
 #include <RedWolf/util/logger.hpp>
 
-std::unique_ptr<rw::core::App> rw::core::create_app() {
-    rw::util::Logger::get().info("Creating SandboxApp instance.");
+SandboxApp::SandboxApp() {
+    logger().info("Welcome to Sandbox, powered by RedWolf.");
+}
+
+std::unique_ptr<rw::engine::App> rw::engine::create_app() {
     return std::make_unique<SandboxApp>();
 }

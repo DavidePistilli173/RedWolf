@@ -14,11 +14,16 @@
 
 namespace rw::util {
     /**
-     * @brief Singleton, custom thread-safe logger.
+     * @brief Custom thread-safe logger.
      */
     class Logger {
      public:
         using Level = LogMsg::Level;
+
+        /**
+         * @brief Default constructor.
+         */
+        Logger();
 
         /**
          * @brief Utility structure for storing a message and the source code location that generated.
@@ -55,8 +60,6 @@ namespace rw::util {
         void fatal(const MessageWithLocation& msg, const Args&... args) {
             message_base(Level::fatal, msg, args...);
         }
-
-        [[nodiscard]] static Logger& get();
 
         /**
          * @brief Log an information message.
@@ -135,13 +138,6 @@ namespace rw::util {
         }
 
      private:
-        /**
-         * @brief Default constructor.
-         */
-        Logger();
-
-        static Logger instance_; /**< Singleton instance of the logger. */
-
         std::mutex         mtx_;                   /**< Logging mutex. */
         std::atomic<Level> level_{ Level::trace }; /**< Logging level. */
     };

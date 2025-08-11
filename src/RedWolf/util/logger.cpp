@@ -4,14 +4,8 @@
 
 #include "logger.hpp"
 
-rw::util::Logger rw::util::Logger::instance_;
-
 rw::util::Logger::Logger() {
     info("Logger created.");
-}
-
-rw::util::Logger& rw::util::Logger::get() {
-    return instance_;
 }
 
 rw::util::Logger::Level rw::util::Logger::level() const {

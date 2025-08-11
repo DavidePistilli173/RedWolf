@@ -7,7 +7,7 @@
 #include <print>
 
 int main() {
-    auto app = rw::core::create_app();
+    auto app = rw::engine::create_app();
     app->run();
     return 0;
 }
