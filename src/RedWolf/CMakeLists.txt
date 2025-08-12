@@ -3,6 +3,10 @@ add_library(RedWolf STATIC)
 target_sources(RedWolf PRIVATE
         engine/app.cpp
         engine/entry_point.cpp
+        evt/application_event.cpp
+        evt/event.cpp
+        evt/key_event.cpp
+        evt/mouse_event.cpp
         thread/thread_pool.cpp
         time/date_time.cpp
         util/log_msg.cpp
