@@ -7,8 +7,6 @@
 
 #include "event.hpp"
 
-#include <cstdint>
-
 namespace rw::evt {
     /**
      * @brief Generic keyboard event.

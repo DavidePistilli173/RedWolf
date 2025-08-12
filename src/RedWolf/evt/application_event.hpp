@@ -13,7 +13,7 @@ namespace rw::evt {
     /**
      * @brief Window resizing event.
      */
-    class WindowResizeEvent final : Event {
+    struct WindowResizeEvent final : Event {
         /**
          * @brief Constructor.
          * @param new_width New window width.
@@ -74,7 +74,7 @@ namespace rw::evt {
     /**
      * @brief Event for when the window closes.
      */
-    class WindowCloseEvent final : Event {
+    struct WindowCloseEvent final : Event {
         /**
          * @brief Constructor.
          */
