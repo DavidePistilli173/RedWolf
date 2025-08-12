@@ -5,6 +5,7 @@
 #ifndef EVENT_HPP
 #define EVENT_HPP
 
+#include <concepts>
 #include <cstdint>
 #include <format>
 #include <string_view>
@@ -127,10 +128,10 @@ namespace rw::evt {
 /**
  * @brief std::formatter specialization for rw::evt::Event
  */
-template<>
-struct std::formatter<rw::evt::Event> : std::formatter<std::string> {
+template<std::derived_from<rw::evt::Event> T>
+struct std::formatter<T> : std::formatter<std::string> {
     auto format(const rw::evt::Event& event, std::format_context& ctx) const {
-        return std::formatter<std::string>::format(std::format("{}", event.to_string()), ctx);
+        return std::formatter<std::string>::format(event.to_string(), ctx);
     }
 };
 #endif // EVENT_HPP
