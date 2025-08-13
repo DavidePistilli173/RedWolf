@@ -17,7 +17,7 @@ namespace rw::evt {
          * @param new_x New mouse x coordinate on the screen.
          * @param new_y New mouse y coordinate on the screen.
          */
-        explicit MouseMovedEvent(float new_x, float new_y);
+        explicit MouseMovedEvent(double new_x, double new_y);
 
         /**
          * @brief Destructor.
@@ -65,8 +65,8 @@ namespace rw::evt {
          */
         [[nodiscard]] EventType type() const override;
 
-        float x{ 0.0F }; /**< New mouse x coordinate. */
-        float y{ 0.0F }; /**< New mouse y coordinate. */
+        double x{ 0.0F }; /**< New mouse x coordinate. */
+        double y{ 0.0F }; /**< New mouse y coordinate. */
     };
 
     /**
@@ -78,7 +78,7 @@ namespace rw::evt {
          * @param p_x_offset Horizontal scrolling amount.
          * @param p_y_offset Vertical scrolling amount.
          */
-        explicit MouseScrolledEvent(float p_x_offset, float p_y_offset);
+        explicit MouseScrolledEvent(double p_x_offset, double p_y_offset);
 
         /**
          * @brief Destructor.
@@ -126,8 +126,8 @@ namespace rw::evt {
          */
         [[nodiscard]] EventType type() const override;
 
-        float x_offset{ 0.0F }; /**< Horizontal scrolling amount. */
-        float y_offset{ 0.0F }; /**< Vertical scrolling amount. */
+        double x_offset{ 0.0F }; /**< Horizontal scrolling amount. */
+        double y_offset{ 0.0F }; /**< Vertical scrolling amount. */
     };
 
     /**

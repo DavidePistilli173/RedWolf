@@ -4,6 +4,12 @@
 
 #include "window.hpp"
 
+#include "RedWolf/evt/application_event.hpp"
+#include "RedWolf/evt/key_event.hpp"
+#include "RedWolf/evt/mouse_event.hpp"
+
+#include <print>
+
 bool rw::ui::Window::glfw_initialized_{ false };
 
 rw::ui::Window::Window(const WindowDescriptor& descriptor) :
@@ -15,6 +21,7 @@ rw::ui::Window::Window(const WindowDescriptor& descriptor) :
             return;
         }
 
+        glfwSetErrorCallback(glfw_error_clbk_);
         logger_.info("GLFW initialised successfully");
         glfw_initialized_ = true;
     }
@@ -29,6 +36,8 @@ rw::ui::Window::Window(const WindowDescriptor& descriptor) :
     glfwMakeContextCurrent(handle_);
     glfwSetWindowUserPointer(handle_, this);
     set_vsync(true);
+
+    init_callbacks_();
 }
 
 rw::ui::Window::~Window() {
@@ -46,7 +55,7 @@ uint32_t rw::ui::Window::height() const {
 }
 
 void rw::ui::Window::update() {
-    glfwPollEvents();
+    glfwWaitEventsTimeout(default_frame_time);
     glfwSwapBuffers(handle_);
 }
 
@@ -79,4 +88,135 @@ void rw::ui::Window::close_() {
         glfwDestroyWindow(handle_);
         handle_ = nullptr;
     }
+}
+
+void rw::ui::Window::cursor_position_clbk_(GLFWwindow* window, double x, double y) {
+    void* user_ptr{ glfwGetWindowUserPointer(window) };
+    if (nullptr == user_ptr) {
+        return;
+    }
+    const auto* self{ static_cast<Window*>(user_ptr) };
+
+    const rw::evt::MouseMovedEvent event{ x, y };
+    if (nullptr != self->event_callback_) {
+        self->event_callback_(event);
+    }
+}
+
+void rw::ui::Window::glfw_error_clbk_(int code, const char* description) {
+    std::print("GLFW ERROR: code: {}; description: {}", static_cast<rw::vendor::GlfwError>(code), description);
+}
+
+void rw::ui::Window::init_callbacks_() {
+    glfwSetWindowCloseCallback(handle_, &Window::window_close_clbk_);
+    glfwSetWindowSizeCallback(handle_, &Window::window_resize_clbk_);
+    glfwSetKeyCallback(handle_, &Window::key_clbk_);
+    glfwSetMouseButtonCallback(handle_, &Window::mouse_button_clbk_);
+    glfwSetScrollCallback(handle_, &Window::scroll_clbk_);
+    glfwSetCursorPosCallback(handle_, &Window::cursor_position_clbk_);
+}
+
+void rw::ui::Window::key_clbk_(GLFWwindow* window, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
+    void* user_ptr{ glfwGetWindowUserPointer(window) };
+    if (nullptr == user_ptr) {
+        return;
+    }
+    const auto* self{ static_cast<Window*>(user_ptr) };
+
+    switch (action) {
+    case GLFW_PRESS: {
+        const rw::evt::KeyPressedEvent event{ key, false };
+        if (nullptr != self->event_callback_) {
+            self->event_callback_(event);
+        }
+    } break;
+    case GLFW_RELEASE: {
+        const rw::evt::KeyReleasedEvent event{ key };
+        if (nullptr != self->event_callback_) {
+            self->event_callback_(event);
+        }
+    } break;
+    case GLFW_REPEAT: {
+        const rw::evt::KeyPressedEvent event{ key, true };
+        if (nullptr != self->event_callback_) {
+            self->event_callback_(event);
+        }
+    } break;
+    default:
+        self->logger_.err("Invalid GLFW action: {}", action);
+        break;
+    }
+}
+
+void rw::ui::Window::mouse_button_clbk_(GLFWwindow* window, int button, int action, [[maybe_unused]] int mods) {
+    void* user_ptr{ glfwGetWindowUserPointer(window) };
+    if (nullptr == user_ptr) {
+        return;
+    }
+    const auto* self{ static_cast<Window*>(user_ptr) };
+
+    switch (action) {
+    case GLFW_PRESS: {
+        const rw::evt::MouseButtonPressedEvent event{ button };
+        if (nullptr != self->event_callback_) {
+            self->event_callback_(event);
+        }
+    } break;
+    case GLFW_RELEASE: {
+        const rw::evt::MouseButtonReleasedEvent event{ button };
+        if (nullptr != self->event_callback_) {
+            self->event_callback_(event);
+        }
+    } break;
+    default:
+        self->logger_.err("Invalid GLFW action: {}", action);
+        break;
+    }
+}
+
+void rw::ui::Window::scroll_clbk_(GLFWwindow* window, double x_offset, double y_offset) {
+    void* user_ptr{ glfwGetWindowUserPointer(window) };
+    if (nullptr == user_ptr) {
+        return;
+    }
+    auto* self{ static_cast<Window*>(user_ptr) };
+
+    const rw::evt::MouseScrolledEvent event{ x_offset, y_offset };
+    if (nullptr != self->event_callback_) {
+        self->event_callback_(event);
+    }
+}
+
+void rw::ui::Window::window_close_clbk_(GLFWwindow* window) {
+    void* user_ptr{ glfwGetWindowUserPointer(window) };
+    if (nullptr == user_ptr) {
+        return;
+    }
+    auto* self{ static_cast<Window*>(user_ptr) };
+
+    const rw::evt::WindowCloseEvent event{};
+    if (nullptr != self->event_callback_) {
+        self->event_callback_(event);
+    }
+}
+
+void rw::ui::Window::window_resize_clbk_(GLFWwindow* window, int width, int height) {
+    void* user_ptr{ glfwGetWindowUserPointer(window) };
+    if (nullptr == user_ptr) {
+        return;
+    }
+    auto* self{ static_cast<Window*>(user_ptr) };
+
+    if (width <= 0 || height <= 0) {
+        self->logger_.warn("Invalid window size: {}x{}", width, height);
+        return;
+    }
+    self->width_  = static_cast<uint32_t>(width);
+    self->height_ = static_cast<uint32_t>(height);
+
+    if (nullptr == self->event_callback_) {
+        return;
+    }
+    rw::evt::WindowResizeEvent event{ self->width_, self->height_ };
+    self->event_callback_(event);
 }

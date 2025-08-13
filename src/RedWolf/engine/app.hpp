@@ -5,6 +5,7 @@
 #ifndef APP_HPP
 #define APP_HPP
 
+#include "../evt/event.hpp"
 #include "../ui/window.hpp"
 #include "../util/logger.hpp"
 
@@ -52,6 +53,14 @@ namespace rw::engine {
          */
         [[nodiscard]] rw::util::Logger& logger();
 
+        /**
+         * @brief Event handler for the application.
+         */
+        void on_event(const rw::evt::Event& event);
+
+        /**
+         * @brief Run the application main loop.
+         */
         void run();
 
      private:

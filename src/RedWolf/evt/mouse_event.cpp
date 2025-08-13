@@ -4,7 +4,7 @@
 
 #include "mouse_event.hpp"
 
-rw::evt::MouseMovedEvent::MouseMovedEvent(float new_x, float new_y) : Event(), x{ new_x }, y{ new_y } {}
+rw::evt::MouseMovedEvent::MouseMovedEvent(double new_x, double new_y) : Event(), x{ new_x }, y{ new_y } {}
 
 rw::evt::EventCategory rw::evt::MouseMovedEvent::category() const {
     return compose_categories<rw::evt::EventCategoryType::input, rw::evt::EventCategoryType::mouse>();
@@ -22,7 +22,7 @@ rw::evt::EventType rw::evt::MouseMovedEvent::type() const {
     return EventType::mouse_moved;
 }
 
-rw::evt::MouseScrolledEvent::MouseScrolledEvent(float p_x_offset, float p_y_offset) : x_offset{ p_x_offset }, y_offset{ p_y_offset } {}
+rw::evt::MouseScrolledEvent::MouseScrolledEvent(double p_x_offset, double p_y_offset) : x_offset{ p_x_offset }, y_offset{ p_y_offset } {}
 
 rw::evt::EventCategory rw::evt::MouseScrolledEvent::category() const {
     return compose_categories<EventCategoryType::input, rw::evt::EventCategoryType::mouse>();
