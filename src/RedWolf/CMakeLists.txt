@@ -9,10 +9,24 @@ target_sources(RedWolf PRIVATE
         evt/mouse_event.cpp
         thread/thread_pool.cpp
         time/date_time.cpp
+        ui/window.cpp
         util/log_msg.cpp
         util/logger.cpp
 )
 
-target_include_directories(RedWolf PUBLIC ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(RedWolf PUBLIC
+        ${PROJECT_SOURCE_DIR}/src
+)
 
-target_link_libraries(RedWolf PUBLIC)
+target_compile_options(RedWolf PRIVATE
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Werror
+        -Wconversion
+        -Wshadow
+)
+
+target_link_libraries(RedWolf PUBLIC
+        vendor
+)

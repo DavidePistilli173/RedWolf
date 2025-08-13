@@ -1,12 +1,7 @@
 ---
-Checks:            '*, -abseil*, -altera*, -android*, -boost*, -darwin*, -fuchsia*, -google*, 
-                    -hicpp-braces-around-statements,  -llvm-header-guard, -llvmlibc-*, -modernize-use-trailing-return-type,
-                    -mpi*, -objc*, -openmp*, -readability-braces-around-statements, -readability-identifier-length,
-                    -bugprone-easily-swappable-parameters, -cppcoreguidelines-pro-type-reinterpret-cast,
-                    -cppcoreguidelines-non-private-member-variables-in-classes, -misc-non-private-member-variables-in-classes,
-                    -cert-dcl21-cpp, -cppcoreguidelines-pro-bounds-constant-array-index, -hicpp-signed-bitwise'
-CheckOptions: [{key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic, value: 1} ]
-WarningsAsErrors:  ''
+Checks: '*, -altera*, -fuchsia*, -llvmlibc*, -cppcoreguidelines-avoid-const-or-ref-data-members, -modernize-use-trailing-return-type, -readability-avoid-const-params-in-decls'
+CheckOptions: [ { key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic, value: 1 } ]
+WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
-FormatStyle:       'file'
-User:              david
+FormatStyle: 'file'
+User: david

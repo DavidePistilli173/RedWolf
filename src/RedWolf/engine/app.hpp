@@ -5,6 +5,7 @@
 #ifndef APP_HPP
 #define APP_HPP
 
+#include "../ui/window.hpp"
 #include "../util/logger.hpp"
 
 #include <memory>
@@ -18,7 +19,7 @@ namespace rw::engine {
         /**
          * @brief Default constructor.
          */
-        App() = default;
+        App();
 
         /**
          * @brief Destructor.
@@ -38,12 +39,12 @@ namespace rw::engine {
         /**
          * @brief Move-constructor.
          */
-        App(App&&) = default;
+        App(App&&) = delete;
 
         /**
          * @brief Move-assignment operator.
          */
-        App& operator=(App&&) = default;
+        App& operator=(App&&) = delete;
 
         /**
          * @brief Get the logger of the application.
@@ -54,7 +55,9 @@ namespace rw::engine {
         void run();
 
      private:
-        rw::util::Logger logger_; /**< Application logger. */
+        rw::util::Logger                logger_;          /**< Application logger. */
+        std::unique_ptr<rw::ui::Window> window_;          /**< Application window. */
+        bool                            running_{ true }; /**< Flag to indicate if the application is running. */
     };
 
     /**
