@@ -1,5 +1,5 @@
 ---
-Checks: '*, -altera*, -fuchsia*, -llvmlibc*, -cppcoreguidelines-avoid-const-or-ref-data-members, -misc-include-cleaner, -modernize-use-trailing-return-type, -readability-avoid-const-params-in-decls'
+Checks: '*, -altera*, -fuchsia*, -llvmlibc*, -cppcoreguidelines-avoid-const-or-ref-data-members, -cppcoreguidelines-pro-type-reinterpret-cast, -llvm-header-guard, -misc-include-cleaner, -modernize-use-trailing-return-type, -readability-avoid-const-params-in-decls'
 CheckOptions: [ { key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic, value: 1 } ]
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'

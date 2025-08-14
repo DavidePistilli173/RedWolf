@@ -20,6 +20,10 @@ target_include_directories(RedWolf PUBLIC
         ${PROJECT_SOURCE_DIR}/src
 )
 
+target_compile_definitions(RedWolf PUBLIC
+        GLFW_INCLUDE_NONE
+)
+
 target_compile_options(RedWolf PRIVATE
         -Wall
         -Wextra

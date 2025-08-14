@@ -9,6 +9,8 @@
 #include "../evt/mouse_event.hpp"
 #include "../util/logger.hpp"
 
+#include <glad/glad.h>
+
 bool rw::ui::Window::glfw_initialized_{ false };
 
 rw::ui::Window::Window(const WindowDescriptor& descriptor) :
@@ -33,6 +35,14 @@ rw::ui::Window::Window(const WindowDescriptor& descriptor) :
     }
 
     glfwMakeContextCurrent(handle_);
+
+    // Load OpenGL functions using GLAD
+    if (0 == gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
+        RW_CORE_ERR("Failed to initialize GLAD: {}", rw::vendor::glfw_get_error());
+        return;
+    }
+    RW_CORE_INFO("Loaded OpenGL functions.");
+
     glfwSetWindowUserPointer(handle_, this);
     set_vsync(true);
 
@@ -98,7 +108,7 @@ void rw::ui::Window::cursor_position_clbk_(GLFWwindow* window, double x, double 
 
     const rw::evt::MouseMovedEvent event{ x, y };
     if (nullptr != self->event_callback_) {
-        self->event_callback_(event);
+        (void) self->event_callback_(event);
     }
 }
 

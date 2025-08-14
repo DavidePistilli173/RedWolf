@@ -3,6 +3,8 @@ set(GLFW_BUILD_DOCS OFF)
 set(GLFW_INSTALL OFF)
 add_subdirectory(glfw)
 
+add_subdirectory(glad)
+
 add_library(vendor STATIC)
 
 target_sources(vendor PRIVATE
@@ -16,4 +18,5 @@ target_include_directories(vendor PUBLIC
 target_link_libraries(vendor PUBLIC
         glfw
         ${GLFW_LIBRARIES}
+        glad
 )
