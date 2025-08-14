@@ -7,6 +7,7 @@
 
 #include "layer.hpp"
 
+#include <concepts>
 #include <memory>
 #include <vector>
 
@@ -74,25 +75,29 @@ namespace rw::engine {
 
         /**
          * @brief Create a layer and push it onto the stack.
+         * @param T Type of layer to create.
          * @param args Arguments for layer creation (except for the ID).
          * @return ID of the created layer.
          */
-        template<typename... Args>
+        template<std::derived_from<Layer> T, typename... Args>
         [[nodiscard]] Layer::ID push_layer(Args&&... args) {
             const Layer::ID id{ next_layer_id_++ };
-            layer_insert_it_ = layers_.emplace(layer_insert_it_, std::make_unique<Layer>(id, std::forward<Args>(args)...));
+            layer_insert_it_ = layers_.emplace(layer_insert_it_, std::make_unique<T>(id, std::forward<Args>(args)...));
+            (*layer_insert_it_)->attach();
             return id;
         }
 
         /**
          * @brief Create an overlay and push it onto the stack.
+         * @tparam T Type of overlay to create.
          * @param args Arguments for overlay creation (except for the ID).
          * @return ID of the created overlay.
          */
-        template<typename... Args>
+        template<std::derived_from<Layer> T, typename... Args>
         [[nodiscard]] Layer::ID push_overlay(Args&&... args) {
             const Layer::ID id{ next_layer_id_++ };
-            layers_.emplace_back(std::make_unique<Layer>(id, std::forward<Args>(args)...));
+            auto&           element{ layers_.emplace_back(std::make_unique<T>(id, std::forward<Args>(args)...)) };
+            element->attach();
             return id;
         }
 

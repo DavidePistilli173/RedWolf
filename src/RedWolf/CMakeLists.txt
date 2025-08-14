@@ -9,8 +9,10 @@ target_sources(RedWolf PRIVATE
         evt/event.cpp
         evt/key_event.cpp
         evt/mouse_event.cpp
+        pltf/gl/imgui_impl_opengl3.cpp
         thread/thread_pool.cpp
         time/date_time.cpp
+        ui/debug_layer.cpp
         ui/window.cpp
         util/log_msg.cpp
         util/logger.cpp

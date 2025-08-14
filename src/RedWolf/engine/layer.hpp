@@ -85,7 +85,7 @@ namespace rw::engine {
          * @brief Event handling function.
          * @param event Event to handle.
          */
-        virtual bool on_event(const rw::evt::Event& event) = 0;
+        [[nodiscard]] virtual bool on_event(const rw::evt::Event& event) = 0;
 
      protected:
         ID          id_{ 0U }; /**< Unique identifier for the layer. */

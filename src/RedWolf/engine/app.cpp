@@ -12,9 +12,25 @@
 rw::engine::App::App() {
     RW_CORE_INFO("Constructing application");
 
+    if (nullptr != instance_) {
+        RW_CORE_FATAL("Application instance already exists. Only one instance of App is allowed.");
+        return;
+    }
+    instance_ = this;
+
     window_ = std::make_unique<rw::ui::Window>(rw::ui::WindowDescriptor{
         .title = "RedWolf Engine", .width = rw::ui::default_window_width, .height = rw::ui::default_window_height });
     window_->set_event_callback([this](const rw::evt::Event& event) { return on_event(event); });
+}
+
+rw::engine::App::~App() {
+    instance_ = nullptr;
+}
+
+rw::engine::App* rw::engine::App::instance_{ nullptr };
+
+rw::engine::App& rw::engine::App::get() {
+    return *instance_;
 }
 
 bool rw::engine::App::on_event(const rw::evt::Event& event) {
@@ -49,4 +65,8 @@ void rw::engine::App::run() {
             layer->update();
         }
     }
+}
+
+rw::ui::Window& rw::engine::App::window() {
+    return *window_;
 }

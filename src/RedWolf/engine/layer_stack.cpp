@@ -36,6 +36,7 @@ void rw::engine::LayerStack::pop_layer(const Layer::ID layer_id) {
     if (const auto it{ std::find_if(
             layers_.begin(), layers_.end(), [layer_id](const std::unique_ptr<Layer>& layer) { return layer_id == layer->id(); }) };
         layers_.end() != it) {
+        (*it)->detach();
         layers_.erase(it);
         --layer_insert_it_;
     }
@@ -45,6 +46,7 @@ void rw::engine::LayerStack::pop_overlay(const Layer::ID overlay_id) {
     if (const auto it{ std::find_if(
             layers_.rbegin(), layers_.rend(), [overlay_id](const std::unique_ptr<Layer>& layer) { return overlay_id == layer->id(); }) };
         layers_.rend() != it) {
+        (*it)->detach();
         layers_.erase(it.base());
     }
 }

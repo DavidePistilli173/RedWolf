@@ -226,6 +226,6 @@ void rw::ui::Window::window_resize_clbk_(GLFWwindow* window, int width, int heig
     if (nullptr == self->event_callback_) {
         return;
     }
-    rw::evt::WindowResizeEvent event{ self->width_, self->height_ };
-    self->event_callback_(event);
+    const rw::evt::WindowResizeEvent event{ self->width_, self->height_ };
+    (void)self->event_callback_(event);
 }

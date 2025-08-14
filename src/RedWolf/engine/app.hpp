@@ -9,11 +9,12 @@
 #include "../ui/window.hpp"
 #include "layer_stack.hpp"
 
+#include <concepts>
 #include <memory>
 
 namespace rw::engine {
     /**
-     * @brief Base class for a RedWolf applications.
+     * @brief Base class for a RedWolf application. Singleton.
      */
     class App {
      public:
@@ -25,7 +26,7 @@ namespace rw::engine {
         /**
          * @brief Destructor.
          */
-        virtual ~App() = default;
+        virtual ~App();
 
         /**
          * @brief Copy-constructor.
@@ -48,28 +49,36 @@ namespace rw::engine {
         App& operator=(App&&) = delete;
 
         /**
+         * @brief Get the application instance.
+         * @return Application instance.
+         */
+        [[nodiscard]] static App& get();
+
+        /**
          * @brief Event handler for the application.
          */
         [[nodiscard]] bool on_event(const rw::evt::Event& event);
 
         /**
          * @brief Create a layer and push it onto the stack.
+         * @tparam T Type of layer to create.
          * @param args Arguments for layer creation (except for the ID).
          * @return ID of the created layer.
          */
-        template<typename... Args>
+        template<std::derived_from<Layer> T, typename... Args>
         [[nodiscard]] Layer::ID push_layer(Args&&... args) {
-            return layer_stack_.push_layer(std::forward<Args>(args)...);
+            return layer_stack_.push_layer<T>(std::forward<Args>(args)...);
         }
 
         /**
          * @brief Create an overlay and push it onto the stack.
+         * @tparam T Type of overlay to create.
          * @param args Arguments for overlay creation (except for the ID).
          * @return ID of the created overlay.
          */
-        template<typename... Args>
+        template<std::derived_from<Layer> T, typename... Args>
         [[nodiscard]] Layer::ID push_overlay(Args&&... args) {
-            return layer_stack_.push_overlay(std::forward<Args>(args)...);
+            return layer_stack_.push_overlay<T>(std::forward<Args>(args)...);
         }
 
         /**
@@ -77,7 +86,15 @@ namespace rw::engine {
          */
         void run();
 
+        /**
+         * @brief Get the application window.
+         * @return Reference to the application window.
+         */
+        [[nodiscard]] rw::ui::Window& window();
+
      private:
+        static App* instance_; /**< Singleton instance of the application. */
+
         std::unique_ptr<rw::ui::Window> window_;          /**< Application window. */
         bool                            running_{ true }; /**< Flag to indicate if the application is running. */
 
