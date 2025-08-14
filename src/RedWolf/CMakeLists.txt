@@ -3,6 +3,8 @@ add_library(RedWolf STATIC)
 target_sources(RedWolf PRIVATE
         engine/app.cpp
         engine/entry_point.cpp
+        engine/layer.cpp
+        engine/layer_stack.cpp
         evt/application_event.cpp
         evt/event.cpp
         evt/key_event.cpp

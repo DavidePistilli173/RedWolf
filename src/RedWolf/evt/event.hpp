@@ -120,8 +120,6 @@ namespace rw::evt {
          * @brief Get the type of event.
          */
         [[nodiscard]] virtual EventType type() const = 0;
-
-        bool handled{ false }; /**< True if the event has already been handled. */
     };
 } // namespace rw::evt
 

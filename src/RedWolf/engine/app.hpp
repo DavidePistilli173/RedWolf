@@ -8,6 +8,7 @@
 #include "../evt/event.hpp"
 #include "../ui/window.hpp"
 #include "../util/logger.hpp"
+#include "layer_stack.hpp"
 
 #include <memory>
 
@@ -56,7 +57,27 @@ namespace rw::engine {
         /**
          * @brief Event handler for the application.
          */
-        void on_event(const rw::evt::Event& event);
+        [[nodiscard]] bool on_event(const rw::evt::Event& event);
+
+        /**
+         * @brief Create a layer and push it onto the stack.
+         * @param args Arguments for layer creation (except for the ID).
+         * @return ID of the created layer.
+         */
+        template<typename... Args>
+        [[nodiscard]] Layer::ID push_layer(Args&&... args) {
+            return layer_stack_.push_layer(std::forward<Args>(args)...);
+        }
+
+        /**
+         * @brief Create an overlay and push it onto the stack.
+         * @param args Arguments for overlay creation (except for the ID).
+         * @return ID of the created overlay.
+         */
+        template<typename... Args>
+        [[nodiscard]] Layer::ID push_overlay(Args&&... args) {
+            return layer_stack_.push_overlay(std::forward<Args>(args)...);
+        }
 
         /**
          * @brief Run the application main loop.
@@ -67,6 +88,8 @@ namespace rw::engine {
         rw::util::Logger                logger_;          /**< Application logger. */
         std::unique_ptr<rw::ui::Window> window_;          /**< Application window. */
         bool                            running_{ true }; /**< Flag to indicate if the application is running. */
+
+        LayerStack layer_stack_; /**< Application layer stack. */
     };
 
     /**

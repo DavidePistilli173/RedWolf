@@ -59,7 +59,7 @@ void rw::ui::Window::update() {
     glfwSwapBuffers(handle_);
 }
 
-void rw::ui::Window::set_event_callback(const std::function<void(const rw::evt::Event&)>& callback) {
+void rw::ui::Window::set_event_callback(const std::function<bool(const rw::evt::Event&)>& callback) {
     event_callback_ = callback;
 }
 

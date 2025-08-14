@@ -78,9 +78,9 @@ namespace rw::ui {
 
         /**
          * @brief Set the callback for handling window events.
-         * @param callback Callback to call when an event occurs.
+         * @param callback Callback to call when an event occurs. Must return true if the event was handled and false otherwise.
          */
-        void set_event_callback(const std::function<void(const rw::evt::Event&)>& callback);
+        void set_event_callback(const std::function<bool(const rw::evt::Event&)>& callback);
 
         /**
          * @brief Enable or disable vertical synchronization (VSync).
@@ -177,7 +177,7 @@ namespace rw::ui {
         uint32_t                                   width_{ default_window_width };   /**< Width of the window in pixels. */
         uint32_t                                   height_{ default_window_height }; /**< Height of the window in pixels. */
         bool                                       vsync_{ true };                   /**< Vertical synchronization (VSync) state. */
-        std::function<void(const rw::evt::Event&)> event_callback_{ nullptr };       /**< Callback for handling events. */
+        std::function<bool(const rw::evt::Event&)> event_callback_{ nullptr };       /**< Callback for handling events. */
     };
 } // namespace rw::ui
 
