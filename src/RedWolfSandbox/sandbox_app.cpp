@@ -8,7 +8,7 @@
 #include <RedWolf/util/logger.hpp>
 
 SandboxApp::SandboxApp() {
-    logger().info("Welcome to Sandbox, powered by RedWolf.");
+    RW_INFO("Welcome to Sandbox, powered by RedWolf.");
 }
 
 std::unique_ptr<rw::engine::App> rw::engine::create_app() {

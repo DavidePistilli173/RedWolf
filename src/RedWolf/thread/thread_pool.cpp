@@ -9,9 +9,9 @@ rw::thread::ThreadPool::Worker::Worker(Worker&& other) noexcept :
 
 rw::thread::ThreadPool::Worker& rw::thread::ThreadPool::Worker::operator=(Worker&& other) noexcept {
     if (&other != this) {
-        thread = std::move(other.thread);
+        thread  = std::move(other.thread);
         running = other.running.load();
-        busy = other.busy.load();
+        busy    = other.busy.load();
     }
     return *this;
 };
@@ -57,11 +57,11 @@ void rw::thread::ThreadPool::worker_main_loop_(Worker& this_worker) {
         std::unique_lock lck{ queue_mtx_ };
         if (tasks_.empty()) {
             task_arrived = worker_condition_variable_.wait_for(
-                lck, wait_timeout, [this, &pop, &task, &this_worker] { return !this_worker.running || !tasks_.empty(); });
+                lck, wait_timeout, [this, &this_worker] { return !this_worker.running || !tasks_.empty(); });
         }
 
         if (task_arrived && !tasks_.empty()) {
-            pop = true;
+            pop  = true;
             task = tasks_.front();
             tasks_.pop();
         }

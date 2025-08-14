@@ -6,7 +6,6 @@
 #define WINDOW_HPP
 
 #include "../evt/event.hpp"
-#include "../util/logger.hpp"
 #include "vendor/glfw.hpp"
 
 #include <functional>
@@ -20,10 +19,9 @@ namespace rw::ui {
      * @brief Descriptor for a window, containing properties like title, size, and other configurations.
      */
     struct WindowDescriptor {
-        rw::util::Logger& logger;                          /**< Logger instance for logging messages. */
-        std::string_view  title{ "RedWolf Engine" };       /**< Title of the window. */
-        uint32_t          width{ default_window_width };   /**< Width of the window in pixels. */
-        uint32_t          height{ default_window_height }; /**< Height of the window in pixels. */
+        std::string_view title{ "RedWolf Engine" };       /**< Title of the window. */
+        uint32_t         width{ default_window_width };   /**< Width of the window in pixels. */
+        uint32_t         height{ default_window_height }; /**< Height of the window in pixels. */
     };
 
     /**
@@ -171,7 +169,6 @@ namespace rw::ui {
 
         static bool glfw_initialized_; /**< Flag to check if GLFW has been initialized. */
 
-        rw::util::Logger&                          logger_;                          /**< Logger instance for logging messages. */
         GLFWwindow*                                handle_{ nullptr };               /**< Raw window handle. */
         std::string                                title_{ "RedWolf Engine" };       /**< Title of the window. */
         uint32_t                                   width_{ default_window_width };   /**< Width of the window in pixels. */

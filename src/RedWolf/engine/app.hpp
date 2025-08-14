@@ -7,7 +7,6 @@
 
 #include "../evt/event.hpp"
 #include "../ui/window.hpp"
-#include "../util/logger.hpp"
 #include "layer_stack.hpp"
 
 #include <memory>
@@ -49,12 +48,6 @@ namespace rw::engine {
         App& operator=(App&&) = delete;
 
         /**
-         * @brief Get the logger of the application.
-         * @return Logger for the application.
-         */
-        [[nodiscard]] rw::util::Logger& logger();
-
-        /**
          * @brief Event handler for the application.
          */
         [[nodiscard]] bool on_event(const rw::evt::Event& event);
@@ -85,7 +78,6 @@ namespace rw::engine {
         void run();
 
      private:
-        rw::util::Logger                logger_;          /**< Application logger. */
         std::unique_ptr<rw::ui::Window> window_;          /**< Application window. */
         bool                            running_{ true }; /**< Flag to indicate if the application is running. */
 

@@ -4,6 +4,8 @@
 
 #include "layer_stack.hpp"
 
+#include "../util/logger.hpp"
+
 #include <algorithm>
 
 rw::engine::LayerStack::LayerStack() {

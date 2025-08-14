@@ -9,21 +9,81 @@
 #include "log_msg.hpp"
 
 #include <atomic>
+#include <memory>
 #include <mutex>
 #include <print>
 
+// Macros for easy logging.
+// These are some of the few macros defined in this project.
+// This is done for convenience and to avoid cluttering the code with repetitive logger calls.
+
+/**
+ * @brief Log a trace message from the engine.
+ * @param msg Format message, followed by the arguments.
+ */
+#define RW_CORE_TRACE(msg, ...) rw::util::Logger::get().trace("CORE - " msg, ##__VA_ARGS__)
+
+/**
+ * @brief Log an information message from the engine.
+ * @param msg Format message, followed by the arguments.
+ */
+#define RW_CORE_INFO(msg, ...) rw::util::Logger::get().info("CORE - " msg, ##__VA_ARGS__)
+
+/**
+ * @brief Log a warning message from the engine.
+ * @param msg Format message, followed by the arguments.
+ */
+#define RW_CORE_WARN(msg, ...) rw::util::Logger::get().warn("CORE - " msg, ##__VA_ARGS__)
+
+/**
+ * @brief Log an error message from the engine.
+ * @param msg Format message, followed by the arguments.
+ */
+#define RW_CORE_ERR(msg, ...) rw::util::Logger::get().err("CORE - " msg, ##__VA_ARGS__)
+
+/**
+ * @brief Log a fatal error message from the engine.
+ * @param msg Format message, followed by the arguments.
+ */
+#define RW_CORE_FATAL(msg, ...) rw::util::Logger::get().fatal("CORE - " msg, ##__VA_ARGS__)
+
+/**
+ * @brief Log a trace message from the user application.
+ * @param msg Format message, followed by the arguments.
+ */
+#define RW_TRACE(msg, ...) rw::util::Logger::get().trace("APP - " msg, ##__VA_ARGS__)
+
+/**
+ * @brief Log an information message from the user application.
+ * @param msg Format message, followed by the arguments.
+ */
+#define RW_INFO(msg, ...) rw::util::Logger::get().info("APP - " msg, ##__VA_ARGS__)
+
+/**
+ * @brief Log a warning message from the user application.
+ * @param msg Format message, followed by the arguments.
+ */
+#define RW_WARN(msg, ...) rw::util::Logger::get().warn("APP - " msg, ##__VA_ARGS__)
+
+/**
+ * @brief Log an error message from the user application.
+ * @param msg Format message, followed by the arguments.
+ */
+#define RW_ERR(msg, ...) rw::util::Logger::get().err("APP - " msg, ##__VA_ARGS__)
+
+/**
+ * @brief Log a fatal error message from the user application.
+ * @param msg Format message, followed by the arguments.
+ */
+#define RW_FATAL(msg, ...) rw::util::Logger::get().fatal("APP - " msg, ##__VA_ARGS__)
+
 namespace rw::util {
     /**
-     * @brief Custom thread-safe logger.
+     * @brief Singleton, thread-safe logger.
      */
     class Logger {
      public:
         using Level = LogMsg::Level;
-
-        /**
-         * @brief Default constructor.
-         */
-        Logger();
 
         /**
          * @brief Utility structure for storing a message and the source code location that generated.
@@ -60,6 +120,12 @@ namespace rw::util {
         void fatal(const MessageWithLocation& msg, const Args&... args) {
             message_base(Level::fatal, msg, args...);
         }
+
+        /**
+         * @brief Get the instance of the logger.
+         * @return Instance of the logger.
+         */
+        [[nodiscard]] static Logger& get();
 
         /**
          * @brief Log an information message.
@@ -138,6 +204,11 @@ namespace rw::util {
         }
 
      private:
+        /**
+         * @brief Default constructor.
+         */
+        Logger();
+
         std::mutex         mtx_;                   /**< Logging mutex. */
         std::atomic<Level> level_{ Level::trace }; /**< Logging level. */
     };

@@ -10,13 +10,11 @@
 #include <ranges>
 
 rw::engine::App::App() {
-    window_ = std::make_unique<rw::ui::Window>(rw::ui::WindowDescriptor{
-        .logger = logger_, .title = "RedWolf Engine", .width = rw::ui::default_window_width, .height = rw::ui::default_window_height });
-    window_->set_event_callback([this](const rw::evt::Event& event) { return on_event(event); });
-}
+    RW_CORE_INFO("Constructing application");
 
-rw::util::Logger& rw::engine::App::logger() {
-    return logger_;
+    window_ = std::make_unique<rw::ui::Window>(rw::ui::WindowDescriptor{
+        .title = "RedWolf Engine", .width = rw::ui::default_window_width, .height = rw::ui::default_window_height });
+    window_->set_event_callback([this](const rw::evt::Event& event) { return on_event(event); });
 }
 
 bool rw::engine::App::on_event(const rw::evt::Event& event) {
