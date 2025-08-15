@@ -63,6 +63,12 @@ namespace rw::ui {
         Window& operator=(Window&& other) = delete;
 
         /**
+         * @brief Get the raw GLFW window handle.
+         * @return Raw GLFW window handle.
+         */
+        [[nodiscard]] GLFWwindow* handle();
+
+        /**
          * @brief Get the current height of the window.
          * @return Current height of the window in pixels.
          */
@@ -99,6 +105,13 @@ namespace rw::ui {
         [[nodiscard]] uint32_t width() const;
 
      private:
+        /**
+         * @brief Callback called when scrolling is performed.
+         * @param window Handle of the window that received the event.
+         * @param character Typed character.
+         */
+        static void char_clbk_(GLFWwindow* window, unsigned int character);
+
         /**
          * @brief Close the window, if it is initalised.
          */

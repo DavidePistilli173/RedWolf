@@ -59,6 +59,10 @@ rw::ui::Window::Window(Window&& other) noexcept :
     other.handle_ = nullptr; // Transfer ownership
 }
 
+GLFWwindow* rw::ui::Window::handle() {
+    return handle_;
+}
+
 uint32_t rw::ui::Window::height() const {
     return height_;
 }
@@ -66,6 +70,8 @@ uint32_t rw::ui::Window::height() const {
 void rw::ui::Window::update() {
     glfwWaitEventsTimeout(default_frame_time);
     glfwSwapBuffers(handle_);
+    glClearColor(0.2F, 0.0F, 0.0F, 1.0F);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void rw::ui::Window::set_event_callback(const std::function<bool(const rw::evt::Event&)>& callback) {
@@ -90,6 +96,19 @@ bool rw::ui::Window::vsync() const {
 
 uint32_t rw::ui::Window::width() const {
     return width_;
+}
+
+void rw::ui::Window::char_clbk_(GLFWwindow* window, unsigned int character) {
+    void* user_ptr{ glfwGetWindowUserPointer(window) };
+    if (nullptr == user_ptr) {
+        return;
+    }
+    const auto* self{ static_cast<Window*>(user_ptr) };
+
+    const rw::evt::KeyTypedEvent event{ static_cast<int32_t>(character) };
+    if (nullptr != self->event_callback_) {
+        (void) self->event_callback_(event);
+    }
 }
 
 void rw::ui::Window::close_() {
@@ -119,6 +138,7 @@ void rw::ui::Window::glfw_error_clbk_(int code, const char* description) {
 void rw::ui::Window::init_callbacks_() {
     glfwSetWindowCloseCallback(handle_, &Window::window_close_clbk_);
     glfwSetWindowSizeCallback(handle_, &Window::window_resize_clbk_);
+    glfwSetCharCallback(handle_, &Window::char_clbk_);
     glfwSetKeyCallback(handle_, &Window::key_clbk_);
     glfwSetMouseButtonCallback(handle_, &Window::mouse_button_clbk_);
     glfwSetScrollCallback(handle_, &Window::scroll_clbk_);
@@ -226,6 +246,6 @@ void rw::ui::Window::window_resize_clbk_(GLFWwindow* window, int width, int heig
     if (nullptr == self->event_callback_) {
         return;
     }
-    const rw::evt::WindowResizeEvent event{ self->width_, self->height_ };
-    (void)self->event_callback_(event);
+    const rw::evt::WindowResizedEvent event{ self->width_, self->height_ };
+    (void) self->event_callback_(event);
 }

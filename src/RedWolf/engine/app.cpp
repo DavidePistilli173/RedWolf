@@ -59,11 +59,11 @@ bool rw::engine::App::on_event(const rw::evt::Event& event) {
 
 void rw::engine::App::run() {
     while (running_) {
-        window_->update();
-
         for (auto& layer : layer_stack_) {
             layer->update();
         }
+
+        window_->update();
     }
 }
 

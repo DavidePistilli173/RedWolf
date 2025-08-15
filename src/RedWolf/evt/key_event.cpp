@@ -41,3 +41,17 @@ std::string rw::evt::KeyReleasedEvent::to_string() const {
 rw::evt::EventType rw::evt::KeyReleasedEvent::type() const {
     return EventType::key_released;
 }
+
+rw::evt::KeyTypedEvent::KeyTypedEvent(const int32_t key_code) : KeyEvent(key_code) {}
+
+std::string_view rw::evt::KeyTypedEvent::name() const {
+    return "KeyTypedEvent";
+}
+
+std::string rw::evt::KeyTypedEvent::to_string() const {
+    return std::string("KeyTypedEvent{ key: ") + std::to_string(key) + '}';
+}
+
+rw::evt::EventType rw::evt::KeyTypedEvent::type() const {
+    return EventType::key_typed;
+}

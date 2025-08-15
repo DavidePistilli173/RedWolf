@@ -162,6 +162,58 @@ namespace rw::evt {
          */
         [[nodiscard]] EventType type() const override;
     };
+
+    /**
+     * @brief Keyboard key typed event.
+     */
+    struct KeyTypedEvent final : KeyEvent {
+        /**
+         * @brief Constructor.
+         * @param key_code Key that was pressed.
+         */
+        explicit KeyTypedEvent(const int32_t key_code);
+
+        /**
+         * @brief Destructor.
+         */
+        ~KeyTypedEvent() override = default;
+
+        /**
+         * @brief Copy constructor.
+         */
+        KeyTypedEvent(const KeyTypedEvent&) = default;
+
+        /**
+         * @brief Copy-assignment operator.
+         */
+        KeyTypedEvent& operator=(const KeyTypedEvent&) = default;
+
+        /**
+         * @brief Move constructor.
+         */
+        KeyTypedEvent(KeyTypedEvent&&) = default;
+
+        /**
+         * @brief Move-assignment operator.
+         */
+        KeyTypedEvent& operator=(KeyTypedEvent&&) = default;
+
+        /**
+         * @brief Get the readable name of the event.
+         */
+        [[nodiscard]] std::string_view name() const override;
+
+        /**
+         * @brief Get a string representation of the event.
+         * @return String representation of the event.
+         */
+        [[nodiscard]] std::string to_string() const override;
+
+        /**
+         * @brief Get the type of event.
+         */
+        [[nodiscard]] EventType type() const override;
+    };
 } // namespace rw::evt
 
 #endif // KEY_EVENT_HPP

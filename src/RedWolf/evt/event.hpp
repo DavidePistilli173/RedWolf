@@ -27,6 +27,7 @@ namespace rw::evt {
         app_render,
         key_pressed,
         key_released,
+        key_typed,
         mouse_button_pressed,
         mouse_button_released,
         mouse_moved,

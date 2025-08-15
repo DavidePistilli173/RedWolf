@@ -13,38 +13,38 @@ namespace rw::evt {
     /**
      * @brief Window resizing event.
      */
-    struct WindowResizeEvent final : Event {
+    struct WindowResizedEvent final : Event {
         /**
          * @brief Constructor.
          * @param new_width New window width.
          * @param new_height New window height.
          */
-        WindowResizeEvent(const uint32_t new_width, const uint32_t new_height);
+        WindowResizedEvent(const uint32_t new_width, const uint32_t new_height);
 
         /**
          * @brief Destructor.
          */
-        ~WindowResizeEvent() override = default;
+        ~WindowResizedEvent() override = default;
 
         /**
          * @brief Copy constructor.
          */
-        WindowResizeEvent(const WindowResizeEvent&) = default;
+        WindowResizedEvent(const WindowResizedEvent&) = default;
 
         /**
          * @brief Copy-assignment operator.
          */
-        WindowResizeEvent& operator=(const WindowResizeEvent&) = default;
+        WindowResizedEvent& operator=(const WindowResizedEvent&) = default;
 
         /**
          * @brief Move constructor.
          */
-        WindowResizeEvent(WindowResizeEvent&&) = default;
+        WindowResizedEvent(WindowResizedEvent&&) = default;
 
         /**
          * @brief Move-assignment operator.
          */
-        WindowResizeEvent& operator=(WindowResizeEvent&&) = default;
+        WindowResizedEvent& operator=(WindowResizedEvent&&) = default;
 
         /**
          * @brief Get the category flags of the event.

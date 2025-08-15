@@ -4,22 +4,22 @@
 
 #include "application_event.hpp"
 
-rw::evt::WindowResizeEvent::WindowResizeEvent(const uint32_t new_width, const uint32_t new_height) :
+rw::evt::WindowResizedEvent::WindowResizedEvent(const uint32_t new_width, const uint32_t new_height) :
     Event(), width{ new_width }, height{ new_height } {}
 
-rw::evt::EventCategory rw::evt::WindowResizeEvent::category() const {
+rw::evt::EventCategory rw::evt::WindowResizedEvent::category() const {
     return compose_categories<EventCategoryType::application>();
 }
 
-std::string_view rw::evt::WindowResizeEvent::name() const {
-    return "WindowResizeEvent";
+std::string_view rw::evt::WindowResizedEvent::name() const {
+    return "WindowResizedEvent";
 }
 
-std::string rw::evt::WindowResizeEvent::to_string() const {
-    return std::string("WindowResizeEvent{ width: ") + std::to_string(width) + "; height: " + std::to_string(height) + '}';
+std::string rw::evt::WindowResizedEvent::to_string() const {
+    return std::string("WindowResizedEvent{ width: ") + std::to_string(width) + "; height: " + std::to_string(height) + '}';
 }
 
-rw::evt::EventType rw::evt::WindowResizeEvent::type() const {
+rw::evt::EventType rw::evt::WindowResizedEvent::type() const {
     return EventType::window_resize;
 }
 
