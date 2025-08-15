@@ -11,7 +11,7 @@
 #include <memory>
 #include <vector>
 
-namespace rw::engine {
+namespace rw::layers {
     /**
      * @brief Stack of layers in the application.
      */
@@ -118,5 +118,5 @@ namespace rw::engine {
         std::vector<std::unique_ptr<Layer>> layers_;                             /**< Actual stack of layers. */
         iterator                            layer_insert_it_{ layers_.begin() }; /**< Position where to place layers. */
     };
-} // namespace rw::engine
+} // namespace rw::layers
 #endif // SRC_REDWOLF_LAYER_STACK_HPP

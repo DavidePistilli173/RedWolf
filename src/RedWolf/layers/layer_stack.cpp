@@ -8,31 +8,31 @@
 
 #include <algorithm>
 
-rw::engine::LayerStack::LayerStack() {
+rw::layers::LayerStack::LayerStack() {
     layers_.reserve(default_layer_num);
 }
 
-rw::engine::LayerStack::iterator rw::engine::LayerStack::begin() {
+rw::layers::LayerStack::iterator rw::layers::LayerStack::begin() {
     return layers_.begin();
 }
 
-rw::engine::LayerStack::const_iterator rw::engine::LayerStack::begin() const {
+rw::layers::LayerStack::const_iterator rw::layers::LayerStack::begin() const {
     return layers_.begin();
 }
 
-rw::engine::LayerStack::const_iterator rw::engine::LayerStack::cbegin() const {
+rw::layers::LayerStack::const_iterator rw::layers::LayerStack::cbegin() const {
     return layers_.cbegin();
 }
 
-rw::engine::LayerStack::const_iterator rw::engine::LayerStack::cend() const {
+rw::layers::LayerStack::const_iterator rw::layers::LayerStack::cend() const {
     return layers_.cend();
 }
 
-rw::engine::LayerStack::iterator rw::engine::LayerStack::end() {
+rw::layers::LayerStack::iterator rw::layers::LayerStack::end() {
     return layers_.end();
 }
 
-void rw::engine::LayerStack::pop_layer(const Layer::ID layer_id) {
+void rw::layers::LayerStack::pop_layer(const Layer::ID layer_id) {
     if (const auto it{ std::find_if(
             layers_.begin(), layers_.end(), [layer_id](const std::unique_ptr<Layer>& layer) { return layer_id == layer->id(); }) };
         layers_.end() != it) {
@@ -42,7 +42,7 @@ void rw::engine::LayerStack::pop_layer(const Layer::ID layer_id) {
     }
 }
 
-void rw::engine::LayerStack::pop_overlay(const Layer::ID overlay_id) {
+void rw::layers::LayerStack::pop_overlay(const Layer::ID overlay_id) {
     if (const auto it{ std::find_if(
             layers_.rbegin(), layers_.rend(), [overlay_id](const std::unique_ptr<Layer>& layer) { return overlay_id == layer->id(); }) };
         layers_.rend() != it) {

@@ -11,7 +11,7 @@
 #include <string>
 #include <string_view>
 
-namespace rw::engine {
+namespace rw::layers {
     /**
      * @brief Logic/graphics layer of the application.
      */
@@ -91,6 +91,6 @@ namespace rw::engine {
         ID          id_{ 0U }; /**< Unique identifier for the layer. */
         std::string name_;     /**< Name of the layer. */
     };
-} // namespace rw::engine
+} // namespace rw::layers
 
 #endif // SRC_REDWOLF_LAYER_HPP

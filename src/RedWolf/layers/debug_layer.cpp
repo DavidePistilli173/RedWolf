@@ -5,16 +5,16 @@
 #include "debug_layer.hpp"
 
 #include "../engine/app.hpp"
-#include "../pltf/gl/imgui_impl_opengl3.h"
+#include "../pl/gl/imgui_impl_opengl3.h"
 #include "../util/logger.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <imgui/imgui.h>
 
-rw::ui::DebugLayer::DebugLayer(const ID id) : Layer(id, "DebugLayer") {}
+rw::layers::DebugLayer::DebugLayer(const ID id) : Layer(id, "DebugLayer") {}
 
-void rw::ui::DebugLayer::attach() {
+void rw::layers::DebugLayer::attach() {
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
 
@@ -26,9 +26,9 @@ void rw::ui::DebugLayer::attach() {
     ImGui_ImplOpenGL3_Init("#version 410");
 }
 
-void rw::ui::DebugLayer::detach() {}
+void rw::layers::DebugLayer::detach() {}
 
-void rw::ui::DebugLayer::update() {
+void rw::layers::DebugLayer::update() {
     rw::engine::App& app{ rw::engine::App::get() };
     ImGuiIO&         io{ ImGui::GetIO() };
     io.DisplaySize = ImVec2(static_cast<float>(app.window().width()), static_cast<float>(app.window().height()));
@@ -47,7 +47,7 @@ void rw::ui::DebugLayer::update() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-bool rw::ui::DebugLayer::on_event(const rw::evt::Event& event) {
+bool rw::layers::DebugLayer::on_event(const rw::evt::Event& event) {
     switch (event.type()) {
     case rw::evt::EventType::key_pressed:
         on_key_pressed_event_(dynamic_cast<const rw::evt::KeyPressedEvent&>(event));
@@ -81,7 +81,7 @@ bool rw::ui::DebugLayer::on_event(const rw::evt::Event& event) {
     return false;
 }
 
-ImGuiKey rw::ui::DebugLayer::imgui_key_from_glfw_(const int keycode) {
+ImGuiKey rw::layers::DebugLayer::imgui_key_from_glfw_(const int keycode) {
     switch (keycode) {
     case GLFW_KEY_TAB:
         return ImGuiKey_Tab;
@@ -326,7 +326,7 @@ ImGuiKey rw::ui::DebugLayer::imgui_key_from_glfw_(const int keycode) {
     }
 }
 
-void rw::ui::DebugLayer::on_key_pressed_event_(const rw::evt::KeyPressedEvent& event) {
+void rw::layers::DebugLayer::on_key_pressed_event_(const rw::evt::KeyPressedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
     io.KeysData[static_cast<int>(imgui_key_from_glfw_(event.key)) - ImGuiKey_NamedKey_BEGIN].Down = true;
     io.AddKeyEvent(imgui_key_from_glfw_(event.key), true);
@@ -334,7 +334,7 @@ void rw::ui::DebugLayer::on_key_pressed_event_(const rw::evt::KeyPressedEvent& e
     update_control_keys_();
 }
 
-void rw::ui::DebugLayer::on_key_released_event_(const rw::evt::KeyReleasedEvent& event) {
+void rw::layers::DebugLayer::on_key_released_event_(const rw::evt::KeyReleasedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
     io.KeysData[static_cast<int>(imgui_key_from_glfw_(event.key)) - ImGuiKey_NamedKey_BEGIN].Down = false;
     io.AddKeyEvent(imgui_key_from_glfw_(event.key), false);
@@ -342,44 +342,44 @@ void rw::ui::DebugLayer::on_key_released_event_(const rw::evt::KeyReleasedEvent&
     update_control_keys_();
 }
 
-void rw::ui::DebugLayer::on_key_typed_event_(const rw::evt::KeyTypedEvent& event) {
+void rw::layers::DebugLayer::on_key_typed_event_(const rw::evt::KeyTypedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
     if (event.key > 0 && event.key < 0x10000) {
         io.AddInputCharacter(static_cast<unsigned int>(event.key));
     }
 }
 
-void rw::ui::DebugLayer::on_mouse_button_pressed_event_(const rw::evt::MouseButtonPressedEvent& event) {
+void rw::layers::DebugLayer::on_mouse_button_pressed_event_(const rw::evt::MouseButtonPressedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
     io.MouseDown[event.button] = true;
     update_control_keys_();
 }
 
-void rw::ui::DebugLayer::on_mouse_button_released_event_(const rw::evt::MouseButtonReleasedEvent& event) {
+void rw::layers::DebugLayer::on_mouse_button_released_event_(const rw::evt::MouseButtonReleasedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
     io.MouseDown[event.button] = false;
     update_control_keys_();
 }
 
-void rw::ui::DebugLayer::on_mouse_moved_event_(const rw::evt::MouseMovedEvent& event) {
+void rw::layers::DebugLayer::on_mouse_moved_event_(const rw::evt::MouseMovedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
     io.MousePos = ImVec2(static_cast<float>(event.x), static_cast<float>(event.y));
 }
 
-void rw::ui::DebugLayer::on_mouse_scrolled_event_(const rw::evt::MouseScrolledEvent& event) {
+void rw::layers::DebugLayer::on_mouse_scrolled_event_(const rw::evt::MouseScrolledEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
     io.MouseWheelH += static_cast<float>(event.x_offset);
     io.MouseWheel += static_cast<float>(event.y_offset);
 }
 
-void rw::ui::DebugLayer::on_window_resized_event_(const rw::evt::WindowResizedEvent& event) {
+void rw::layers::DebugLayer::on_window_resized_event_(const rw::evt::WindowResizedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
     io.DisplaySize             = ImVec2(static_cast<float>(event.width), static_cast<float>(event.height));
     io.DisplayFramebufferScale = ImVec2(1.0F, 1.0F);
     glViewport(0, 0, static_cast<int>(event.width), static_cast<int>(event.height));
 }
 
-void rw::ui::DebugLayer::update_control_keys_() {
+void rw::layers::DebugLayer::update_control_keys_() {
     ImGuiIO&    io{ ImGui::GetIO() };
     GLFWwindow* window{ rw::engine::App::get().window().handle() };
 
@@ -394,6 +394,4 @@ void rw::ui::DebugLayer::update_control_keys_() {
     io.AddKeyEvent(
         ImGuiMod_Super,
         (glfwGetKey(window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_SUPER) == GLFW_PRESS));
-
-    RW_CORE_TRACE("Control keys: Ctrl: {}, Shift: {}, Alt: {}, Super: {}", io.KeyCtrl, io.KeyShift, io.KeyAlt, io.KeySuper);
 }

@@ -6,8 +6,8 @@
 #define APP_HPP
 
 #include "../evt/event.hpp"
+#include "../layers/layer_stack.hpp"
 #include "../ui/window.hpp"
-#include "layer_stack.hpp"
 
 #include <concepts>
 #include <memory>
@@ -65,8 +65,8 @@ namespace rw::engine {
          * @param args Arguments for layer creation (except for the ID).
          * @return ID of the created layer.
          */
-        template<std::derived_from<Layer> T, typename... Args>
-        [[nodiscard]] Layer::ID push_layer(Args&&... args) {
+        template<std::derived_from<rw::layers::Layer> T, typename... Args>
+        [[nodiscard]] rw::layers::Layer::ID push_layer(Args&&... args) {
             return layer_stack_.push_layer<T>(std::forward<Args>(args)...);
         }
 
@@ -76,8 +76,8 @@ namespace rw::engine {
          * @param args Arguments for overlay creation (except for the ID).
          * @return ID of the created overlay.
          */
-        template<std::derived_from<Layer> T, typename... Args>
-        [[nodiscard]] Layer::ID push_overlay(Args&&... args) {
+        template<std::derived_from<rw::layers::Layer> T, typename... Args>
+        [[nodiscard]] rw::layers::Layer::ID push_overlay(Args&&... args) {
             return layer_stack_.push_overlay<T>(std::forward<Args>(args)...);
         }
 
@@ -98,7 +98,7 @@ namespace rw::engine {
         std::unique_ptr<rw::ui::Window> window_;          /**< Application window. */
         bool                            running_{ true }; /**< Flag to indicate if the application is running. */
 
-        LayerStack layer_stack_; /**< Application layer stack. */
+        rw::layers::LayerStack layer_stack_; /**< Application layer stack. */
     };
 
     /**

@@ -3,16 +3,16 @@ add_library(RedWolf STATIC)
 target_sources(RedWolf PRIVATE
         engine/app.cpp
         engine/entry_point.cpp
-        engine/layer.cpp
-        engine/layer_stack.cpp
         evt/application_event.cpp
         evt/event.cpp
         evt/key_event.cpp
         evt/mouse_event.cpp
-        pltf/gl/imgui_impl_opengl3.cpp
+        layers/layer.cpp
+        layers/layer_stack.cpp
+        layers/debug_layer.cpp
+        pl/gl/imgui_impl_opengl3.cpp
         thread/thread_pool.cpp
         time/date_time.cpp
-        ui/debug_layer.cpp
         ui/window.cpp
         util/log_msg.cpp
         util/logger.cpp

@@ -17,7 +17,7 @@ class SandboxApp : public rw::engine::App {
     SandboxApp& operator=(SandboxApp&&)      = default;
 
  private:
-    rw::engine::Layer::ID debug_layer_id_{}; /**< ID of the debug layer. */
+    rw::layers::Layer::ID debug_layer_id_{}; /**< ID of the debug layer. */
 };
 
 #endif // SANDBOX_APP_HPP

@@ -5,15 +5,15 @@
 #ifndef SRC_REDWOLF_DEBUG_LAYER_HPP
 #define SRC_REDWOLF_DEBUG_LAYER_HPP
 
-#include "../engine/layer.hpp"
 #include "../evt/application_event.hpp"
 #include "../evt/key_event.hpp"
 #include "../evt/mouse_event.hpp"
+#include "layer.hpp"
 
 #include <imgui/imgui.h>
 
-namespace rw::ui {
-    class DebugLayer : public rw::engine::Layer {
+namespace rw::layers {
+    class DebugLayer : public Layer {
      public:
         /**
          * @brief Constructor.
@@ -130,6 +130,6 @@ namespace rw::ui {
 
         double time_{ 0.0F }; // Time since the last frame
     };
-} // namespace rw::ui
+} // namespace rw::layers
 
 #endif // SRC_REDWOLF_DEBUG_LAYER_HPP
