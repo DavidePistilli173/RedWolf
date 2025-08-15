@@ -10,6 +10,7 @@
 #include <ranges>
 
 rw::engine::App::App() {
+    // Initialise the logger as first instruction.
     RW_CORE_INFO("Constructing application");
 
     if (nullptr != instance_) {

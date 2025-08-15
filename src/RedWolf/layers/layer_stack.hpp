@@ -75,7 +75,7 @@ namespace rw::layers {
 
         /**
          * @brief Create a layer and push it onto the stack.
-         * @param T Type of layer to create.
+         * @tparam T Type of layer to create.
          * @param args Arguments for layer creation (except for the ID).
          * @return ID of the created layer.
          */
