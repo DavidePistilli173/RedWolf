@@ -4,7 +4,9 @@
 
 #include "key_event.hpp"
 
-rw::evt::KeyEvent::KeyEvent(const int32_t key_code) : Event(), key{ key_code } {}
+#include <format>
+
+rw::evt::KeyEvent::KeyEvent(const rw::input::Key key_code) : Event(), key{ key_code } {}
 
 rw::evt::EventCategory rw::evt::KeyEvent::category() const {
     return compose_categories<EventCategoryType::input, EventCategoryType::keyboard>();
@@ -14,42 +16,42 @@ std::string_view rw::evt::KeyEvent::name() const {
     return "KeyEvent";
 }
 
-rw::evt::KeyPressedEvent::KeyPressedEvent(const int32_t key_code, const bool repeat) : KeyEvent(key_code), is_repeat(repeat) {}
+rw::evt::KeyPressedEvent::KeyPressedEvent(const rw::input::Key key_code, const bool repeat) : KeyEvent(key_code), is_repeat(repeat) {}
 
 std::string_view rw::evt::KeyPressedEvent::name() const {
     return "KeyPressedEvent";
 }
 
 std::string rw::evt::KeyPressedEvent::to_string() const {
-    return std::string("KeyPressedEvent{ key: ") + std::to_string(key) + "; repeat: " + std::to_string(is_repeat) + '}';
+    return std::format("KeyPressedEvent{{ key: {}; repeat: {}}}", key, is_repeat);
 }
 
 rw::evt::EventType rw::evt::KeyPressedEvent::type() const {
     return EventType::key_pressed;
 }
 
-rw::evt::KeyReleasedEvent::KeyReleasedEvent(const int32_t key_code) : KeyEvent(key_code) {}
+rw::evt::KeyReleasedEvent::KeyReleasedEvent(const rw::input::Key key_code) : KeyEvent(key_code) {}
 
 std::string_view rw::evt::KeyReleasedEvent::name() const {
     return "KeyReleasedEvent";
 }
 
 std::string rw::evt::KeyReleasedEvent::to_string() const {
-    return std::string("KeyReleasedEvent{ key: ") + std::to_string(key) + '}';
+    return std::format("KeyReleasedEvent{{ key: {}}}", key);
 }
 
 rw::evt::EventType rw::evt::KeyReleasedEvent::type() const {
     return EventType::key_released;
 }
 
-rw::evt::KeyTypedEvent::KeyTypedEvent(const int32_t key_code) : KeyEvent(key_code) {}
+rw::evt::KeyTypedEvent::KeyTypedEvent(const rw::input::Key key_code) : KeyEvent(key_code) {}
 
 std::string_view rw::evt::KeyTypedEvent::name() const {
     return "KeyTypedEvent";
 }
 
 std::string rw::evt::KeyTypedEvent::to_string() const {
-    return std::string("KeyTypedEvent{ key: ") + std::to_string(key) + '}';
+    return std::format("KeyTypedEvent{{ key: {}}}", key);
 }
 
 rw::evt::EventType rw::evt::KeyTypedEvent::type() const {

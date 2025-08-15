@@ -4,7 +4,9 @@
 
 #include "mouse_event.hpp"
 
-rw::evt::MouseMovedEvent::MouseMovedEvent(double new_x, double new_y) : Event(), x{ new_x }, y{ new_y } {}
+#include <format>
+
+rw::evt::MouseMovedEvent::MouseMovedEvent(const double new_x, const double new_y) : Event(), x{ new_x }, y{ new_y } {}
 
 rw::evt::EventCategory rw::evt::MouseMovedEvent::category() const {
     return compose_categories<rw::evt::EventCategoryType::input, rw::evt::EventCategoryType::mouse>();
@@ -15,7 +17,7 @@ std::string_view rw::evt::MouseMovedEvent::name() const {
 }
 
 std::string rw::evt::MouseMovedEvent::to_string() const {
-    return std::string("MouseMovedEvent{ x: ") + std::to_string(x) + "; y: " + std::to_string(y) + '}';
+    return std::format("MouseMovedEvent{{ x: {}; y: {}}}", x, y);
 }
 
 rw::evt::EventType rw::evt::MouseMovedEvent::type() const {
@@ -33,14 +35,14 @@ std::string_view rw::evt::MouseScrolledEvent::name() const {
 }
 
 std::string rw::evt::MouseScrolledEvent::to_string() const {
-    return std::string("MouseScrolledEvent{ x_offset: ") + std::to_string(x_offset) + "; y_offset: " + std::to_string(y_offset) + '}';
+    return std::format("MouseScrolledEvent{{ x_offset: {}; y_offset: {}}}", x_offset, y_offset);
 }
 
 rw::evt::EventType rw::evt::MouseScrolledEvent::type() const {
     return EventType::mouse_scrolled;
 }
 
-rw::evt::MouseButtonEvent::MouseButtonEvent(int32_t button_code) : Event(), button{ button_code } {}
+rw::evt::MouseButtonEvent::MouseButtonEvent(const rw::input::MouseButton button_code) : Event(), button{ button_code } {}
 
 rw::evt::EventCategory rw::evt::MouseButtonEvent::category() const {
     return compose_categories<EventCategoryType::input, EventCategoryType::mouse, EventCategoryType::mouse_button>();
@@ -50,28 +52,28 @@ std::string_view rw::evt::MouseButtonEvent::name() const {
     return "MouseButtonEvent";
 }
 
-rw::evt::MouseButtonPressedEvent::MouseButtonPressedEvent(const int32_t button_code) : MouseButtonEvent(button_code) {}
+rw::evt::MouseButtonPressedEvent::MouseButtonPressedEvent(const rw::input::MouseButton button_code) : MouseButtonEvent(button_code) {}
 
 std::string_view rw::evt::MouseButtonPressedEvent::name() const {
     return "MouseButtonPressedEvent";
 }
 
 std::string rw::evt::MouseButtonPressedEvent::to_string() const {
-    return std::string("MouseButtonPressedEvent{ button: ") + std::to_string(button) + '}';
+    return std::format("MouseButtonPressedEvent{{ button: {}}}", button);
 }
 
 rw::evt::EventType rw::evt::MouseButtonPressedEvent::type() const {
     return EventType::mouse_button_pressed;
 }
 
-rw::evt::MouseButtonReleasedEvent::MouseButtonReleasedEvent(const int32_t button_code) : MouseButtonEvent(button_code) {}
+rw::evt::MouseButtonReleasedEvent::MouseButtonReleasedEvent(const rw::input::MouseButton button_code) : MouseButtonEvent(button_code) {}
 
 std::string_view rw::evt::MouseButtonReleasedEvent::name() const {
     return "MouseButtonReleasedEvent";
 }
 
 std::string rw::evt::MouseButtonReleasedEvent::to_string() const {
-    return std::string("MouseButtonReleasedEvent{ button: ") + std::to_string(button) + '}';
+    return std::format("MouseButtonReleasedEvent{{ button: {}}}", button);
 }
 
 rw::evt::EventType rw::evt::MouseButtonReleasedEvent::type() const {

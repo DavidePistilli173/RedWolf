@@ -105,7 +105,7 @@ void rw::ui::Window::char_clbk_(GLFWwindow* window, unsigned int character) {
     }
     const auto* self{ static_cast<Window*>(user_ptr) };
 
-    const rw::evt::KeyTypedEvent event{ static_cast<int32_t>(character) };
+    const rw::evt::KeyTypedEvent event{ static_cast<rw::input::Key>(character) };
     if (nullptr != self->event_callback_) {
         (void) self->event_callback_(event);
     }
@@ -152,23 +152,23 @@ void rw::ui::Window::key_clbk_(GLFWwindow* window, int key, [[maybe_unused]] int
     }
     const auto* self{ static_cast<Window*>(user_ptr) };
 
-    switch (action) {
-    case GLFW_PRESS: {
-        const rw::evt::KeyPressedEvent event{ key, false };
+    switch (static_cast<rw::input::KeyState>(action)) {
+    case rw::input::KeyState::pressed: {
+        const rw::evt::KeyPressedEvent event{ static_cast<rw::input::Key>(key), false };
         if (nullptr != self->event_callback_) {
-            self->event_callback_(event);
+            (void) self->event_callback_(event);
         }
     } break;
-    case GLFW_RELEASE: {
-        const rw::evt::KeyReleasedEvent event{ key };
+    case rw::input::KeyState::released: {
+        const rw::evt::KeyReleasedEvent event{ static_cast<rw::input::Key>(key) };
         if (nullptr != self->event_callback_) {
-            self->event_callback_(event);
+            (void) self->event_callback_(event);
         }
     } break;
-    case GLFW_REPEAT: {
-        const rw::evt::KeyPressedEvent event{ key, true };
+    case rw::input::KeyState::repeated: {
+        const rw::evt::KeyPressedEvent event{ static_cast<rw::input::Key>(key), true };
         if (nullptr != self->event_callback_) {
-            self->event_callback_(event);
+            (void) self->event_callback_(event);
         }
     } break;
     default:
@@ -184,17 +184,17 @@ void rw::ui::Window::mouse_button_clbk_(GLFWwindow* window, int button, int acti
     }
     const auto* self{ static_cast<Window*>(user_ptr) };
 
-    switch (action) {
-    case GLFW_PRESS: {
-        const rw::evt::MouseButtonPressedEvent event{ button };
+    switch (static_cast<rw::input::KeyState>(action)) {
+    case rw::input::KeyState::pressed: {
+        const rw::evt::MouseButtonPressedEvent event{ static_cast<rw::input::MouseButton>(button) };
         if (nullptr != self->event_callback_) {
-            self->event_callback_(event);
+            (void) self->event_callback_(event);
         }
     } break;
-    case GLFW_RELEASE: {
-        const rw::evt::MouseButtonReleasedEvent event{ button };
+    case rw::input::KeyState::released: {
+        const rw::evt::MouseButtonReleasedEvent event{ static_cast<rw::input::MouseButton>(button) };
         if (nullptr != self->event_callback_) {
-            self->event_callback_(event);
+            (void) self->event_callback_(event);
         }
     } break;
     default:
@@ -212,7 +212,7 @@ void rw::ui::Window::scroll_clbk_(GLFWwindow* window, double x_offset, double y_
 
     const rw::evt::MouseScrolledEvent event{ x_offset, y_offset };
     if (nullptr != self->event_callback_) {
-        self->event_callback_(event);
+        (void) self->event_callback_(event);
     }
 }
 
@@ -225,7 +225,7 @@ void rw::ui::Window::window_close_clbk_(GLFWwindow* window) {
 
     const rw::evt::WindowCloseEvent event{};
     if (nullptr != self->event_callback_) {
-        self->event_callback_(event);
+        (void) self->event_callback_(event);
     }
 }
 

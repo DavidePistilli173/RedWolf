@@ -82,245 +82,245 @@ bool rw::layers::DebugLayer::on_event(const rw::evt::Event& event) {
     return false;
 }
 
-ImGuiKey rw::layers::DebugLayer::imgui_key_from_glfw_(const int keycode) {
+ImGuiKey rw::layers::DebugLayer::imgui_key_(const rw::input::Key keycode) {
     switch (keycode) {
-    case GLFW_KEY_TAB:
+    case rw::input::Key::tab:
         return ImGuiKey_Tab;
-    case GLFW_KEY_LEFT:
+    case rw::input::Key::left:
         return ImGuiKey_LeftArrow;
-    case GLFW_KEY_RIGHT:
+    case rw::input::Key::right:
         return ImGuiKey_RightArrow;
-    case GLFW_KEY_UP:
+    case rw::input::Key::up:
         return ImGuiKey_UpArrow;
-    case GLFW_KEY_DOWN:
+    case rw::input::Key::down:
         return ImGuiKey_DownArrow;
-    case GLFW_KEY_PAGE_UP:
+    case rw::input::Key::page_up:
         return ImGuiKey_PageUp;
-    case GLFW_KEY_PAGE_DOWN:
+    case rw::input::Key::page_down:
         return ImGuiKey_PageDown;
-    case GLFW_KEY_HOME:
+    case rw::input::Key::home:
         return ImGuiKey_Home;
-    case GLFW_KEY_END:
+    case rw::input::Key::end:
         return ImGuiKey_End;
-    case GLFW_KEY_INSERT:
+    case rw::input::Key::insert:
         return ImGuiKey_Insert;
-    case GLFW_KEY_DELETE:
+    case rw::input::Key::del:
         return ImGuiKey_Delete;
-    case GLFW_KEY_BACKSPACE:
+    case rw::input::Key::backspace:
         return ImGuiKey_Backspace;
-    case GLFW_KEY_SPACE:
+    case rw::input::Key::space:
         return ImGuiKey_Space;
-    case GLFW_KEY_ENTER:
+    case rw::input::Key::enter:
         return ImGuiKey_Enter;
-    case GLFW_KEY_ESCAPE:
+    case rw::input::Key::escape:
         return ImGuiKey_Escape;
-    case GLFW_KEY_APOSTROPHE:
+    case rw::input::Key::apostrophe:
         return ImGuiKey_Apostrophe;
-    case GLFW_KEY_COMMA:
+    case rw::input::Key::comma:
         return ImGuiKey_Comma;
-    case GLFW_KEY_MINUS:
+    case rw::input::Key::minus:
         return ImGuiKey_Minus;
-    case GLFW_KEY_PERIOD:
+    case rw::input::Key::period:
         return ImGuiKey_Period;
-    case GLFW_KEY_SLASH:
+    case rw::input::Key::slash:
         return ImGuiKey_Slash;
-    case GLFW_KEY_SEMICOLON:
+    case rw::input::Key::semicolon:
         return ImGuiKey_Semicolon;
-    case GLFW_KEY_EQUAL:
+    case rw::input::Key::equal:
         return ImGuiKey_Equal;
-    case GLFW_KEY_LEFT_BRACKET:
+    case rw::input::Key::left_bracket:
         return ImGuiKey_LeftBracket;
-    case GLFW_KEY_BACKSLASH:
+    case rw::input::Key::backslash:
         return ImGuiKey_Backslash;
-    case GLFW_KEY_WORLD_1:
+    case rw::input::Key::world_1:
         return ImGuiKey_Oem102;
-    case GLFW_KEY_WORLD_2:
+    case rw::input::Key::world_2:
         return ImGuiKey_Oem102;
-    case GLFW_KEY_RIGHT_BRACKET:
+    case rw::input::Key::right_bracket:
         return ImGuiKey_RightBracket;
-    case GLFW_KEY_GRAVE_ACCENT:
+    case rw::input::Key::grave_accent:
         return ImGuiKey_GraveAccent;
-    case GLFW_KEY_CAPS_LOCK:
+    case rw::input::Key::caps_lock:
         return ImGuiKey_CapsLock;
-    case GLFW_KEY_SCROLL_LOCK:
+    case rw::input::Key::scroll_lock:
         return ImGuiKey_ScrollLock;
-    case GLFW_KEY_NUM_LOCK:
+    case rw::input::Key::num_lock:
         return ImGuiKey_NumLock;
-    case GLFW_KEY_PRINT_SCREEN:
+    case rw::input::Key::print_screen:
         return ImGuiKey_PrintScreen;
-    case GLFW_KEY_PAUSE:
+    case rw::input::Key::pause:
         return ImGuiKey_Pause;
-    case GLFW_KEY_KP_0:
+    case rw::input::Key::keypad_0:
         return ImGuiKey_Keypad0;
-    case GLFW_KEY_KP_1:
+    case rw::input::Key::keypad_1:
         return ImGuiKey_Keypad1;
-    case GLFW_KEY_KP_2:
+    case rw::input::Key::keypad_2:
         return ImGuiKey_Keypad2;
-    case GLFW_KEY_KP_3:
+    case rw::input::Key::keypad_3:
         return ImGuiKey_Keypad3;
-    case GLFW_KEY_KP_4:
+    case rw::input::Key::keypad_4:
         return ImGuiKey_Keypad4;
-    case GLFW_KEY_KP_5:
+    case rw::input::Key::keypad_5:
         return ImGuiKey_Keypad5;
-    case GLFW_KEY_KP_6:
+    case rw::input::Key::keypad_6:
         return ImGuiKey_Keypad6;
-    case GLFW_KEY_KP_7:
+    case rw::input::Key::keypad_7:
         return ImGuiKey_Keypad7;
-    case GLFW_KEY_KP_8:
+    case rw::input::Key::keypad_8:
         return ImGuiKey_Keypad8;
-    case GLFW_KEY_KP_9:
+    case rw::input::Key::keypad_9:
         return ImGuiKey_Keypad9;
-    case GLFW_KEY_KP_DECIMAL:
+    case rw::input::Key::keypad_decimal:
         return ImGuiKey_KeypadDecimal;
-    case GLFW_KEY_KP_DIVIDE:
+    case rw::input::Key::keypad_divide:
         return ImGuiKey_KeypadDivide;
-    case GLFW_KEY_KP_MULTIPLY:
+    case rw::input::Key::keypad_multiply:
         return ImGuiKey_KeypadMultiply;
-    case GLFW_KEY_KP_SUBTRACT:
+    case rw::input::Key::keypad_subtract:
         return ImGuiKey_KeypadSubtract;
-    case GLFW_KEY_KP_ADD:
+    case rw::input::Key::keypad_add:
         return ImGuiKey_KeypadAdd;
-    case GLFW_KEY_KP_ENTER:
+    case rw::input::Key::keypad_enter:
         return ImGuiKey_KeypadEnter;
-    case GLFW_KEY_KP_EQUAL:
+    case rw::input::Key::keypad_equal:
         return ImGuiKey_KeypadEqual;
-    case GLFW_KEY_LEFT_SHIFT:
+    case rw::input::Key::left_shift:
         return ImGuiKey_LeftShift;
-    case GLFW_KEY_LEFT_CONTROL:
+    case rw::input::Key::left_control:
         return ImGuiKey_LeftCtrl;
-    case GLFW_KEY_LEFT_ALT:
+    case rw::input::Key::left_alt:
         return ImGuiKey_LeftAlt;
-    case GLFW_KEY_LEFT_SUPER:
+    case rw::input::Key::left_super:
         return ImGuiKey_LeftSuper;
-    case GLFW_KEY_RIGHT_SHIFT:
+    case rw::input::Key::right_shift:
         return ImGuiKey_RightShift;
-    case GLFW_KEY_RIGHT_CONTROL:
+    case rw::input::Key::right_control:
         return ImGuiKey_RightCtrl;
-    case GLFW_KEY_RIGHT_ALT:
+    case rw::input::Key::right_alt:
         return ImGuiKey_RightAlt;
-    case GLFW_KEY_RIGHT_SUPER:
+    case rw::input::Key::right_super:
         return ImGuiKey_RightSuper;
-    case GLFW_KEY_MENU:
+    case rw::input::Key::menu:
         return ImGuiKey_Menu;
-    case GLFW_KEY_0:
+    case rw::input::Key::num_0:
         return ImGuiKey_0;
-    case GLFW_KEY_1:
+    case rw::input::Key::num_1:
         return ImGuiKey_1;
-    case GLFW_KEY_2:
+    case rw::input::Key::num_2:
         return ImGuiKey_2;
-    case GLFW_KEY_3:
+    case rw::input::Key::num_3:
         return ImGuiKey_3;
-    case GLFW_KEY_4:
+    case rw::input::Key::num_4:
         return ImGuiKey_4;
-    case GLFW_KEY_5:
+    case rw::input::Key::num_5:
         return ImGuiKey_5;
-    case GLFW_KEY_6:
+    case rw::input::Key::num_6:
         return ImGuiKey_6;
-    case GLFW_KEY_7:
+    case rw::input::Key::num_7:
         return ImGuiKey_7;
-    case GLFW_KEY_8:
+    case rw::input::Key::num_8:
         return ImGuiKey_8;
-    case GLFW_KEY_9:
+    case rw::input::Key::num_9:
         return ImGuiKey_9;
-    case GLFW_KEY_A:
+    case rw::input::Key::a:
         return ImGuiKey_A;
-    case GLFW_KEY_B:
+    case rw::input::Key::b:
         return ImGuiKey_B;
-    case GLFW_KEY_C:
+    case rw::input::Key::c:
         return ImGuiKey_C;
-    case GLFW_KEY_D:
+    case rw::input::Key::d:
         return ImGuiKey_D;
-    case GLFW_KEY_E:
+    case rw::input::Key::e:
         return ImGuiKey_E;
-    case GLFW_KEY_F:
+    case rw::input::Key::f:
         return ImGuiKey_F;
-    case GLFW_KEY_G:
+    case rw::input::Key::g:
         return ImGuiKey_G;
-    case GLFW_KEY_H:
+    case rw::input::Key::h:
         return ImGuiKey_H;
-    case GLFW_KEY_I:
+    case rw::input::Key::i:
         return ImGuiKey_I;
-    case GLFW_KEY_J:
+    case rw::input::Key::j:
         return ImGuiKey_J;
-    case GLFW_KEY_K:
+    case rw::input::Key::k:
         return ImGuiKey_K;
-    case GLFW_KEY_L:
+    case rw::input::Key::l:
         return ImGuiKey_L;
-    case GLFW_KEY_M:
+    case rw::input::Key::m:
         return ImGuiKey_M;
-    case GLFW_KEY_N:
+    case rw::input::Key::n:
         return ImGuiKey_N;
-    case GLFW_KEY_O:
+    case rw::input::Key::o:
         return ImGuiKey_O;
-    case GLFW_KEY_P:
+    case rw::input::Key::p:
         return ImGuiKey_P;
-    case GLFW_KEY_Q:
+    case rw::input::Key::q:
         return ImGuiKey_Q;
-    case GLFW_KEY_R:
+    case rw::input::Key::r:
         return ImGuiKey_R;
-    case GLFW_KEY_S:
+    case rw::input::Key::s:
         return ImGuiKey_S;
-    case GLFW_KEY_T:
+    case rw::input::Key::t:
         return ImGuiKey_T;
-    case GLFW_KEY_U:
+    case rw::input::Key::u:
         return ImGuiKey_U;
-    case GLFW_KEY_V:
+    case rw::input::Key::v:
         return ImGuiKey_V;
-    case GLFW_KEY_W:
+    case rw::input::Key::w:
         return ImGuiKey_W;
-    case GLFW_KEY_X:
+    case rw::input::Key::x:
         return ImGuiKey_X;
-    case GLFW_KEY_Y:
+    case rw::input::Key::y:
         return ImGuiKey_Y;
-    case GLFW_KEY_Z:
+    case rw::input::Key::z:
         return ImGuiKey_Z;
-    case GLFW_KEY_F1:
+    case rw::input::Key::f1:
         return ImGuiKey_F1;
-    case GLFW_KEY_F2:
+    case rw::input::Key::f2:
         return ImGuiKey_F2;
-    case GLFW_KEY_F3:
+    case rw::input::Key::f3:
         return ImGuiKey_F3;
-    case GLFW_KEY_F4:
+    case rw::input::Key::f4:
         return ImGuiKey_F4;
-    case GLFW_KEY_F5:
+    case rw::input::Key::f5:
         return ImGuiKey_F5;
-    case GLFW_KEY_F6:
+    case rw::input::Key::f6:
         return ImGuiKey_F6;
-    case GLFW_KEY_F7:
+    case rw::input::Key::f7:
         return ImGuiKey_F7;
-    case GLFW_KEY_F8:
+    case rw::input::Key::f8:
         return ImGuiKey_F8;
-    case GLFW_KEY_F9:
+    case rw::input::Key::f9:
         return ImGuiKey_F9;
-    case GLFW_KEY_F10:
+    case rw::input::Key::f10:
         return ImGuiKey_F10;
-    case GLFW_KEY_F11:
+    case rw::input::Key::f11:
         return ImGuiKey_F11;
-    case GLFW_KEY_F12:
+    case rw::input::Key::f12:
         return ImGuiKey_F12;
-    case GLFW_KEY_F13:
+    case rw::input::Key::f13:
         return ImGuiKey_F13;
-    case GLFW_KEY_F14:
+    case rw::input::Key::f14:
         return ImGuiKey_F14;
-    case GLFW_KEY_F15:
+    case rw::input::Key::f15:
         return ImGuiKey_F15;
-    case GLFW_KEY_F16:
+    case rw::input::Key::f16:
         return ImGuiKey_F16;
-    case GLFW_KEY_F17:
+    case rw::input::Key::f17:
         return ImGuiKey_F17;
-    case GLFW_KEY_F18:
+    case rw::input::Key::f18:
         return ImGuiKey_F18;
-    case GLFW_KEY_F19:
+    case rw::input::Key::f19:
         return ImGuiKey_F19;
-    case GLFW_KEY_F20:
+    case rw::input::Key::f20:
         return ImGuiKey_F20;
-    case GLFW_KEY_F21:
+    case rw::input::Key::f21:
         return ImGuiKey_F21;
-    case GLFW_KEY_F22:
+    case rw::input::Key::f22:
         return ImGuiKey_F22;
-    case GLFW_KEY_F23:
+    case rw::input::Key::f23:
         return ImGuiKey_F23;
-    case GLFW_KEY_F24:
+    case rw::input::Key::f24:
         return ImGuiKey_F24;
     default:
         return ImGuiKey_None;
@@ -329,36 +329,34 @@ ImGuiKey rw::layers::DebugLayer::imgui_key_from_glfw_(const int keycode) {
 
 void rw::layers::DebugLayer::on_key_pressed_event_(const rw::evt::KeyPressedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
-    io.KeysData[static_cast<int>(imgui_key_from_glfw_(event.key)) - ImGuiKey_NamedKey_BEGIN].Down = true;
-    io.AddKeyEvent(imgui_key_from_glfw_(event.key), true);
-    io.SetKeyEventNativeData(imgui_key_from_glfw_(event.key), event.key, 0);
+    io.KeysData[static_cast<int>(imgui_key_(event.key)) - ImGuiKey_NamedKey_BEGIN].Down = true;
+    io.AddKeyEvent(imgui_key_(event.key), true);
+    io.SetKeyEventNativeData(imgui_key_(event.key), static_cast<int>(event.key), 0);
     update_control_keys_();
 }
 
 void rw::layers::DebugLayer::on_key_released_event_(const rw::evt::KeyReleasedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
-    io.KeysData[static_cast<int>(imgui_key_from_glfw_(event.key)) - ImGuiKey_NamedKey_BEGIN].Down = false;
-    io.AddKeyEvent(imgui_key_from_glfw_(event.key), false);
-    io.SetKeyEventNativeData(imgui_key_from_glfw_(event.key), event.key, 0);
+    io.KeysData[static_cast<int>(imgui_key_(event.key)) - ImGuiKey_NamedKey_BEGIN].Down = false;
+    io.AddKeyEvent(imgui_key_(event.key), false);
+    io.SetKeyEventNativeData(imgui_key_(event.key), static_cast<int>(event.key), 0);
     update_control_keys_();
 }
 
 void rw::layers::DebugLayer::on_key_typed_event_(const rw::evt::KeyTypedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
-    if (event.key > 0 && event.key < 0x10000) {
-        io.AddInputCharacter(static_cast<unsigned int>(event.key));
-    }
+    io.AddInputCharacter(static_cast<unsigned int>(event.key));
 }
 
 void rw::layers::DebugLayer::on_mouse_button_pressed_event_(const rw::evt::MouseButtonPressedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
-    io.MouseDown[event.button] = true;
+    io.MouseDown[static_cast<size_t>(event.button)] = true;
     update_control_keys_();
 }
 
 void rw::layers::DebugLayer::on_mouse_button_released_event_(const rw::evt::MouseButtonReleasedEvent& event) {
     ImGuiIO& io{ ImGui::GetIO() };
-    io.MouseDown[event.button] = false;
+    io.MouseDown[static_cast<size_t>(event.button)] = false;
     update_control_keys_();
 }
 
@@ -382,8 +380,8 @@ void rw::layers::DebugLayer::on_window_resized_event_(const rw::evt::WindowResiz
 
 void rw::layers::DebugLayer::update_control_keys_() {
     ImGuiIO& io{ ImGui::GetIO() };
-    io.AddKeyEvent(ImGuiMod_Ctrl, rw::input::is_key_down(GLFW_KEY_LEFT_CONTROL) || rw::input::is_key_down(GLFW_KEY_RIGHT_CONTROL));
-    io.AddKeyEvent(ImGuiMod_Shift, rw::input::is_key_down(GLFW_KEY_LEFT_SHIFT) || rw::input::is_key_down(GLFW_KEY_RIGHT_SHIFT));
-    io.AddKeyEvent(ImGuiMod_Alt, rw::input::is_key_down(GLFW_KEY_LEFT_ALT) || rw::input::is_key_down(GLFW_KEY_RIGHT_ALT));
-    io.AddKeyEvent(ImGuiMod_Super, rw::input::is_key_down(GLFW_KEY_LEFT_SUPER) || rw::input::is_key_down(GLFW_KEY_RIGHT_SUPER));
+    io.AddKeyEvent(ImGuiMod_Ctrl, rw::input::is_control_down());
+    io.AddKeyEvent(ImGuiMod_Shift, rw::input::is_shift_down());
+    io.AddKeyEvent(ImGuiMod_Alt, rw::input::is_alt_down());
+    io.AddKeyEvent(ImGuiMod_Super, input::is_super_down());
 }

@@ -8,25 +8,41 @@
 
 #include <GLFW/glfw3.h>
 
-bool rw::input::is_key_down(const int key) {
-    GLFWwindow* window{ rw::engine::App::get().window().handle() };
-    const int   state{ glfwGetKey(window, key) };
-    return GLFW_PRESS == state || GLFW_REPEAT == state;
+bool rw::input::is_alt_down() {
+    return is_key_down(Key::left_alt) || is_key_down(Key::right_alt);
 }
 
-bool rw::input::is_key_up(const int key) {
+bool rw::input::is_control_down() {
+    return is_key_down(Key::left_control) || is_key_down(Key::right_control);
+}
+
+bool rw::input::is_key_down(const Key key) {
     GLFWwindow* window{ rw::engine::App::get().window().handle() };
-    return GLFW_RELEASE == glfwGetKey(window, key);
+    const auto  state{ static_cast<KeyState>(glfwGetKey(window, static_cast<int>(key))) };
+    return KeyState::pressed == state || KeyState::repeated == state;
+}
+
+bool rw::input::is_key_up(const Key key) {
+    GLFWwindow* window{ rw::engine::App::get().window().handle() };
+    return KeyState::released == static_cast<KeyState>(glfwGetKey(window, static_cast<int>(key)));
 }
 
 bool rw::input::is_mouse_button_down(const int button) {
     GLFWwindow* window{ rw::engine::App::get().window().handle() };
-    return GLFW_PRESS == glfwGetMouseButton(window, button);
+    return KeyState::pressed == static_cast<KeyState>(glfwGetMouseButton(window, button));
 }
 
 bool rw::input::is_mouse_button_up(const int button) {
     GLFWwindow* window{ rw::engine::App::get().window().handle() };
-    return GLFW_RELEASE == glfwGetMouseButton(window, button);
+    return KeyState::released == static_cast<KeyState>(glfwGetMouseButton(window, button));
+}
+
+bool rw::input::is_shift_down() {
+    return is_key_down(Key::left_shift) || is_key_down(Key::right_shift);
+}
+
+bool rw::input::is_super_down() {
+    return is_key_down(Key::left_super) || is_key_down(Key::right_super);
 }
 
 rw::core::Point2D<double> rw::input::mouse_pos() {

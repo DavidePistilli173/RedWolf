@@ -5,6 +5,7 @@
 #ifndef KEY_EVENT_HPP
 #define KEY_EVENT_HPP
 
+#include "../input/keyboard.hpp"
 #include "event.hpp"
 
 namespace rw::evt {
@@ -16,7 +17,7 @@ namespace rw::evt {
          * @brief Constructor.
          * @param key_code Key that was pressed or released.
          */
-        explicit KeyEvent(const int32_t key_code);
+        explicit KeyEvent(const rw::input::Key key_code);
 
         /**
          * @brief Destructor.
@@ -53,7 +54,7 @@ namespace rw::evt {
          */
         [[nodiscard]] std::string_view name() const override;
 
-        int32_t key; /**< Key code of the pressed or released key. */
+        rw::input::Key key{ rw::input::Key::a }; /**< Key code of the pressed or released key. */
     };
 
     /**
@@ -65,7 +66,7 @@ namespace rw::evt {
          * @param key_code Key that was pressed.
          * @param repeat If true, the key was already pressed before.
          */
-        explicit KeyPressedEvent(const int32_t key_code, const bool repeat = false);
+        explicit KeyPressedEvent(const rw::input::Key key_code, const bool repeat = false);
 
         /**
          * @brief Destructor.
@@ -119,7 +120,7 @@ namespace rw::evt {
          * @brief Constructor.
          * @param key_code Key that was released.
          */
-        explicit KeyReleasedEvent(const int32_t key_code);
+        explicit KeyReleasedEvent(const rw::input::Key key_code);
 
         /**
          * @brief Destructor.
@@ -171,7 +172,7 @@ namespace rw::evt {
          * @brief Constructor.
          * @param key_code Key that was pressed.
          */
-        explicit KeyTypedEvent(const int32_t key_code);
+        explicit KeyTypedEvent(const rw::input::Key key_code);
 
         /**
          * @brief Destructor.

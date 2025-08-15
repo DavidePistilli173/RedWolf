@@ -6,21 +6,34 @@
 #define SRC_REDWOLF_INPUT_HPP
 
 #include "../core/point.hpp"
+#include "keyboard.hpp"
 
 namespace rw::input {
+    /**
+     * @brief Check whether the left or right alt key is currently down.
+     * @return True if any of the alt keys is down, false otherwise.
+     */
+    [[nodiscard]] bool is_alt_down();
+
+    /**
+     * @brief Check whether the left or right control key is currently down.
+     * @return True if any of the control keys is down, false otherwise.
+     */
+    [[nodiscard]] bool is_control_down();
+
     /**
      * @brief Check if a keyboard key is currently down.
      * @param key Key to check.
      * @return True if the key is down, false otherwise.
      */
-    [[nodiscard]] bool is_key_down(const int key);
+    [[nodiscard]] bool is_key_down(const Key key);
 
     /**
      * @brief Check if a keyboard key is currently up.
      * @param key Key to check.
      * @return True if the key is up, false otherwise.
      */
-    [[nodiscard]] bool is_key_up(const int key);
+    [[nodiscard]] bool is_key_up(const Key key);
 
     /**
      * @brief Check if a mouse button is currently down.
@@ -35,6 +48,18 @@ namespace rw::input {
      * @return True if the button is up, false otherwise.
      */
     [[nodiscard]] bool is_mouse_button_up(const int button);
+
+    /**
+     * @brief Check whether the left or right shift key is currently down.
+     * @return True if any of the shift keys is down, false otherwise.
+     */
+    [[nodiscard]] bool is_shift_down();
+
+    /**
+     * @brief Check whether the super key (Windows key or Command key on macOS) is currently down.
+     * @return True if the super key is down, false otherwise.
+     */
+    [[nodiscard]] bool is_super_down();
 
     /**
      * @brief Get the current mouse position.

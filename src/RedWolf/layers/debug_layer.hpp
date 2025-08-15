@@ -73,7 +73,7 @@ namespace rw::layers {
          * @param keycode GLFW keycode to convert.
          * @return ImGUi key corresponding to the input keycode.
          */
-        [[nodiscard]] static ImGuiKey imgui_key_from_glfw_(const int keycode);
+        [[nodiscard]] static ImGuiKey imgui_key_(const rw::input::Key keycode);
 
         /**
          * @brief Handle KeyPressed events.

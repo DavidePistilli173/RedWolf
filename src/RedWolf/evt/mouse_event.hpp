@@ -5,6 +5,7 @@
 #ifndef MOUSE_EVENT_HPP
 #define MOUSE_EVENT_HPP
 
+#include "../input/mouse.hpp"
 #include "event.hpp"
 
 namespace rw::evt {
@@ -17,7 +18,7 @@ namespace rw::evt {
          * @param new_x New mouse x coordinate on the screen.
          * @param new_y New mouse y coordinate on the screen.
          */
-        explicit MouseMovedEvent(double new_x, double new_y);
+        explicit MouseMovedEvent(const double new_x, const double new_y);
 
         /**
          * @brief Destructor.
@@ -138,7 +139,7 @@ namespace rw::evt {
          * @brief Constructor.
          * @param button_code Code of the button that was pressed/released.
          */
-        explicit MouseButtonEvent(int32_t button_code);
+        explicit MouseButtonEvent(const rw::input::MouseButton button_code);
 
         /**
          * @brief Destructor.
@@ -175,7 +176,7 @@ namespace rw::evt {
          */
         [[nodiscard]] std::string_view name() const override;
 
-        int32_t button{ 0 }; /**< Button that was pressed or released. */
+        rw::input::MouseButton button{ rw::input::MouseButton::left }; /**< Button that was pressed or released. */
     };
 
     /**
@@ -186,7 +187,7 @@ namespace rw::evt {
          * @brief Constructor.
          * @param button_code Key that was pressed.
          */
-        explicit MouseButtonPressedEvent(const int32_t button_code);
+        explicit MouseButtonPressedEvent(const rw::input::MouseButton button_code);
 
         /**
          * @brief Destructor.
@@ -238,7 +239,7 @@ namespace rw::evt {
          * @brief Constructor.
          * @param button_code Key that was released.
          */
-        explicit MouseButtonReleasedEvent(const int32_t button_code);
+        explicit MouseButtonReleasedEvent(const rw::input::MouseButton button_code);
 
         /**
          * @brief Destructor.
