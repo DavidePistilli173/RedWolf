@@ -5,6 +5,7 @@
 #include "debug_layer.hpp"
 
 #include "../engine/app.hpp"
+#include "../input/polling.hpp"
 #include "../pl/gl/imgui_impl_opengl3.h"
 #include "../util/logger.hpp"
 
@@ -380,18 +381,9 @@ void rw::layers::DebugLayer::on_window_resized_event_(const rw::evt::WindowResiz
 }
 
 void rw::layers::DebugLayer::update_control_keys_() {
-    ImGuiIO&    io{ ImGui::GetIO() };
-    GLFWwindow* window{ rw::engine::App::get().window().handle() };
-
-    io.AddKeyEvent(
-        ImGuiMod_Ctrl,
-        (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS));
-    io.AddKeyEvent(
-        ImGuiMod_Shift,
-        (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS));
-    io.AddKeyEvent(
-        ImGuiMod_Alt, (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS));
-    io.AddKeyEvent(
-        ImGuiMod_Super,
-        (glfwGetKey(window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_SUPER) == GLFW_PRESS));
+    ImGuiIO& io{ ImGui::GetIO() };
+    io.AddKeyEvent(ImGuiMod_Ctrl, rw::input::is_key_down(GLFW_KEY_LEFT_CONTROL) || rw::input::is_key_down(GLFW_KEY_RIGHT_CONTROL));
+    io.AddKeyEvent(ImGuiMod_Shift, rw::input::is_key_down(GLFW_KEY_LEFT_SHIFT) || rw::input::is_key_down(GLFW_KEY_RIGHT_SHIFT));
+    io.AddKeyEvent(ImGuiMod_Alt, rw::input::is_key_down(GLFW_KEY_LEFT_ALT) || rw::input::is_key_down(GLFW_KEY_RIGHT_ALT));
+    io.AddKeyEvent(ImGuiMod_Super, rw::input::is_key_down(GLFW_KEY_LEFT_SUPER) || rw::input::is_key_down(GLFW_KEY_RIGHT_SUPER));
 }

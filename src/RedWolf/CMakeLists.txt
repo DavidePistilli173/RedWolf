@@ -7,7 +7,7 @@ target_sources(RedWolf PRIVATE
         evt/event.cpp
         evt/key_event.cpp
         evt/mouse_event.cpp
-        input/input.cpp
+        input/polling.cpp
         layers/layer.cpp
         layers/layer_stack.cpp
         layers/debug_layer.cpp
