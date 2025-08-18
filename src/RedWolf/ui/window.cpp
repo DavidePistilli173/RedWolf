@@ -4,10 +4,11 @@
 
 #include "window.hpp"
 
-#include "../evt/application_event.hpp"
-#include "../evt/key_event.hpp"
-#include "../evt/mouse_event.hpp"
-#include "../util/logger.hpp"
+#include "RedWolf/evt/application_event.hpp"
+#include "RedWolf/evt/key_event.hpp"
+#include "RedWolf/evt/mouse_event.hpp"
+#include "RedWolf/gfx/api/gl/Context.hpp"
+#include "RedWolf/util/logger.hpp"
 
 #include <glad/glad.h>
 
@@ -34,14 +35,20 @@ rw::ui::Window::Window(const WindowDescriptor& descriptor) :
         return;
     }
 
-    glfwMakeContextCurrent(handle_);
-
-    // Load OpenGL functions using GLAD
-    if (0 == gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-        RW_CORE_ERR("Failed to initialize GLAD: {}", rw::vendor::glfw_get_error());
+    // Create and initialise the graphics context.
+    switch (descriptor.graphics_api) {
+    case rw::gfx::Api::opengl:
+        graphics_context_ = std::make_unique<rw::gfx::api::gl::Context>(handle_);
+        break;
+    default:
+        RW_CORE_ERR("Invalid graphics API specified: {}.", static_cast<int>(descriptor.graphics_api));
+        return;
+        break;
+    }
+    if (!graphics_context_->init()) {
+        RW_CORE_ERR("Failed to initialise the graphics context.");
         return;
     }
-    RW_CORE_INFO("Loaded OpenGL functions.");
 
     glfwSetWindowUserPointer(handle_, this);
     set_vsync(true);
@@ -69,7 +76,7 @@ uint32_t rw::ui::Window::height() const {
 
 void rw::ui::Window::update() {
     glfwWaitEventsTimeout(default_frame_time);
-    glfwSwapBuffers(handle_);
+    graphics_context_->swap_buffers();
     glClearColor(0.2F, 0.0F, 0.0F, 1.0F);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

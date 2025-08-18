@@ -22,7 +22,7 @@ namespace rw::engine {
         /**
          * @brief Default constructor.
          */
-        App();
+        explicit App(const rw::ui::WindowDescriptor& window_data);
 
         /**
          * @brief Destructor.

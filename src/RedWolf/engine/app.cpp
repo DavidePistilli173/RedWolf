@@ -10,7 +10,7 @@
 #include <memory>
 #include <ranges>
 
-rw::engine::App::App() {
+rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
     // Initialise the logger as first instruction.
     RW_CORE_INFO("Constructing application");
 
@@ -20,8 +20,7 @@ rw::engine::App::App() {
     }
     instance_ = this;
 
-    window_ = std::make_unique<rw::ui::Window>(rw::ui::WindowDescriptor{
-        .title = "RedWolf Engine", .width = rw::ui::default_window_width, .height = rw::ui::default_window_height });
+    window_ = std::make_unique<rw::ui::Window>(window_data);
     window_->set_event_callback([this](const rw::evt::Event& event) { return on_event(event); });
 
     debug_layer_ = dynamic_cast<rw::layers::DebugLayer*>(layer_stack_.push_layer<rw::layers::DebugLayer>());

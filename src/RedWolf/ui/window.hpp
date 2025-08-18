@@ -5,25 +5,27 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include "../evt/event.hpp"
-#include "vendor/glfw.hpp"
+#include "RedWolf/evt/event.hpp"
+#include "RedWolf/gfx/GraphicsContext.hpp"
+#include "RedWolf/gfx/gfx.hpp"
+#include "ui.hpp"
 
 #include <functional>
+#include <memory>
 #include <string_view>
 
 namespace rw::ui {
     static constexpr uint32_t default_window_width{ 1280U }; /**< Default width of the window in pixels. */
     static constexpr uint32_t default_window_height{ 720U }; /**< Default height of the window in pixels. */
 
-    using WindowHandle = GLFWwindow*; /**< Raw window handle type. */
-
     /**
      * @brief Descriptor for a window, containing properties like title, size, and other configurations.
      */
     struct WindowDescriptor {
-        std::string_view title{ "RedWolf Engine" };       /**< Title of the window. */
-        uint32_t         width{ default_window_width };   /**< Width of the window in pixels. */
-        uint32_t         height{ default_window_height }; /**< Height of the window in pixels. */
+        std::string_view title{ "RedWolf Engine" };            /**< Title of the window. */
+        uint32_t         width{ default_window_width };        /**< Width of the window in pixels. */
+        uint32_t         height{ default_window_height };      /**< Height of the window in pixels. */
+        rw::gfx::Api     graphics_api{ rw::gfx::Api::opengl }; /**< Rendering API for the window. */
     };
 
     /**
@@ -184,7 +186,8 @@ namespace rw::ui {
 
         static bool glfw_initialized_; /**< Flag to check if GLFW has been initialized. */
 
-        rw::ui::WindowHandle                       handle_{ nullptr };               /**< Raw window handle. */
+        rw::ui::WindowHandle                       handle_{ invalid_window_handle }; /**< Raw window handle. */
+        std::unique_ptr<rw::gfx::GraphicsContext>  graphics_context_{ nullptr };     /**< Rendering context. */
         std::string                                title_{ "RedWolf Engine" };       /**< Title of the window. */
         uint32_t                                   width_{ default_window_width };   /**< Width of the window in pixels. */
         uint32_t                                   height_{ default_window_height }; /**< Height of the window in pixels. */
