@@ -4,11 +4,7 @@
 
 #include "layer.hpp"
 
-rw::layers::Layer::Layer(const ID id, const std::string_view name) : id_{ id }, name_(name) {}
-
-rw::layers::Layer::ID rw::layers::Layer::id() const {
-    return id_;
-}
+rw::layers::Layer::Layer(const std::string_view name) : name_(name) {}
 
 std::string_view rw::layers::Layer::name() const {
     return name_;

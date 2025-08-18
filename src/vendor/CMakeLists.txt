@@ -15,6 +15,8 @@ add_subdirectory(glm)
 # IMGUI
 add_library(imgui STATIC)
 target_sources(imgui PRIVATE
+        imgui/backends/imgui_impl_glfw.cpp
+        imgui/backends/imgui_impl_opengl3.cpp
         imgui/imgui.cpp
         imgui/imgui_demo.cpp
         imgui/imgui_draw.cpp
@@ -24,6 +26,15 @@ target_sources(imgui PRIVATE
 
 target_include_directories(imgui PUBLIC
         ${PROJECT_SOURCE_DIR}/src/vendor
+        ${PROJECT_SOURCE_DIR}/src/vendor/imgui
+)
+
+target_compile_definitions(imgui PRIVATE
+        IMGUI_IMPL_OPENGL_LOADER_GLAD
+)
+
+target_link_libraries(imgui PUBLIC
+        glfw
 )
 
 # Vendor Library

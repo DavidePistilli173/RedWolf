@@ -10,9 +10,6 @@
 
 SandboxApp::SandboxApp() {
     RW_INFO("Welcome to Sandbox, powered by RedWolf.");
-
-    debug_layer_id_ = push_overlay<rw::layers::DebugLayer>();
-    RW_INFO("Debug layer created with ID {}", debug_layer_id_);
 }
 
 std::unique_ptr<rw::engine::App> rw::engine::create_app() {

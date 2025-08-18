@@ -76,47 +76,45 @@ namespace rw::layers {
         /**
          * @brief Create a layer and push it onto the stack.
          * @tparam T Type of layer to create.
-         * @param args Arguments for layer creation (except for the ID).
-         * @return ID of the created layer.
+         * @param args Arguments for layer creation.
+         * @return Non-owning pointer to the layer.
          */
         template<std::derived_from<Layer> T, typename... Args>
-        [[nodiscard]] Layer::ID push_layer(Args&&... args) {
-            const Layer::ID id{ next_layer_id_++ };
-            layer_insert_it_ = layers_.emplace(layer_insert_it_, std::make_unique<T>(id, std::forward<Args>(args)...));
-            (*layer_insert_it_)->attach();
-            return id;
+        [[nodiscard]] Layer* push_layer(Args&&... args) {
+            const auto it     = layers_.emplace(layers_.begin() + layer_insert_idx_, std::make_unique<T>(std::forward<Args>(args)...));
+            layer_insert_idx_ = it - layers_.begin();
+            (*it)->attach();
+            return it->get();
         }
 
         /**
          * @brief Create an overlay and push it onto the stack.
          * @tparam T Type of overlay to create.
-         * @param args Arguments for overlay creation (except for the ID).
-         * @return ID of the created overlay.
+         * @param args Arguments for overlay creation.
+         * @return Non-owning pointer to the overlay.
          */
         template<std::derived_from<Layer> T, typename... Args>
-        [[nodiscard]] Layer::ID push_overlay(Args&&... args) {
-            const Layer::ID id{ next_layer_id_++ };
-            auto&           element{ layers_.emplace_back(std::make_unique<T>(id, std::forward<Args>(args)...)) };
+        [[nodiscard]] Layer* push_overlay(Args&&... args) {
+            auto& element{ layers_.emplace_back(std::make_unique<T>(std::forward<Args>(args)...)) };
             element->attach();
-            return id;
+            return element.get();
         }
 
         /**
          * @brief Pop a layer from the stack.
          * @param layer_id Layer to pop from the stack.
          */
-        void pop_layer(const Layer::ID layer_id);
+        void pop_layer(const Layer* layer_id);
 
         /**
          * @brief Pop an overlay from the stack.
          * @param overlay_id Overlay to pop from the stack.
          */
-        void pop_overlay(const Layer::ID overlay_id);
+        void pop_overlay(const Layer* overlay_id);
 
      private:
-        Layer::ID                           next_layer_id_{ 1 };                 /**< ID for the next layer that will be created. */
-        std::vector<std::unique_ptr<Layer>> layers_;                             /**< Actual stack of layers. */
-        iterator                            layer_insert_it_{ layers_.begin() }; /**< Position where to place layers. */
+        std::vector<std::unique_ptr<Layer>> layers_;                 /**< Actual stack of layers. */
+        size_t                              layer_insert_idx_{ 0U }; /**< Position where to place layers. */
     };
 } // namespace rw::layers
 #endif // SRC_REDWOLF_LAYER_STACK_HPP

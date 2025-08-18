@@ -15,6 +15,8 @@ namespace rw::ui {
     static constexpr uint32_t default_window_width{ 1280U }; /**< Default width of the window in pixels. */
     static constexpr uint32_t default_window_height{ 720U }; /**< Default height of the window in pixels. */
 
+    using WindowHandle = GLFWwindow*; /**< Raw window handle type. */
+
     /**
      * @brief Descriptor for a window, containing properties like title, size, and other configurations.
      */
@@ -63,10 +65,10 @@ namespace rw::ui {
         Window& operator=(Window&& other) = delete;
 
         /**
-         * @brief Get the raw GLFW window handle.
-         * @return Raw GLFW window handle.
+         * @brief Get the raw window handle.
+         * @return Raw window handle.
          */
-        [[nodiscard]] GLFWwindow* handle();
+        [[nodiscard]] rw::ui::WindowHandle handle();
 
         /**
          * @brief Get the current height of the window.
@@ -110,7 +112,7 @@ namespace rw::ui {
          * @param window Handle of the window that received the event.
          * @param character Typed character.
          */
-        static void char_clbk_(GLFWwindow* window, unsigned int character);
+        static void char_clbk_(rw::ui::WindowHandle window, unsigned int character);
 
         /**
          * @brief Close the window, if it is initalised.
@@ -123,7 +125,7 @@ namespace rw::ui {
          * @param x New x coordinate of the cursor, relative to the left edge of the window.
          * @param y New y coordinate of the cursor, relative to the top edge of the window.
          */
-        static void cursor_position_clbk_(GLFWwindow* window, double x, double y);
+        static void cursor_position_clbk_(rw::ui::WindowHandle window, double x, double y);
 
         /**
          * @brief Callback for all GLFW errors.
@@ -146,7 +148,7 @@ namespace rw::ui {
          * @param action `GLFW_PRESS`, `GLFW_RELEASE` or `GLFW_REPEAT`.
          * @param mods Bit field describing which modifier keys were held down.
          */
-        static void key_clbk_(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static void key_clbk_(rw::ui::WindowHandle window, int key, int scancode, int action, int mods);
 
         /**
          * @brief Callback called when a mouse button is pressed or released.
@@ -156,7 +158,7 @@ namespace rw::ui {
          * @param action `GLFW_PRESS` or `GLFW_RELEASE`.
          * @param mods Bit field describing which modifier keys were held down.
          */
-        static void mouse_button_clbk_(GLFWwindow* window, int button, int action, int mods);
+        static void mouse_button_clbk_(rw::ui::WindowHandle window, int button, int action, int mods);
 
         /**
          * @brief Callback called when scrolling is performed.
@@ -164,13 +166,13 @@ namespace rw::ui {
          * @param x_offset Horizontal scrolling amount.
          * @param y_offset Vertical scrolling amount.
          */
-        static void scroll_clbk_(GLFWwindow* window, double x_offset, double y_offset);
+        static void scroll_clbk_(rw::ui::WindowHandle window, double x_offset, double y_offset);
 
         /**
          * @brief Callback called when the window is closed.
          * @param window Handle of the window that was closed.
          */
-        static void window_close_clbk_(GLFWwindow* window);
+        static void window_close_clbk_(rw::ui::WindowHandle window);
 
         /**
          * @brief Callback called when the window gets resized.
@@ -178,11 +180,11 @@ namespace rw::ui {
          * @param width New width of the window in pixels.
          * @param height New height of the window in pixels.
          */
-        static void window_resize_clbk_(GLFWwindow* window, int width, int height);
+        static void window_resize_clbk_(rw::ui::WindowHandle window, int width, int height);
 
         static bool glfw_initialized_; /**< Flag to check if GLFW has been initialized. */
 
-        GLFWwindow*                                handle_{ nullptr };               /**< Raw window handle. */
+        rw::ui::WindowHandle                       handle_{ nullptr };               /**< Raw window handle. */
         std::string                                title_{ "RedWolf Engine" };       /**< Title of the window. */
         uint32_t                                   width_{ default_window_width };   /**< Width of the window in pixels. */
         uint32_t                                   height_{ default_window_height }; /**< Height of the window in pixels. */

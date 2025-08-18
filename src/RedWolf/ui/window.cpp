@@ -59,7 +59,7 @@ rw::ui::Window::Window(Window&& other) noexcept :
     other.handle_ = nullptr; // Transfer ownership
 }
 
-GLFWwindow* rw::ui::Window::handle() {
+rw::ui::WindowHandle rw::ui::Window::handle() {
     return handle_;
 }
 
@@ -98,7 +98,7 @@ uint32_t rw::ui::Window::width() const {
     return width_;
 }
 
-void rw::ui::Window::char_clbk_(GLFWwindow* window, unsigned int character) {
+void rw::ui::Window::char_clbk_(rw::ui::WindowHandle window, unsigned int character) {
     void* user_ptr{ glfwGetWindowUserPointer(window) };
     if (nullptr == user_ptr) {
         return;
@@ -118,7 +118,7 @@ void rw::ui::Window::close_() {
     }
 }
 
-void rw::ui::Window::cursor_position_clbk_(GLFWwindow* window, double x, double y) {
+void rw::ui::Window::cursor_position_clbk_(rw::ui::WindowHandle window, double x, double y) {
     void* user_ptr{ glfwGetWindowUserPointer(window) };
     if (nullptr == user_ptr) {
         return;
@@ -145,7 +145,7 @@ void rw::ui::Window::init_callbacks_() {
     glfwSetCursorPosCallback(handle_, &Window::cursor_position_clbk_);
 }
 
-void rw::ui::Window::key_clbk_(GLFWwindow* window, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
+void rw::ui::Window::key_clbk_(rw::ui::WindowHandle window, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
     void* user_ptr{ glfwGetWindowUserPointer(window) };
     if (nullptr == user_ptr) {
         return;
@@ -177,7 +177,7 @@ void rw::ui::Window::key_clbk_(GLFWwindow* window, int key, [[maybe_unused]] int
     }
 }
 
-void rw::ui::Window::mouse_button_clbk_(GLFWwindow* window, int button, int action, [[maybe_unused]] int mods) {
+void rw::ui::Window::mouse_button_clbk_(rw::ui::WindowHandle window, int button, int action, [[maybe_unused]] int mods) {
     void* user_ptr{ glfwGetWindowUserPointer(window) };
     if (nullptr == user_ptr) {
         return;
@@ -203,7 +203,7 @@ void rw::ui::Window::mouse_button_clbk_(GLFWwindow* window, int button, int acti
     }
 }
 
-void rw::ui::Window::scroll_clbk_(GLFWwindow* window, double x_offset, double y_offset) {
+void rw::ui::Window::scroll_clbk_(rw::ui::WindowHandle window, double x_offset, double y_offset) {
     void* user_ptr{ glfwGetWindowUserPointer(window) };
     if (nullptr == user_ptr) {
         return;
@@ -216,7 +216,7 @@ void rw::ui::Window::scroll_clbk_(GLFWwindow* window, double x_offset, double y_
     }
 }
 
-void rw::ui::Window::window_close_clbk_(GLFWwindow* window) {
+void rw::ui::Window::window_close_clbk_(rw::ui::WindowHandle window) {
     void* user_ptr{ glfwGetWindowUserPointer(window) };
     if (nullptr == user_ptr) {
         return;
@@ -229,7 +229,7 @@ void rw::ui::Window::window_close_clbk_(GLFWwindow* window) {
     }
 }
 
-void rw::ui::Window::window_resize_clbk_(GLFWwindow* window, int width, int height) {
+void rw::ui::Window::window_resize_clbk_(rw::ui::WindowHandle window, int width, int height) {
     void* user_ptr{ glfwGetWindowUserPointer(window) };
     if (nullptr == user_ptr) {
         return;

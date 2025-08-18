@@ -17,9 +17,8 @@ namespace rw::layers {
      public:
         /**
          * @brief Constructor.
-         * @param id Layer ID.
          */
-        DebugLayer(const Layer::ID id);
+        DebugLayer();
 
         /**
          * @brief Destructor.
@@ -52,9 +51,24 @@ namespace rw::layers {
         void attach() override;
 
         /**
+         * @brief Begin ImGui frame.
+         */
+        void begin_frame();
+
+        /**
          * @brief Detach from the layer stack.
          */
         void detach() override;
+
+        /**
+         * @brief End ImGui frame.
+         */
+        void end_frame();
+
+        /**
+         * @brief Render ImGui UI for the layer.
+         */
+        void render_imgui() override;
 
         /**
          * @brief Update the layer (called each frame).
@@ -68,66 +82,6 @@ namespace rw::layers {
         [[nodiscard]] bool on_event(const rw::evt::Event& event) override;
 
      private:
-        /**
-         * @brief Convert a GLFW keycode to an ImGui key.
-         * @param keycode GLFW keycode to convert.
-         * @return ImGUi key corresponding to the input keycode.
-         */
-        [[nodiscard]] static ImGuiKey imgui_key_(const rw::input::Key keycode);
-
-        /**
-         * @brief Handle KeyPressed events.
-         * @param event Event to handle.
-         */
-        void on_key_pressed_event_(const rw::evt::KeyPressedEvent& event);
-
-        /**
-         * @brief Handle KeyReleased events.
-         * @param event Event to handle.
-         */
-        void on_key_released_event_(const rw::evt::KeyReleasedEvent& event);
-
-        /**
-         * @brief Handle KeyTyped events.
-         * @param event Event to handle.
-         */
-        void on_key_typed_event_(const rw::evt::KeyTypedEvent& event);
-
-        /**
-         * @brief Handle MouseButtonPressed events.
-         * @param event Event to handle.
-         */
-        void on_mouse_button_pressed_event_(const rw::evt::MouseButtonPressedEvent& event);
-
-        /**
-         * @brief Handle MouseButtonReleased events.
-         * @param event Event to handle.
-         */
-        void on_mouse_button_released_event_(const rw::evt::MouseButtonReleasedEvent& event);
-
-        /**
-         * @brief Handle MouseMoved events.
-         * @param event Event to handle.
-         */
-        void on_mouse_moved_event_(const rw::evt::MouseMovedEvent& event);
-
-        /**
-         * @brief Handle MouseScrolled events.
-         * @param event Event to handle.
-         */
-        void on_mouse_scrolled_event_(const rw::evt::MouseScrolledEvent& event);
-
-        /**
-         * @brief Handle WindowResized events.
-         * @param event Event to handle.
-         */
-        void on_window_resized_event_(const rw::evt::WindowResizedEvent& event);
-
-        /**
-         * @brief Update the control key values.
-         */
-        static void update_control_keys_();
-
         double time_{ 0.0F }; // Time since the last frame
     };
 } // namespace rw::layers

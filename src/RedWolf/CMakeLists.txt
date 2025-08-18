@@ -11,7 +11,6 @@ target_sources(RedWolf PRIVATE
         layers/layer.cpp
         layers/layer_stack.cpp
         layers/debug_layer.cpp
-        pl/gl/imgui_impl_opengl3.cpp
         thread/thread_pool.cpp
         time/date_time.cpp
         ui/window.cpp

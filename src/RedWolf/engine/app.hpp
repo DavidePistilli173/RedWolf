@@ -6,6 +6,7 @@
 #define APP_HPP
 
 #include "../evt/event.hpp"
+#include "../layers/debug_layer.hpp"
 #include "../layers/layer_stack.hpp"
 #include "../ui/window.hpp"
 
@@ -63,10 +64,10 @@ namespace rw::engine {
          * @brief Create a layer and push it onto the stack.
          * @tparam T Type of layer to create.
          * @param args Arguments for layer creation (except for the ID).
-         * @return ID of the created layer.
+         * @return Non-owning pointer to the created layer.
          */
         template<std::derived_from<rw::layers::Layer> T, typename... Args>
-        [[nodiscard]] rw::layers::Layer::ID push_layer(Args&&... args) {
+        [[nodiscard]] rw::layers::Layer* push_layer(Args&&... args) {
             return layer_stack_.push_layer<T>(std::forward<Args>(args)...);
         }
 
@@ -74,10 +75,10 @@ namespace rw::engine {
          * @brief Create an overlay and push it onto the stack.
          * @tparam T Type of overlay to create.
          * @param args Arguments for overlay creation (except for the ID).
-         * @return ID of the created overlay.
+         * @return Non-owning pointer to the created overlay.
          */
         template<std::derived_from<rw::layers::Layer> T, typename... Args>
-        [[nodiscard]] rw::layers::Layer::ID push_overlay(Args&&... args) {
+        [[nodiscard]] rw::layers::Layer* push_overlay(Args&&... args) {
             return layer_stack_.push_overlay<T>(std::forward<Args>(args)...);
         }
 
@@ -98,7 +99,8 @@ namespace rw::engine {
         std::unique_ptr<rw::ui::Window> window_;          /**< Application window. */
         bool                            running_{ true }; /**< Flag to indicate if the application is running. */
 
-        rw::layers::LayerStack layer_stack_; /**< Application layer stack. */
+        rw::layers::LayerStack  layer_stack_;            /**< Application layer stack. */
+        rw::layers::DebugLayer* debug_layer_{ nullptr }; /**< Debug layer. */
     };
 
     /**

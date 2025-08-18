@@ -18,16 +18,10 @@ namespace rw::layers {
     class Layer {
      public:
         /**
-         * @brief Unique identifier type for layers.
-         */
-        using ID = uint64_t;
-
-        /**
          * @brief Constructor.
-         * @param id Unique identifier for the layer.
          * @param name Readable name of the layer.
          */
-        explicit Layer(const ID id, const std::string_view name);
+        explicit Layer(const std::string_view name);
 
         /**
          * @brief Destructor.
@@ -65,16 +59,15 @@ namespace rw::layers {
         virtual void detach() = 0;
 
         /**
-         * @brief Get the ID of the layer.
-         * @return ID of the layer.
-         */
-        [[nodiscard]] ID id() const;
-
-        /**
          * @brief Get the layer name.
          * @return Readable name of the layer.
          */
         [[nodiscard]] std::string_view name() const;
+
+        /**
+         * @brief Render ImGui UI for the layer.
+         */
+        virtual void render_imgui() = 0;
 
         /**
          * @brief Update the layer (called each frame).
@@ -88,8 +81,7 @@ namespace rw::layers {
         [[nodiscard]] virtual bool on_event(const rw::evt::Event& event) = 0;
 
      protected:
-        ID          id_{ 0U }; /**< Unique identifier for the layer. */
-        std::string name_;     /**< Name of the layer. */
+        std::string name_; /**< Name of the layer. */
     };
 } // namespace rw::layers
 

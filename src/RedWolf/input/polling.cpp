@@ -17,23 +17,23 @@ bool rw::input::is_control_down() {
 }
 
 bool rw::input::is_key_down(const Key key) {
-    GLFWwindow* window{ rw::engine::App::get().window().handle() };
-    const auto  state{ static_cast<KeyState>(glfwGetKey(window, static_cast<int>(key))) };
+    rw::ui::WindowHandle window{ rw::engine::App::get().window().handle() };
+    const auto           state{ static_cast<KeyState>(glfwGetKey(window, static_cast<int>(key))) };
     return KeyState::pressed == state || KeyState::repeated == state;
 }
 
 bool rw::input::is_key_up(const Key key) {
-    GLFWwindow* window{ rw::engine::App::get().window().handle() };
+    rw::ui::WindowHandle window{ rw::engine::App::get().window().handle() };
     return KeyState::released == static_cast<KeyState>(glfwGetKey(window, static_cast<int>(key)));
 }
 
 bool rw::input::is_mouse_button_down(const int button) {
-    GLFWwindow* window{ rw::engine::App::get().window().handle() };
+    rw::ui::WindowHandle window{ rw::engine::App::get().window().handle() };
     return KeyState::pressed == static_cast<KeyState>(glfwGetMouseButton(window, button));
 }
 
 bool rw::input::is_mouse_button_up(const int button) {
-    GLFWwindow* window{ rw::engine::App::get().window().handle() };
+    rw::ui::WindowHandle window{ rw::engine::App::get().window().handle() };
     return KeyState::released == static_cast<KeyState>(glfwGetMouseButton(window, button));
 }
 
@@ -46,22 +46,22 @@ bool rw::input::is_super_down() {
 }
 
 rw::core::Point2D<double> rw::input::mouse_pos() {
-    GLFWwindow*       window{ rw::engine::App::get().window().handle() };
-    rw::core::Point2D position;
+    rw::ui::WindowHandle window{ rw::engine::App::get().window().handle() };
+    rw::core::Point2D    position;
     glfwGetCursorPos(window, &position.x, &position.y);
     return position;
 }
 
 double rw::input::mouse_x() {
-    GLFWwindow* window{ rw::engine::App::get().window().handle() };
-    double      x{ 0.0 };
+    rw::ui::WindowHandle window{ rw::engine::App::get().window().handle() };
+    double               x{ 0.0 };
     glfwGetCursorPos(window, &x, nullptr);
     return x;
 }
 
 double rw::input::mouse_y() {
-    GLFWwindow* window{ rw::engine::App::get().window().handle() };
-    double      y{ 0.0 };
+    rw::ui::WindowHandle window{ rw::engine::App::get().window().handle() };
+    double               y{ 0.0 };
     glfwGetCursorPos(window, nullptr, &y);
     return y;
 }
