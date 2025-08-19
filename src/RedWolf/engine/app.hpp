@@ -101,6 +101,10 @@ namespace rw::engine {
 
         rw::layers::LayerStack  layer_stack_;            /**< Application layer stack. */
         rw::layers::DebugLayer* debug_layer_{ nullptr }; /**< Debug layer. */
+
+        uint32_t vertex_array_{ 0U };
+        uint32_t vertex_buffer_{ 0U };
+        uint32_t index_buffer_{ 0U };
     };
 
     /**

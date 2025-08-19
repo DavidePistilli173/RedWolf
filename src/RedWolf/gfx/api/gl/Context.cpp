@@ -24,7 +24,12 @@ bool rw::gfx::api::gl::Context::init() {
         RW_CORE_ERR("Failed to initialize GLAD: {}", rw::vendor::glfw_get_error());
         return false;
     }
+
     RW_CORE_INFO("Loaded OpenGL functions.");
+    RW_CORE_INFO("Graphics driver:");
+    RW_CORE_INFO("   Vendor: {}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+    RW_CORE_INFO("   Renderer: {}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+    RW_CORE_INFO("   Version: {}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
     return true;
 }
 

@@ -7,6 +7,7 @@
 #include "../layers/debug_layer.hpp"
 #include "../util/logger.hpp"
 
+#include <glad/glad.h>
 #include <memory>
 #include <ranges>
 
@@ -28,6 +29,31 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
         RW_CORE_FATAL("Failed to create debug layer.");
         return;
     }
+
+    // TODO: Will be removed.
+    glGenVertexArrays(1, &vertex_array_);
+    glBindVertexArray(vertex_array_);
+
+    glGenBuffers(1, &vertex_buffer_);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
+
+    float vertices[3 * 3] = {
+        -0.5F, -0.5F, 0.0F, 0.5F, -0.5F, 0.0F, 0.0F, 0.5F, 0.0F,
+    };
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+
+    glGenBuffers(1, &index_buffer_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_);
+
+    uint32_t indices[3] = {
+        0,
+        1,
+        2,
+    };
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
 rw::engine::App::~App() {
@@ -66,6 +92,12 @@ bool rw::engine::App::on_event(const rw::evt::Event& event) {
 
 void rw::engine::App::run() {
     while (running_) {
+        glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glBindVertexArray(vertex_array_);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+
         for (auto& layer : layer_stack_) {
             layer->update();
         }

@@ -77,8 +77,6 @@ uint32_t rw::ui::Window::height() const {
 void rw::ui::Window::update() {
     glfwWaitEventsTimeout(default_frame_time);
     graphics_context_->swap_buffers();
-    glClearColor(0.2F, 0.0F, 0.0F, 1.0F);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void rw::ui::Window::set_event_callback(const std::function<bool(const rw::evt::Event&)>& callback) {
