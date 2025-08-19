@@ -2,7 +2,7 @@
 // Created by cjm036653 on 18/08/2025.
 //
 
-#include "Context.hpp"
+#include "context.hpp"
 
 #include "RedWolf/util/logger.hpp"
 #include "vendor/glfw.hpp"

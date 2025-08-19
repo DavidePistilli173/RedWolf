@@ -7,7 +7,8 @@ target_sources(RedWolf PRIVATE
         evt/event.cpp
         evt/key_event.cpp
         evt/mouse_event.cpp
-        gfx/api/gl/Context.cpp
+        gfx/api/gl/context.cpp
+        gfx/api/gl/shader.cpp
         input/polling.cpp
         layers/layer.cpp
         layers/layer_stack.cpp

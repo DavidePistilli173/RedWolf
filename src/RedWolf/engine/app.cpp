@@ -54,6 +54,31 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
         2,
     };
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    shader_ = std::make_unique<rw::gfx::api::gl::Shader>(
+        R"(
+        #version 330 core
+
+        layout(location = 0) in vec3 in_position;
+
+        out vec3 v_position;
+
+        void main() {
+            v_position = in_position * 2;
+            gl_Position = vec4(in_position * 2, 1.0);
+        }
+    )",
+        R"(
+        #version 330 core
+
+        in vec3 v_position;
+
+        layout(location = 0) out vec4 color;
+
+        void main() {
+            color = vec4(v_position * 0.5 + 0.5, 1.0);
+        }
+    )");
 }
 
 rw::engine::App::~App() {
@@ -95,6 +120,7 @@ void rw::engine::App::run() {
         glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        shader_->bind();
         glBindVertexArray(vertex_array_);
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
