@@ -2,8 +2,9 @@
 // Created by cjm036653 on 19/08/2025.
 //
 
-#include "RedWolf/util/logger.hpp"
 #include "gl_shader.hpp"
+
+#include "RedWolf/util/logger.hpp"
 
 #include <glad/glad.h>
 #include <vector>
@@ -104,7 +105,7 @@ rw::gfx::api::gl::Shader::Shader(std::string_view vertex_src, std::string_view f
     glDetachShader(program, fragment_shader);
 
     id_ = program;
-    RW_CORE_INFO("Shader program created with ID: {}", id_);
+    RW_CORE_TRACE("Shader program created with ID: {}", id_);
 }
 
 rw::gfx::api::gl::Shader::~Shader() {

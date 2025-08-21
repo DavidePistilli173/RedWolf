@@ -9,15 +9,26 @@
 
 #if defined(RW_GFX_API_OPENGL)
     #include "api/gl/gl_context.hpp"
+    #include "api/gl/gl_index_buffer.hpp"
     #include "api/gl/gl_shader.hpp"
+    #include "api/gl/gl_vertex_buffer.hpp"
 #else
     #error "No rendering API selected."
 #endif
 
 namespace rw::gfx {
+    /**
+     * @brief Available rendering APIs.
+     */
+    enum class RendererApi : uint8_t { opengl };
+
 #if defined(RW_GFX_API_OPENGL)
     using GraphicsContext = rw::gfx::api::gl::Context;
+    using IndexBuffer     = rw::gfx::api::gl::IndexBuffer;
     using Shader          = rw::gfx::api::gl::Shader;
+    using VertexBuffer    = rw::gfx::api::gl::VertexBuffer;
+
+    static constexpr auto active_api{ RendererApi::opengl }; /**< Currently selected rendering API. */
 #else
     #error "No rendering API selected."
 #endif

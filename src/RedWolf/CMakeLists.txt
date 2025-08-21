@@ -10,7 +10,9 @@ target_sources(RedWolf PRIVATE
         evt/key_event.cpp
         evt/mouse_event.cpp
         gfx/api/gl/gl_context.cpp
+        gfx/api/gl/gl_index_buffer.cpp
         gfx/api/gl/gl_shader.cpp
+        gfx/api/gl/gl_vertex_buffer.cpp
         input/polling.cpp
         layers/layer.cpp
         layers/layer_stack.cpp

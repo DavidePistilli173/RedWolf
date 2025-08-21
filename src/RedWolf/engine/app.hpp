@@ -6,7 +6,7 @@
 #define APP_HPP
 
 #include "RedWolf/evt/event.hpp"
-#include "RedWolf/gfx/api/gl/gl_shader.hpp"
+#include "RedWolf/gfx/gfx.hpp"
 #include "RedWolf/layers/debug_layer.hpp"
 #include "RedWolf/layers/layer_stack.hpp"
 #include "RedWolf/ui/window.hpp"
@@ -103,10 +103,10 @@ namespace rw::engine {
         rw::layers::LayerStack  layer_stack_;            /**< Application layer stack. */
         rw::layers::DebugLayer* debug_layer_{ nullptr }; /**< Debug layer. */
 
-        uint32_t                                  vertex_array_{ 0U };
-        uint32_t                                  vertex_buffer_{ 0U };
-        uint32_t                                  index_buffer_{ 0U };
-        std::unique_ptr<rw::gfx::api::gl::Shader> shader_;
+        uint32_t                               vertex_array_{ 0U };
+        std::unique_ptr<rw::gfx::VertexBuffer> vertex_buffer_;
+        std::unique_ptr<rw::gfx::IndexBuffer>  index_buffer_;
+        std::unique_ptr<rw::gfx::Shader>       shader_;
     };
 
     /**
