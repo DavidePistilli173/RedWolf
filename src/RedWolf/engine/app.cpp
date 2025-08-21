@@ -6,6 +6,8 @@
 
 #include "../layers/debug_layer.hpp"
 #include "../util/logger.hpp"
+#include "RedWolf/gfx/renderer.hpp"
+#include "RedWolf/gfx/renderer_interface.hpp"
 #include "RedWolf/gfx/shader_data.hpp"
 
 #include <glad/glad.h>
@@ -24,6 +26,7 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
 
     window_ = std::make_unique<rw::ui::Window>(window_data);
     window_->set_event_callback([this](const rw::evt::Event& event) { return on_event(event); });
+    renderer_interface_ = window_->renderer_interface();
 
     debug_layer_ = dynamic_cast<rw::layers::DebugLayer*>(layer_stack_.push_layer<rw::layers::DebugLayer>());
     if (nullptr == debug_layer_) {
@@ -133,16 +136,21 @@ bool rw::engine::App::on_event(const rw::evt::Event& event) {
 }
 
 void rw::engine::App::run() {
+    renderer_interface_->set_clear_color(rw::math::Vec4(1.0F, 1.0F, 0.0F, 0.0F));
+
     while (running_) {
-        glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        renderer_interface_->clear_screen();
+        // TODO(PID): Begin scene is a window method and returns the renderer interface?
+        renderer_interface_->begin_scene();
 
         shader_->bind();
         vertex_array_->bind();
-        glDrawElements(GL_TRIANGLES, vertex_array_->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
+        renderer_interface_->draw_indexed(vertex_array_.get());
 
         square_va_->bind();
-        glDrawElements(GL_TRIANGLES, square_va_->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
+        renderer_interface_->draw_indexed(square_va_.get());
+
+        renderer_interface_->end_scene();
 
         for (auto& layer : layer_stack_) {
             layer->update();

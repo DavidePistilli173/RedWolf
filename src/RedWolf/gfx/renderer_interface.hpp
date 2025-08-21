@@ -2,21 +2,22 @@
 // Created by cjm036653 on 21/08/2025.
 //
 
-#ifndef SRC_REDWOLF_RENDERER_HPP
-#define SRC_REDWOLF_RENDERER_HPP
+#ifndef SRC_REDWOLF_RENDER_COMMAND_HPP
+#define SRC_REDWOLF_RENDER_COMMAND_HPP
 
 #include "gfx.hpp"
+#include "renderer.hpp"
 
 namespace rw::gfx {
     /**
-     * @brief RedWolf renderer.
+     * @brief Interface for the renderer.
      */
-    class Renderer {
+    class RendererInterface {
      public:
         /**
          * @brief Constructor.
          */
-        Renderer() = default;
+        explicit RendererInterface(Renderer& renderer);
 
         /**
          * @brief Begin rendering a scene.
@@ -46,7 +47,8 @@ namespace rw::gfx {
         void set_clear_color(const rw::math::Vec4& color);
 
      private:
+        Renderer& renderer_; /**< Renderer instance this interface is connected to. */
     };
 } // namespace rw::gfx
 
-#endif // SRC_REDWOLF_RENDERER_HPP
+#endif // SRC_REDWOLF_RENDER_COMMAND_HPP

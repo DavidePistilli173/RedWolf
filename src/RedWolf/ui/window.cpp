@@ -65,9 +65,8 @@ uint32_t rw::ui::Window::height() const {
     return height_;
 }
 
-void rw::ui::Window::update() {
-    glfwWaitEventsTimeout(default_frame_time);
-    graphics_context_->swap_buffers();
+std::unique_ptr<rw::gfx::RendererInterface> rw::ui::Window::renderer_interface() {
+    return std::make_unique<rw::gfx::RendererInterface>(renderer_);
 }
 
 void rw::ui::Window::set_event_callback(const std::function<bool(const rw::evt::Event&)>& callback) {
@@ -84,6 +83,11 @@ void rw::ui::Window::set_vsync(const bool enabled) {
         glfwSwapInterval(0); // Disable VSync
         RW_CORE_INFO("VSync disabled");
     }
+}
+
+void rw::ui::Window::update() {
+    glfwWaitEventsTimeout(default_frame_time);
+    graphics_context_->swap_buffers();
 }
 
 bool rw::ui::Window::vsync() const {

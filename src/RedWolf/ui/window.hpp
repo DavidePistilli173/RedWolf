@@ -7,6 +7,8 @@
 
 #include "RedWolf/evt/event.hpp"
 #include "RedWolf/gfx/gfx.hpp"
+#include "RedWolf/gfx/renderer.hpp"
+#include "RedWolf/gfx/renderer_interface.hpp"
 #include "ui.hpp"
 
 #include <functional>
@@ -77,10 +79,10 @@ namespace rw::ui {
         [[nodiscard]] uint32_t height() const;
 
         /**
-         * @brief Update the window, poll events etc.
-         * @details Called once per frame.
+         * @brief Get an interface to this window's renderer.
+         * @return Interface to this window's renderer.
          */
-        void update();
+        [[nodiscard]] std::unique_ptr<rw::gfx::RendererInterface> renderer_interface();
 
         /**
          * @brief Set the callback for handling window events.
@@ -93,6 +95,12 @@ namespace rw::ui {
          * @param enabled If true, enable VSync; if false, disable it.
          */
         void set_vsync(const bool enabled);
+
+        /**
+         * @brief Update the window, poll events etc.
+         * @details Called once per frame.
+         */
+        void update();
 
         /**
          * @brief Get the current state of vertical synchronization (VSync).
@@ -185,6 +193,7 @@ namespace rw::ui {
         static bool glfw_initialized_; /**< Flag to check if GLFW has been initialized. */
 
         rw::ui::WindowHandle                       handle_{ invalid_window_handle }; /**< Raw window handle. */
+        rw::gfx::Renderer                          renderer_;                        /**< Renderer instance for this window. */
         std::unique_ptr<rw::gfx::GraphicsContext>  graphics_context_{ nullptr };     /**< Rendering Context. */
         std::string                                title_{ "RedWolf Engine" };       /**< Title of the window. */
         uint32_t                                   width_{ default_window_width };   /**< Width of the window in pixels. */
