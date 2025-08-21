@@ -6,10 +6,34 @@
 
 #include "../layers/debug_layer.hpp"
 #include "../util/logger.hpp"
+#include "RedWolf/gfx/shader_data.hpp"
 
 #include <glad/glad.h>
 #include <memory>
 #include <ranges>
+
+static constexpr GLenum shader_data_type_to_gl_type(const rw::gfx::ShaderDataType type) {
+    switch (type) {
+    case rw::gfx::ShaderDataType::none:
+        return GL_NONE;
+    case rw::gfx::ShaderDataType::f32:
+    case rw::gfx::ShaderDataType::f32_2:
+    case rw::gfx::ShaderDataType::f32_3:
+    case rw::gfx::ShaderDataType::f32_4:
+    case rw::gfx::ShaderDataType::mat_f32_3:
+    case rw::gfx::ShaderDataType::mat_f32_4:
+        return GL_FLOAT;
+    case rw::gfx::ShaderDataType::i32:
+    case rw::gfx::ShaderDataType::i32_2:
+    case rw::gfx::ShaderDataType::i32_3:
+    case rw::gfx::ShaderDataType::i32_4:
+        return GL_INT;
+    case rw::gfx::ShaderDataType::boolean:
+        return GL_BOOL;
+    default:
+        return GL_NONE; // Invalid type
+    }
+}
 
 rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
     // Initialise the logger as first instruction.
@@ -34,14 +58,25 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
     glGenVertexArrays(1, &vertex_array_);
     glBindVertexArray(vertex_array_);
 
-    float vertices[3 * 3] = {
-        -0.5F, -0.5F, 0.0F, 0.5F, -0.5F, 0.0F, 0.0F, 0.5F, 0.0F,
-    };
-    vertex_buffer_ = std::make_unique<rw::gfx::VertexBuffer>();
+    float vertices[] = { -0.5F, -0.5F, 0.0F, 1.0F, 0.0F, 0.0F, 1.0F, 0.5F, -0.5F, 0.0F, 0.0F,
+                         1.0F,  0.0F,  1.0F, 0.0F, 0.5F, 0.0F, 0.0F, 0.0F, 1.0F,  1.0F };
+    vertex_buffer_   = std::make_unique<rw::gfx::VertexBuffer>();
     vertex_buffer_->set_data(vertices);
+    vertex_buffer_->set_layout(
+        rw::gfx::BufferLayout{ { rw::gfx::ShaderDataType::f32_3, "in_position" }, { rw::gfx::ShaderDataType::f32_4, "in_color" } });
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+    uint32_t index{ 0U };
+    for (const auto& element : vertex_buffer_->layout()) {
+        glEnableVertexAttribArray(index);
+        glVertexAttribPointer(
+            index,
+            static_cast<int32_t>(element.component_count()),
+            shader_data_type_to_gl_type(element.type),
+            element.normalized ? GL_TRUE : GL_FALSE,
+            static_cast<int32_t>(vertex_buffer_->layout().stride()),
+            reinterpret_cast<const void*>(element.offset));
+        ++index;
+    }
 
     uint32_t indices[3] = {
         0,
@@ -56,11 +91,14 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
         #version 330 core
 
         layout(location = 0) in vec3 in_position;
+        layout(location = 1) in vec4 in_color;
 
         out vec3 v_position;
+        out vec4 v_color;
 
         void main() {
             v_position = in_position * 2;
+            v_color = in_color;
             gl_Position = vec4(in_position * 2, 1.0);
         }
     )",
@@ -68,11 +106,12 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
         #version 330 core
 
         in vec3 v_position;
+        in vec4 v_color;
 
         layout(location = 0) out vec4 color;
 
         void main() {
-            color = vec4(v_position * 0.5 + 0.5, 1.0);
+            color = v_color;
         }
     )");
 }
