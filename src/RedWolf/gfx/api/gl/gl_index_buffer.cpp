@@ -40,7 +40,7 @@ int32_t rw::gfx::api::gl::IndexBuffer::count() const {
 }
 
 void rw::gfx::api::gl::IndexBuffer::set_data(const std::span<uint32_t> index_data) {
-    bind();
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<long>(index_data.size_bytes()), index_data.data(), GL_STATIC_DRAW);
     count_ = static_cast<int32_t>(index_data.size());
 }

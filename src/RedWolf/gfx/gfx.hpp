@@ -11,6 +11,7 @@
     #include "api/gl/gl_context.hpp"
     #include "api/gl/gl_index_buffer.hpp"
     #include "api/gl/gl_shader.hpp"
+    #include "api/gl/gl_vertex_array.hpp"
     #include "api/gl/gl_vertex_buffer.hpp"
 #else
     #error "No rendering API selected."
@@ -26,6 +27,7 @@ namespace rw::gfx {
     using GraphicsContext = rw::gfx::api::gl::Context;
     using IndexBuffer     = rw::gfx::api::gl::IndexBuffer;
     using Shader          = rw::gfx::api::gl::Shader;
+    using VertexArray     = rw::gfx::api::gl::VertexArray;
     using VertexBuffer    = rw::gfx::api::gl::VertexBuffer;
 
     static constexpr auto active_api{ RendererApi::opengl }; /**< Currently selected rendering API. */

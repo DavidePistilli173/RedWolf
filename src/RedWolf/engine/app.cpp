@@ -12,29 +12,6 @@
 #include <memory>
 #include <ranges>
 
-static constexpr GLenum shader_data_type_to_gl_type(const rw::gfx::ShaderDataType type) {
-    switch (type) {
-    case rw::gfx::ShaderDataType::none:
-        return GL_NONE;
-    case rw::gfx::ShaderDataType::f32:
-    case rw::gfx::ShaderDataType::f32_2:
-    case rw::gfx::ShaderDataType::f32_3:
-    case rw::gfx::ShaderDataType::f32_4:
-    case rw::gfx::ShaderDataType::mat_f32_3:
-    case rw::gfx::ShaderDataType::mat_f32_4:
-        return GL_FLOAT;
-    case rw::gfx::ShaderDataType::i32:
-    case rw::gfx::ShaderDataType::i32_2:
-    case rw::gfx::ShaderDataType::i32_3:
-    case rw::gfx::ShaderDataType::i32_4:
-        return GL_INT;
-    case rw::gfx::ShaderDataType::boolean:
-        return GL_BOOL;
-    default:
-        return GL_NONE; // Invalid type
-    }
-}
-
 rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
     // Initialise the logger as first instruction.
     RW_CORE_INFO("Constructing application");
@@ -55,36 +32,41 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
     }
 
     // TODO: Will be removed.
-    glGenVertexArrays(1, &vertex_array_);
-    glBindVertexArray(vertex_array_);
+    vertex_array_ = std::make_unique<rw::gfx::VertexArray>();
 
     float vertices[] = { -0.5F, -0.5F, 0.0F, 1.0F, 0.0F, 0.0F, 1.0F, 0.5F, -0.5F, 0.0F, 0.0F,
                          1.0F,  0.0F,  1.0F, 0.0F, 0.5F, 0.0F, 0.0F, 0.0F, 1.0F,  1.0F };
-    vertex_buffer_   = std::make_unique<rw::gfx::VertexBuffer>();
-    vertex_buffer_->set_data(vertices);
-    vertex_buffer_->set_layout(
+    auto  vertex_buffer{ std::make_shared<rw::gfx::VertexBuffer>() };
+    vertex_buffer->set_data(vertices);
+    vertex_buffer->set_layout(
         rw::gfx::BufferLayout{ { rw::gfx::ShaderDataType::f32_3, "in_position" }, { rw::gfx::ShaderDataType::f32_4, "in_color" } });
-
-    uint32_t index{ 0U };
-    for (const auto& element : vertex_buffer_->layout()) {
-        glEnableVertexAttribArray(index);
-        glVertexAttribPointer(
-            index,
-            static_cast<int32_t>(element.component_count()),
-            shader_data_type_to_gl_type(element.type),
-            element.normalized ? GL_TRUE : GL_FALSE,
-            static_cast<int32_t>(vertex_buffer_->layout().stride()),
-            reinterpret_cast<const void*>(element.offset));
-        ++index;
-    }
 
     uint32_t indices[3] = {
         0,
         1,
         2,
     };
-    index_buffer_ = std::make_unique<rw::gfx::IndexBuffer>();
-    index_buffer_->set_data(indices);
+    auto index_buffer{ std::make_shared<rw::gfx::IndexBuffer>() };
+    index_buffer->set_data(indices);
+
+    vertex_array_->add_vertex_buffer(vertex_buffer);
+    vertex_array_->set_index_buffer(index_buffer);
+
+    float square_vertices[] = { -0.9F, -0.9F, 0.0F, 0.5F, 0.5F, 0.0F, 1.0F, -0.7F, -0.9F, 0.0F, 0.0F,  0.5F,  0.5F,  1.0F,
+                                -0.7F, -0.7F, 0.0F, 0.5F, 0.0F, 0.5F, 1.0F, -0.9F, -0.7F, 0.0F, 0.25F, 0.25F, 0.25F, 1.0F };
+
+    square_va_ = std::make_unique<rw::gfx::VertexArray>();
+    auto square_vb{ std::make_shared<rw::gfx::VertexBuffer>() };
+    square_vb->set_data(square_vertices);
+    square_vb->set_layout(
+        rw::gfx::BufferLayout{ { rw::gfx::ShaderDataType::f32_3, "in_position" }, { rw::gfx::ShaderDataType::f32_4, "in_color" } });
+
+    uint32_t square_indices[] = { 0, 1, 2, 2, 3, 0 };
+    auto     square_ib{ std::make_shared<rw::gfx::IndexBuffer>() };
+    square_ib->set_data(square_indices);
+
+    square_va_->add_vertex_buffer(square_vb);
+    square_va_->set_index_buffer(square_ib);
 
     shader_ = std::make_unique<rw::gfx::api::gl::Shader>(
         R"(
@@ -97,9 +79,9 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
         out vec4 v_color;
 
         void main() {
-            v_position = in_position * 2;
+            v_position = in_position;
             v_color = in_color;
-            gl_Position = vec4(in_position * 2, 1.0);
+            gl_Position = vec4(in_position, 1.0);
         }
     )",
         R"(
@@ -156,8 +138,11 @@ void rw::engine::App::run() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader_->bind();
-        glBindVertexArray(vertex_array_);
-        glDrawElements(GL_TRIANGLES, index_buffer_->count(), GL_UNSIGNED_INT, nullptr);
+        vertex_array_->bind();
+        glDrawElements(GL_TRIANGLES, vertex_array_->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
+
+        square_va_->bind();
+        glDrawElements(GL_TRIANGLES, square_va_->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
 
         for (auto& layer : layer_stack_) {
             layer->update();

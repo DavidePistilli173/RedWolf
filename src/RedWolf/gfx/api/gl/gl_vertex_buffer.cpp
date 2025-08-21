@@ -40,7 +40,7 @@ const rw::gfx::BufferLayout& rw::gfx::api::gl::VertexBuffer::layout() const {
 }
 
 void rw::gfx::api::gl::VertexBuffer::set_data(const std::span<float> vertex_data) {
-    bind();
+    glBindBuffer(GL_ARRAY_BUFFER, id_);
     glBufferData(GL_ARRAY_BUFFER, static_cast<long>(vertex_data.size_bytes()), vertex_data.data(), GL_STATIC_DRAW);
 }
 

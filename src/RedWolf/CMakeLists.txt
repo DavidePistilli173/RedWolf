@@ -12,6 +12,7 @@ target_sources(RedWolf PRIVATE
         gfx/api/gl/gl_context.cpp
         gfx/api/gl/gl_index_buffer.cpp
         gfx/api/gl/gl_shader.cpp
+        gfx/api/gl/gl_vertex_array.cpp
         gfx/api/gl/gl_vertex_buffer.cpp
         gfx/buffer_layout.cpp
         input/polling.cpp
