@@ -7,7 +7,6 @@
 #include "RedWolf/evt/application_event.hpp"
 #include "RedWolf/evt/key_event.hpp"
 #include "RedWolf/evt/mouse_event.hpp"
-#include "RedWolf/gfx/api/gl/context.hpp"
 #include "RedWolf/util/logger.hpp"
 
 #include <glad/glad.h>
@@ -36,15 +35,7 @@ rw::ui::Window::Window(const WindowDescriptor& descriptor) :
     }
 
     // Create and initialise the graphics Context.
-    switch (descriptor.graphics_api) {
-    case rw::gfx::Api::opengl:
-        graphics_context_ = std::make_unique<rw::gfx::api::gl::Context>(handle_);
-        break;
-    default:
-        RW_CORE_ERR("Invalid graphics API specified: {}.", static_cast<int>(descriptor.graphics_api));
-        return;
-        break;
-    }
+    graphics_context_ = std::make_unique<rw::gfx::GraphicsContext>(handle_);
     if (!graphics_context_->init()) {
         RW_CORE_ERR("Failed to initialise the graphics Context.");
         return;

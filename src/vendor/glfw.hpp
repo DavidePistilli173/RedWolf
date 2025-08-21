@@ -31,7 +31,6 @@ namespace rw::vendor {
      * @return Last GLFW error code in enum form.
      */
     [[nodiscard]] GlfwError glfw_get_error();
-
 } // namespace rw::vendor
 
 /**

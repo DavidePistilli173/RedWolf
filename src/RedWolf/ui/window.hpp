@@ -6,7 +6,6 @@
 #define WINDOW_HPP
 
 #include "RedWolf/evt/event.hpp"
-#include "RedWolf/gfx/GraphicsContext.hpp"
 #include "RedWolf/gfx/gfx.hpp"
 #include "ui.hpp"
 
@@ -22,10 +21,9 @@ namespace rw::ui {
      * @brief Descriptor for a window, containing properties like title, size, and other configurations.
      */
     struct WindowDescriptor {
-        std::string_view title{ "RedWolf Engine" };            /**< Title of the window. */
-        uint32_t         width{ default_window_width };        /**< Width of the window in pixels. */
-        uint32_t         height{ default_window_height };      /**< Height of the window in pixels. */
-        rw::gfx::Api     graphics_api{ rw::gfx::Api::opengl }; /**< Rendering API for the window. */
+        std::string_view title{ "RedWolf Engine" };       /**< Title of the window. */
+        uint32_t         width{ default_window_width };   /**< Width of the window in pixels. */
+        uint32_t         height{ default_window_height }; /**< Height of the window in pixels. */
     };
 
     /**

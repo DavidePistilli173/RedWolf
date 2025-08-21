@@ -9,10 +9,11 @@
 
 class SandboxApp : public rw::engine::App {
  public:
-    static constexpr rw::ui::WindowDescriptor window_settings{ .title        = "RedWolf Sandbox",
-                                                               .width        = rw::ui::default_window_width,
-                                                               .height       = rw::ui::default_window_height,
-                                                               .graphics_api = rw::gfx::Api::opengl };
+    static constexpr rw::ui::WindowDescriptor window_settings{
+        .title  = "RedWolf Sandbox",
+        .width  = rw::ui::default_window_width,
+        .height = rw::ui::default_window_height,
+    };
 
     SandboxApp();
     ~SandboxApp() override                   = default;

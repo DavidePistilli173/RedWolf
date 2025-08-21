@@ -2,17 +2,18 @@
 // Created by cjm036653 on 18/08/2025.
 //
 
-#ifndef SRC_REDWOLF_OPENGLCONTEXT_HPP
-#define SRC_REDWOLF_OPENGLCONTEXT_HPP
+#ifndef SRC_REDWOLF_GL_CONTEXT_HPP
+#define SRC_REDWOLF_GL_CONTEXT_HPP
 
-#include "RedWolf/gfx/GraphicsContext.hpp"
 #include "RedWolf/ui/ui.hpp"
+
+#include <cstdint>
 
 namespace rw::gfx::api::gl {
     /**
      * @brief OpenGL graphics context.
      */
-    class Context final : public rw::gfx::GraphicsContext {
+    class Context {
      public:
         /**
          * @brief Constructor.
@@ -23,7 +24,7 @@ namespace rw::gfx::api::gl {
         /**
          * @brief Destructor.
          */
-        ~Context() override = default;
+        ~Context() = default;
 
         /**
          * @brief Copy constructor.
@@ -49,12 +50,12 @@ namespace rw::gfx::api::gl {
          * @brief Initialise the context.
          * @return true on success, false otherwise.
          */
-        [[nodiscard]] bool init() override;
+        [[nodiscard]] bool init();
 
         /**
          * @brief Swap frame buffers.
          */
-        void swap_buffers() override;
+        void swap_buffers();
 
      private:
         rw::ui::WindowHandle window_{ rw::ui::invalid_window_handle }; /**< Raw handle of the window to render to. */

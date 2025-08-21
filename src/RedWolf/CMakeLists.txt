@@ -1,5 +1,7 @@
 add_library(RedWolf STATIC)
 
+set(RW_GFX_API "RW_GFX_API_OPENGL" CACHE STRING "Rendering API for RedWolf")
+
 target_sources(RedWolf PRIVATE
         engine/app.cpp
         engine/entry_point.cpp
@@ -7,8 +9,8 @@ target_sources(RedWolf PRIVATE
         evt/event.cpp
         evt/key_event.cpp
         evt/mouse_event.cpp
-        gfx/api/gl/context.cpp
-        gfx/api/gl/shader.cpp
+        gfx/api/gl/gl_context.cpp
+        gfx/api/gl/gl_shader.cpp
         input/polling.cpp
         layers/layer.cpp
         layers/layer_stack.cpp
@@ -26,6 +28,7 @@ target_include_directories(RedWolf PUBLIC
 
 target_compile_definitions(RedWolf PUBLIC
         GLFW_INCLUDE_NONE
+        ${RW_GFX_API}
 )
 
 target_compile_options(RedWolf PRIVATE

@@ -2,9 +2,8 @@
 // Created by cjm036653 on 19/08/2025.
 //
 
-#include "shader.hpp"
-
 #include "RedWolf/util/logger.hpp"
+#include "gl_shader.hpp"
 
 #include <glad/glad.h>
 #include <vector>

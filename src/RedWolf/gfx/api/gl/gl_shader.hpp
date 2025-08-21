@@ -2,8 +2,8 @@
 // Created by cjm036653 on 19/08/2025.
 //
 
-#ifndef SRC_REDWOLF_SHADER_HPP
-#define SRC_REDWOLF_SHADER_HPP
+#ifndef SRC_REDWOLF_GL_SHADER_HPP
+#define SRC_REDWOLF_GL_SHADER_HPP
 
 #include <cstdint>
 #include <string_view>

@@ -6,7 +6,7 @@
 #define APP_HPP
 
 #include "RedWolf/evt/event.hpp"
-#include "RedWolf/gfx/api/gl/shader.hpp"
+#include "RedWolf/gfx/api/gl/gl_shader.hpp"
 #include "RedWolf/layers/debug_layer.hpp"
 #include "RedWolf/layers/layer_stack.hpp"
 #include "RedWolf/ui/window.hpp"
