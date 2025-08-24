@@ -5,6 +5,7 @@
 #ifndef SRC_REDWOLF_RENDERER_HPP
 #define SRC_REDWOLF_RENDERER_HPP
 
+#include "camera.hpp"
 #include "gfx.hpp"
 
 namespace rw::gfx {
@@ -20,8 +21,9 @@ namespace rw::gfx {
 
         /**
          * @brief Begin rendering a scene.
+         * @param camera Active camera for the scene.
          */
-        void begin_scene();
+        void begin_scene(const Camera& camera);
 
         /**
          * @brief Clear the screen with the currently set colour.
@@ -29,10 +31,11 @@ namespace rw::gfx {
         void clear_screen();
 
         /**
-         * @brief Draw an indexed set of vertices bound to a vertex array.
+         * @brief Draw a set of vertices bound to a vertex array.
+         * @param shader Shader to use for rendering.
          * @param vertex_array Vertex array to draw.
          */
-        void draw_indexed(const VertexArray* vertex_array);
+        void draw(const Shader* shader, const VertexArray* vertex_array);
 
         /**
          * @brief Finish rendering a scene.
@@ -46,6 +49,7 @@ namespace rw::gfx {
         void set_clear_color(const rw::math::Vec4& color);
 
      private:
+        rw::math::Mat4 view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
     };
 } // namespace rw::gfx
 

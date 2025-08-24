@@ -119,3 +119,13 @@ void rw::gfx::api::gl::Shader::bind() const {
 void rw::gfx::api::gl::Shader::unbind() const {
     glUseProgram(0);
 }
+
+void rw::gfx::api::gl::Shader::upload_uniform_mat4(const std::string_view name, const rw::math::Mat4& matrix) const {
+    const GLint location{ glGetUniformLocation(id_, name.data()) };
+    if (-1 == location) {
+        RW_CORE_ERR("Failed to get uniform location: {}", name);
+        return;
+    }
+
+    glUniformMatrix4fv(location, 1, GL_FALSE, rw::math::value_ptr(matrix));
+}

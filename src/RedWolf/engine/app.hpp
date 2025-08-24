@@ -6,6 +6,7 @@
 #define APP_HPP
 
 #include "RedWolf/evt/event.hpp"
+#include "RedWolf/gfx/camera.hpp"
 #include "RedWolf/gfx/gfx.hpp"
 #include "RedWolf/layers/debug_layer.hpp"
 #include "RedWolf/layers/layer_stack.hpp"
@@ -109,6 +110,8 @@ namespace rw::engine {
         std::unique_ptr<rw::gfx::Shader>      shader_;
 
         std::unique_ptr<rw::gfx::VertexArray> square_va_;
+
+        rw::gfx::Camera camera_;
     };
 
     /**

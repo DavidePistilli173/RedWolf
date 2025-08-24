@@ -5,6 +5,8 @@
 #ifndef SRC_REDWOLF_GL_SHADER_HPP
 #define SRC_REDWOLF_GL_SHADER_HPP
 
+#include "RedWolf/math/math.hpp"
+
 #include <cstdint>
 #include <string_view>
 
@@ -55,6 +57,13 @@ namespace rw::gfx::api::gl {
          * @brief Unbind the shader program.
          */
         void unbind() const;
+
+        /**
+         * @brief Upload a 4x4 matrix uniform to the shader.
+         * @param name Name of the uniform.
+         * @param matrix Matrix to upload.
+         */
+        void upload_uniform_mat4(const std::string_view name, const rw::math::Mat4& matrix) const;
 
      private:
         uint32_t id_{ 0U }; /**< ID of the shader. */

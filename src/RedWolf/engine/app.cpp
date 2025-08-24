@@ -6,15 +6,13 @@
 
 #include "../layers/debug_layer.hpp"
 #include "../util/logger.hpp"
-#include "RedWolf/gfx/renderer.hpp"
 #include "RedWolf/gfx/renderer_interface.hpp"
 #include "RedWolf/gfx/shader_data.hpp"
 
-#include <glad/glad.h>
 #include <memory>
 #include <ranges>
 
-rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
+rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) : camera_{ rw::gfx::Camera::orthographic(-1.6F, 1.6F, -0.9F, 0.9F) } {
     // Initialise the logger as first instruction.
     RW_CORE_INFO("Constructing application");
 
@@ -78,13 +76,15 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
         layout(location = 0) in vec3 in_position;
         layout(location = 1) in vec4 in_color;
 
+        uniform mat4 u_view_projection;
+
         out vec3 v_position;
         out vec4 v_color;
 
         void main() {
             v_position = in_position;
             v_color = in_color;
-            gl_Position = vec4(in_position, 1.0);
+            gl_Position = u_view_projection * vec4(in_position, 1.0);
         }
     )",
         R"(
@@ -138,18 +138,17 @@ bool rw::engine::App::on_event(const rw::evt::Event& event) {
 void rw::engine::App::run() {
     renderer_interface_->set_clear_color(rw::math::Vec4(1.0F, 1.0F, 0.0F, 0.0F));
 
+    camera_.set_position(rw::math::Vec3(0.5F, 0.5F, 0.0F));
+    float rotation{ 0.0F };
+
     while (running_) {
+        rotation += 1.0F;
+        camera_.set_rotation(rotation);
+
         renderer_interface_->clear_screen();
-        // TODO(PID): Begin scene is a window method and returns the renderer interface?
-        renderer_interface_->begin_scene();
-
-        shader_->bind();
-        vertex_array_->bind();
-        renderer_interface_->draw_indexed(vertex_array_.get());
-
-        square_va_->bind();
-        renderer_interface_->draw_indexed(square_va_.get());
-
+        renderer_interface_->begin_scene(camera_);
+        renderer_interface_->draw(shader_.get(), vertex_array_.get());
+        renderer_interface_->draw(shader_.get(), square_va_.get());
         renderer_interface_->end_scene();
 
         for (auto& layer : layer_stack_) {

@@ -6,16 +6,16 @@
 
 rw::gfx::RendererInterface::RendererInterface(Renderer& renderer) : renderer_{ renderer } {}
 
-void rw::gfx::RendererInterface::begin_scene() {
-    renderer_.begin_scene();
+void rw::gfx::RendererInterface::begin_scene(const Camera& camera) {
+    renderer_.begin_scene(camera);
 }
 
 void rw::gfx::RendererInterface::clear_screen() {
     renderer_.clear_screen();
 }
 
-void rw::gfx::RendererInterface::draw_indexed(const VertexArray* vertex_array) {
-    renderer_.draw_indexed(vertex_array);
+void rw::gfx::RendererInterface::draw(const Shader* shader, const VertexArray* vertex_array) {
+    renderer_.draw(shader, vertex_array);
 }
 
 void rw::gfx::RendererInterface::end_scene() {
