@@ -86,7 +86,7 @@ void rw::ui::Window::set_vsync(const bool enabled) {
 }
 
 void rw::ui::Window::update() {
-    glfwWaitEventsTimeout(default_frame_time);
+    glfwPollEvents();
     graphics_context_->swap_buffers();
 }
 

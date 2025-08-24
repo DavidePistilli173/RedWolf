@@ -5,9 +5,8 @@
 #ifndef SRC_REDWOLF_LAYER_HPP
 #define SRC_REDWOLF_LAYER_HPP
 
-#include "../evt/event.hpp"
+#include "RedWolf/evt/event.hpp"
 
-#include <cstdint>
 #include <string>
 #include <string_view>
 
@@ -71,8 +70,9 @@ namespace rw::layers {
 
         /**
          * @brief Update the layer (called each frame).
+         * @param delta_time Time elapsed since the last update in seconds.
          */
-        virtual void update() = 0;
+        virtual void update(const float delta_time) = 0;
 
         /**
          * @brief Event handling function.

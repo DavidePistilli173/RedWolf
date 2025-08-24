@@ -33,8 +33,6 @@ namespace rw::ui {
      */
     class Window {
      public:
-        static constexpr double default_frame_time{ 1.0 / 60.0 }; /**< Default frame time in seconds (60 FPS). */
-
         /**
          * Constructor.
          * @param descriptor Window settings.

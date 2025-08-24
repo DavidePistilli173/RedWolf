@@ -4,7 +4,6 @@
 
 #include "app.hpp"
 
-#include "RedWolf/gfx/renderer_interface.hpp"
 #include "RedWolf/layers/debug_layer.hpp"
 #include "RedWolf/util/logger.hpp"
 
@@ -66,9 +65,14 @@ bool rw::engine::App::on_event(const rw::evt::Event& event) {
 }
 
 void rw::engine::App::run() {
+    auto last_ts{ std::chrono::high_resolution_clock::now() };
+
     while (running_) {
+        auto       current_ts{ std::chrono::high_resolution_clock::now() };
+        const auto delta_time{ static_cast<float>((current_ts - last_ts).count()) * nanoseconds_to_seconds };
+
         for (auto& layer : layer_stack_) {
-            layer->update();
+            layer->update(delta_time);
         }
 
         debug_layer_->begin_frame();
@@ -78,6 +82,8 @@ void rw::engine::App::run() {
         debug_layer_->end_frame();
 
         window_->update();
+
+        last_ts = current_ts;
     }
 }
 

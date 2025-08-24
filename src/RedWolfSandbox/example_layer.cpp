@@ -4,10 +4,10 @@
 
 #include "example_layer.hpp"
 
-#include "RedWolf/input/polling.hpp"
-
 #include <RedWolf/engine/app.hpp>
 #include <RedWolf/gfx/gfx.hpp>
+#include <RedWolf/input/polling.hpp>
+#include <RedWolf/util/logger.hpp>
 
 ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx::Camera::orthographic(-1.6F, 1.6F, -0.9F, 0.9F) } {
     renderer_interface_ = rw::engine::App::get().window().renderer_interface();
@@ -87,32 +87,32 @@ void ExampleLayer::detach() {}
 
 void ExampleLayer::render_imgui() {}
 
-void ExampleLayer::update() {
+void ExampleLayer::update(const float delta_time) {
     if (rw::input::is_key_down(rw::input::Key::a)) {
-        speed_x = -0.1F;
+        speed_x = -1.0F;
     } else if (rw::input::is_key_down(rw::input::Key::d)) {
-        speed_x = 0.1F;
+        speed_x = 1.0F;
     } else {
         speed_x = 0.0F;
     }
 
     if (rw::input::is_key_down(rw::input::Key::s)) {
-        speed_y = -0.1F;
+        speed_y = -1.0F;
     } else if (rw::input::is_key_down(rw::input::Key::w)) {
-        speed_y = 0.1F;
+        speed_y = 1.0F;
     } else {
         speed_y = 0.0F;
     }
 
     if (rw::input::is_key_down(rw::input::Key::q)) {
-        rotation_speed_ = 2.0F;
+        rotation_speed_ = 4.0F;
     } else if (rw::input::is_key_down(rw::input::Key::e)) {
-        rotation_speed_ = -2.0F;
+        rotation_speed_ = -4.0F;
     } else {
         rotation_speed_ = 0.0F;
     }
 
-    camera_.roto_translate(rw::math::Vec3(speed_x, speed_y, 0.0F), rotation_speed_);
+    camera_.roto_translate(rw::math::Vec3(speed_x, speed_y, 0.0F) * delta_time, rotation_speed_);
 
     renderer_interface_->clear_screen();
     renderer_interface_->begin_scene(camera_);

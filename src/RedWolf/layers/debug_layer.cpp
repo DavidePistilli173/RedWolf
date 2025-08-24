@@ -71,7 +71,7 @@ void rw::layers::DebugLayer::render_imgui() {
     ImGui::ShowDemoWindow(&show);
 }
 
-void rw::layers::DebugLayer::update() {}
+void rw::layers::DebugLayer::update([[maybe_unused]] const float delta_time) {}
 
 bool rw::layers::DebugLayer::on_event([[maybe_unused]] const rw::evt::Event& event) {
     return false;

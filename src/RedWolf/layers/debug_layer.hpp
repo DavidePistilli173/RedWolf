@@ -72,8 +72,9 @@ namespace rw::layers {
 
         /**
          * @brief Update the layer (called each frame).
+         * @param delta_time Time elapsed since the last update in seconds.
          */
-        void update() override;
+        void update(const float delta_time) override;
 
         /**
          * @brief Event handling function.

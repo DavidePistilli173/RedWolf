@@ -10,6 +10,10 @@
 #include <format>
 
 namespace rw {
+    static constexpr float seconds_to_milliseconds{ 1e3F };      /**< Conversion factor between seconds and milliseconds. */
+    static constexpr float nanoseconds_to_milliseconds{ 1e-6F }; /**< Conversion factor between nanoseconds and milliseconds. */
+    static constexpr float nanoseconds_to_seconds{ 1e-9F };      /**< Conversion factor between nanoseconds and seconds. */
+
     namespace core {
         /**
          * @brief Concept for objects that can be used as std::format arguments.
