@@ -19,8 +19,19 @@ const rw::math::Mat4& rw::gfx::Camera::projection_matrix() const {
     return prj_mat_;
 }
 
+void rw::gfx::Camera::rotate(const float angle) {
+    rotation_ += angle;
+    recompute_view_matrix_();
+}
+
 float rw::gfx::Camera::rotation() const {
     return rotation_;
+}
+
+void rw::gfx::Camera::roto_translate(const rw::math::Vec3& delta, const float angle) {
+    position_ += delta;
+    rotation_ += angle;
+    recompute_view_matrix_();
 }
 
 void rw::gfx::Camera::set_position(const rw::math::Vec3& position) {
@@ -30,6 +41,11 @@ void rw::gfx::Camera::set_position(const rw::math::Vec3& position) {
 
 void rw::gfx::Camera::set_rotation(const float rotation) {
     rotation_ = rotation;
+    recompute_view_matrix_();
+}
+
+void rw::gfx::Camera::translate(const rw::math::Vec3& delta) {
+    position_ += delta;
     recompute_view_matrix_();
 }
 

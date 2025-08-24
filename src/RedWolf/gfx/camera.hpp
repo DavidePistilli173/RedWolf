@@ -41,10 +41,23 @@ namespace rw::gfx {
         [[nodiscard]] const rw::math::Mat4& projection_matrix() const;
 
         /**
+         * @brief Rotate the camera by a given angle around the Z axis in degrees.
+         * @param angle Angle in degrees.
+         */
+        void rotate(const float angle);
+
+        /**
          * @brief Get the camera rotation.
          * @return Camera rotation around the Z axis.
          */
         [[nodiscard]] float rotation() const;
+
+        /**
+         * @brief Perform a roto-translation of the camera.
+         * @param delta Translation vector in world space.
+         * @param angle Rotation angle in degrees around the Z axis.
+         */
+        void roto_translate(const rw::math::Vec3& delta, const float angle);
 
         /**
          * @brief Set a new camera position in world space.
@@ -57,6 +70,12 @@ namespace rw::gfx {
          * @param rotation New rotation angle in degrees.
          */
         void set_rotation(const float rotation);
+
+        /**
+         * @brief Move the camera by a given delta in world space.
+         * @param delta Translation vector.
+         */
+        void translate(const rw::math::Vec3& delta);
 
         /**
          * @brief Get the view matrix of the camera.

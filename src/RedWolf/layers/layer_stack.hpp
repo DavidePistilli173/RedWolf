@@ -80,11 +80,11 @@ namespace rw::layers {
          * @return Non-owning pointer to the layer.
          */
         template<std::derived_from<Layer> T, typename... Args>
-        [[nodiscard]] Layer* push_layer(Args&&... args) {
+        [[nodiscard]] T* push_layer(Args&&... args) {
             const auto it     = layers_.emplace(layers_.begin() + layer_insert_idx_, std::make_unique<T>(std::forward<Args>(args)...));
             layer_insert_idx_ = it - layers_.begin();
             (*it)->attach();
-            return it->get();
+            return dynamic_cast<T*>(it->get());
         }
 
         /**
@@ -94,10 +94,10 @@ namespace rw::layers {
          * @return Non-owning pointer to the overlay.
          */
         template<std::derived_from<Layer> T, typename... Args>
-        [[nodiscard]] Layer* push_overlay(Args&&... args) {
+        [[nodiscard]] T* push_overlay(Args&&... args) {
             auto& element{ layers_.emplace_back(std::make_unique<T>(std::forward<Args>(args)...)) };
             element->attach();
-            return element.get();
+            return dynamic_cast<T*>(element.get());
         }
 
         /**

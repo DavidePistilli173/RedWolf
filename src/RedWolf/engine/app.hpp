@@ -6,8 +6,6 @@
 #define APP_HPP
 
 #include "RedWolf/evt/event.hpp"
-#include "RedWolf/gfx/camera.hpp"
-#include "RedWolf/gfx/gfx.hpp"
 #include "RedWolf/layers/debug_layer.hpp"
 #include "RedWolf/layers/layer_stack.hpp"
 #include "RedWolf/ui/window.hpp"
@@ -69,7 +67,7 @@ namespace rw::engine {
          * @return Non-owning pointer to the created layer.
          */
         template<std::derived_from<rw::layers::Layer> T, typename... Args>
-        [[nodiscard]] rw::layers::Layer* push_layer(Args&&... args) {
+        [[nodiscard]] T* push_layer(Args&&... args) {
             return layer_stack_.push_layer<T>(std::forward<Args>(args)...);
         }
 
@@ -80,7 +78,7 @@ namespace rw::engine {
          * @return Non-owning pointer to the created overlay.
          */
         template<std::derived_from<rw::layers::Layer> T, typename... Args>
-        [[nodiscard]] rw::layers::Layer* push_overlay(Args&&... args) {
+        [[nodiscard]] T* push_overlay(Args&&... args) {
             return layer_stack_.push_overlay<T>(std::forward<Args>(args)...);
         }
 
@@ -103,15 +101,6 @@ namespace rw::engine {
 
         rw::layers::LayerStack  layer_stack_;            /**< Application layer stack. */
         rw::layers::DebugLayer* debug_layer_{ nullptr }; /**< Debug layer. */
-
-        std::unique_ptr<rw::gfx::RendererInterface> renderer_interface_; /**< Interface to the renderer. */
-
-        std::unique_ptr<rw::gfx::VertexArray> vertex_array_;
-        std::unique_ptr<rw::gfx::Shader>      shader_;
-
-        std::unique_ptr<rw::gfx::VertexArray> square_va_;
-
-        rw::gfx::Camera camera_;
     };
 
     /**

@@ -4,10 +4,9 @@
 
 #include "sandbox_app.hpp"
 
-#include <../RedWolf/layers/debug_layer.hpp>
 #include <RedWolf/util/logger.hpp>
 
-SandboxApp::SandboxApp() : rw::engine::App(window_settings) {
+SandboxApp::SandboxApp() : rw::engine::App(window_settings), example_layer_{ push_layer<ExampleLayer>() } {
     RW_INFO("Welcome to Sandbox, powered by RedWolf.");
 }
 

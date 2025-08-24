@@ -5,6 +5,8 @@
 #ifndef SANDBOX_APP_HPP
 #define SANDBOX_APP_HPP
 
+#include "example_layer.hpp"
+
 #include <RedWolf/engine/app.hpp>
 
 class SandboxApp : public rw::engine::App {
@@ -23,6 +25,7 @@ class SandboxApp : public rw::engine::App {
     SandboxApp& operator=(SandboxApp&&)      = default;
 
  private:
+    ExampleLayer* example_layer_{ nullptr };
 };
 
 #endif // SANDBOX_APP_HPP
