@@ -5,7 +5,7 @@
 #ifndef KEY_EVENT_HPP
 #define KEY_EVENT_HPP
 
-#include "../input/keyboard.hpp"
+#include "RedWolf/input/keyboard.hpp"
 #include "event.hpp"
 
 namespace rw::evt {

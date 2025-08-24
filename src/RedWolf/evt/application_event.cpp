@@ -4,6 +4,8 @@
 
 #include "application_event.hpp"
 
+#include <string>
+
 rw::evt::WindowResizedEvent::WindowResizedEvent(const uint32_t new_width, const uint32_t new_height) :
     Event(), width{ new_width }, height{ new_height } {}
 

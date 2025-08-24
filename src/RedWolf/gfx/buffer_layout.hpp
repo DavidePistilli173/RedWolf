@@ -40,7 +40,7 @@ namespace rw::gfx {
         ShaderDataType type{ ShaderDataType::none }; /**< Data type of the element. */
         std::string    name;                         /**< Readable name of the element. */
         bool           normalized{ false };          /**< Whether the element is normalized. */
-        uint32_t       offset{ 0U };                 /**< Offset from the start of the buffer. */
+        uint64_t       offset{ 0U };                 /**< Offset from the start of the buffer. */
         uint32_t       size{ 0U };                   /**< Size of the element in bytes. */
     };
 
