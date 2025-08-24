@@ -57,6 +57,11 @@ rw::ui::Window::Window(Window&& other) noexcept :
     other.handle_ = nullptr; // Transfer ownership
 }
 
+rw::gfx::RendererInterface rw::ui::Window::begin_scene() {
+    renderer_.begin_scene();
+    return rw::gfx::RendererInterface(renderer_);
+}
+
 rw::ui::WindowHandle rw::ui::Window::handle() {
     return handle_;
 }

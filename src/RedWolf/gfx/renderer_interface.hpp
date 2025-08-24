@@ -20,9 +20,30 @@ namespace rw::gfx {
         explicit RendererInterface(Renderer& renderer);
 
         /**
-         * @brief Begin rendering a scene.
+         * @brief Destructor.
+         * @details Automatically ends the scene.
          */
-        void begin_scene();
+        ~RendererInterface();
+
+        /**
+         * @brief Copy constructor.
+         */
+        RendererInterface(RendererInterface&) = delete;
+
+        /**
+         * @brief Copy-assignment operator.
+         */
+        RendererInterface& operator=(RendererInterface&) = delete;
+
+        /**
+         * @brief Move constructor.
+         */
+        RendererInterface(RendererInterface&&) = delete;
+
+        /**
+         * @brief Move-assignment operator.
+         */
+        RendererInterface& operator=(RendererInterface&&) = delete;
 
         /**
          * @brief Clear the screen with the currently set colour.
@@ -34,11 +55,6 @@ namespace rw::gfx {
          * @param vertex_array Vertex array to draw.
          */
         void draw_indexed(const VertexArray* vertex_array);
-
-        /**
-         * @brief Finish rendering a scene.
-         */
-        void end_scene();
 
         /**
          * @brief Set the colour to use to clear the screen.

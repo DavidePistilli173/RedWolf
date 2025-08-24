@@ -67,6 +67,12 @@ namespace rw::ui {
         Window& operator=(Window&& other) = delete;
 
         /**
+         * @brief Begin rendering a scene.
+         * @return Interface to the renderer for this scene.
+         */
+        [[nodiscard]] rw::gfx::RendererInterface begin_scene();
+
+        /**
          * @brief Get the raw window handle.
          * @return Raw window handle.
          */

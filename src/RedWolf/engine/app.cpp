@@ -26,7 +26,6 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
 
     window_ = std::make_unique<rw::ui::Window>(window_data);
     window_->set_event_callback([this](const rw::evt::Event& event) { return on_event(event); });
-    renderer_interface_ = window_->renderer_interface();
 
     debug_layer_ = dynamic_cast<rw::layers::DebugLayer*>(layer_stack_.push_layer<rw::layers::DebugLayer>());
     if (nullptr == debug_layer_) {
@@ -136,21 +135,19 @@ bool rw::engine::App::on_event(const rw::evt::Event& event) {
 }
 
 void rw::engine::App::run() {
-    renderer_interface_->set_clear_color(rw::math::Vec4(1.0F, 1.0F, 0.0F, 0.0F));
-
     while (running_) {
-        renderer_interface_->clear_screen();
-        // TODO(PID): Begin scene is a window method and returns the renderer interface?
-        renderer_interface_->begin_scene();
+        {
+            auto renderer_interface{window_->begin_scene()};
+            renderer_interface.set_clear_color(rw::math::Vec4(1.0F, 1.0F, 0.0F, 0.0F));
+            renderer_interface.clear_screen();
 
-        shader_->bind();
-        vertex_array_->bind();
-        renderer_interface_->draw_indexed(vertex_array_.get());
+            shader_->bind();
+            vertex_array_->bind();
+            renderer_interface.draw_indexed(vertex_array_.get());
 
-        square_va_->bind();
-        renderer_interface_->draw_indexed(square_va_.get());
-
-        renderer_interface_->end_scene();
+            square_va_->bind();
+            renderer_interface.draw_indexed(square_va_.get());
+        }
 
         for (auto& layer : layer_stack_) {
             layer->update();

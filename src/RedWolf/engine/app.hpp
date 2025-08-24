@@ -103,8 +103,6 @@ namespace rw::engine {
         rw::layers::LayerStack  layer_stack_;            /**< Application layer stack. */
         rw::layers::DebugLayer* debug_layer_{ nullptr }; /**< Debug layer. */
 
-        std::unique_ptr<rw::gfx::RendererInterface> renderer_interface_; /**< Interface to the renderer. */
-
         std::unique_ptr<rw::gfx::VertexArray> vertex_array_;
         std::unique_ptr<rw::gfx::Shader>      shader_;
 
