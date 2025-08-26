@@ -57,6 +57,7 @@ ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx:
         layout(location = 1) in vec4 in_color;
 
         uniform mat4 u_view_projection;
+        uniform mat4 u_transform;
 
         out vec3 v_position;
         out vec4 v_color;
@@ -64,7 +65,7 @@ ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx:
         void main() {
             v_position = in_position;
             v_color = in_color;
-            gl_Position = u_view_projection * vec4(in_position, 1.0);
+            gl_Position = u_view_projection * u_transform * vec4(in_position, 1.0);
         }
     )",
         R"(
@@ -112,12 +113,24 @@ void ExampleLayer::update(const float delta_time) {
         rotation_speed_ = 0.0F;
     }
 
+    if (rw::input::is_key_down(rw::input::Key::j)) {
+        square_pos_.x -= 1.0F * delta_time;
+    } else if (rw::input::is_key_down(rw::input::Key::l)) {
+        square_pos_.x += 1.0F * delta_time;
+    }
+
+    if (rw::input::is_key_down(rw::input::Key::k)) {
+        square_pos_.y -= 1.0F * delta_time;
+    } else if (rw::input::is_key_down(rw::input::Key::i)) {
+        square_pos_.y += 1.0F * delta_time;
+    }
+
     camera_.roto_translate(rw::math::Vec3(speed_x, speed_y, 0.0F) * delta_time, rotation_speed_);
 
     renderer_interface_->clear_screen();
     renderer_interface_->begin_scene(camera_);
-    renderer_interface_->draw(shader_.get(), vertex_array_.get());
-    renderer_interface_->draw(shader_.get(), square_va_.get());
+    renderer_interface_->draw(shader_.get(), vertex_array_.get(), rw::math::Mat4(1.0F));
+    renderer_interface_->draw(shader_.get(), square_va_.get(), rw::math::translate(rw::math::Mat4(1.0F), square_pos_));
     renderer_interface_->end_scene();
 }
 

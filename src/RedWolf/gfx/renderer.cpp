@@ -14,7 +14,7 @@ void rw::gfx::Renderer::clear_screen() {
     RendererApi::clear_screen();
 }
 
-void rw::gfx::Renderer::draw(const Shader* shader, const VertexArray* vertex_array) {
+void rw::gfx::Renderer::draw(const Shader* shader, const VertexArray* vertex_array, const rw::math::Mat4& transform) {
     if (nullptr == shader || nullptr == vertex_array) {
         RW_CORE_ERR("Null draw parameters: shader: {}, vertex_array: {}", (nullptr == shader), (nullptr == vertex_array));
         return;
@@ -22,6 +22,7 @@ void rw::gfx::Renderer::draw(const Shader* shader, const VertexArray* vertex_arr
 
     shader->bind();
     shader->upload_uniform_mat4("u_view_projection", view_projection_matrix_);
+    shader->upload_uniform_mat4("u_transform", transform);
 
     vertex_array->bind();
     RendererApi::draw_indexed(vertex_array);

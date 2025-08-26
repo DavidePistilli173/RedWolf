@@ -34,8 +34,9 @@ namespace rw::gfx {
          * @brief Drawa set of vertices bound to a vertex array.
          * @param shader Shader to use for rendering.
          * @param vertex_array Vertex array to draw.
+         * @param transform Transformation matrix to apply to the vertices.
          */
-        void draw(const Shader* shader, const VertexArray* vertex_array);
+        void draw(const Shader* shader, const VertexArray* vertex_array, const rw::math::Mat4& transform);
 
         /**
          * @brief Finish rendering a scene.

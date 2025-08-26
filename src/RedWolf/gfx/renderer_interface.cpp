@@ -14,8 +14,8 @@ void rw::gfx::RendererInterface::clear_screen() {
     renderer_.clear_screen();
 }
 
-void rw::gfx::RendererInterface::draw(const Shader* shader, const VertexArray* vertex_array) {
-    renderer_.draw(shader, vertex_array);
+void rw::gfx::RendererInterface::draw(const Shader* shader, const VertexArray* vertex_array, const rw::math::Mat4& transform) {
+    renderer_.draw(shader, vertex_array, transform);
 }
 
 void rw::gfx::RendererInterface::end_scene() {
