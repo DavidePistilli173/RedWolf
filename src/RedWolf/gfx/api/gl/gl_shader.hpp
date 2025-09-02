@@ -59,11 +59,18 @@ namespace rw::gfx::api::gl {
         void unbind() const;
 
         /**
-         * @brief Upload a 4x4 matrix uniform to the shader.
+         * @brief Upload a 4 component float vector uniform to the shader.
+         * @param name Name of the uniform.
+         * @param vec Vector to upload.
+         */
+        void upload_uniform_f32_4(const std::string_view name, const rw::math::Vec4& vec) const;
+
+        /**
+         * @brief Upload a 4x4 float matrix uniform to the shader.
          * @param name Name of the uniform.
          * @param matrix Matrix to upload.
          */
-        void upload_uniform_mat4(const std::string_view name, const rw::math::Mat4& matrix) const;
+        void upload_uniform_mat_f32_4(const std::string_view name, const rw::math::Mat4& matrix) const;
 
      private:
         uint32_t id_{ 0U }; /**< ID of the shader. */

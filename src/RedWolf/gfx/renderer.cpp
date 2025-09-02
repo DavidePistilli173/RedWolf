@@ -21,8 +21,8 @@ void rw::gfx::Renderer::draw(const Shader* shader, const VertexArray* vertex_arr
     }
 
     shader->bind();
-    shader->upload_uniform_mat4("u_view_projection", view_projection_matrix_);
-    shader->upload_uniform_mat4("u_transform", transform);
+    shader->upload_uniform_mat_f32_4("u_view_projection", view_projection_matrix_);
+    shader->upload_uniform_mat_f32_4("u_transform", transform);
 
     vertex_array->bind();
     RendererApi::draw_indexed(vertex_array);

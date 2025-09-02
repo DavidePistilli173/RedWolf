@@ -74,10 +74,12 @@ ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx:
         in vec3 v_position;
         in vec4 v_color;
 
+        uniform vec4 u_color;
+
         layout(location = 0) out vec4 color;
 
         void main() {
-            color = v_color;
+            color = u_color * v_color * 2;
         }
     )");
 }
@@ -129,6 +131,23 @@ void ExampleLayer::update(const float delta_time) {
 
     renderer_interface_->clear_screen();
     renderer_interface_->begin_scene(camera_);
+
+    static constexpr rw::math::Vec4 red{ 0.8F, 0.3F, 0.2F, 1.0F };
+    static constexpr rw::math::Vec4 blue{ 0.2F, 0.3F, 0.8F, 1.0F };
+
+    for (int y{ 0 }; y < 20; ++y) {
+        for (int x{ 0 }; x < 20; ++x) {
+            const rw::math::Mat4 transform{ rw::math::translate(
+                rw::math::Mat4(1.0F), rw::math::Vec3{ static_cast<float>(x) * 0.25F, static_cast<float>(y) * 0.25F, 0.0F }) };
+            if (0 == x % 2) {
+                shader_->upload_uniform_f32_4("u_color", red);
+            } else {
+                shader_->upload_uniform_f32_4("u_color", blue);
+            }
+            renderer_interface_->draw(shader_.get(), square_va_.get(), transform);
+        }
+    }
+
     renderer_interface_->draw(shader_.get(), vertex_array_.get(), rw::math::Mat4(1.0F));
     renderer_interface_->draw(shader_.get(), square_va_.get(), rw::math::translate(rw::math::Mat4(1.0F), square_pos_));
     renderer_interface_->end_scene();

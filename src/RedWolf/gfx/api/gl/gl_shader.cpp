@@ -120,7 +120,17 @@ void rw::gfx::api::gl::Shader::unbind() const {
     glUseProgram(0);
 }
 
-void rw::gfx::api::gl::Shader::upload_uniform_mat4(const std::string_view name, const rw::math::Mat4& matrix) const {
+void rw::gfx::api::gl::Shader::upload_uniform_f32_4(const std::string_view name, const rw::math::Vec4& vec) const {
+    const GLint location{ glGetUniformLocation(id_, name.data()) };
+    if (-1 == location) {
+        RW_CORE_ERR("Failed to get uniform location: {}", name);
+        return;
+    }
+
+    glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
+}
+
+void rw::gfx::api::gl::Shader::upload_uniform_mat_f32_4(const std::string_view name, const rw::math::Mat4& matrix) const {
     const GLint location{ glGetUniformLocation(id_, name.data()) };
     if (-1 == location) {
         RW_CORE_ERR("Failed to get uniform location: {}", name);
