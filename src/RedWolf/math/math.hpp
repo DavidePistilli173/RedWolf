@@ -50,6 +50,14 @@ namespace rw::math {
     [[nodiscard]] Mat4 rotate(const Mat4& matrix, float angle, const Vec3& axis);
 
     /**
+     * @brief Scale a 4x4 matrix by given scale factors.
+     * @param matrix Matrix to scale.
+     * @param scale_factors Scale factors for each axis.
+     * @return Scaled matrix.
+     */
+    [[nodiscard]] Mat4 scale(const Mat4& matrix, const Vec3& scale_factors);
+
+    /**
      * @brief Translate a matrix by a given vector.
      * @param matrix Matrix to translate.
      * @param translation Translation vector.

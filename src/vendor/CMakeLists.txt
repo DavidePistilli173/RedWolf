@@ -42,6 +42,7 @@ add_library(vendor STATIC)
 
 target_sources(vendor PRIVATE
         glfw.cpp
+        stb.cpp
 )
 
 target_include_directories(vendor PUBLIC

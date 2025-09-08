@@ -15,6 +15,7 @@ target_sources(RedWolf PRIVATE
         gfx/api/gl/gl_index_buffer.cpp
         gfx/api/gl/gl_renderer_api.cpp
         gfx/api/gl/gl_shader.cpp
+        gfx/api/gl/gl_texture_2d.cpp
         gfx/api/gl/gl_vertex_array.cpp
         gfx/api/gl/gl_vertex_buffer.cpp
         gfx/buffer_layout.cpp

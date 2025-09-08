@@ -12,6 +12,7 @@
     #include "api/gl/gl_index_buffer.hpp"
     #include "api/gl/gl_renderer_api.hpp"
     #include "api/gl/gl_shader.hpp"
+    #include "api/gl/gl_texture_2d.hpp"
     #include "api/gl/gl_vertex_array.hpp"
     #include "api/gl/gl_vertex_buffer.hpp"
 #else
@@ -29,6 +30,7 @@ namespace rw::gfx {
     using IndexBuffer     = rw::gfx::api::gl::IndexBuffer;
     using RendererApi     = rw::gfx::api::gl::RendererApi;
     using Shader          = rw::gfx::api::gl::Shader;
+    using Texture         = rw::gfx::api::gl::Texture2D;
     using VertexArray     = rw::gfx::api::gl::VertexArray;
     using VertexBuffer    = rw::gfx::api::gl::VertexBuffer;
 

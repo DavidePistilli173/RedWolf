@@ -9,38 +9,20 @@
 #include <RedWolf/input/polling.hpp>
 #include <RedWolf/util/logger.hpp>
 
+static constexpr int32_t texture_slot{ 0 };
+
 ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx::Camera::orthographic(-1.6F, 1.6F, -0.9F, 0.9F) } {
     renderer_interface_ = rw::engine::App::get().window().renderer_interface();
     renderer_interface_->set_clear_color(rw::math::Vec4(1.0F, 1.0F, 0.0F, 0.0F));
 
-    vertex_array_ = std::make_unique<rw::gfx::VertexArray>();
+    float square_vertices[] = { -0.5F, -0.5F, 0.0F, 0.0F, 0.0F, 0.5F,  -0.5F, 0.0F, 1.0F, 0.0F,
+                                0.5F,  0.5F,  0.0F, 1.0F, 1.0F, -0.5F, 0.5F,  0.0F, 0.0F, 1.0F };
 
-    float vertices[] = { -0.5F, -0.5F, 0.0F, 1.0F, 0.0F, 0.0F, 1.0F, 0.5F, -0.5F, 0.0F, 0.0F,
-                         1.0F,  0.0F,  1.0F, 0.0F, 0.5F, 0.0F, 0.0F, 0.0F, 1.0F,  1.0F };
-    auto  vertex_buffer{ std::make_shared<rw::gfx::VertexBuffer>() };
-    vertex_buffer->set_data(vertices);
-    vertex_buffer->set_layout(
-        rw::gfx::BufferLayout{ { rw::gfx::ShaderDataType::f32_3, "in_position" }, { rw::gfx::ShaderDataType::f32_4, "in_color" } });
-
-    uint32_t indices[3] = {
-        0,
-        1,
-        2,
-    };
-    auto index_buffer{ std::make_shared<rw::gfx::IndexBuffer>() };
-    index_buffer->set_data(indices);
-
-    vertex_array_->add_vertex_buffer(vertex_buffer);
-    vertex_array_->set_index_buffer(index_buffer);
-
-    float square_vertices[] = { -0.9F, -0.9F, 0.0F, 0.5F, 0.5F, 0.0F, 1.0F, -0.7F, -0.9F, 0.0F, 0.0F,  0.5F,  0.5F,  1.0F,
-                                -0.7F, -0.7F, 0.0F, 0.5F, 0.0F, 0.5F, 1.0F, -0.9F, -0.7F, 0.0F, 0.25F, 0.25F, 0.25F, 1.0F };
-
-    square_va_ = std::make_unique<rw::gfx::VertexArray>();
+    square_va_ = std::make_shared<rw::gfx::VertexArray>();
     auto square_vb{ std::make_shared<rw::gfx::VertexBuffer>() };
     square_vb->set_data(square_vertices);
     square_vb->set_layout(
-        rw::gfx::BufferLayout{ { rw::gfx::ShaderDataType::f32_3, "in_position" }, { rw::gfx::ShaderDataType::f32_4, "in_color" } });
+        rw::gfx::BufferLayout{ { rw::gfx::ShaderDataType::f32_3, "in_position" }, { rw::gfx::ShaderDataType::f32_2, "in_tex_coord" } });
 
     uint32_t square_indices[] = { 0, 1, 2, 2, 3, 0 };
     auto     square_ib{ std::make_shared<rw::gfx::IndexBuffer>() };
@@ -49,7 +31,7 @@ ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx:
     square_va_->add_vertex_buffer(square_vb);
     square_va_->set_index_buffer(square_ib);
 
-    shader_ = std::make_unique<rw::gfx::api::gl::Shader>(
+    shader_ = std::make_shared<rw::gfx::api::gl::Shader>(
         R"(
         #version 330 core
 
@@ -82,6 +64,41 @@ ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx:
             color = u_color * v_color * 2;
         }
     )");
+
+    texture_shader_ = std::make_shared<rw::gfx::api::gl::Shader>(
+        R"(
+        #version 330 core
+
+        layout(location = 0) in vec3 in_position;
+        layout(location = 1) in vec2 in_tex_coord;
+
+        uniform mat4 u_view_projection;
+        uniform mat4 u_transform;
+
+        out vec2 v_tex_coord;
+
+        void main() {
+            v_tex_coord = in_tex_coord;
+            gl_Position = u_view_projection * u_transform * vec4(in_position, 1.0);
+        }
+    )",
+        R"(
+        #version 330 core
+
+        in vec2 v_tex_coord;
+
+        uniform sampler2D u_texture;
+
+        layout(location = 0) out vec4 color;
+
+        void main() {
+            color = texture(u_texture, v_tex_coord);
+        }
+    )");
+
+    texture_ = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/checkerboard.png");
+    texture_shader_->bind();
+    texture_shader_->upload_uniform_i32("u_texture", texture_slot);
 }
 
 void ExampleLayer::attach() {}
@@ -142,13 +159,18 @@ void ExampleLayer::update(const float delta_time) {
     for (int y{ 0 }; y < 20; ++y) {
         for (int x{ 0 }; x < 20; ++x) {
             const rw::math::Mat4 transform{ rw::math::translate(
-                rw::math::Mat4(1.0F), rw::math::Vec3{ static_cast<float>(x) * 0.25F, static_cast<float>(y) * 0.25F, 0.0F }) };
-            renderer_interface_->draw(shader_.get(), square_va_.get(), transform);
+                rw::math::Mat4(1.0F), rw::math::Vec3{ static_cast<float>(x) * 0.5F, static_cast<float>(y) * 0.5F, 0.0F }) };
+            renderer_interface_->draw(texture_shader_.get(), square_va_.get(), transform);
         }
     }
 
-    renderer_interface_->draw(shader_.get(), vertex_array_.get(), rw::math::Mat4(1.0F));
-    renderer_interface_->draw(shader_.get(), square_va_.get(), rw::math::translate(rw::math::Mat4(1.0F), square_pos_));
+    // renderer_interface_->draw(shader_.get(), vertex_array_.get(), rw::math::Mat4(1.0F));
+    static const rw::math::Mat4 scale{ rw::math::scale(rw::math::Mat4(1.0F), rw::math::Vec3{ 5.0F, 5.0F, 1.0F }) };
+    texture_->bind(texture_slot);
+    renderer_interface_->draw(
+        texture_shader_.get(),
+        square_va_.get(),
+        rw::math::scale(rw::math::translate(rw::math::Mat4(1.0F), square_pos_), rw::math::Vec3{ 1.2F, 1.2F, 1.0F }));
     renderer_interface_->end_scene();
 }
 

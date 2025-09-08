@@ -23,6 +23,10 @@ rw::math::Mat4 rw::math::rotate(const Mat4& matrix, float angle, const Vec3& axi
     return glm::rotate(matrix, angle, axis);
 }
 
+rw::math::Mat4 rw::math::scale(const Mat4& matrix, const Vec3& scale_factors) {
+    return glm::scale(matrix, scale_factors);
+}
+
 rw::math::Mat4 rw::math::translate(const Mat4& matrix, const Vec3& translation) {
     return glm::translate(matrix, translation);
 }
