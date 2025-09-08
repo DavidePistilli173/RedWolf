@@ -88,7 +88,11 @@ void ExampleLayer::attach() {}
 
 void ExampleLayer::detach() {}
 
-void ExampleLayer::render_imgui() {}
+void ExampleLayer::render_imgui() {
+    ImGui::Begin("Settings");
+    ImGui::ColorEdit4("Square colour.", rw::math::value_ptr(square_color_));
+    ImGui::End();
+}
 
 void ExampleLayer::update(const float delta_time) {
     if (rw::input::is_key_down(rw::input::Key::a)) {
@@ -132,18 +136,13 @@ void ExampleLayer::update(const float delta_time) {
     renderer_interface_->clear_screen();
     renderer_interface_->begin_scene(camera_);
 
-    static constexpr rw::math::Vec4 red{ 0.8F, 0.3F, 0.2F, 1.0F };
-    static constexpr rw::math::Vec4 blue{ 0.2F, 0.3F, 0.8F, 1.0F };
+    shader_->bind();
+    shader_->upload_uniform_f32_4("u_color", square_color_);
 
     for (int y{ 0 }; y < 20; ++y) {
         for (int x{ 0 }; x < 20; ++x) {
             const rw::math::Mat4 transform{ rw::math::translate(
                 rw::math::Mat4(1.0F), rw::math::Vec3{ static_cast<float>(x) * 0.25F, static_cast<float>(y) * 0.25F, 0.0F }) };
-            if (0 == x % 2) {
-                shader_->upload_uniform_f32_4("u_color", red);
-            } else {
-                shader_->upload_uniform_f32_4("u_color", blue);
-            }
             renderer_interface_->draw(shader_.get(), square_va_.get(), transform);
         }
     }

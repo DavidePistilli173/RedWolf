@@ -27,6 +27,14 @@ rw::math::Mat4 rw::math::translate(const Mat4& matrix, const Vec3& translation) 
     return glm::translate(matrix, translation);
 }
 
+float* rw::math::value_ptr(Vec4& vec) {
+    return glm::value_ptr(vec);
+}
+
 const float* rw::math::value_ptr(const Mat4& matrix) {
+    return glm::value_ptr(matrix);
+}
+
+float* rw::math::value_ptr(Mat4& matrix) {
     return glm::value_ptr(matrix);
 }

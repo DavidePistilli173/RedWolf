@@ -11,6 +11,7 @@ namespace rw::math {
     using Vec2 = glm::vec2; /**< 2D vector type. */
     using Vec3 = glm::vec3; /**< 3D vector type. */
     using Vec4 = glm::vec4; /**< 4D vector type. */
+    using Mat3 = glm::mat3; /**< 3x3 matrix type. */
     using Mat4 = glm::mat4; /**< 4x4 matrix type. */
 
     /**
@@ -57,11 +58,25 @@ namespace rw::math {
     [[nodiscard]] Mat4 translate(const Mat4& matrix, const Vec3& translation);
 
     /**
-     * @brief Get a raw data pointer to the matrix data to use for OpenGL.
+     * @brief Get a raw data pointer to the vector data to use for OpenGL.
+     * @param vec Vector to get the data pointer from.
+     * @return Raw data pointer.
+     */
+    [[nodiscard]] float* value_ptr(Vec4& vec);
+
+    /**
+     * @brief Get a const raw data pointer to the matrix data to use for OpenGL.
      * @param matrix Matrix to get the data pointer from.
      * @return Raw data pointer.
      */
     [[nodiscard]] const float* value_ptr(const Mat4& matrix);
+
+    /**
+     * @brief Get a raw data pointer to the matrix data to use for OpenGL.
+     * @param matrix Matrix to get the data pointer from.
+     * @return Raw data pointer.
+     */
+    [[nodiscard]] float* value_ptr(Mat4& matrix);
 } // namespace rw::math
 
 #endif // SRC_REDWOLF_MATH_HPP

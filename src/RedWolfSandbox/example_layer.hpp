@@ -49,6 +49,7 @@ class ExampleLayer : public rw::layers::Layer {
     std::unique_ptr<rw::gfx::VertexArray> square_va_;
 
     rw::math::Vec3 square_pos_{ 0.0F };
+    rw::math::Vec4 square_color_{ 1.0F };
 
     float speed_x{ 0.0F };
     float speed_y{ 0.0F };
