@@ -65,39 +65,10 @@ ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx:
         }
     )");
 
-    texture_shader_ = std::make_shared<rw::gfx::api::gl::Shader>(
-        R"(
-        #version 330 core
+    texture_shader_ = std::make_shared<rw::gfx::api::gl::Shader>("../src/RedWolfSandbox/assets/shaders/texture.glsl");
 
-        layout(location = 0) in vec3 in_position;
-        layout(location = 1) in vec2 in_tex_coord;
-
-        uniform mat4 u_view_projection;
-        uniform mat4 u_transform;
-
-        out vec2 v_tex_coord;
-
-        void main() {
-            v_tex_coord = in_tex_coord;
-            gl_Position = u_view_projection * u_transform * vec4(in_position, 1.0);
-        }
-    )",
-        R"(
-        #version 330 core
-
-        in vec2 v_tex_coord;
-
-        uniform sampler2D u_texture;
-
-        layout(location = 0) out vec4 color;
-
-        void main() {
-            color = texture(u_texture, v_tex_coord);
-        }
-    )");
-
-    texture_             = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/checkerboard.png");
-    transparent_texture_ = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/ChernoLogo.png");
+    texture_             = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/textures/checkerboard.png");
+    transparent_texture_ = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/textures/ChernoLogo.png");
 
     texture_shader_->bind();
     texture_shader_->upload_uniform_i32("u_texture", texture_slot);

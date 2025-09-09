@@ -8,7 +8,11 @@
 #include "RedWolf/math/math.hpp"
 
 #include <cstdint>
+#include <glad/glad.h>
+#include <optional>
+#include <string>
 #include <string_view>
+#include <unordered_map>
 
 namespace rw::gfx::api::gl {
     /**
@@ -17,11 +21,50 @@ namespace rw::gfx::api::gl {
     class Shader {
      public:
         /**
-         * @brief Constructor.
+         * @brief Convert a string to a GLenum shader type.
+         * @param type String representing the shader type.
+         * @return GLenum corresponding to the shader type, or nothing if the type is invalid.
+         */
+        static constexpr std::optional<GLenum> shader_type_from_string(const std::string_view type) {
+            if ("vertex" == type) {
+                return GL_VERTEX_SHADER;
+            }
+
+            if ("fragment" == type || "pixel" == type) {
+                return GL_FRAGMENT_SHADER;
+            }
+
+            if ("geometry" == type) {
+                return GL_GEOMETRY_SHADER;
+            }
+
+            if ("compute" == type) {
+                return GL_COMPUTE_SHADER;
+            }
+
+            if ("tess_control" == type) {
+                return GL_TESS_CONTROL_SHADER;
+            }
+
+            if ("tess_evaluation" == type) {
+                return GL_TESS_EVALUATION_SHADER;
+            }
+
+            return {};
+        }
+
+        /**
+         * @brief Create a shader by providing the shader code through strings.
          * @param vertex_src Vertex shader source code.
          * @param fragment_src Fragment shader source code.
          */
-        Shader(std::string_view vertex_src, std::string_view fragment_src);
+        Shader(const std::string& vertex_src, const std::string& fragment_src);
+
+        /**
+         * @brief Create a shader by providing the file path to the shader code.
+         * @param file_path File path to the shader code.
+         */
+        explicit Shader(const std::string& file_path);
 
         /**
          * @brief Destructor.
@@ -108,6 +151,26 @@ namespace rw::gfx::api::gl {
         void upload_uniform_mat_f32_4(const std::string_view name, const rw::math::Mat4& matrix) const;
 
      private:
+        /**
+         * @brief Compile the shader sources.
+         * @param shader_sources Shader sources to compile.
+         */
+        void compile_(const std::unordered_map<GLenum, std::string>& shader_sources);
+
+        /**
+         * @brief Parse the shader source code and separate it into different shader types.
+         * @param source Shader source code to parse.
+         * @return Map of all the shader types found in the source code.
+         */
+        [[nodiscard]] static std::unordered_map<GLenum, std::string> pre_process_(const std::string& source);
+
+        /**
+         * @brief Load a file and return its contents as a string.
+         * @param path Path of the file to read.
+         * @return File contents.
+         */
+        [[nodiscard]] std::string read_file_(const std::string& path);
+
         uint32_t id_{ 0U }; /**< ID of the shader. */
     };
 } // namespace rw::gfx::api::gl
