@@ -16,8 +16,9 @@ namespace rw::gfx {
      public:
         /**
          * @brief Constructor.
+         * @param renderer Renderer instance to connect to.
          */
-        explicit RendererInterface(Renderer& renderer);
+        explicit RendererInterface(std::shared_ptr<Renderer> renderer);
 
         /**
          * @brief Begin rendering a scene.
@@ -50,7 +51,7 @@ namespace rw::gfx {
         void set_clear_color(const rw::math::Vec4& color);
 
      private:
-        Renderer& renderer_; /**< Renderer instance this interface is connected to. */
+        std::shared_ptr<Renderer> renderer_; /**< Renderer instance this interface is connected to. */
     };
 } // namespace rw::gfx
 

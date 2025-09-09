@@ -28,15 +28,25 @@ rw::gfx::api::gl::Texture2D::Texture2D(const std::string_view path) : path_{ pat
     width_  = width;
     height_ = height;
 
-    GLenum storage_format{ GL_RGB8 };
+    // Adjust the format depending on the loaded channels.
+    GLenum internal_format{ GL_RGB8 };
     GLenum data_format{ GL_RGB };
     if (4 == channels) {
-        storage_format = GL_RGBA8;
-        data_format    = GL_RGBA;
+        internal_format = GL_RGBA8;
+        data_format     = GL_RGBA;
+    } else if (3 == channels) {
+        internal_format = GL_RGB8;
+        data_format     = GL_RGB;
+    } else if (1 == channels) {
+        internal_format = GL_R8;
+        data_format     = GL_RED;
+    } else {
+        RW_CORE_ERR("Unsupported number of channels: {} for image: {}", channels, path_);
+        return;
     }
 
     glCreateTextures(GL_TEXTURE_2D, 1, &id_);
-    glTextureStorage2D(id_, 1, storage_format, static_cast<GLsizei>(width_), static_cast<GLsizei>(height_));
+    glTextureStorage2D(id_, 1, internal_format, static_cast<GLsizei>(width_), static_cast<GLsizei>(height_));
 
     glTextureParameteri(id_, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTextureParameteri(id_, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

@@ -6,6 +6,10 @@
 
 #include "RedWolf/util/logger.hpp"
 
+rw::gfx::Renderer::Renderer() {
+    RendererApi::init();
+}
+
 void rw::gfx::Renderer::begin_scene(const Camera& camera) {
     view_projection_matrix_ = camera.view_projection_matrix();
 }

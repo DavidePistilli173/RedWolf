@@ -96,7 +96,9 @@ ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx:
         }
     )");
 
-    texture_ = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/checkerboard.png");
+    texture_             = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/checkerboard.png");
+    transparent_texture_ = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/ChernoLogo.png");
+
     texture_shader_->bind();
     texture_shader_->upload_uniform_i32("u_texture", texture_slot);
 }
@@ -156,6 +158,7 @@ void ExampleLayer::update(const float delta_time) {
     shader_->bind();
     shader_->upload_uniform_f32_4("u_color", square_color_);
 
+    texture_->bind(texture_slot);
     for (int y{ 0 }; y < 20; ++y) {
         for (int x{ 0 }; x < 20; ++x) {
             const rw::math::Mat4 transform{ rw::math::translate(
@@ -166,7 +169,12 @@ void ExampleLayer::update(const float delta_time) {
 
     // renderer_interface_->draw(shader_.get(), vertex_array_.get(), rw::math::Mat4(1.0F));
     static const rw::math::Mat4 scale{ rw::math::scale(rw::math::Mat4(1.0F), rw::math::Vec3{ 5.0F, 5.0F, 1.0F }) };
-    texture_->bind(texture_slot);
+    renderer_interface_->draw(
+        texture_shader_.get(),
+        square_va_.get(),
+        rw::math::scale(rw::math::translate(rw::math::Mat4(1.0F), square_pos_), rw::math::Vec3{ 1.2F, 1.2F, 1.0F }));
+
+    transparent_texture_->bind(texture_slot);
     renderer_interface_->draw(
         texture_shader_.get(),
         square_va_.get(),

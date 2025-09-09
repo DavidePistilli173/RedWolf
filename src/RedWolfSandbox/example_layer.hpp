@@ -48,6 +48,7 @@ class ExampleLayer : public rw::layers::Layer {
     std::shared_ptr<rw::gfx::Shader>      texture_shader_;
     std::shared_ptr<rw::gfx::VertexArray> square_va_;
     std::shared_ptr<rw::gfx::Texture>     texture_;
+    std::shared_ptr<rw::gfx::Texture>     transparent_texture_;
 
     rw::math::Vec3 square_pos_{ 0.0F };
     rw::math::Vec4 square_color_{ 1.0F };

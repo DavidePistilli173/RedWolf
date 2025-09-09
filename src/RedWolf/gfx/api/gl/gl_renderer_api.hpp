@@ -28,6 +28,11 @@ namespace rw::gfx::api::gl {
         static void draw_indexed(const VertexArray* vertex_array);
 
         /**
+         * @brief Initialize the rendering API.
+         */
+        static void init();
+
+        /**
          * @brief Set the colour to use to clear the screen.
          * @param color Colour to use when clearing the screen.
          */

@@ -14,6 +14,11 @@ void rw::gfx::api::gl::RendererApi::draw_indexed(const VertexArray* vertex_array
     glDrawElements(GL_TRIANGLES, vertex_array->index_buffer()->count(), GL_UNSIGNED_INT, nullptr);
 }
 
+void rw::gfx::api::gl::RendererApi::init() {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
 void rw::gfx::api::gl::RendererApi::set_clear_color(const rw::math::Vec4& color) {
     glClearColor(color.r, color.g, color.b, color.a);
 }

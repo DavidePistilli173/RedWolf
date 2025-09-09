@@ -44,6 +44,8 @@ rw::ui::Window::Window(const WindowDescriptor& descriptor) :
     glfwSetWindowUserPointer(handle_, this);
     set_vsync(true);
 
+    renderer_ = std::make_shared<rw::gfx::Renderer>();
+
     init_callbacks_();
 }
 

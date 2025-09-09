@@ -17,7 +17,7 @@ namespace rw::gfx {
         /**
          * @brief Constructor.
          */
-        Renderer() = default;
+        Renderer();
 
         /**
          * @brief Begin rendering a scene.

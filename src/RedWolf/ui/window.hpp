@@ -191,7 +191,7 @@ namespace rw::ui {
         static bool glfw_initialized_; /**< Flag to check if GLFW has been initialized. */
 
         rw::ui::WindowHandle                       handle_{ invalid_window_handle }; /**< Raw window handle. */
-        rw::gfx::Renderer                          renderer_;                        /**< Renderer instance for this window. */
+        std::shared_ptr<rw::gfx::Renderer>         renderer_;                        /**< Renderer instance for this window. */
         std::unique_ptr<rw::gfx::GraphicsContext>  graphics_context_{ nullptr };     /**< Rendering Context. */
         std::string                                title_{ "RedWolf Engine" };       /**< Title of the window. */
         uint32_t                                   width_{ default_window_width };   /**< Width of the window in pixels. */
