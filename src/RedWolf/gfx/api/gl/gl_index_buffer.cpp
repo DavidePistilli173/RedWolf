@@ -10,11 +10,12 @@
 
 rw::gfx::api::gl::IndexBuffer::IndexBuffer() {
     glCreateBuffers(1, &id_);
-    RW_CORE_TRACE("Index buffer created with ID: {}", id_);
+    RW_CORE_TRACE("Index buffer {} created.", id_);
 }
 
 rw::gfx::api::gl::IndexBuffer::~IndexBuffer() {
     glDeleteBuffers(1, &id_);
+    RW_CORE_TRACE("Index buffer {} deleted.", id_);
 }
 
 rw::gfx::api::gl::IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept : id_{ other.id_ } {

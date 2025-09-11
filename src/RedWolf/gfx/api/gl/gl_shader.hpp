@@ -169,7 +169,7 @@ namespace rw::gfx::api::gl {
          * @param path Path of the file to read.
          * @return File contents.
          */
-        [[nodiscard]] std::string read_file_(const std::string& path);
+        [[nodiscard]] static std::string read_file_(const std::string& path);
 
         uint32_t id_{ 0U }; /**< ID of the shader. */
     };

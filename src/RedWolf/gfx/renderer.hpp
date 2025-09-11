@@ -7,6 +7,7 @@
 
 #include "camera.hpp"
 #include "gfx.hpp"
+#include "shader_library.hpp"
 
 namespace rw::gfx {
     /**
@@ -32,16 +33,24 @@ namespace rw::gfx {
 
         /**
          * @brief Draw a set of vertices bound to a vertex array.
-         * @param shader Shader to use for rendering.
+         * @param shader_id ID of the shader to use for rendering.
          * @param vertex_array Vertex array to draw.
          * @param transform Transformation matrix to apply to the vertices.
          */
-        void draw(const Shader* shader, const VertexArray* vertex_array, const rw::math::Mat4& transform);
+        void draw(const uint64_t shader_id, const VertexArray* vertex_array, const rw::math::Mat4& transform);
 
         /**
          * @brief Finish rendering a scene.
          */
         void end_scene();
+
+        /**
+         * @brief Load a shader from file.
+         * @param id Unique identifier that will be given to the shader.
+         * @param file_path Path to the shader source code.
+         * @return Newly created shader.
+         */
+        [[nodiscard]] std::shared_ptr<Shader> load_shader(const uint64_t id, const std::string& file_path);
 
         /**
          * @brief Set the colour to use to clear the screen.
@@ -51,6 +60,7 @@ namespace rw::gfx {
 
      private:
         rw::math::Mat4 view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
+        ShaderLibrary  shader_library_;                 /**< Collection of all loaded shaders. */
     };
 } // namespace rw::gfx
 

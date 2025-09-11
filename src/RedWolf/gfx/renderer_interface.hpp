@@ -8,6 +8,8 @@
 #include "gfx.hpp"
 #include "renderer.hpp"
 
+#include <future>
+
 namespace rw::gfx {
     /**
      * @brief Interface for the renderer.
@@ -33,16 +35,24 @@ namespace rw::gfx {
 
         /**
          * @brief Drawa set of vertices bound to a vertex array.
-         * @param shader Shader to use for rendering.
+         * @param shader_id ID of the shader to use for rendering.
          * @param vertex_array Vertex array to draw.
          * @param transform Transformation matrix to apply to the vertices.
          */
-        void draw(const Shader* shader, const VertexArray* vertex_array, const rw::math::Mat4& transform);
+        void draw(const uint64_t shader_id, const VertexArray* vertex_array, const rw::math::Mat4& transform);
 
         /**
          * @brief Finish rendering a scene.
          */
         void end_scene();
+
+        /**
+         * @brief Load a shader from file.
+         * @param id Unique identifier that will be given to the shader.
+         * @param file_path Path to the shader source code.
+         * @return Future that will contain the newly created shader as soon as it is created.
+         */
+        [[nodiscard]] std::future<std::shared_ptr<Shader>> load_shader(const uint64_t id, const std::string& file_path);
 
         /**
          * @brief Set the colour to use to clear the screen.

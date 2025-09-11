@@ -9,7 +9,9 @@
 #include <RedWolf/input/polling.hpp>
 #include <RedWolf/util/logger.hpp>
 
-static constexpr int32_t texture_slot{ 0 };
+static constexpr int32_t  texture_slot{ 0 };
+static constexpr uint64_t colored_shader_id{ 0 };
+static constexpr uint64_t texture_shader_id{ 1 };
 
 ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx::Camera::orthographic(-1.6F, 1.6F, -0.9F, 0.9F) } {
     renderer_interface_ = rw::engine::App::get().window().renderer_interface();
@@ -31,47 +33,14 @@ ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx:
     square_va_->add_vertex_buffer(square_vb);
     square_va_->set_index_buffer(square_ib);
 
-    shader_ = std::make_shared<rw::gfx::api::gl::Shader>(
-        R"(
-        #version 330 core
-
-        layout(location = 0) in vec3 in_position;
-        layout(location = 1) in vec4 in_color;
-
-        uniform mat4 u_view_projection;
-        uniform mat4 u_transform;
-
-        out vec3 v_position;
-        out vec4 v_color;
-
-        void main() {
-            v_position = in_position;
-            v_color = in_color;
-            gl_Position = u_view_projection * u_transform * vec4(in_position, 1.0);
-        }
-    )",
-        R"(
-        #version 330 core
-
-        in vec3 v_position;
-        in vec4 v_color;
-
-        uniform vec4 u_color;
-
-        layout(location = 0) out vec4 color;
-
-        void main() {
-            color = u_color * v_color * 2;
-        }
-    )");
-
-    texture_shader_ = std::make_shared<rw::gfx::api::gl::Shader>("../src/RedWolfSandbox/assets/shaders/texture.glsl");
+    shader_             = renderer_interface_->load_shader(colored_shader_id, "../src/RedWolfSandbox/assets/shaders/colored.glsl").get();
+    auto texture_shader = renderer_interface_->load_shader(texture_shader_id, "../src/RedWolfSandbox/assets/shaders/texture.glsl").get();
 
     texture_             = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/textures/checkerboard.png");
     transparent_texture_ = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/textures/ChernoLogo.png");
 
-    texture_shader_->bind();
-    texture_shader_->upload_uniform_i32("u_texture", texture_slot);
+    texture_shader->bind();
+    texture_shader->upload_uniform_i32("u_texture", texture_slot);
 }
 
 void ExampleLayer::attach() {}
@@ -134,20 +103,20 @@ void ExampleLayer::update(const float delta_time) {
         for (int x{ 0 }; x < 20; ++x) {
             const rw::math::Mat4 transform{ rw::math::translate(
                 rw::math::Mat4(1.0F), rw::math::Vec3{ static_cast<float>(x) * 0.5F, static_cast<float>(y) * 0.5F, 0.0F }) };
-            renderer_interface_->draw(texture_shader_.get(), square_va_.get(), transform);
+            renderer_interface_->draw(colored_shader_id, square_va_.get(), transform);
         }
     }
 
     // renderer_interface_->draw(shader_.get(), vertex_array_.get(), rw::math::Mat4(1.0F));
     static const rw::math::Mat4 scale{ rw::math::scale(rw::math::Mat4(1.0F), rw::math::Vec3{ 5.0F, 5.0F, 1.0F }) };
     renderer_interface_->draw(
-        texture_shader_.get(),
+        texture_shader_id,
         square_va_.get(),
         rw::math::scale(rw::math::translate(rw::math::Mat4(1.0F), square_pos_), rw::math::Vec3{ 1.2F, 1.2F, 1.0F }));
 
     transparent_texture_->bind(texture_slot);
     renderer_interface_->draw(
-        texture_shader_.get(),
+        texture_shader_id,
         square_va_.get(),
         rw::math::scale(rw::math::translate(rw::math::Mat4(1.0F), square_pos_), rw::math::Vec3{ 1.2F, 1.2F, 1.0F }));
     renderer_interface_->end_scene();

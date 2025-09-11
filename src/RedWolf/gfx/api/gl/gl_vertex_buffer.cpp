@@ -10,11 +10,12 @@
 
 rw::gfx::api::gl::VertexBuffer::VertexBuffer() {
     glCreateBuffers(1, &id_);
-    RW_CORE_TRACE("Vertex buffer created with ID: {}", id_);
+    RW_CORE_TRACE("Vertex buffer {} created.", id_);
 }
 
 rw::gfx::api::gl::VertexBuffer::~VertexBuffer() {
     glDeleteBuffers(1, &id_);
+    RW_CORE_TRACE("Vertex buffer {} deleted.", id_);
 }
 
 rw::gfx::api::gl::VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept : id_{ other.id_ } {

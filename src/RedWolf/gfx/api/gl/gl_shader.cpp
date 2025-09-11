@@ -22,6 +22,7 @@ rw::gfx::api::gl::Shader::Shader(const std::string& file_path) {
 
 rw::gfx::api::gl::Shader::~Shader() {
     glDeleteProgram(id_);
+    RW_CORE_TRACE("Deleted shader {}", id_);
 }
 
 void rw::gfx::api::gl::Shader::bind() const {
@@ -176,7 +177,7 @@ void rw::gfx::api::gl::Shader::compile_(const std::unordered_map<GLenum, std::st
     }
 
     id_ = program;
-    RW_CORE_TRACE("Shader program created with ID: {}", id_);
+    RW_CORE_TRACE("Shader {} created.", id_);
 }
 
 std::unordered_map<GLenum, std::string> rw::gfx::api::gl::Shader::pre_process_(const std::string& source) {
@@ -208,7 +209,7 @@ std::unordered_map<GLenum, std::string> rw::gfx::api::gl::Shader::pre_process_(c
 }
 
 std::string rw::gfx::api::gl::Shader::read_file_(const std::string& path) {
-    std::ifstream in_stream{ path, std::ios::binary };
+    std::ifstream in_stream{ path, std::ios::in | std::ios::binary };
     if (!in_stream) {
         RW_CORE_ERR("Failed to open shader file: {}", path);
         return {};

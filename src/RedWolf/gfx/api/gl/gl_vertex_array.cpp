@@ -35,11 +35,12 @@ namespace {
 
 rw::gfx::api::gl::VertexArray::VertexArray() {
     glCreateVertexArrays(1, &id_);
-    RW_CORE_TRACE("Created vertex array with ID: {}.", id_);
+    RW_CORE_TRACE("Vertex array {} created.", id_);
 }
 
 rw::gfx::api::gl::VertexArray::~VertexArray() {
     glDeleteVertexArrays(1, &id_);
+    RW_CORE_TRACE("Vertex array {} deleted.", id_);
 }
 
 rw::gfx::api::gl::VertexArray::VertexArray(VertexArray&& other) noexcept :

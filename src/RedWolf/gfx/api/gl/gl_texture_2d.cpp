@@ -54,11 +54,12 @@ rw::gfx::api::gl::Texture2D::Texture2D(const std::string_view path) : path_{ pat
     glTextureSubImage2D(id_, 0, 0, 0, width, height, data_format, GL_UNSIGNED_BYTE, texture_data);
     stbi_image_free(texture_data);
 
-    RW_CORE_TRACE("Texture2D created: {} | id = {}", path_, id_);
+    RW_CORE_TRACE("Texture {} created from {}", id_, path_);
 }
 
 rw::gfx::api::gl::Texture2D::~Texture2D() {
     glDeleteTextures(1, &id_);
+    RW_CORE_TRACE("Texture {} deleted.", id_);
 }
 
 rw::gfx::api::gl::Texture2D::Texture2D(Texture2D&& other) noexcept :

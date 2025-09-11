@@ -22,6 +22,7 @@ target_sources(RedWolf PRIVATE
         gfx/camera.cpp
         gfx/renderer_interface.cpp
         gfx/renderer.cpp
+        gfx/shader_library.cpp
         input/polling.cpp
         layers/layer.cpp
         layers/layer_stack.cpp
