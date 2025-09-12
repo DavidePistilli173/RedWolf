@@ -26,7 +26,7 @@ namespace rw::gfx {
          * @param top Top limit of the frustum.
          * @return New orthographic camera.
          */
-        [[nodiscard]] static Camera orthographic(float left, float right, float bottom, float top);
+        [[nodiscard]] static Camera orthographic(const float left, const float right, const float bottom, const float top);
 
         /**
          * @brief Get the camera position.
@@ -64,6 +64,15 @@ namespace rw::gfx {
          * @param position New camera position.
          */
         void set_position(const rw::math::Vec3& position);
+
+        /**
+         * @brief Set a new orthographic projection.
+         * @param left Left limit of the frustum.
+         * @param right Right limit of the frustum.
+         * @param bottom Bottom limit of the frustum.
+         * @param top Top limit of the frustum.
+         */
+        void set_ortho_projection(const float left, const float right, const float bottom, const float top);
 
         /**
          * @brief Set the camera rotation around the Z axis in degrees.

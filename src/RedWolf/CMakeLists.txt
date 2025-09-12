@@ -6,6 +6,7 @@ set(RW_GFX_API "RW_GFX_API_OPENGL" CACHE STRING "Rendering API for RedWolf")
 
 target_sources(RedWolf PRIVATE
         engine/app.cpp
+        engine/camera_controller.cpp
         engine/entry_point.cpp
         evt/application_event.cpp
         evt/event.cpp

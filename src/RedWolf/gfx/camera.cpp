@@ -4,7 +4,7 @@
 
 #include "camera.hpp"
 
-rw::gfx::Camera rw::gfx::Camera::orthographic(float left, float right, float bottom, float top) {
+rw::gfx::Camera rw::gfx::Camera::orthographic(const float left, const float right, const float bottom, const float top) {
     Camera camera;
     camera.prj_mat_ = rw::math::ortho(left, right, bottom, top, -1.0F, 1.0F);
     camera.recompute_view_matrix_();
@@ -36,6 +36,11 @@ void rw::gfx::Camera::roto_translate(const rw::math::Vec3& delta, const float an
 
 void rw::gfx::Camera::set_position(const rw::math::Vec3& position) {
     position_ = position;
+    recompute_view_matrix_();
+}
+
+void rw::gfx::Camera::set_ortho_projection(const float left, const float right, const float bottom, const float top) {
+    prj_mat_ = rw::math::ortho(left, right, bottom, top, -1.0F, 1.0F);
     recompute_view_matrix_();
 }
 

@@ -5,7 +5,7 @@
 #ifndef SRC_REDWOLF_EXAMPLE_LAYER_HPP
 #define SRC_REDWOLF_EXAMPLE_LAYER_HPP
 
-#include <RedWolf/gfx/camera.hpp>
+#include <RedWolf/engine/camera_controller.hpp>
 #include <RedWolf/gfx/renderer_interface.hpp>
 #include <RedWolf/layers/layer.hpp>
 
@@ -41,7 +41,7 @@ class ExampleLayer : public rw::layers::Layer {
     [[nodiscard]] bool on_event(const rw::evt::Event& event) override;
 
  private:
-    rw::gfx::Camera                             camera_;
+    rw::engine::CameraController                camera_controller_;
     std::unique_ptr<rw::gfx::RendererInterface> renderer_interface_; /**< Interface to the renderer. */
 
     std::shared_ptr<rw::gfx::Shader>      shader_;
@@ -51,10 +51,6 @@ class ExampleLayer : public rw::layers::Layer {
 
     rw::math::Vec3 square_pos_{ 0.0F };
     rw::math::Vec4 square_color_{ 1.0F };
-
-    float speed_x{ 0.0F };
-    float speed_y{ 0.0F };
-    float rotation_speed_{ 0.0F };
 };
 
 #endif // SRC_REDWOLF_EXAMPLE_LAYER_HPP

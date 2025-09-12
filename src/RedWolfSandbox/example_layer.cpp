@@ -13,7 +13,7 @@ static constexpr int32_t  texture_slot{ 0 };
 static constexpr uint64_t colored_shader_id{ 0 };
 static constexpr uint64_t texture_shader_id{ 1 };
 
-ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_{ rw::gfx::Camera::orthographic(-1.6F, 1.6F, -0.9F, 0.9F) } {
+ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_controller_{ 1280.0F / 720.0F } {
     renderer_interface_ = rw::engine::App::get().window().renderer_interface();
     renderer_interface_->set_clear_color(rw::math::Vec4(1.0F, 1.0F, 0.0F, 0.0F));
 
@@ -54,29 +54,7 @@ void ExampleLayer::render_imgui() {
 }
 
 void ExampleLayer::update(const float delta_time) {
-    if (rw::input::is_key_down(rw::input::Key::a)) {
-        speed_x = -1.0F;
-    } else if (rw::input::is_key_down(rw::input::Key::d)) {
-        speed_x = 1.0F;
-    } else {
-        speed_x = 0.0F;
-    }
-
-    if (rw::input::is_key_down(rw::input::Key::s)) {
-        speed_y = -1.0F;
-    } else if (rw::input::is_key_down(rw::input::Key::w)) {
-        speed_y = 1.0F;
-    } else {
-        speed_y = 0.0F;
-    }
-
-    if (rw::input::is_key_down(rw::input::Key::q)) {
-        rotation_speed_ = 4.0F;
-    } else if (rw::input::is_key_down(rw::input::Key::e)) {
-        rotation_speed_ = -4.0F;
-    } else {
-        rotation_speed_ = 0.0F;
-    }
+    camera_controller_.update(delta_time);
 
     if (rw::input::is_key_down(rw::input::Key::j)) {
         square_pos_.x -= 1.0F * delta_time;
@@ -90,10 +68,8 @@ void ExampleLayer::update(const float delta_time) {
         square_pos_.y += 1.0F * delta_time;
     }
 
-    camera_.roto_translate(rw::math::Vec3(speed_x, speed_y, 0.0F) * delta_time, rotation_speed_);
-
     renderer_interface_->clear_screen();
-    renderer_interface_->begin_scene(camera_);
+    renderer_interface_->begin_scene(camera_controller_.camera());
 
     shader_->bind();
     shader_->upload_uniform_f32_4("u_color", square_color_);
@@ -123,5 +99,5 @@ void ExampleLayer::update(const float delta_time) {
 }
 
 bool ExampleLayer::on_event(const rw::evt::Event& event) {
-    return false;
+    return camera_controller_.on_event(event);
 }
