@@ -2,6 +2,7 @@ add_executable(RedWolfSandbox)
 
 target_sources(RedWolfSandbox PRIVATE
         example_layer.cpp
+        sandbox_2_d.cpp
         sandbox_app.cpp
 )
 
