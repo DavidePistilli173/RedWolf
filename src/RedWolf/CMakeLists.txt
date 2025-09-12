@@ -21,8 +21,10 @@ target_sources(RedWolf PRIVATE
         gfx/api/gl/gl_vertex_buffer.cpp
         gfx/buffer_layout.cpp
         gfx/camera.cpp
-        gfx/renderer_interface.cpp
         gfx/renderer.cpp
+        gfx/renderer_2_d.cpp
+        gfx/renderer_interface.cpp
+        gfx/renderer_interface_2_d.cpp
         gfx/shader_library.cpp
         input/polling.cpp
         layers/layer.cpp

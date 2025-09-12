@@ -6,7 +6,7 @@
 #define SRC_REDWOLF_SANDBOX_2_D_HPP
 
 #include <RedWolf/engine/camera_controller.hpp>
-#include <RedWolf/gfx/renderer_interface.hpp>
+#include <RedWolf/gfx/renderer_interface_2_d.hpp>
 #include <RedWolf/layers/layer.hpp>
 
 class Sandbox2D : public rw::layers::Layer {
@@ -25,8 +25,8 @@ class Sandbox2D : public rw::layers::Layer {
     [[nodiscard]] bool on_event(const rw::evt::Event& event) override;
 
  private:
-    rw::engine::CameraController                camera_controller_;
-    std::unique_ptr<rw::gfx::RendererInterface> renderer_interface_; /**< Interface to the renderer. */
+    rw::engine::CameraController                  camera_controller_;
+    std::unique_ptr<rw::gfx::RendererInterface2D> renderer_interface_; /**< Interface to the renderer. */
 
     std::shared_ptr<rw::gfx::VertexArray> square_va_;
     std::shared_ptr<rw::gfx::Shader>      shader_;

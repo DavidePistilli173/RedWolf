@@ -8,7 +8,9 @@
 #include "RedWolf/evt/event.hpp"
 #include "RedWolf/gfx/gfx.hpp"
 #include "RedWolf/gfx/renderer.hpp"
+#include "RedWolf/gfx/renderer_2_d.hpp"
 #include "RedWolf/gfx/renderer_interface.hpp"
+#include "RedWolf/gfx/renderer_interface_2_d.hpp"
 #include "ui.hpp"
 
 #include <functional>
@@ -81,6 +83,12 @@ namespace rw::ui {
          * @return Interface to this window's renderer.
          */
         [[nodiscard]] std::unique_ptr<rw::gfx::RendererInterface> renderer_interface();
+
+        /**
+         * @brief Get an interface to this window's 2D renderer.
+         * @return Interface to this window's 2D renderer.
+         */
+        [[nodiscard]] std::unique_ptr<rw::gfx::RendererInterface2D> renderer_interface_2d();
 
         /**
          * @brief Set the callback for handling window events.
@@ -192,6 +200,7 @@ namespace rw::ui {
 
         rw::ui::WindowHandle                       handle_{ invalid_window_handle }; /**< Raw window handle. */
         std::shared_ptr<rw::gfx::Renderer>         renderer_;                        /**< Renderer instance for this window. */
+        std::shared_ptr<rw::gfx::Renderer2D>       renderer_2d_;                     /**< Exclusively 2D renderer. */
         std::unique_ptr<rw::gfx::GraphicsContext>  graphics_context_{ nullptr };     /**< Rendering Context. */
         std::string                                title_{ "RedWolf Engine" };       /**< Title of the window. */
         uint32_t                                   width_{ default_window_width };   /**< Width of the window in pixels. */
