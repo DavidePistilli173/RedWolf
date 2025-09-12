@@ -27,6 +27,11 @@ namespace rw::gfx {
         void begin_scene(const Camera& camera);
 
         /**
+         * @brief Clear the screen with the currently set colour.
+         */
+        void clear_screen();
+
+        /**
          * @brief Draw a quad to the screen.
          * @param shader_id ID of the shader to use for rendering.
          * @param position Position of the quad.

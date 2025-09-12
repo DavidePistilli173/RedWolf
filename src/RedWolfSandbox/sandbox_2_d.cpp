@@ -27,6 +27,7 @@ void Sandbox2D::update(const float delta_time) {
     camera_controller_.update(delta_time);
 
     // Render
+    renderer_interface_->clear_screen();
     renderer_interface_->begin_scene(camera_controller_.camera());
     renderer_interface_->draw_quad(rw::gfx::Renderer2D::flat_colored_shader_id, { 0.0F, 0.0F }, { 1.0F, 1.0F }, square_color_);
     renderer_interface_->end_scene();

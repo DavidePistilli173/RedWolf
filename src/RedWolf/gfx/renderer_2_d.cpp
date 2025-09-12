@@ -28,8 +28,11 @@ rw::gfx::Renderer2D::Renderer2D() {
 }
 
 void rw::gfx::Renderer2D::begin_scene(const Camera& camera) {
-    RendererApi::clear_screen();
     view_projection_matrix_ = camera.view_projection_matrix();
+}
+
+void rw::gfx::Renderer2D::clear_screen() {
+    RendererApi::clear_screen();
 }
 
 void rw::gfx::Renderer2D::draw_quad(
