@@ -6,6 +6,7 @@
 #define APP_HPP
 
 #include "RedWolf/evt/event.hpp"
+#include "RedWolf/gfx/renderer_interface.hpp"
 #include "RedWolf/layers/debug_layer.hpp"
 #include "RedWolf/layers/layer_stack.hpp"
 #include "RedWolf/ui/window.hpp"
@@ -94,10 +95,19 @@ namespace rw::engine {
         [[nodiscard]] rw::ui::Window& window();
 
      private:
+        /**
+         * @brief Handle a window resized event.
+         * @param event Event to handle.
+         */
+        void on_window_resize_(const rw::evt::WindowResizedEvent& event);
+
         static App* instance_; /**< Singleton instance of the application. */
 
-        std::unique_ptr<rw::ui::Window> window_;          /**< Application window. */
-        bool                            running_{ true }; /**< Flag to indicate if the application is running. */
+        std::unique_ptr<rw::ui::Window> window_;             /**< Application window. */
+        bool                            running_{ true };    /**< Flag to indicate if the application is running. */
+        bool                            minimized_{ false }; /**< If true, the window is minimised. */
+
+        std::unique_ptr<rw::gfx::RendererInterface> renderer_interface_; /**< Interface for controlling the renderer. */
 
         rw::layers::LayerStack  layer_stack_;            /**< Application layer stack. */
         rw::layers::DebugLayer* debug_layer_{ nullptr }; /**< Debug layer. */

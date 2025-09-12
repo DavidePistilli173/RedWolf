@@ -31,3 +31,7 @@ std::future<std::shared_ptr<rw::gfx::Shader>> rw::gfx::RendererInterface::load_s
 void rw::gfx::RendererInterface::set_clear_color(const rw::math::Vec4& color) {
     renderer_->set_clear_color(color);
 }
+
+void rw::gfx::RendererInterface::set_viewport(const uint32_t x, uint32_t y, const uint32_t width, const uint32_t height) {
+    renderer_->set_viewport(x, y, width, height);
+}

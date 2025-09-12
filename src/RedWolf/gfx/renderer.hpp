@@ -57,6 +57,14 @@ namespace rw::gfx {
          * @param color Colour to use when clearing the screen.
          */
         void set_clear_color(const rw::math::Vec4& color);
+        /**
+         * @brief Set a new viewport for rendering.
+         * @param x X coordinate of the bottom-left corner of the viewport.
+         * @param y Y coordinate of the bottom-left corner of the viewport.
+         * @param width New width.
+         * @param height New height.
+         */
+        void set_viewport(const uint32_t x, uint32_t y, const uint32_t width, const uint32_t height);
 
      private:
         rw::math::Mat4 view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */

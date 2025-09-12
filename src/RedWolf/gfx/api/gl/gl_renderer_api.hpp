@@ -37,6 +37,15 @@ namespace rw::gfx::api::gl {
          * @param color Colour to use when clearing the screen.
          */
         static void set_clear_color(const rw::math::Vec4& color);
+
+        /**
+         * @brief Set a new viewport for rendering.
+         * @param x X coordinate of the bottom-left corner of the viewport.
+         * @param y Y coordinate of the bottom-left corner of the viewport.
+         * @param width New width.
+         * @param height New height.
+         */
+        static void set_viewport(const uint32_t x, uint32_t y, const uint32_t width, const uint32_t height);
     };
 } // namespace rw::gfx::api::gl
 

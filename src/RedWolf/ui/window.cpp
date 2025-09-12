@@ -238,7 +238,7 @@ void rw::ui::Window::window_resize_clbk_(rw::ui::WindowHandle window, int width,
     }
     auto* self{ static_cast<Window*>(user_ptr) };
 
-    if (width <= 0 || height <= 0) {
+    if (width < 0 || height < 0) {
         RW_CORE_WARN("Invalid window size: {}x{}", width, height);
         return;
     }

@@ -47,3 +47,7 @@ std::shared_ptr<rw::gfx::Shader> rw::gfx::Renderer::load_shader(const uint64_t i
 void rw::gfx::Renderer::set_clear_color(const rw::math::Vec4& color) {
     RendererApi::set_clear_color(color);
 }
+
+void rw::gfx::Renderer::set_viewport(const uint32_t x, uint32_t y, const uint32_t width, const uint32_t height) {
+    RendererApi::set_viewport(x, y, width, height);
+}

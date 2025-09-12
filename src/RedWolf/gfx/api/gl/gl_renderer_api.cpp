@@ -22,3 +22,7 @@ void rw::gfx::api::gl::RendererApi::init() {
 void rw::gfx::api::gl::RendererApi::set_clear_color(const rw::math::Vec4& color) {
     glClearColor(color.r, color.g, color.b, color.a);
 }
+
+void rw::gfx::api::gl::RendererApi::set_viewport(const uint32_t x, uint32_t y, const uint32_t width, const uint32_t height) {
+    glViewport(x, y, width, height);
+}

@@ -60,6 +60,15 @@ namespace rw::gfx {
          */
         void set_clear_color(const rw::math::Vec4& color);
 
+        /**
+         * @brief Set a new viewport for rendering.
+         * @param x X coordinate of the bottom-left corner of the viewport.
+         * @param y Y coordinate of the bottom-left corner of the viewport.
+         * @param width New width.
+         * @param height New height.
+         */
+        void set_viewport(const uint32_t x, uint32_t y, const uint32_t width, const uint32_t height);
+
      private:
         std::shared_ptr<Renderer> renderer_; /**< Renderer instance this interface is connected to. */
     };
