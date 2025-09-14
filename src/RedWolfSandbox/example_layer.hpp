@@ -44,7 +44,8 @@ class ExampleLayer : public rw::layers::Layer {
     rw::engine::CameraController                camera_controller_;
     std::unique_ptr<rw::gfx::RendererInterface> renderer_interface_; /**< Interface to the renderer. */
 
-    std::shared_ptr<rw::gfx::Shader>      shader_;
+    rw::gfx::Shader*                      colored_shader_{ nullptr };
+    rw::gfx::Shader*                      texture_shader_{ nullptr };
     std::shared_ptr<rw::gfx::VertexArray> square_va_;
     std::shared_ptr<rw::gfx::Texture>     texture_;
     std::shared_ptr<rw::gfx::Texture>     transparent_texture_;

@@ -14,16 +14,16 @@ void rw::gfx::RendererInterface::clear_screen() {
     renderer_->clear_screen();
 }
 
-void rw::gfx::RendererInterface::draw(const uint64_t shader_id, const VertexArray* vertex_array, const rw::math::Mat4& transform) {
-    renderer_->draw(shader_id, vertex_array, transform);
+void rw::gfx::RendererInterface::draw(Shader* shader, const VertexArray* vertex_array, const rw::math::Mat4& transform) {
+    renderer_->draw(shader, vertex_array, transform);
 }
 
 void rw::gfx::RendererInterface::end_scene() {
     renderer_->end_scene();
 }
 
-std::future<std::shared_ptr<rw::gfx::Shader>> rw::gfx::RendererInterface::load_shader(const uint64_t id, const std::string& file_path) {
-    std::promise<std::shared_ptr<rw::gfx::Shader>> promise;
+std::future<rw::gfx::Shader*> rw::gfx::RendererInterface::load_shader(const uint64_t id, const std::string& file_path) {
+    std::promise<rw::gfx::Shader*> promise;
     promise.set_value(renderer_->load_shader(id, file_path));
     return promise.get_future();
 }

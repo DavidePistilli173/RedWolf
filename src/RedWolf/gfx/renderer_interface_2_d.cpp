@@ -14,15 +14,19 @@ void rw::gfx::RendererInterface2D::clear_screen() {
 }
 
 void rw::gfx::RendererInterface2D::draw_quad(
-    const uint64_t shader_id, const rw::math::Vec2& position, const rw::math::Vec2& size, const rw::math::Vec4& color) {
-    renderer_->draw_quad(shader_id, position, size, color);
+    Shader* shader, const rw::math::Vec2& position, const rw::math::Vec2& size, const rw::math::Vec4& color) {
+    renderer_->draw_quad(shader, position, size, color);
 }
 
 void rw::gfx::RendererInterface2D::draw_quad(
-    const uint64_t shader_id, const rw::math::Vec3& position, const rw::math::Vec2& size, const rw::math::Vec4& color) {
-    renderer_->draw_quad(shader_id, position, size, color);
+    Shader* shader, const rw::math::Vec3& position, const rw::math::Vec2& size, const rw::math::Vec4& color) {
+    renderer_->draw_quad(shader, position, size, color);
 }
 
 void rw::gfx::RendererInterface2D::end_scene() {
     renderer_->end_scene();
+}
+
+rw::gfx::Shader* rw::gfx::RendererInterface2D::get_shader(const uint64_t id) {
+    return renderer_->get_shader(id);
 }

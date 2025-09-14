@@ -29,7 +29,7 @@ class Sandbox2D : public rw::layers::Layer {
     std::unique_ptr<rw::gfx::RendererInterface2D> renderer_interface_; /**< Interface to the renderer. */
 
     std::shared_ptr<rw::gfx::VertexArray> square_va_;
-    std::shared_ptr<rw::gfx::Shader>      shader_;
+    rw::gfx::Shader*                      shader_{ nullptr };
     rw::math::Vec4                        square_color_{ 1.0F };
 };
 

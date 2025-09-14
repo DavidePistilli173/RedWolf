@@ -33,26 +33,33 @@ namespace rw::gfx {
 
         /**
          * @brief Draw a quad to the screen.
-         * @param shader_id ID of the shader to use for rendering.
+         * @param shader Shader to use for rendering.
          * @param position Position of the quad.
          * @param size Size of the quad.
          * @param color Colour of the quad.
          */
-        void draw_quad(const uint64_t shader_id, const rw::math::Vec2& position, const rw::math::Vec2& size, const rw::math::Vec4& color);
+        void draw_quad(Shader* shader, const rw::math::Vec2& position, const rw::math::Vec2& size, const rw::math::Vec4& color);
 
         /**
          * @brief Draw a quad to the screen, using the Z coordinate to sort the draw order..
-         * @param shader_id ID of the shader to use for rendering.
+         * @param shader Shader to use for rendering.
          * @param position Position of the quad.
          * @param size Size of the quad.
          * @param color Colour of the quad.
          */
-        void draw_quad(const uint64_t shader_id, const rw::math::Vec3& position, const rw::math::Vec2& size, const rw::math::Vec4& color);
+        void draw_quad(Shader* shader, const rw::math::Vec3& position, const rw::math::Vec2& size, const rw::math::Vec4& color);
 
         /**
          * @brief Finish rendering a scene.
          */
         void end_scene();
+
+        /**
+         * @brief Get a shader that was previously loaded by the renderer.
+         * @param id ID of the loaded shader.
+         * @return Pointer to the loaded shader, or nullptr if it wasn't loaded.
+         */
+        [[nodiscard]] Shader* get_shader(const uint64_t id);
 
      private:
         std::shared_ptr<Renderer2D> renderer_; /**< Renderer instance this interface is connected to. */

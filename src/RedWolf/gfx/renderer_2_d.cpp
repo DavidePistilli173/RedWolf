@@ -36,31 +36,34 @@ void rw::gfx::Renderer2D::clear_screen() {
 }
 
 void rw::gfx::Renderer2D::draw_quad(
-    const uint64_t                         shader_id,
+    Shader*                                shader,
     [[maybe_unused]] const rw::math::Vec2& position,
     [[maybe_unused]] const rw::math::Vec2& size,
     const rw::math::Vec4&                  color) {
-    auto shader{ shader_library_.get(shader_id) };
-    if (!shader.has_value()) {
-        RW_CORE_ERR("Drawing with non-existent shader {}", shader_id);
+    if (nullptr == shader) {
+        RW_CORE_ERR("Null draw parameter: shader");
         return;
     }
 
-    shader.value()->bind();
-    shader.value()->upload_uniform_mat_f32_4("u_view_projection", view_projection_matrix_);
-    shader.value()->upload_uniform_mat_f32_4("u_transform", rw::math::Mat4(1.0F));
-    shader.value()->upload_uniform_f32_4("u_color", color);
+    shader->bind();
+    shader->upload_uniform_mat_f32_4("u_view_projection", view_projection_matrix_);
+    shader->upload_uniform_mat_f32_4("u_transform", rw::math::Mat4(1.0F));
+    shader->upload_uniform_f32_4("u_color", color);
 
     quad_vertex_array_->bind();
     RendererApi::draw_indexed(quad_vertex_array_.get());
 }
 
 void rw::gfx::Renderer2D::draw_quad(
-    [[maybe_unused]] const uint64_t        shader_id,
+    Shader*                                shader,
     [[maybe_unused]] const rw::math::Vec3& position,
     [[maybe_unused]] const rw::math::Vec2& size,
     [[maybe_unused]] const rw::math::Vec4& color) {
-    draw_quad(shader_id, { position.x, position.y }, size, color);
+    draw_quad(shader, { position.x, position.y }, size, color);
 }
 
 void rw::gfx::Renderer2D::end_scene() {}
+
+rw::gfx::Shader* rw::gfx::Renderer2D::get_shader(const uint64_t id) {
+    return shader_library_.get(id);
+}

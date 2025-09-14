@@ -33,14 +33,14 @@ ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_controller
     square_va_->add_vertex_buffer(square_vb);
     square_va_->set_index_buffer(square_ib);
 
-    shader_             = renderer_interface_->load_shader(colored_shader_id, "../src/RedWolfSandbox/assets/shaders/colored.glsl").get();
-    auto texture_shader = renderer_interface_->load_shader(texture_shader_id, "../src/RedWolfSandbox/assets/shaders/texture.glsl").get();
+    colored_shader_ = renderer_interface_->load_shader(colored_shader_id, "../src/RedWolfSandbox/assets/shaders/colored.glsl").get();
+    texture_shader_ = renderer_interface_->load_shader(texture_shader_id, "../src/RedWolfSandbox/assets/shaders/texture.glsl").get();
 
     texture_             = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/textures/checkerboard.png");
     transparent_texture_ = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/textures/ChernoLogo.png");
 
-    texture_shader->bind();
-    texture_shader->upload_uniform_i32("u_texture", texture_slot);
+    texture_shader_->bind();
+    texture_shader_->upload_uniform_i32("u_texture", texture_slot);
 }
 
 void ExampleLayer::attach() {}
@@ -71,28 +71,28 @@ void ExampleLayer::update(const float delta_time) {
     renderer_interface_->clear_screen();
     renderer_interface_->begin_scene(camera_controller_.camera());
 
-    shader_->bind();
-    shader_->upload_uniform_f32_4("u_color", square_color_);
+    colored_shader_->bind();
+    colored_shader_->upload_uniform_f32_4("u_color", square_color_);
 
     texture_->bind(texture_slot);
     for (int y{ 0 }; y < 20; ++y) {
         for (int x{ 0 }; x < 20; ++x) {
             const rw::math::Mat4 transform{ rw::math::translate(
                 rw::math::Mat4(1.0F), rw::math::Vec3{ static_cast<float>(x) * 0.5F, static_cast<float>(y) * 0.5F, 0.0F }) };
-            renderer_interface_->draw(colored_shader_id, square_va_.get(), transform);
+            renderer_interface_->draw(colored_shader_, square_va_.get(), transform);
         }
     }
 
     // renderer_interface_->draw(shader_.get(), vertex_array_.get(), rw::math::Mat4(1.0F));
     static const rw::math::Mat4 scale{ rw::math::scale(rw::math::Mat4(1.0F), rw::math::Vec3{ 5.0F, 5.0F, 1.0F }) };
     renderer_interface_->draw(
-        texture_shader_id,
+        texture_shader_,
         square_va_.get(),
         rw::math::scale(rw::math::translate(rw::math::Mat4(1.0F), square_pos_), rw::math::Vec3{ 1.2F, 1.2F, 1.0F }));
 
     transparent_texture_->bind(texture_slot);
     renderer_interface_->draw(
-        texture_shader_id,
+        texture_shader_,
         square_va_.get(),
         rw::math::scale(rw::math::translate(rw::math::Mat4(1.0F), square_pos_), rw::math::Vec3{ 1.2F, 1.2F, 1.0F }));
     renderer_interface_->end_scene();

@@ -18,21 +18,18 @@ void rw::gfx::Renderer::clear_screen() {
     RendererApi::clear_screen();
 }
 
-void rw::gfx::Renderer::draw(const uint64_t shader_id, const VertexArray* vertex_array, const rw::math::Mat4& transform) {
-    if (nullptr == vertex_array) {
-        RW_CORE_ERR("Null draw parameter: vertex_array.");
+void rw::gfx::Renderer::draw(Shader* shader, const VertexArray* vertex_array, const rw::math::Mat4& transform) {
+    if (nullptr == shader || nullptr == vertex_array) {
+        RW_CORE_ERR(
+            "Null draw parameter: shader {:x}, vertex_array {:x}",
+            reinterpret_cast<void*>(shader),
+            reinterpret_cast<const void*>(vertex_array));
         return;
     }
 
-    auto shader{ shader_library_.get(shader_id) };
-    if (!shader.has_value()) {
-        RW_CORE_ERR("Drawing with non-existent shader {}", shader_id);
-        return;
-    }
-
-    shader.value()->bind();
-    shader.value()->upload_uniform_mat_f32_4("u_view_projection", view_projection_matrix_);
-    shader.value()->upload_uniform_mat_f32_4("u_transform", transform);
+    shader->bind();
+    shader->upload_uniform_mat_f32_4("u_view_projection", view_projection_matrix_);
+    shader->upload_uniform_mat_f32_4("u_transform", transform);
 
     vertex_array->bind();
     RendererApi::draw_indexed(vertex_array);
@@ -40,7 +37,7 @@ void rw::gfx::Renderer::draw(const uint64_t shader_id, const VertexArray* vertex
 
 void rw::gfx::Renderer::end_scene() {}
 
-std::shared_ptr<rw::gfx::Shader> rw::gfx::Renderer::load_shader(const uint64_t id, const std::string& file_path) {
+rw::gfx::Shader* rw::gfx::Renderer::load_shader(const uint64_t id, const std::string& file_path) {
     return shader_library_.load(id, file_path);
 }
 
