@@ -40,7 +40,7 @@ ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_controller
     transparent_texture_ = std::make_shared<rw::gfx::api::gl::Texture2D>("../src/RedWolfSandbox/assets/textures/ChernoLogo.png");
 
     texture_shader_->bind();
-    texture_shader_->upload_uniform_i32("u_texture", texture_slot);
+    texture_shader_->set_i32("u_texture", texture_slot);
 }
 
 void ExampleLayer::attach() {}
@@ -72,7 +72,7 @@ void ExampleLayer::update(const float delta_time) {
     renderer_interface_->begin_scene(camera_controller_.camera());
 
     colored_shader_->bind();
-    colored_shader_->upload_uniform_f32_4("u_color", square_color_);
+    colored_shader_->set_f32_4("u_color", square_color_);
 
     texture_->bind(texture_slot);
     for (int y{ 0 }; y < 20; ++y) {

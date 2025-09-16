@@ -13,20 +13,32 @@ void rw::gfx::RendererInterface2D::clear_screen() {
     renderer_->clear_screen();
 }
 
-void rw::gfx::RendererInterface2D::draw_quad(
-    Shader* shader, const rw::math::Vec2& position, const rw::math::Vec2& size, const rw::math::Vec4& color) {
-    renderer_->draw_quad(shader, position, size, color);
+void rw::gfx::RendererInterface2D::draw_quad(Shader* shader, const rw::math::Mat4& transform, const rw::math::Vec4& color) {
+    renderer_->draw_quad(shader, transform, color);
 }
 
-void rw::gfx::RendererInterface2D::draw_quad(
-    Shader* shader, const rw::math::Vec3& position, const rw::math::Vec2& size, const rw::math::Vec4& color) {
-    renderer_->draw_quad(shader, position, size, color);
+void rw::gfx::RendererInterface2D::draw_quad(Shader* shader, const rw::math::Mat4& transform, Texture2D* texture) {
+    renderer_->draw_quad(shader, transform, texture);
 }
 
 void rw::gfx::RendererInterface2D::end_scene() {
     renderer_->end_scene();
 }
 
-rw::gfx::Shader* rw::gfx::RendererInterface2D::get_shader(const uint64_t id) {
-    return renderer_->get_shader(id);
+std::future<rw::gfx::Shader*> rw::gfx::RendererInterface2D::get_shader(const uint64_t id) {
+    std::promise<rw::gfx::Shader*> promise;
+    promise.set_value(renderer_->get_shader(id));
+    return promise.get_future();
+}
+
+std::future<rw::gfx::Texture2D*> rw::gfx::RendererInterface2D::get_texture(const uint64_t id) {
+    std::promise<rw::gfx::Texture2D*> promise;
+    promise.set_value(renderer_->get_texture(id));
+    return promise.get_future();
+}
+
+std::future<rw::gfx::Texture2D*> rw::gfx::RendererInterface2D::load_texture(const uint64_t id, const std::string& file_path) {
+    std::promise<rw::gfx::Texture2D*> promise;
+    promise.set_value(renderer_->load_texture(id, file_path));
+    return promise.get_future();
 }

@@ -33,74 +33,32 @@ void rw::gfx::api::gl::Shader::unbind() const {
     glUseProgram(0);
 }
 
-void rw::gfx::api::gl::Shader::upload_uniform_f32(const std::string_view name, const float value) const {
-    const GLint location{ glGetUniformLocation(id_, name.data()) };
-    if (-1 == location) {
-        RW_CORE_ERR("Failed to get uniform location: {}", name);
-        return;
-    }
-
-    glUniform1f(location, value);
+void rw::gfx::api::gl::Shader::set_f32(const std::string_view name, const float value) const {
+    upload_uniform_f32_(name, value);
 }
 
-void rw::gfx::api::gl::Shader::upload_uniform_f32_2(const std::string_view name, const rw::math::Vec2& vec) const {
-    const GLint location{ glGetUniformLocation(id_, name.data()) };
-    if (-1 == location) {
-        RW_CORE_ERR("Failed to get uniform location: {}", name);
-        return;
-    }
-
-    glUniform2f(location, vec.x, vec.y);
+void rw::gfx::api::gl::Shader::set_f32_2(const std::string_view name, const rw::math::Vec2& vec) const {
+    upload_uniform_f32_2_(name, vec);
 }
 
-void rw::gfx::api::gl::Shader::upload_uniform_f32_3(const std::string_view name, const rw::math::Vec3& vec) const {
-    const GLint location{ glGetUniformLocation(id_, name.data()) };
-    if (-1 == location) {
-        RW_CORE_ERR("Failed to get uniform location: {}", name);
-        return;
-    }
-
-    glUniform3f(location, vec.x, vec.y, vec.z);
+void rw::gfx::api::gl::Shader::set_f32_3(const std::string_view name, const rw::math::Vec3& vec) const {
+    upload_uniform_f32_3_(name, vec);
 }
 
-void rw::gfx::api::gl::Shader::upload_uniform_f32_4(const std::string_view name, const rw::math::Vec4& vec) const {
-    const GLint location{ glGetUniformLocation(id_, name.data()) };
-    if (-1 == location) {
-        RW_CORE_ERR("Failed to get uniform location: {}", name);
-        return;
-    }
-
-    glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
+void rw::gfx::api::gl::Shader::set_f32_4(const std::string_view name, const rw::math::Vec4& vec) const {
+    upload_uniform_f32_4_(name, vec);
 }
 
-void rw::gfx::api::gl::Shader::upload_uniform_i32(const std::string_view name, const int32_t value) const {
-    const GLint location{ glGetUniformLocation(id_, name.data()) };
-    if (-1 == location) {
-        RW_CORE_ERR("Failed to get uniform location: {}", name);
-        return;
-    }
-
-    glUniform1i(location, value);
+void rw::gfx::api::gl::Shader::set_i32(const std::string_view name, const int32_t value) const {
+    upload_uniform_i32_(name, value);
 }
 
-void rw::gfx::api::gl::Shader::upload_uniform_mat_f32_3(const std::string_view name, const rw::math::Mat3& matrix) const {
-    const GLint location{ glGetUniformLocation(id_, name.data()) };
-    if (-1 == location) {
-        RW_CORE_ERR("Failed to get uniform location: {}", name);
-        return;
-    }
-
-    glUniformMatrix3fv(location, 1, GL_FALSE, rw::math::value_ptr(matrix));
+void rw::gfx::api::gl::Shader::set_mat_f32_3(const std::string_view name, const rw::math::Mat3& matrix) const {
+    upload_uniform_mat_f32_3_(name, matrix);
 }
 
-void rw::gfx::api::gl::Shader::upload_uniform_mat_f32_4(const std::string_view name, const rw::math::Mat4& matrix) const {
-    const GLint location{ glGetUniformLocation(id_, name.data()) };
-    if (-1 == location) {
-        RW_CORE_ERR("Failed to get uniform location: {}", name);
-        return;
-    }
-
-    glUniformMatrix4fv(location, 1, GL_FALSE, rw::math::value_ptr(matrix));
+void rw::gfx::api::gl::Shader::set_mat_f32_4(const std::string_view name, const rw::math::Mat4& matrix) const {
+    upload_uniform_mat_f32_4_(name, matrix);
 }
 
 void rw::gfx::api::gl::Shader::compile_(const std::unordered_map<GLenum, std::string>& shader_sources) {
@@ -221,4 +179,74 @@ std::string rw::gfx::api::gl::Shader::read_file_(const std::string& path) {
     in_stream.seekg(0, std::ios::beg);
     in_stream.read(result.data(), result.size());
     return result;
+}
+
+void rw::gfx::api::gl::Shader::upload_uniform_f32_(const std::string_view name, const float value) const {
+    const GLint location{ glGetUniformLocation(id_, name.data()) };
+    if (-1 == location) {
+        RW_CORE_ERR("Failed to get uniform location: {}", name);
+        return;
+    }
+
+    glUniform1f(location, value);
+}
+
+void rw::gfx::api::gl::Shader::upload_uniform_f32_2_(const std::string_view name, const rw::math::Vec2& vec) const {
+    const GLint location{ glGetUniformLocation(id_, name.data()) };
+    if (-1 == location) {
+        RW_CORE_ERR("Failed to get uniform location: {}", name);
+        return;
+    }
+
+    glUniform2f(location, vec.x, vec.y);
+}
+
+void rw::gfx::api::gl::Shader::upload_uniform_f32_3_(const std::string_view name, const rw::math::Vec3& vec) const {
+    const GLint location{ glGetUniformLocation(id_, name.data()) };
+    if (-1 == location) {
+        RW_CORE_ERR("Failed to get uniform location: {}", name);
+        return;
+    }
+
+    glUniform3f(location, vec.x, vec.y, vec.z);
+}
+
+void rw::gfx::api::gl::Shader::upload_uniform_f32_4_(const std::string_view name, const rw::math::Vec4& vec) const {
+    const GLint location{ glGetUniformLocation(id_, name.data()) };
+    if (-1 == location) {
+        RW_CORE_ERR("Failed to get uniform location: {}", name);
+        return;
+    }
+
+    glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
+}
+
+void rw::gfx::api::gl::Shader::upload_uniform_i32_(const std::string_view name, const int32_t value) const {
+    const GLint location{ glGetUniformLocation(id_, name.data()) };
+    if (-1 == location) {
+        RW_CORE_ERR("Failed to get uniform location: {}", name);
+        return;
+    }
+
+    glUniform1i(location, value);
+}
+
+void rw::gfx::api::gl::Shader::upload_uniform_mat_f32_3_(const std::string_view name, const rw::math::Mat3& matrix) const {
+    const GLint location{ glGetUniformLocation(id_, name.data()) };
+    if (-1 == location) {
+        RW_CORE_ERR("Failed to get uniform location: {}", name);
+        return;
+    }
+
+    glUniformMatrix3fv(location, 1, GL_FALSE, rw::math::value_ptr(matrix));
+}
+
+void rw::gfx::api::gl::Shader::upload_uniform_mat_f32_4_(const std::string_view name, const rw::math::Mat4& matrix) const {
+    const GLint location{ glGetUniformLocation(id_, name.data()) };
+    if (-1 == location) {
+        RW_CORE_ERR("Failed to get uniform location: {}", name);
+        return;
+    }
+
+    glUniformMatrix4fv(location, 1, GL_FALSE, rw::math::value_ptr(matrix));
 }

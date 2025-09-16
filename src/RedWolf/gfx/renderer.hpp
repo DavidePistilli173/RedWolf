@@ -5,9 +5,9 @@
 #ifndef SRC_REDWOLF_RENDERER_HPP
 #define SRC_REDWOLF_RENDERER_HPP
 
+#include "../core/asset_library.hpp"
 #include "camera.hpp"
 #include "gfx.hpp"
-#include "shader_library.hpp"
 
 namespace rw::gfx {
     /**
@@ -67,8 +67,8 @@ namespace rw::gfx {
         void set_viewport(const uint32_t x, uint32_t y, const uint32_t width, const uint32_t height);
 
      private:
-        rw::math::Mat4 view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
-        ShaderLibrary  shader_library_;                 /**< Collection of all loaded shaders. */
+        rw::math::Mat4                 view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
+        rw::core::AssetLibrary<Shader> shader_library_;                 /**< Collection of all loaded shaders. */
     };
 } // namespace rw::gfx
 

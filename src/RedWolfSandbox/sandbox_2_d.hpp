@@ -29,8 +29,10 @@ class Sandbox2D : public rw::layers::Layer {
     std::unique_ptr<rw::gfx::RendererInterface2D> renderer_interface_; /**< Interface to the renderer. */
 
     std::shared_ptr<rw::gfx::VertexArray> square_va_;
-    rw::gfx::Shader*                      shader_{ nullptr };
+    rw::gfx::Shader*                      color_shader_{ nullptr };
+    rw::gfx::Shader*                      texture_shader_{ nullptr };
     rw::math::Vec4                        square_color_{ 1.0F };
+    rw::gfx::Texture2D*                   texture_{ nullptr };
 };
 
 #endif // SRC_REDWOLF_SANDBOX_2_D_HPP

@@ -15,6 +15,15 @@ namespace rw::math {
     using Mat4 = glm::mat4; /**< 4x4 matrix type. */
 
     /**
+     * @brief Build a 2D transformation matrix from translation, rotation (in degrees), and scale vectors.
+     * @param translation Translation vector.
+     * @param rotation Rotation angle in degrees.
+     * @param scale Scale vector (one component for each axis).
+     * @return Transformation matrix resulting from T * R * S.
+     */
+    [[nodiscard]] Mat4 build_2d_transform(const Vec3& translation, const float rotation, const Vec2& scale);
+
+    /**
      * @brief Compute the inverse of a matrix.
      * @param matrix Matrix to invert.
      * @return Inverted input matrix.

@@ -17,6 +17,8 @@ void rw::gfx::api::gl::RendererApi::draw_indexed(const VertexArray* vertex_array
 void rw::gfx::api::gl::RendererApi::init() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void rw::gfx::api::gl::RendererApi::set_clear_color(const rw::math::Vec4& color) {

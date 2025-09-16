@@ -7,6 +7,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+rw::math::Mat4 rw::math::build_2d_transform(const Vec3& translation, const float rotation, const Vec2& scale) {
+    return translate(Mat4(1.0F), translation) * rotate(Mat4(1.0F), radians(rotation), Vec3(0.0F, 0.0F, 1.0F)) *
+           rw::math::scale(Mat4(1.0F), { scale.x, scale.y, 1.0F });
+}
+
 rw::math::Mat4 rw::math::inverse(const Mat4& matrix) {
     return glm::inverse(matrix);
 }

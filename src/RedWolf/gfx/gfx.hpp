@@ -30,7 +30,7 @@ namespace rw::gfx {
     using IndexBuffer     = rw::gfx::api::gl::IndexBuffer;
     using RendererApi     = rw::gfx::api::gl::RendererApi;
     using Shader          = rw::gfx::api::gl::Shader;
-    using Texture         = rw::gfx::api::gl::Texture2D;
+    using Texture2D       = rw::gfx::api::gl::Texture2D;
     using VertexArray     = rw::gfx::api::gl::VertexArray;
     using VertexBuffer    = rw::gfx::api::gl::VertexBuffer;
 
