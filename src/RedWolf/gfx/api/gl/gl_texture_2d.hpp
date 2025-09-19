@@ -5,7 +5,10 @@
 #ifndef SRC_REDWOLF_GL_TEXTURE_HPP
 #define SRC_REDWOLF_GL_TEXTURE_HPP
 
+#include "glad/glad.h"
+
 #include <cstdint>
+#include <span>
 #include <string>
 #include <string_view>
 
@@ -20,6 +23,13 @@ namespace rw::gfx::api::gl {
          * @param path Path to the texture file.
          */
         explicit Texture2D(const std::string_view path);
+
+        /**
+         * @brief Constructor that creates a texture with a given size.
+         * @param width Width of the texture.
+         * @param height Height of the texture.
+         */
+        explicit Texture2D(const uint32_t width, const uint32_t height);
 
         /**
          * @brief Destructor.
@@ -53,6 +63,12 @@ namespace rw::gfx::api::gl {
         void bind(const uint32_t slot) const;
 
         /**
+         * @brief Get the number of bytes required for each pixel.
+         * @return Bytes required for each pixel.
+         */
+        [[nodiscard]] uint32_t bytes_per_pixel() const;
+
+        /**
          * @brief Get the height of the texture.
          * @return Height of the texture in pixels.
          */
@@ -65,6 +81,12 @@ namespace rw::gfx::api::gl {
         [[nodiscard]] const std::string& path() const;
 
         /**
+         * @brief Set the texture data.
+         * @param data Data to set into the texture.
+         */
+        void set_data(const std::span<const uint8_t> data);
+
+        /**
          * @brief Get the width of the texture.
          * @return Width of the texture in pixels.
          */
@@ -73,9 +95,11 @@ namespace rw::gfx::api::gl {
      private:
         uint32_t id_{ 0U }; /**< OpenGL texture ID. */
 
-        std::string path_;         /**< Path to the texture file. */
-        uint32_t    width_{ 0U };  /**< Width of the texture. [px] */
-        uint32_t    height_{ 0U }; /**< Height of the texture. [px] */
+        std::string path_;                       /**< Path to the texture file. */
+        uint32_t    width_{ 0U };                /**< Width of the texture. [px] */
+        uint32_t    height_{ 0U };               /**< Height of the texture. [px] */
+        GLenum      internal_format_{ GL_RGB8 }; /**< Internal texture format. */
+        GLenum      data_format_{ GL_RGB };      /**< Texture data format. */
     };
 } // namespace rw::gfx::api::gl
 

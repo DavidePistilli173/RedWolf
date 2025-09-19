@@ -13,12 +13,12 @@ void rw::gfx::RendererInterface2D::clear_screen() {
     renderer_->clear_screen();
 }
 
-void rw::gfx::RendererInterface2D::draw_quad(Shader* shader, const rw::math::Mat4& transform, const rw::math::Vec4& color) {
-    renderer_->draw_quad(shader, transform, color);
-}
-
-void rw::gfx::RendererInterface2D::draw_quad(Shader* shader, const rw::math::Mat4& transform, Texture2D* texture) {
-    renderer_->draw_quad(shader, transform, texture);
+void rw::gfx::RendererInterface2D::draw_quad(
+    Shader*                                                     shader,
+    const rw::math::Mat4&                                       transform,
+    std::optional<Texture2D*>                                   texture,
+    std::optional<std::reference_wrapper<const rw::math::Vec4>> color) {
+    renderer_->draw_quad(shader, transform, texture, color);
 }
 
 void rw::gfx::RendererInterface2D::end_scene() {

@@ -9,7 +9,7 @@
 #include "camera.hpp"
 #include "gfx.hpp"
 
-#include <vector>
+#include <optional>
 
 namespace rw::gfx {
     /**
@@ -17,15 +17,26 @@ namespace rw::gfx {
      */
     class Renderer2D {
      public:
+        /**
+         * @brief Pure white.
+         */
+        static constexpr rw::math::Vec4 color_white{ 1.0F, 1.0F, 1.0F, 1.0F };
+
         // Reserved shader IDs.
-        static constexpr uint64_t flat_colored_shader_id{ 0U }; /**< ID of the flat coloured shader. */
-        static constexpr uint64_t textured_shader_id{ 1U };     /**< ID of the textured shader. */
-        static constexpr uint64_t actual_shader_num{ 1U };      /**< Actual amount of engine shaders. */
+        static constexpr uint64_t textured_shader_id{ 0U }; /**< ID of the textured shader. */
 
         /**
          * @brief Maximum number of engine-reserved shader IDs for the 2D renderer.
          */
         static constexpr uint64_t max_reserved_shader_id{ 10000U };
+
+        // Reserved texture IDs.
+        static constexpr uint64_t white_texture_id{ 0U }; /**< ID of the white texture. */
+
+        /**
+         * @brief Maximum number of engine-reserved texture IDs for the 2D renderer.
+         */
+        static constexpr uint64_t max_reserved_texture_id{ 10000U };
 
         /**
          * @brief Constructor.
@@ -47,17 +58,14 @@ namespace rw::gfx {
          * @brief Draw a quad to the screen, using the Z coordinate to sort the draw order.
          * @param shader Shader to use for rendering.
          * @param transform Transformation matrix of the quad.
+         * @param texture Texture for the quad.
          * @param color Colour of the quad.
          */
-        void draw_quad(Shader* shader, const rw::math::Mat4& transform, const rw::math::Vec4& color);
-
-        /**
-         * @brief Draw a textured quad to the screen, using the Z coordinate to sort the draw order.
-         * @param shader Shader to use for rendering.
-         * @param transform Transformation matrix of the quad.
-         * @param texture Texture for the quad.
-         */
-        void draw_quad(Shader* shader, const rw::math::Mat4& transform, Texture2D* texture);
+        void draw_quad(
+            Shader*                                                     shader,
+            const rw::math::Mat4&                                       transform,
+            std::optional<Texture2D*>                                   texture = {},
+            std::optional<std::reference_wrapper<const rw::math::Vec4>> color   = {});
 
         /**
          * @brief Finish rendering a scene.
@@ -89,6 +97,8 @@ namespace rw::gfx {
      private:
         rw::core::AssetLibrary<Shader>    shader_library_;  /**< Collection of all loaded shaders. */
         rw::core::AssetLibrary<Texture2D> texture_library_; /**< Collection of all loaded textures. */
+
+        rw::gfx::Texture2D* white_texture_{ nullptr }; /**< Completely white texture. */
 
         rw::math::Mat4 view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
 

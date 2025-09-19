@@ -38,7 +38,7 @@ void rw::gfx::Renderer::draw(Shader* shader, const VertexArray* vertex_array, co
 void rw::gfx::Renderer::end_scene() {}
 
 rw::gfx::Shader* rw::gfx::Renderer::load_shader(const uint64_t id, const std::string& file_path) {
-    return shader_library_.load(id, file_path);
+    return shader_library_.create(id, file_path);
 }
 
 void rw::gfx::Renderer::set_clear_color(const rw::math::Vec4& color) {

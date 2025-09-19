@@ -6,6 +6,8 @@
 
 #include "RedWolf/util/logger.hpp"
 
+static constexpr std::array<uint8_t, 4> white_texture_data{ 0xFF, 0xFF, 0xFF, 0xFF };
+
 static constexpr rw::math::Vec4 clear_color{ 1.0F, 1.0F, 0.0F, 0.0F };
 
 rw::gfx::Renderer2D::Renderer2D() {
@@ -24,11 +26,12 @@ rw::gfx::Renderer2D::Renderer2D() {
     quad_vertex_array_->add_vertex_buffer(quad_vb);
     quad_vertex_array_->set_index_buffer(quad_ib);
 
-    (void) shader_library_.load(flat_colored_shader_id, "../src/RedWolfSandbox/assets/shaders/flat_colored.glsl");
-
-    auto* texture_shader{ shader_library_.load(textured_shader_id, "../src/RedWolfSandbox/assets/shaders/texture.glsl") };
+    auto* texture_shader{ shader_library_.create(textured_shader_id, "../src/RedWolfSandbox/assets/shaders/texture.glsl") };
     texture_shader->bind();
     texture_shader->set_i32("u_texture", 0);
+
+    white_texture_ = texture_library_.create(white_texture_id, 1, 1);
+    white_texture_->set_data(white_texture_data);
 
     RendererApi::set_clear_color(clear_color);
 }
@@ -41,7 +44,11 @@ void rw::gfx::Renderer2D::clear_screen() {
     RendererApi::clear_screen();
 }
 
-void rw::gfx::Renderer2D::draw_quad(Shader* shader, const rw::math::Mat4& transform, const rw::math::Vec4& color) {
+void rw::gfx::Renderer2D::draw_quad(
+    Shader*                                                     shader,
+    const rw::math::Mat4&                                       transform,
+    std::optional<Texture2D*>                                   texture,
+    std::optional<std::reference_wrapper<const rw::math::Vec4>> color) {
     if (nullptr == shader) {
         RW_CORE_ERR("Null draw parameter: shader");
         return;
@@ -50,22 +57,22 @@ void rw::gfx::Renderer2D::draw_quad(Shader* shader, const rw::math::Mat4& transf
     shader->bind();
     shader->set_mat_f32_4("u_view_projection", view_projection_matrix_);
     shader->set_mat_f32_4("u_transform", transform);
-    shader->set_f32_4("u_color", color);
 
-    quad_vertex_array_->bind();
-    RendererApi::draw_indexed(quad_vertex_array_.get());
-}
-
-void rw::gfx::Renderer2D::draw_quad(Shader* shader, const rw::math::Mat4& transform, Texture2D* texture) {
-    if (nullptr == shader || nullptr == texture) {
-        RW_CORE_ERR("Null draw parameter: shader {} texture {}", (nullptr == shader), (nullptr == texture));
-        return;
+    if (color.has_value()) {
+        shader->set_f32_4("u_color", color.value());
+    } else {
+        shader->set_f32_4("u_color", color_white);
     }
 
-    shader->bind();
-    shader->set_mat_f32_4("u_view_projection", view_projection_matrix_);
-    shader->set_mat_f32_4("u_transform", transform);
-    texture->bind(0);
+    if (texture.has_value()) {
+        if (nullptr == texture.value()) {
+            RW_CORE_ERR("Null draw parameter: texture");
+            return;
+        }
+        texture.value()->bind(0);
+    } else {
+        white_texture_->bind(0);
+    }
 
     quad_vertex_array_->bind();
     RendererApi::draw_indexed(quad_vertex_array_.get());
@@ -82,5 +89,5 @@ rw::gfx::Texture2D* rw::gfx::Renderer2D::get_texture(const uint64_t id) {
 }
 
 rw::gfx::Texture2D* rw::gfx::Renderer2D::load_texture(const uint64_t id, const std::string& file_path) {
-    return texture_library_.load(id, file_path);
+    return texture_library_.create(id, file_path);
 }

@@ -8,16 +8,10 @@
 
 #include <RedWolf/engine/app.hpp>
 
-static constexpr uint64_t texture_id{ 1U };
+static constexpr uint64_t texture_id{ rw::gfx::Renderer2D::max_reserved_texture_id + 1U };
 
 Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0F } {
     renderer_interface_ = rw::engine::App::get().window().renderer_interface_2d();
-
-    color_shader_ = renderer_interface_->get_shader(rw::gfx::Renderer2D::flat_colored_shader_id).get();
-    if (nullptr == color_shader_) {
-        RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::flat_colored_shader_id);
-        return;
-    }
 
     texture_shader_ = renderer_interface_->get_shader(rw::gfx::Renderer2D::textured_shader_id).get();
     if (nullptr == texture_shader_) {
@@ -54,10 +48,10 @@ void Sandbox2D::update(const float delta_time) {
     // Render
     renderer_interface_->clear_screen();
     renderer_interface_->begin_scene(camera_controller_.camera());
-    renderer_interface_->draw_quad(color_shader_, first_transform, square_color_);
-    renderer_interface_->draw_quad(color_shader_, second_transform, { 0.2F, 0.3F, 0.8F, 1.0F });
-    renderer_interface_->draw_quad(color_shader_, third_transform, { 0.2F, 0.8F, 0.3F, 1.0F });
-    renderer_interface_->draw_quad(texture_shader_, textured_transform, texture_);
+    renderer_interface_->draw_quad(texture_shader_, first_transform, {}, square_color_);
+    renderer_interface_->draw_quad(texture_shader_, second_transform, {}, std::optional(rw::math::Vec4(0.2F, 0.3F, 0.8F, 1.0F)));
+    renderer_interface_->draw_quad(texture_shader_, third_transform, {}, std::optional(rw::math::Vec4(0.2F, 0.8F, 0.3F, 1.0F)));
+    renderer_interface_->draw_quad(texture_shader_, textured_transform, texture_, std::optional(rw::math::Vec4(0.2F, 0.2F, 0.8F, 1.0F)));
     renderer_interface_->end_scene();
 }
 

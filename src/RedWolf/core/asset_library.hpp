@@ -31,6 +31,21 @@ namespace rw::core {
         AssetLibrary() = default;
 
         /**
+         * @brief Create a new asset with the given ID and arguments.
+         * @tparam Args Types of arguments to pass to the asset's constructor.
+         * @param id ID of the asset.
+         * @param args Parameters for the asset's constructor.
+         * @return Non-owning pointer to the newly-constructed asset.
+         */
+        template<typename... Args>
+        [[nodiscard]] T* create(const uint64_t id, Args&&... args) {
+            auto  new_asset{ std::unique_ptr<T>(new T(std::forward<Args>(args)...)) };
+            auto* result{ new_asset.get() };
+            assets_[id] = std::move(new_asset);
+            return result;
+        }
+
+        /**
          * @brief Get the specified asset.
          * @param id ID of the asset to get.
          * @return Asset with the specified ID, if it exists. nullptr otherwise.
@@ -41,19 +56,6 @@ namespace rw::core {
                 return nullptr;
             }
             return it->second.get();
-        }
-
-        /**
-         * @brief Load an asset from file and store it.
-         * @param id Id of the asset. If the ID already exists, the asset is replaced.
-         * @param file_path Path to the asset source file.
-         * @return Pointer to the newly created asset.
-         */
-        [[nodiscard]] T* load(const uint64_t id, const std::string& file_path) {
-            auto  new_shader{ std::unique_ptr<T>(new T(file_path)) };
-            auto* result{ new_shader.get() };
-            assets_[id] = std::move(new_shader);
-            return result;
         }
 
      private:
