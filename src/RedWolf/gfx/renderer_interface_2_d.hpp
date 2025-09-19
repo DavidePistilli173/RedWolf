@@ -41,10 +41,10 @@ namespace rw::gfx {
          * @param color Colour of the quad.
          */
         void draw_quad(
-            Shader*                                                     shader,
-            const rw::math::Mat4&                                       transform,
-            std::optional<Texture2D*>                                   texture = {},
-            std::optional<std::reference_wrapper<const rw::math::Vec4>> color   = {});
+            Shader*                       shader,
+            const rw::math::Mat4&         transform,
+            std::optional<Texture2D*>     texture = {},
+            std::optional<rw::math::Vec4> color   = {});
 
         /**
          * @brief Finish rendering a scene.

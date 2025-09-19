@@ -49,9 +49,9 @@ void Sandbox2D::update(const float delta_time) {
     renderer_interface_->clear_screen();
     renderer_interface_->begin_scene(camera_controller_.camera());
     renderer_interface_->draw_quad(texture_shader_, first_transform, {}, square_color_);
-    renderer_interface_->draw_quad(texture_shader_, second_transform, {}, std::optional(rw::math::Vec4(0.2F, 0.3F, 0.8F, 1.0F)));
-    renderer_interface_->draw_quad(texture_shader_, third_transform, {}, std::optional(rw::math::Vec4(0.2F, 0.8F, 0.3F, 1.0F)));
-    renderer_interface_->draw_quad(texture_shader_, textured_transform, texture_, std::optional(rw::math::Vec4(0.2F, 0.2F, 0.8F, 1.0F)));
+    renderer_interface_->draw_quad(texture_shader_, second_transform, {}, rw::math::Vec4(0.2F, 0.3F, 0.8F, 1.0F));
+    renderer_interface_->draw_quad(texture_shader_, third_transform, {}, rw::math::Vec4(0.2F, 0.8F, 0.3F, 1.0F));
+    renderer_interface_->draw_quad(texture_shader_, textured_transform, texture_, rw::math::Vec4(0.2F, 0.2F, 0.8F, 1.0F));
     renderer_interface_->end_scene();
 }
 
