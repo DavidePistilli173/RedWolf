@@ -8,6 +8,7 @@
 #include <RedWolf/engine/camera_controller.hpp>
 #include <RedWolf/gfx/renderer_interface_2_d.hpp>
 #include <RedWolf/layers/layer.hpp>
+#include <RedWolf/time/profiler_data.hpp>
 
 class Sandbox2D : public rw::layers::Layer {
  public:
@@ -32,6 +33,9 @@ class Sandbox2D : public rw::layers::Layer {
     rw::gfx::Shader*                      texture_shader_{ nullptr };
     rw::math::Vec4                        square_color_{ 1.0F };
     rw::gfx::Texture2D*                   texture_{ nullptr };
+
+    rw::time::ProfilerData update_timing_{ "Sandbox2D::update" };
+    rw::time::ProfilerData render_timing_{ "Sandbox2D::update - render" };
 };
 
 #endif // SRC_REDWOLF_SANDBOX_2_D_HPP

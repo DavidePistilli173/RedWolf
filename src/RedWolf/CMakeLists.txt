@@ -32,6 +32,8 @@ target_sources(RedWolf PRIVATE
         math/math.cpp
         thread/thread_pool.cpp
         time/date_time.cpp
+        time/profiler.cpp
+        time/profiler_data.cpp
         ui/window.cpp
         util/log_msg.cpp
         util/logger.cpp
