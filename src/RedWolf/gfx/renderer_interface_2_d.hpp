@@ -36,15 +36,9 @@ namespace rw::gfx {
         /**
          * @brief Draw a textured quad to the screen, using the Z coordinate to sort the draw order.
          * @param shader Shader to use for rendering.
-         * @param transform Transformation matrix of the quad.
-         * @param texture Texture for the quad.
-         * @param color Colour of the quad.
+         * @param quad Quad data to render.
          */
-        void draw_quad(
-            Shader*                       shader,
-            const rw::math::Mat4&         transform,
-            std::optional<Texture2D*>     texture = {},
-            std::optional<rw::math::Vec4> color   = {});
+        void draw_quad(Shader* shader, const Quad& quad);
 
         /**
          * @brief Finish rendering a scene.

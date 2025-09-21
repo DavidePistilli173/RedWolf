@@ -44,8 +44,7 @@ void rw::gfx::Renderer2D::clear_screen() {
     RendererApi::clear_screen();
 }
 
-void rw::gfx::Renderer2D::draw_quad(
-    Shader* shader, const rw::math::Mat4& transform, std::optional<Texture2D*> texture, std::optional<rw::math::Vec4> color) {
+void rw::gfx::Renderer2D::draw_quad(Shader* shader, Quad quad) {
     if (nullptr == shader) {
         RW_CORE_ERR("Null draw parameter: shader");
         return;
@@ -53,20 +52,12 @@ void rw::gfx::Renderer2D::draw_quad(
 
     shader->bind();
     shader->set_mat_f32_4("u_view_projection", view_projection_matrix_);
-    shader->set_mat_f32_4("u_transform", transform);
+    shader->set_mat_f32_4("u_transform", quad.transform);
+    shader->set_f32_4("u_color", quad.color);
+    shader->set_f32("u_tiling_factor", quad.tiling_factor);
 
-    if (color.has_value()) {
-        shader->set_f32_4("u_color", color.value());
-    } else {
-        shader->set_f32_4("u_color", color_white);
-    }
-
-    if (texture.has_value()) {
-        if (nullptr == texture.value()) {
-            RW_CORE_ERR("Null draw parameter: texture");
-            return;
-        }
-        texture.value()->bind(0);
+    if (nullptr != quad.texture) {
+        quad.texture->bind(0);
     } else {
         white_texture_->bind(0);
     }

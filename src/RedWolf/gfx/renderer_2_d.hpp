@@ -8,6 +8,7 @@
 #include "../core/asset_library.hpp"
 #include "camera.hpp"
 #include "gfx.hpp"
+#include "quad.hpp"
 
 #include <optional>
 
@@ -17,11 +18,6 @@ namespace rw::gfx {
      */
     class Renderer2D {
      public:
-        /**
-         * @brief Pure white.
-         */
-        static constexpr rw::math::Vec4 color_white{ 1.0F, 1.0F, 1.0F, 1.0F };
-
         // Reserved shader IDs.
         static constexpr uint64_t textured_shader_id{ 0U }; /**< ID of the textured shader. */
 
@@ -57,15 +53,9 @@ namespace rw::gfx {
         /**
          * @brief Draw a quad to the screen, using the Z coordinate to sort the draw order.
          * @param shader Shader to use for rendering.
-         * @param transform Transformation matrix of the quad.
-         * @param texture Texture for the quad.
-         * @param color Colour of the quad.
+         * @param quad Quad data to render.
          */
-        void draw_quad(
-            Shader*                       shader,
-            const rw::math::Mat4&         transform,
-            std::optional<Texture2D*>     texture = {},
-            std::optional<rw::math::Vec4> color   = {});
+        void draw_quad(Shader* shader, Quad quad);
 
         /**
          * @brief Finish rendering a scene.

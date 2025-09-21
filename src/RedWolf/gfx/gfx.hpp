@@ -38,6 +38,11 @@ namespace rw::gfx {
 #else
     #error "No rendering API selected."
 #endif
+
+    /**
+     * @brief Pure white.
+     */
+    static constexpr rw::math::Vec4 color_white{ 1.0F, 1.0F, 1.0F, 1.0F };
 } // namespace rw::gfx
 
 #endif // SRC_REDWOLF_GFX_HPP
