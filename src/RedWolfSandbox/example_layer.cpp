@@ -22,7 +22,7 @@ ExampleLayer::ExampleLayer() : Layer("Sandbox Example Layer"), camera_controller
 
     square_va_ = std::make_shared<rw::gfx::VertexArray>();
     auto square_vb{ std::make_shared<rw::gfx::VertexBuffer>() };
-    square_vb->set_data(square_vertices);
+    square_vb->set_data(std::span<const float>(square_vertices));
     square_vb->set_layout(
         rw::gfx::BufferLayout{ { rw::gfx::ShaderDataType::f32_3, "in_position" }, { rw::gfx::ShaderDataType::f32_2, "in_tex_coord" } });
 

@@ -25,16 +25,30 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
         return;
     }
 
-    quad_1.transform = rw::math::build_2d_transform({ -1.0F, 0.0F, 0.0F }, 0.0F, { 0.8F, 0.8F });
-    quad_2.transform = rw::math::build_2d_transform({ 0.5F, -0.5F, 0.0F }, 0.0F, { 0.5F, 0.75F });
-    quad_3.transform = rw::math::build_2d_transform({ 0.5F, 0.5F, 0.0F }, 45.0F, { 0.55F, 0.87F });
-    quad_4.transform = rw::math::build_2d_transform({ 0.0F, 0.0F, -0.1F }, -30.0F, { 100.0F, 100.0F });
+    quad_1 = {
+        .position = { -1.0F, 0.0F, 0.0F }, .rotation = 0.0F, .size = { 0.8F, 0.8F }, .texture = nullptr, .color = {}, .tiling_factor = 1.0F
+    };
 
-    quad_2.color = rw::math::Vec4(0.2F, 0.3F, 0.8F, 1.0F);
-    quad_3.color = rw::math::Vec4(0.2F, 0.8F, 0.3F, 1.0F);
-    quad_4.color = rw::math::Vec4(0.2F, 0.2F, 0.8F, 1.0F);
+    quad_2 = { .position      = { 0.5F, -0.5F, 0.0F },
+               .rotation      = 0.0F,
+               .size          = { 0.5F, 0.75F },
+               .texture       = nullptr,
+               .color         = { 0.2F, 0.3F, 0.8F, 1.0F },
+               .tiling_factor = 1.0F };
 
-    quad_4.tiling_factor = 100.0F;
+    quad_3 = { .position      = { 0.5F, 0.5F, 0.0F },
+               .rotation      = 45.0F,
+               .size          = { 0.55F, 0.87F },
+               .texture       = nullptr,
+               .color         = { 0.2F, 0.8F, 0.3F, 1.0F },
+               .tiling_factor = 1.0F };
+
+    quad_4 = { .position      = { 0.0F, 0.0F, -0.1F },
+               .rotation      = -30.0F,
+               .size          = { 100.0F, 100.0F },
+               .texture       = nullptr,
+               .color         = { 0.2F, 0.2F, 0.8F, 1.0F },
+               .tiling_factor = 100.0F };
 }
 
 void Sandbox2D::attach() {}

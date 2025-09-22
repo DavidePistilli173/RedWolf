@@ -24,8 +24,9 @@ namespace rw::gfx::api::gl {
         /**
          * @brief Draw an indexed set of vertices bound to a vertex array.
          * @param vertex_array Vertex array to draw.
+         * @param index_count Number of indices to draw. If 0, the entire index buffer is drawn.
          */
-        static void draw_indexed(const VertexArray* vertex_array);
+        static void draw_indexed(const VertexArray* vertex_array, const uint32_t index_count);
 
         /**
          * @brief Initialize the rendering API.

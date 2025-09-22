@@ -14,6 +14,15 @@
 
 namespace rw::gfx {
     /**
+     * @brief Vertex data for a quad.
+     */
+    struct QuadVertex {
+        rw::math::Vec3 position;  /**< Position of the vertex. */
+        rw::math::Vec4 color;     /**< Colour of the vertex. */
+        rw::math::Vec2 tex_coord; /**< Texture coordinate of the vertex. */
+    };
+
+    /**
      * @brief 2D exclusive renderer.
      */
     class Renderer2D {
@@ -85,14 +94,16 @@ namespace rw::gfx {
         [[nodiscard]] Texture2D* load_texture(const uint64_t id, const std::string& file_path);
 
      private:
-        rw::core::AssetLibrary<Shader>    shader_library_;  /**< Collection of all loaded shaders. */
-        rw::core::AssetLibrary<Texture2D> texture_library_; /**< Collection of all loaded textures. */
+        rw::core::AssetLibrary<Shader>    shader_library_;            /**< Collection of all loaded shaders. */
+        rw::core::AssetLibrary<Texture2D> texture_library_;           /**< Collection of all loaded textures. */
+        std::shared_ptr<VertexArray>      quad_vertex_array_;         /**< Vertex array used for drawing quads. */
+        std::shared_ptr<VertexBuffer>     quad_vertex_buffer_;        /**< Vertex buffer used for drawing quads. */
+        Shader*                           texture_shader_{ nullptr }; /**< Textured shader. */
 
         rw::gfx::Texture2D* white_texture_{ nullptr }; /**< Completely white texture. */
 
-        rw::math::Mat4 view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
-
-        std::shared_ptr<VertexArray> quad_vertex_array_;
+        rw::math::Mat4          view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
+        std::vector<QuadVertex> quad_vertex_buffer_data_;        /**< Quad vertex buffer data. */
     };
 } // namespace rw::gfx
 

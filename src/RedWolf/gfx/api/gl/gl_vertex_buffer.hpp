@@ -8,6 +8,7 @@
 #include "RedWolf/gfx/buffer_layout.hpp"
 
 #include <cstdint>
+#include <glad/glad.h>
 #include <span>
 
 namespace rw::gfx::api::gl {
@@ -59,15 +60,26 @@ namespace rw::gfx::api::gl {
 
         /**
          * @brief Upload data to the buffer.
+         * @tparam T Type of the vertex data.
          * @param vertex_data Vertex data to upload.
          */
-        void set_data(const std::span<float> vertex_data);
+        template<typename T>
+        void set_data(const std::span<const T> vertex_data) {
+            glBindBuffer(GL_ARRAY_BUFFER, id_);
+            glBufferData(GL_ARRAY_BUFFER, static_cast<long>(vertex_data.size_bytes()), vertex_data.data(), GL_DYNAMIC_DRAW);
+        }
 
         /**
          * @brief Set the data layout of the buffer.
          * @param layout Data layout of the buffer.
          */
         void set_layout(const BufferLayout& layout);
+
+        /**
+         * @brief Set the size of the buffer.
+         * @param size Size to set. [B]
+         */
+        void set_size(const uint32_t size);
 
         /**
          * @brief Unbind the buffer.

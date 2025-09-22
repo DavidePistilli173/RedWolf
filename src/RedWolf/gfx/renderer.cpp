@@ -32,7 +32,7 @@ void rw::gfx::Renderer::draw(Shader* shader, const VertexArray* vertex_array, co
     shader->set_mat_f32_4("u_transform", transform);
 
     vertex_array->bind();
-    RendererApi::draw_indexed(vertex_array);
+    RendererApi::draw_indexed(vertex_array, 0);
 }
 
 void rw::gfx::Renderer::end_scene() {}
