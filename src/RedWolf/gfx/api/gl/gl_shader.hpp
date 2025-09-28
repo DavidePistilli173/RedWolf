@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <glad/glad.h>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -137,6 +138,13 @@ namespace rw::gfx::api::gl {
         void set_i32(const std::string_view name, const int32_t value) const;
 
         /**
+         * @brief Set an array of int32 values to the shader.
+         * @param name Name of the uniform.
+         * @param values Values to set.
+         */
+        void set_i32_array(const std::string_view name, const std::span<const int32_t> values) const;
+
+        /**
          * @brief Set a 3x3 float matrix uniform to the shader.
          * @param name Name of the uniform.
          * @param matrix Matrix to set.
@@ -210,6 +218,13 @@ namespace rw::gfx::api::gl {
          * @param value Int to upload.
          */
         void upload_uniform_i32_(const std::string_view name, const int32_t value) const;
+
+        /**
+         * @brief Upload an array of int32 values to the shader.
+         * @param name Name of the uniform.
+         * @param values Values to set.
+         */
+        void upload_uniform_i32_array_(const std::string_view name, const std::span<const int32_t> values) const;
 
         /**
          * @brief Upload a 3x3 float matrix uniform to the shader.

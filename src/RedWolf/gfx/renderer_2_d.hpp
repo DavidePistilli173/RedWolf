@@ -10,17 +10,22 @@
 #include "gfx.hpp"
 #include "quad.hpp"
 
+#include <array>
 #include <optional>
 
 namespace rw::gfx {
-    /**
-     * @brief Vertex data for a quad.
-     */
+/**
+ * @brief Vertex data for a quad.
+ */
+#pragma pack(push, 1)
     struct QuadVertex {
-        rw::math::Vec3 position;  /**< Position of the vertex. */
-        rw::math::Vec4 color;     /**< Colour of the vertex. */
-        rw::math::Vec2 tex_coord; /**< Texture coordinate of the vertex. */
+        rw::math::Vec3 position{ 0.0F };      /**< Position of the vertex. */
+        rw::math::Vec4 color{ 0.0F };         /**< Colour of the vertex. */
+        rw::math::Vec2 tex_coord{ 0.0F };     /**< Texture coordinate of the vertex. */
+        float          tex_index{ 0.0F };     /**< Index of the texture to use for this vertex. */
+        float          tiling_factor{ 1.0F }; /**< Tiling factor of the texture. */
     };
+#pragma pack(pop)
 
     /**
      * @brief 2D exclusive renderer.
@@ -104,6 +109,7 @@ namespace rw::gfx {
 
         rw::math::Mat4          view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
         std::vector<QuadVertex> quad_vertex_buffer_data_;        /**< Quad vertex buffer data. */
+        std::vector<Texture2D*> texture_slots_;                  /**< Active textures for the current draw batch. */
     };
 } // namespace rw::gfx
 

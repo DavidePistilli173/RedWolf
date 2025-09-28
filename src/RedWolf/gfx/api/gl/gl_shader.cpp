@@ -53,6 +53,10 @@ void rw::gfx::api::gl::Shader::set_i32(const std::string_view name, const int32_
     upload_uniform_i32_(name, value);
 }
 
+void rw::gfx::api::gl::Shader::set_i32_array(const std::string_view name, const std::span<const int32_t> values) const {
+    upload_uniform_i32_array_(name, values);
+}
+
 void rw::gfx::api::gl::Shader::set_mat_f32_3(const std::string_view name, const rw::math::Mat3& matrix) const {
     upload_uniform_mat_f32_3_(name, matrix);
 }
@@ -229,6 +233,15 @@ void rw::gfx::api::gl::Shader::upload_uniform_i32_(const std::string_view name, 
     }
 
     glUniform1i(location, value);
+}
+
+void rw::gfx::api::gl::Shader::upload_uniform_i32_array_(const std::string_view name, const std::span<const int32_t> values) const {
+    const GLint location{ glGetUniformLocation(id_, name.data()) };
+    if (-1 == location) {
+        RW_CORE_ERR("Failed to get uniform location: {}", name);
+        return;
+    }
+    glUniform1iv(location, static_cast<GLsizei>(values.size()), values.data());
 }
 
 void rw::gfx::api::gl::Shader::upload_uniform_mat_f32_3_(const std::string_view name, const rw::math::Mat3& matrix) const {

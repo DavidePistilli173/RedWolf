@@ -31,10 +31,11 @@ class Sandbox2D : public rw::layers::Layer {
 
     rw::gfx::Shader* texture_shader_{ nullptr };
 
-    rw::gfx::Quad quad_1;
-    rw::gfx::Quad quad_2;
-    rw::gfx::Quad quad_3;
-    rw::gfx::Quad quad_4;
+    rw::gfx::Quad quad_1_;
+    rw::gfx::Quad quad_2_;
+    rw::gfx::Quad quad_3_;
+    rw::gfx::Quad quad_4_;
+    rw::gfx::Quad quad_5_;
 
     rw::time::ProfilerData update_timing_{ "Sandbox2D::update" };
     rw::time::ProfilerData render_timing_{ "Sandbox2D::update - render" };

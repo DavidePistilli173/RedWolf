@@ -23,6 +23,7 @@ namespace rw::gfx {
         i32_2,     /**< Vector of 2 integers. */
         i32_3,     /**< Vector of 3 integers. */
         i32_4,     /**< Vector of 4 integers. */
+        u32,       /**< Single unsigned integer. */
         boolean    /**< Boolean value. */
     };
 
@@ -55,6 +56,8 @@ namespace rw::gfx {
             return 3 * sizeof(int32_t);
         case ShaderDataType::i32_4:
             return 4 * sizeof(int32_t);
+        case ShaderDataType::u32:
+            return sizeof(uint32_t);
         case ShaderDataType::boolean:
             return 1U; // Boolean is typically 1 byte
         default:

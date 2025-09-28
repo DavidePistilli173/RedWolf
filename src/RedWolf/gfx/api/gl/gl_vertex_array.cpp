@@ -9,7 +9,7 @@
 #include <glad/glad.h>
 
 namespace {
-    constexpr GLenum shader_data_type_to_gl_type(const rw::gfx::ShaderDataType type) {
+    GLenum shader_data_type_to_gl_type(const rw::gfx::ShaderDataType type) {
         switch (type) {
         case rw::gfx::ShaderDataType::none:
             return GL_NONE;
@@ -25,9 +25,12 @@ namespace {
         case rw::gfx::ShaderDataType::i32_3:
         case rw::gfx::ShaderDataType::i32_4:
             return GL_INT;
+        case rw::gfx::ShaderDataType::u32:
+            return GL_UNSIGNED_INT;
         case rw::gfx::ShaderDataType::boolean:
             return GL_BOOL;
         default:
+            RW_CORE_ERR("Invalid shader data type: {}", static_cast<uint8_t>(type));
             return GL_NONE; // Invalid type
         }
     }

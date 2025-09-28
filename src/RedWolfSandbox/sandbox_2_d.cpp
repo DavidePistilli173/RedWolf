@@ -19,36 +19,42 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
         return;
     }
 
-    quad_4.texture = renderer_interface_->load_texture(texture_id, "../src/RedWolfSandbox/assets/textures/checkerboard.png").get();
-    if (nullptr == quad_4.texture) {
-        RW_ERR("Failed to get texture {}", texture_id);
-        return;
-    }
-
-    quad_1 = {
+    quad_1_ = {
         .position = { -1.0F, 0.0F, 0.0F }, .rotation = 0.0F, .size = { 0.8F, 0.8F }, .texture = nullptr, .color = {}, .tiling_factor = 1.0F
     };
 
-    quad_2 = { .position      = { 0.5F, -0.5F, 0.0F },
-               .rotation      = 0.0F,
-               .size          = { 0.5F, 0.75F },
-               .texture       = nullptr,
-               .color         = { 0.2F, 0.3F, 0.8F, 1.0F },
-               .tiling_factor = 1.0F };
+    quad_2_ = { .position      = { 0.5F, -0.5F, 0.0F },
+                .rotation      = 0.0F,
+                .size          = { 0.5F, 0.75F },
+                .texture       = nullptr,
+                .color         = { 0.2F, 0.3F, 0.8F, 1.0F },
+                .tiling_factor = 1.0F };
 
-    quad_3 = { .position      = { 0.5F, 0.5F, 0.0F },
-               .rotation      = 45.0F,
-               .size          = { 0.55F, 0.87F },
-               .texture       = nullptr,
-               .color         = { 0.2F, 0.8F, 0.3F, 1.0F },
-               .tiling_factor = 1.0F };
+    quad_3_ = { .position      = { 0.5F, 0.5F, 0.0F },
+                .rotation      = 45.0F,
+                .size          = { 0.55F, 0.87F },
+                .texture       = nullptr,
+                .color         = { 0.2F, 0.8F, 0.3F, 1.0F },
+                .tiling_factor = 1.0F };
 
-    quad_4 = { .position      = { 0.0F, 0.0F, -0.1F },
-               .rotation      = -30.0F,
-               .size          = { 100.0F, 100.0F },
-               .texture       = nullptr,
-               .color         = { 0.2F, 0.2F, 0.8F, 1.0F },
-               .tiling_factor = 100.0F };
+    quad_4_ = { .position = { -50.0F, 50.0F, -0.1F },
+                .rotation = -30.0F,
+                .size     = { 100.0F, 100.0F },
+                .texture  = renderer_interface_->load_texture(texture_id, "../src/RedWolfSandbox/assets/textures/checkerboard.png").get(),
+                .color    = { 0.2F, 0.2F, 0.8F, 1.0F },
+                .tiling_factor = 100.0F };
+
+    quad_5_ = { .position      = { -5.0F, 5.0F, -0.05F },
+                .rotation      = 0.0F,
+                .size          = { 10.0F, 10.0F },
+                .texture       = quad_4_.texture,
+                .color         = { 1.0F, 1.0F, 1.0F, 1.0F },
+                .tiling_factor = 1.0F };
+
+    if (nullptr == quad_4_.texture) {
+        RW_ERR("Failed to get texture {}", texture_id);
+        return;
+    }
 }
 
 void Sandbox2D::attach() {}
@@ -57,7 +63,7 @@ void Sandbox2D::detach() {}
 
 void Sandbox2D::render_imgui() {
     ImGui::Begin("Settings");
-    ImGui::ColorEdit4("Square colour.", rw::math::value_ptr(quad_1.color));
+    ImGui::ColorEdit4("Square colour.", rw::math::value_ptr(quad_1_.color));
     ImGui::End();
 
     ImGui::Begin("Profiling");
@@ -87,10 +93,11 @@ void Sandbox2D::update(const float delta_time) {
         const auto renderer_profiler{ render_timing_.record() };
         renderer_interface_->clear_screen();
         renderer_interface_->begin_scene(camera_controller_.camera());
-        renderer_interface_->draw_quad(texture_shader_, quad_1);
-        renderer_interface_->draw_quad(texture_shader_, quad_2);
-        renderer_interface_->draw_quad(texture_shader_, quad_3);
-        renderer_interface_->draw_quad(texture_shader_, quad_4);
+        renderer_interface_->draw_quad(texture_shader_, quad_1_);
+        renderer_interface_->draw_quad(texture_shader_, quad_2_);
+        renderer_interface_->draw_quad(texture_shader_, quad_3_);
+        renderer_interface_->draw_quad(texture_shader_, quad_4_);
+        renderer_interface_->draw_quad(texture_shader_, quad_5_);
         renderer_interface_->end_scene();
     }
 }

@@ -47,6 +47,10 @@ namespace rw::gfx::api::gl {
          * @param height New height.
          */
         static void set_viewport(const uint32_t x, uint32_t y, const uint32_t width, const uint32_t height);
+
+     private:
+        static void GLAPIENTRY error_callback_(
+            GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
     };
 } // namespace rw::gfx::api::gl
 
