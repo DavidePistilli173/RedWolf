@@ -79,6 +79,7 @@ void rw::gfx::Renderer2D::draw_quad(Shader* shader, Quad quad) {
         return;
     }
 
+    // Compute the texture index.
     float texture_index{ 0.0F };
     if (nullptr != quad.texture) {
         if (const auto it{ std::ranges::find(texture_slots_, quad.texture) }; texture_slots_.end() != it) {
@@ -97,44 +98,35 @@ void rw::gfx::Renderer2D::draw_quad(Shader* shader, Quad quad) {
         }
     }
 
+    // Compute the vertex attributes.
+    const rw::math::Mat4 transform{ rw::math::translate(rw::math::Mat4(1.0F), quad.position) *
+                                    rw::math::rotate(rw::math::Mat4(1.0F), rw::math::radians(quad.rotation), { 0.0F, 0.0F, 1.0F }) *
+                                    rw::math::scale(rw::math::Mat4(1.0F), { quad.size.x, quad.size.y, 1.0F }) };
+
     quad_vertex_buffer_data_.emplace_back(
-        QuadVertex{ .position      = { quad.position },
+        QuadVertex{ .position      = transform * quad_vertice_positions_[0],
                     .color         = quad.color,
                     .tex_coord     = { 0.0F, 1.0F },
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
     quad_vertex_buffer_data_.emplace_back(
-        QuadVertex{ .position      = { quad.position.x, quad.position.y - quad.size.y, quad.position.z },
+        QuadVertex{ .position      = transform * quad_vertice_positions_[1],
                     .color         = quad.color,
                     .tex_coord     = { 0.0F, 0.0F },
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
     quad_vertex_buffer_data_.emplace_back(
-        QuadVertex{ .position      = { quad.position.x + quad.size.x, quad.position.y - quad.size.y, quad.position.z },
+        QuadVertex{ .position      = transform * quad_vertice_positions_[2],
                     .color         = quad.color,
                     .tex_coord     = { 1.0F, 0.0F },
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
     quad_vertex_buffer_data_.emplace_back(
-        QuadVertex{ .position      = { quad.position.x + quad.size.x, quad.position.y, quad.position.z },
+        QuadVertex{ .position      = transform * quad_vertice_positions_[3],
                     .color         = quad.color,
                     .tex_coord     = { 1.0F, 1.0F },
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
-
-    /*shader->bind();
-    shader->set_mat_f32_4("u_view_projection", view_projection_matrix_);
-    shader->set_mat_f32_4("u_transform", quad.transform);
-    shader->set_f32("u_tiling_factor", quad.tiling_factor);
-
-    if (nullptr != quad.texture) {
-        quad.texture->bind(0);
-    } else {
-        white_texture_->bind(0);
-    }
-
-    quad_vertex_array_->bind();
-    RendererApi::draw_indexed(quad_vertex_array_.get());*/
 }
 
 void rw::gfx::Renderer2D::end_scene() {

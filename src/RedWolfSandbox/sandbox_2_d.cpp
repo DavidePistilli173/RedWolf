@@ -37,14 +37,14 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
                 .color         = { 0.2F, 0.8F, 0.3F, 1.0F },
                 .tiling_factor = 1.0F };
 
-    quad_4_ = { .position = { -50.0F, 50.0F, -0.1F },
+    quad_4_ = { .position = { 0.0F, 0.0F, -0.1F },
                 .rotation = -30.0F,
                 .size     = { 100.0F, 100.0F },
                 .texture  = renderer_interface_->load_texture(texture_id, "../src/RedWolfSandbox/assets/textures/checkerboard.png").get(),
                 .color    = { 0.2F, 0.2F, 0.8F, 1.0F },
                 .tiling_factor = 100.0F };
 
-    quad_5_ = { .position      = { -5.0F, 5.0F, -0.05F },
+    quad_5_ = { .position      = { 0.0F, 0.0F, -0.05F },
                 .rotation      = 0.0F,
                 .size          = { 10.0F, 10.0F },
                 .texture       = quad_4_.texture,
@@ -87,17 +87,20 @@ void Sandbox2D::update(const float delta_time) {
 
     // Update
     camera_controller_.update(delta_time);
+    static float rotation{ 0.0F };
+    rotation += 50.0F * delta_time;
+    quad_3_.rotation = rotation;
 
     // Render
     {
         const auto renderer_profiler{ render_timing_.record() };
         renderer_interface_->clear_screen();
         renderer_interface_->begin_scene(camera_controller_.camera());
+        renderer_interface_->draw_quad(texture_shader_, quad_4_);
+        renderer_interface_->draw_quad(texture_shader_, quad_5_);
         renderer_interface_->draw_quad(texture_shader_, quad_1_);
         renderer_interface_->draw_quad(texture_shader_, quad_2_);
         renderer_interface_->draw_quad(texture_shader_, quad_3_);
-        renderer_interface_->draw_quad(texture_shader_, quad_4_);
-        renderer_interface_->draw_quad(texture_shader_, quad_5_);
         renderer_interface_->end_scene();
     }
 }

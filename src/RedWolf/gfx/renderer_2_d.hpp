@@ -107,9 +107,15 @@ namespace rw::gfx {
 
         rw::gfx::Texture2D* white_texture_{ nullptr }; /**< Completely white texture. */
 
-        rw::math::Mat4          view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
-        std::vector<QuadVertex> quad_vertex_buffer_data_;        /**< Quad vertex buffer data. */
-        std::vector<Texture2D*> texture_slots_;                  /**< Active textures for the current draw batch. */
+        rw::math::Mat4 view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
+        /**
+         * @brief Local space positions of the quad vertices.
+         */
+        rw::math::Vec4 quad_vertice_positions_[4]{
+            { -0.5F, -0.5F, 0.0F, 1.0F }, { 0.5F, -0.5F, 0.0F, 1.0F }, { 0.5F, 0.5F, 0.0F, 1.0F }, { -0.5F, 0.5F, 0.0F, 1.0F }
+        };
+        std::vector<QuadVertex> quad_vertex_buffer_data_; /**< Quad vertex buffer data. */
+        std::vector<Texture2D*> texture_slots_;           /**< Active textures for the current draw batch. */
     };
 } // namespace rw::gfx
 
