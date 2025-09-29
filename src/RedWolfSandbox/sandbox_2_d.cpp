@@ -46,7 +46,7 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
 
     quad_5_ = { .position      = { 0.0F, 0.0F, -0.05F },
                 .rotation      = 0.0F,
-                .size          = { 10.0F, 10.0F },
+                .size          = { 50.0F, 50.0F },
                 .texture       = quad_4_.texture,
                 .color         = { 1.0F, 1.0F, 1.0F, 1.0F },
                 .tiling_factor = 1.0F };
@@ -79,6 +79,9 @@ void Sandbox2D::render_imgui() {
         render_timing_.elapsed_last_milliseconds(),
         render_timing_.elapsed_max_milliseconds(),
         render_timing_.name.data());
+
+    const auto stats{ renderer_interface_->stats().get() };
+    ImGui::Text("Renderer stats: %u draw calls, %u quads", stats.draw_calls, stats.quad_count);
     ImGui::End();
 }
 
@@ -94,6 +97,8 @@ void Sandbox2D::update(const float delta_time) {
     // Render
     {
         const auto renderer_profiler{ render_timing_.record() };
+        renderer_interface_->reset_stats();
+
         renderer_interface_->clear_screen();
         renderer_interface_->begin_scene(camera_controller_.camera());
         renderer_interface_->draw_quad(texture_shader_, quad_4_);
@@ -101,6 +106,22 @@ void Sandbox2D::update(const float delta_time) {
         renderer_interface_->draw_quad(texture_shader_, quad_1_);
         renderer_interface_->draw_quad(texture_shader_, quad_2_);
         renderer_interface_->draw_quad(texture_shader_, quad_3_);
+        renderer_interface_->end_scene();
+    }
+
+    {
+        renderer_interface_->begin_scene(camera_controller_.camera());
+        for (float y{ -5.0F }; y < 5.0F; y += 0.5F) {
+            for (float x{ -5.0F }; x < 5.0F; x += 0.5F) {
+                rw::gfx::Quad quad{ .position      = { x, y, 0.0F },
+                                    .rotation      = 0.0F,
+                                    .size          = { 0.45F, 0.45F },
+                                    .texture       = nullptr,
+                                    .color         = { (x + 5.0F) / 10.0F, 0.4F, (y + 5.0F) / 10.0F, 0.7F },
+                                    .tiling_factor = 1.0F };
+                renderer_interface_->draw_quad(texture_shader_, quad);
+            }
+        }
         renderer_interface_->end_scene();
     }
 }

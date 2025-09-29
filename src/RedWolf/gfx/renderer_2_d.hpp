@@ -28,6 +28,14 @@ namespace rw::gfx {
 #pragma pack(pop)
 
     /**
+     * @brief Statistics for the renderer 2D.
+     */
+    struct Renderer2DStats {
+        uint32_t draw_calls{ 0 };
+        uint32_t quad_count{ 0 };
+    };
+
+    /**
      * @brief 2D exclusive renderer.
      */
     class Renderer2D {
@@ -98,7 +106,28 @@ namespace rw::gfx {
          */
         [[nodiscard]] Texture2D* load_texture(const uint64_t id, const std::string& file_path);
 
+        /**
+         * @brief Reset the stored renderer statistics.
+         */
+        void reset_stats();
+
+        /**
+         * @brief Get the current renderer statistics.
+         * @return Current renderer statistics.
+         */
+        [[nodiscard]] const Renderer2DStats& stats() const;
+
      private:
+        /**
+         * @brief Flush the current batch without resetting the buffers.
+         */
+        void flush_();
+
+        /**
+         * @brief End the previous rendering batch and start a new one.
+         */
+        void flush_and_reset_();
+
         rw::core::AssetLibrary<Shader>    shader_library_;            /**< Collection of all loaded shaders. */
         rw::core::AssetLibrary<Texture2D> texture_library_;           /**< Collection of all loaded textures. */
         std::shared_ptr<VertexArray>      quad_vertex_array_;         /**< Vertex array used for drawing quads. */
@@ -116,6 +145,9 @@ namespace rw::gfx {
         };
         std::vector<QuadVertex> quad_vertex_buffer_data_; /**< Quad vertex buffer data. */
         std::vector<Texture2D*> texture_slots_;           /**< Active textures for the current draw batch. */
+
+        Renderer2DStats temp_stats_; /**< Temporary statistics for the current recording. */
+        Renderer2DStats stats_;      /**< Statistics for the renderer's last recording. */
     };
 } // namespace rw::gfx
 

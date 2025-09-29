@@ -38,3 +38,13 @@ std::future<rw::gfx::Texture2D*> rw::gfx::RendererInterface2D::load_texture(cons
     promise.set_value(renderer_->load_texture(id, file_path));
     return promise.get_future();
 }
+
+void rw::gfx::RendererInterface2D::reset_stats() {
+    renderer_->reset_stats();
+}
+
+std::future<rw::gfx::Renderer2DStats> rw::gfx::RendererInterface2D::stats() const {
+    std::promise<Renderer2DStats> promise;
+    promise.set_value(renderer_->stats());
+    return promise.get_future();
+}

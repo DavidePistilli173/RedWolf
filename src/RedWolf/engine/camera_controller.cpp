@@ -76,7 +76,7 @@ bool rw::engine::CameraController::on_mouse_scrolled_(const rw::evt::MouseScroll
     zoom_level_ -= zoom_scaling * static_cast<float>(event.y_offset);
     zoom_level_ = std::max(max_zoom_level, zoom_level_);
     camera_.set_ortho_projection(-aspect_ratio_ * zoom_level_, aspect_ratio_ * zoom_level_, -zoom_level_, zoom_level_);
-    translation_speed_ = zoom_level_; // Make the speed dependent on the zoom level.
+    translation_speed_ = zoom_level_ * 2.0F; // Make the speed dependent on the zoom level.
     return false;
 }
 

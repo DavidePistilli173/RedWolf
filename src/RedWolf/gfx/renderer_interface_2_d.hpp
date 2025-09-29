@@ -67,6 +67,17 @@ namespace rw::gfx {
          */
         [[nodiscard]] std::future<Texture2D*> load_texture(const uint64_t id, const std::string& file_path);
 
+        /**
+         * @brief Reset the renderer statistics.
+         */
+        void reset_stats();
+
+        /**
+         * @brief Get the current renderer statistics.
+         * @return Current renderer statistics.
+         */
+        [[nodiscard]] std::future<Renderer2DStats> stats() const;
+
      private:
         std::shared_ptr<Renderer2D> renderer_; /**< Renderer instance this interface is connected to. */
     };

@@ -79,6 +79,10 @@ void rw::gfx::Renderer2D::draw_quad(Shader* shader, Quad quad) {
         return;
     }
 
+    if (max_vertices_per_batch <= quad_vertex_buffer_data_.size()) {
+        flush_and_reset_();
+    }
+
     // Compute the texture index.
     float texture_index{ 0.0F };
     if (nullptr != quad.texture) {
@@ -86,7 +90,7 @@ void rw::gfx::Renderer2D::draw_quad(Shader* shader, Quad quad) {
             texture_index = static_cast<float>(std::distance(texture_slots_.begin(), it));
         } else {
             if (texture_slots_.size() >= max_texture_slots) {
-                end_scene();
+                flush_();
 
                 quad_vertex_buffer_data_.clear();
                 texture_slots_.clear();
@@ -127,21 +131,13 @@ void rw::gfx::Renderer2D::draw_quad(Shader* shader, Quad quad) {
                     .tex_coord     = { 1.0F, 1.0F },
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
+
+    ++temp_stats_.quad_count;
 }
 
 void rw::gfx::Renderer2D::end_scene() {
     // Flush the renderer.
-    texture_shader_->bind();
-    texture_shader_->set_mat_f32_4("u_view_projection", view_projection_matrix_);
-    quad_vertex_buffer_->set_data(std::span<const QuadVertex>(quad_vertex_buffer_data_));
-    quad_vertex_array_->bind();
-
-    // Bind all active textures.
-    for (const auto [i, texture] : std::views::enumerate(texture_slots_)) {
-        texture->bind(static_cast<uint32_t>(i));
-    }
-
-    RendererApi::draw_indexed(quad_vertex_array_.get(), static_cast<uint32_t>((quad_vertex_buffer_data_.size() / 4) * 6));
+    flush_();
 }
 
 rw::gfx::Shader* rw::gfx::Renderer2D::get_shader(const uint64_t id) {
@@ -154,4 +150,36 @@ rw::gfx::Texture2D* rw::gfx::Renderer2D::get_texture(const uint64_t id) {
 
 rw::gfx::Texture2D* rw::gfx::Renderer2D::load_texture(const uint64_t id, const std::string& file_path) {
     return texture_library_.create(id, file_path);
+}
+
+void rw::gfx::Renderer2D::reset_stats() {
+    stats_                 = temp_stats_;
+    temp_stats_.draw_calls = 0;
+    temp_stats_.quad_count = 0;
+}
+
+const rw::gfx::Renderer2DStats& rw::gfx::Renderer2D::stats() const {
+    return stats_;
+}
+
+void rw::gfx::Renderer2D::flush_() {
+    texture_shader_->bind();
+    texture_shader_->set_mat_f32_4("u_view_projection", view_projection_matrix_);
+    quad_vertex_buffer_->set_data(std::span<const QuadVertex>(quad_vertex_buffer_data_));
+    quad_vertex_array_->bind();
+
+    // Bind all active textures.
+    for (const auto [i, texture] : std::views::enumerate(texture_slots_)) {
+        texture->bind(static_cast<uint32_t>(i));
+    }
+
+    RendererApi::draw_indexed(quad_vertex_array_.get(), static_cast<uint32_t>((quad_vertex_buffer_data_.size() / 4) * 6));
+    ++temp_stats_.draw_calls;
+}
+
+void rw::gfx::Renderer2D::flush_and_reset_() {
+    end_scene();
+    quad_vertex_buffer_data_.clear();
+    texture_slots_.clear();
+    texture_slots_.emplace_back(white_texture_); // The white texture is always available.
 }

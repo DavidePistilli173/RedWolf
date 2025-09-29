@@ -59,8 +59,8 @@ namespace rw::engine {
         float zoom_level_{ 1.0F };        /**< Camera zoom level. Higher values mean the camera is further out. */
         bool  rotation_enabled_{ false }; /**< If true, input controls the camera rotation. */
 
-        float translation_speed_{ zoom_level_ }; /**< Camera translation speed. */
-        float rotation_speed_{ 90.0F };          /**< Camera rotation speed. [deg/s] */
+        float translation_speed_{ zoom_level_ * 2.0F }; /**< Camera translation speed. */
+        float rotation_speed_{ 90.0F };                 /**< Camera rotation speed. [deg/s] */
 
         rw::gfx::Camera camera_; /**< Actual camera. */
     };
