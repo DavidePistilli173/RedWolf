@@ -113,7 +113,7 @@ void Sandbox2D::update(const float delta_time) {
         renderer_interface_->begin_scene(camera_controller_.camera());
         for (float y{ -5.0F }; y < 5.0F; y += 0.5F) {
             for (float x{ -5.0F }; x < 5.0F; x += 0.5F) {
-                rw::gfx::Quad quad{ .position      = { x, y, 0.0F },
+                rw::gfx::Quad quad{ .position      = { x, y, 0.1F },
                                     .rotation      = 0.0F,
                                     .size          = { 0.45F, 0.45F },
                                     .texture       = nullptr,
