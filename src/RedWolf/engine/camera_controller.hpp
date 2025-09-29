@@ -5,6 +5,7 @@
 #ifndef SRC_REDWOLF_CAMERA_CONTROLLER_HPP
 #define SRC_REDWOLF_CAMERA_CONTROLLER_HPP
 
+#include "RedWolf/core/animated.hpp"
 #include "RedWolf/evt/application_event.hpp"
 #include "RedWolf/evt/mouse_event.hpp"
 #include "RedWolf/gfx/camera.hpp"

@@ -10,16 +10,20 @@
 #include <memory>
 #include <ranges>
 
+rw::engine::App* rw::engine::App::instance_{ nullptr };
+
 rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
     // Initialise the logger as first instruction.
     RW_CORE_INFO("Constructing application");
 
+    // Ensure only one instance of the application exists.
     if (nullptr != instance_) {
         RW_CORE_FATAL("Application instance already exists. Only one instance of App is allowed.");
         return;
     }
     instance_ = this;
 
+    // Create the main application window.
     window_ = std::make_unique<rw::ui::Window>(window_data);
     window_->set_event_callback([this](const rw::evt::Event& event) { return on_event(event); });
 
@@ -35,8 +39,6 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
 rw::engine::App::~App() {
     instance_ = nullptr;
 }
-
-rw::engine::App* rw::engine::App::instance_{ nullptr };
 
 rw::engine::App& rw::engine::App::get() {
     return *instance_;
@@ -59,8 +61,7 @@ bool rw::engine::App::on_event(const rw::evt::Event& event) {
     }
 
     // Reverse loop to let the overlays get events before normal layers.
-    std::ranges::reverse_view rv{ layer_stack_ };
-    for (auto& layer : rv) {
+    for (std::ranges::reverse_view rv{ layer_stack_ }; auto& layer : rv) {
         if (layer->on_event(event)) {
             result = true;
             break;
@@ -73,6 +74,7 @@ bool rw::engine::App::on_event(const rw::evt::Event& event) {
 void rw::engine::App::run() {
     auto last_ts{ std::chrono::high_resolution_clock::now() };
 
+    // Main application loop.
     while (running_) {
         auto       current_ts{ std::chrono::high_resolution_clock::now() };
         const auto delta_time{ static_cast<float>((current_ts - last_ts).count()) * nanoseconds_to_seconds };

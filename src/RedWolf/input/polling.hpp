@@ -5,7 +5,7 @@
 #ifndef SRC_REDWOLF_INPUT_HPP
 #define SRC_REDWOLF_INPUT_HPP
 
-#include "../core/point.hpp"
+#include "RedWolf/math/math.hpp"
 #include "keyboard.hpp"
 
 namespace rw::input {
@@ -65,7 +65,7 @@ namespace rw::input {
      * @brief Get the current mouse position.
      * @return Current mouse position.
      */
-    [[nodiscard]] rw::core::Point2D<double> mouse_pos();
+    [[nodiscard]] rw::math::Vec2 mouse_pos();
 
     /**
      * @brief Get the current mouse position on the X axis.

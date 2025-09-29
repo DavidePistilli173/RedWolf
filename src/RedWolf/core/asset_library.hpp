@@ -12,17 +12,9 @@
 
 namespace rw::core {
     /**
-     * @brief Concept for types that have a constructor taking a single std::string parameter (e.g. file path).
-     */
-    template<typename T>
-    concept HasFileConstructor = requires(T a, std::string b) {
-        { T(b) } -> std::same_as<T>;
-    };
-
-    /**
      * @brief Class for managing a collection of assets.
      */
-    template<HasFileConstructor T>
+    template<typename T>
     class AssetLibrary {
      public:
         /**
@@ -32,6 +24,7 @@ namespace rw::core {
 
         /**
          * @brief Create a new asset with the given ID and arguments.
+         * @details If an asset with the given ID already exists, it is replaced.
          * @tparam Args Types of arguments to pass to the asset's constructor.
          * @param id ID of the asset.
          * @param args Parameters for the asset's constructor.
@@ -48,7 +41,7 @@ namespace rw::core {
         /**
          * @brief Get the specified asset.
          * @param id ID of the asset to get.
-         * @return Asset with the specified ID, if it exists. nullptr otherwise.
+         * @return Non-owning pointer to the asset with the specified ID, if it exists. nullptr otherwise.
          */
         [[nodiscard]] T* get(const uint64_t id) {
             const auto it{ assets_.find(id) };

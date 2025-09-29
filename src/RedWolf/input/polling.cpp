@@ -45,10 +45,14 @@ bool rw::input::is_super_down() {
     return is_key_down(Key::left_super) || is_key_down(Key::right_super);
 }
 
-rw::core::Point2D<double> rw::input::mouse_pos() {
+rw::math::Vec2 rw::input::mouse_pos() {
     rw::ui::WindowHandle window{ rw::engine::App::get().window().handle() };
-    rw::core::Point2D    position;
-    glfwGetCursorPos(window, &position.x, &position.y);
+    double               x{ 0.0 };
+    double               y{ 0.0 };
+    rw::math::Vec2       position;
+    glfwGetCursorPos(window, &x, &y);
+    position.x = static_cast<float>(x);
+    position.y = static_cast<float>(y);
     return position;
 }
 
