@@ -24,7 +24,7 @@ namespace rw::time {
         template<rw::time::IsChronoClock T>
         explicit DateTime(std::chrono::time_point<T> time_point) :
             date_{ std::chrono::floor<std::chrono::days>(time_point) },
-            time_{ std::chrono::duration_cast<std::chrono::seconds>(T::now() - std::chrono::floor<std::chrono::days>(time_point)) } {}
+            time_{ std::chrono::duration_cast<std::chrono::nanoseconds>(T::now() - std::chrono::floor<std::chrono::days>(time_point)) } {}
 
         /**
          * @brief Get the current date.
@@ -66,7 +66,7 @@ namespace rw::time {
          * @brief Get the current time.
          * @return Current time.
          */
-        [[nodiscard]] std::chrono::hh_mm_ss<std::chrono::seconds> time() const;
+        [[nodiscard]] std::chrono::hh_mm_ss<std::chrono::nanoseconds> time() const;
 
         /**
          * @brief Get the current year.
@@ -75,8 +75,8 @@ namespace rw::time {
         [[nodiscard]] std::chrono::year year() const;
 
      private:
-        std::chrono::year_month_day                 date_{}; /**< Date. */
-        std::chrono::hh_mm_ss<std::chrono::seconds> time_;   /**< Time. */
+        std::chrono::year_month_day                     date_{}; /**< Date. */
+        std::chrono::hh_mm_ss<std::chrono::nanoseconds> time_;   /**< Time. */
     };
 } // namespace rw::time
 

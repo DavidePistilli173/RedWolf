@@ -28,7 +28,7 @@ std::chrono::seconds rw::time::DateTime::second() const {
     return time_.seconds();
 }
 
-std::chrono::hh_mm_ss<std::chrono::seconds> rw::time::DateTime::time() const {
+std::chrono::hh_mm_ss<std::chrono::nanoseconds> rw::time::DateTime::time() const {
     return time_;
 }
 
