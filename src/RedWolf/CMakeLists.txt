@@ -68,3 +68,7 @@ endif ()
 target_link_libraries(RedWolf PUBLIC
         vendor
 )
+
+# Copy shaders to bin folder
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/shaders)
+configure_file(${PROJECT_SOURCE_DIR}/src/RedWolf/gfx/shaders/base_2d.glsl ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/shaders/base_2d.glsl COPYONLY)

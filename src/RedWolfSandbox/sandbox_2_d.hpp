@@ -29,7 +29,7 @@ class Sandbox2D : public rw::layers::Layer {
     rw::engine::CameraController                  camera_controller_;
     std::unique_ptr<rw::gfx::RendererInterface2D> renderer_interface_; /**< Interface to the renderer. */
 
-    rw::gfx::Shader* texture_shader_{ nullptr };
+    rw::gfx::Shader* base_shader_{ nullptr };
 
     rw::gfx::Quad quad_1_;
     rw::gfx::Quad quad_2_;

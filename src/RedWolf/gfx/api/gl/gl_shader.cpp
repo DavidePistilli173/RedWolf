@@ -13,11 +13,13 @@
 rw::gfx::api::gl::Shader::Shader(const std::string& vertex_src, const std::string& fragment_src) {
     const std::unordered_map<GLenum, std::string> shader_sources{ { GL_VERTEX_SHADER, vertex_src }, { GL_FRAGMENT_SHADER, fragment_src } };
     compile_(shader_sources);
+    RW_CORE_TRACE("Shader {} created from raw source.", id_);
 }
 
 rw::gfx::api::gl::Shader::Shader(const std::string& file_path) {
     const auto shader_sources{ pre_process_(read_file_(file_path)) };
     compile_(shader_sources);
+    RW_CORE_TRACE("Shader {} created from {}.", id_, file_path);
 }
 
 rw::gfx::api::gl::Shader::~Shader() {
@@ -139,7 +141,6 @@ void rw::gfx::api::gl::Shader::compile_(const std::unordered_map<GLenum, std::st
     }
 
     id_ = program;
-    RW_CORE_TRACE("Shader {} created.", id_);
 }
 
 std::unordered_map<GLenum, std::string> rw::gfx::api::gl::Shader::pre_process_(const std::string& source) {

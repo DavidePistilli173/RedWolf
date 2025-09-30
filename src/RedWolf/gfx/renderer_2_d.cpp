@@ -52,9 +52,9 @@ rw::gfx::Renderer2D::Renderer2D() {
     quad_ib->set_data(quad_indices);
     quad_vertex_array_->set_index_buffer(quad_ib);
 
-    texture_shader_ = shader_library_.create(textured_shader_id, "../src/RedWolfSandbox/assets/shaders/texture.glsl");
-    texture_shader_->bind();
-    texture_shader_->set_i32_array("u_textures", texture_samplers);
+    base_shader_ = shader_library_.create(base_shader_id, "shaders/base_2d.glsl");
+    base_shader_->bind();
+    base_shader_->set_i32_array("u_textures", texture_samplers);
 
     white_texture_ = texture_library_.create(white_texture_id, 1, 1);
     white_texture_->set_data(white_texture_data);
@@ -163,8 +163,8 @@ const rw::gfx::Renderer2DStats& rw::gfx::Renderer2D::stats() const {
 }
 
 void rw::gfx::Renderer2D::flush_() {
-    texture_shader_->bind();
-    texture_shader_->set_mat_f32_4("u_view_projection", view_projection_matrix_);
+    base_shader_->bind();
+    base_shader_->set_mat_f32_4("u_view_projection", view_projection_matrix_);
     quad_vertex_buffer_->set_data(std::span<const QuadVertex>(quad_vertex_buffer_data_));
     quad_vertex_array_->bind();
 

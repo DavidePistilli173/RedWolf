@@ -13,9 +13,9 @@ static constexpr uint64_t texture_id{ rw::gfx::Renderer2D::max_reserved_texture_
 Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0F } {
     renderer_interface_ = rw::engine::App::get().window().renderer_interface_2d();
 
-    texture_shader_ = renderer_interface_->get_shader(rw::gfx::Renderer2D::textured_shader_id).get();
-    if (nullptr == texture_shader_) {
-        RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::textured_shader_id);
+    base_shader_ = renderer_interface_->get_shader(rw::gfx::Renderer2D::base_shader_id).get();
+    if (nullptr == base_shader_) {
+        RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::base_shader_id);
         return;
     }
 
@@ -101,11 +101,11 @@ void Sandbox2D::update(const float delta_time) {
 
         renderer_interface_->clear_screen();
         renderer_interface_->begin_scene(camera_controller_.camera());
-        renderer_interface_->draw_quad(texture_shader_, quad_4_);
-        renderer_interface_->draw_quad(texture_shader_, quad_5_);
-        renderer_interface_->draw_quad(texture_shader_, quad_1_);
-        renderer_interface_->draw_quad(texture_shader_, quad_2_);
-        renderer_interface_->draw_quad(texture_shader_, quad_3_);
+        renderer_interface_->draw_quad(base_shader_, quad_4_);
+        renderer_interface_->draw_quad(base_shader_, quad_5_);
+        renderer_interface_->draw_quad(base_shader_, quad_1_);
+        renderer_interface_->draw_quad(base_shader_, quad_2_);
+        renderer_interface_->draw_quad(base_shader_, quad_3_);
         renderer_interface_->end_scene();
     }
 
@@ -119,7 +119,7 @@ void Sandbox2D::update(const float delta_time) {
                                     .texture       = nullptr,
                                     .color         = { (x + 5.0F) / 10.0F, 0.4F, (y + 5.0F) / 10.0F, 0.7F },
                                     .tiling_factor = 1.0F };
-                renderer_interface_->draw_quad(texture_shader_, quad);
+                renderer_interface_->draw_quad(base_shader_, quad);
             }
         }
         renderer_interface_->end_scene();

@@ -41,7 +41,7 @@ namespace rw::gfx {
     class Renderer2D {
      public:
         // Reserved shader IDs.
-        static constexpr uint64_t textured_shader_id{ 0U }; /**< ID of the textured shader. */
+        static constexpr uint64_t base_shader_id{ 0U }; /**< ID of the base 2D shader. */
 
         /**
          * @brief Maximum number of engine-reserved shader IDs for the 2D renderer.
@@ -128,11 +128,11 @@ namespace rw::gfx {
          */
         void flush_and_reset_();
 
-        rw::core::AssetLibrary<Shader>    shader_library_;            /**< Collection of all loaded shaders. */
-        rw::core::AssetLibrary<Texture2D> texture_library_;           /**< Collection of all loaded textures. */
-        std::shared_ptr<VertexArray>      quad_vertex_array_;         /**< Vertex array used for drawing quads. */
-        std::shared_ptr<VertexBuffer>     quad_vertex_buffer_;        /**< Vertex buffer used for drawing quads. */
-        Shader*                           texture_shader_{ nullptr }; /**< Textured shader. */
+        rw::core::AssetLibrary<Shader>    shader_library_;         /**< Collection of all loaded shaders. */
+        rw::core::AssetLibrary<Texture2D> texture_library_;        /**< Collection of all loaded textures. */
+        std::shared_ptr<VertexArray>      quad_vertex_array_;      /**< Vertex array used for drawing quads. */
+        std::shared_ptr<VertexBuffer>     quad_vertex_buffer_;     /**< Vertex buffer used for drawing quads. */
+        Shader*                           base_shader_{ nullptr }; /**< Textured shader. */
 
         rw::gfx::Texture2D* white_texture_{ nullptr }; /**< Completely white texture. */
 
