@@ -20,45 +20,10 @@ static constexpr std::array<int32_t, max_texture_slots> texture_samplers{ 0,  1,
                                                                           16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 };
 
 rw::gfx::Renderer2D::Renderer2D() {
-    quad_vertex_array_ = std::make_shared<rw::gfx::VertexArray>();
+    initQuadData_();
+    loadBasicAssets_();
 
-    quad_vertex_buffer_ = std::make_shared<rw::gfx::VertexBuffer>();
-    quad_vertex_buffer_->set_size(max_vertices_per_batch * sizeof(QuadVertex));
-    quad_vertex_buffer_->set_layout(
-        rw::gfx::BufferLayout{ { rw::gfx::ShaderDataType::f32_3, "in_position" },
-                               { ShaderDataType::f32_4, "in_color" },
-                               { ShaderDataType::f32_2, "in_tex_coord" },
-                               { ShaderDataType::f32, "in_tex_index" },
-                               { ShaderDataType::f32, "in_tiling_factor" } });
-    quad_vertex_array_->add_vertex_buffer(quad_vertex_buffer_);
-
-    quad_vertex_buffer_data_.reserve(max_vertices_per_batch);
     texture_slots_.reserve(max_texture_slots);
-
-    std::vector<uint32_t> quad_indices;
-    quad_indices.resize(max_indices_per_batch);
-    for (uint32_t i{ 0U }; i < quad_indices.size(); i += 6U) {
-        const uint32_t offset{ (i / 6U) * 4U };
-        quad_indices[i + 0U] = offset + 0U;
-        quad_indices[i + 1U] = offset + 1U;
-        quad_indices[i + 2U] = offset + 2U;
-
-        quad_indices[i + 3U] = offset + 2U;
-        quad_indices[i + 4U] = offset + 3U;
-        quad_indices[i + 5U] = offset + 0U;
-    }
-
-    auto quad_ib{ std::make_shared<rw::gfx::IndexBuffer>() };
-    quad_ib->set_data(quad_indices);
-    quad_vertex_array_->set_index_buffer(quad_ib);
-
-    base_shader_ = shader_library_.create(base_shader_id, "shaders/base_2d.glsl");
-    base_shader_->bind();
-    base_shader_->set_i32_array("u_textures", texture_samplers);
-
-    white_texture_ = texture_library_.create(white_texture_id, 1, 1);
-    white_texture_->set_data(white_texture_data);
-
     RendererApi::set_clear_color(clear_color);
 }
 
@@ -160,6 +125,53 @@ void rw::gfx::Renderer2D::reset_stats() {
 
 const rw::gfx::Renderer2DStats& rw::gfx::Renderer2D::stats() const {
     return stats_;
+}
+
+void rw::gfx::Renderer2D::initQuadData_() {
+    // Vertex array.
+    quad_vertex_array_ = std::make_shared<rw::gfx::VertexArray>();
+
+    // Vertex buffer.
+    quad_vertex_buffer_ = std::make_shared<rw::gfx::VertexBuffer>();
+    quad_vertex_buffer_->set_size(max_vertices_per_batch * sizeof(QuadVertex));
+    quad_vertex_buffer_->set_layout(
+        rw::gfx::BufferLayout{ { rw::gfx::ShaderDataType::f32_3, "in_position" },
+                               { ShaderDataType::f32_4, "in_color" },
+                               { ShaderDataType::f32_2, "in_tex_coord" },
+                               { ShaderDataType::f32, "in_tex_index" },
+                               { ShaderDataType::f32, "in_tiling_factor" } });
+    quad_vertex_array_->add_vertex_buffer(quad_vertex_buffer_);
+
+    quad_vertex_buffer_data_.reserve(max_vertices_per_batch);
+
+    // Index buffer.
+    std::vector<uint32_t> quad_indices;
+    quad_indices.resize(max_indices_per_batch);
+    for (uint32_t i{ 0U }; i < quad_indices.size(); i += 6U) {
+        const uint32_t offset{ (i / 6U) * 4U };
+        quad_indices[i + 0U] = offset + 0U;
+        quad_indices[i + 1U] = offset + 1U;
+        quad_indices[i + 2U] = offset + 2U;
+
+        quad_indices[i + 3U] = offset + 2U;
+        quad_indices[i + 4U] = offset + 3U;
+        quad_indices[i + 5U] = offset + 0U;
+    }
+
+    auto quad_ib{ std::make_shared<rw::gfx::IndexBuffer>() };
+    quad_ib->set_data(quad_indices);
+    quad_vertex_array_->set_index_buffer(quad_ib);
+}
+
+void rw::gfx::Renderer2D::loadBasicAssets_() {
+    // Shaders
+    base_shader_ = shader_library_.create(base_shader_id, "shaders/base_2d.glsl");
+    base_shader_->bind();
+    base_shader_->set_i32_array("u_textures", texture_samplers);
+
+    // Textures
+    white_texture_ = texture_library_.create(white_texture_id, 1, 1);
+    white_texture_->set_data(white_texture_data);
 }
 
 void rw::gfx::Renderer2D::flush_() {

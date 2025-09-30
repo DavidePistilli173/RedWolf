@@ -14,19 +14,6 @@
 #include <optional>
 
 namespace rw::gfx {
-/**
- * @brief Vertex data for a quad.
- */
-#pragma pack(push, 1)
-    struct QuadVertex {
-        rw::math::Vec3 position{ 0.0F };      /**< Position of the vertex. */
-        rw::math::Vec4 color{ 0.0F };         /**< Colour of the vertex. */
-        rw::math::Vec2 tex_coord{ 0.0F };     /**< Texture coordinate of the vertex. */
-        float          tex_index{ 0.0F };     /**< Index of the texture to use for this vertex. */
-        float          tiling_factor{ 1.0F }; /**< Tiling factor of the texture. */
-    };
-#pragma pack(pop)
-
     /**
      * @brief Statistics for the renderer 2D.
      */
@@ -118,6 +105,16 @@ namespace rw::gfx {
         [[nodiscard]] const Renderer2DStats& stats() const;
 
      private:
+        /**
+         * @brief Initialise the data needed to draw quads.
+         */
+        void initQuadData_();
+
+        /**
+         * @brief Load basic assets that are always needed by the renderer.
+         */
+        void loadBasicAssets_();
+
         /**
          * @brief Flush the current batch without resetting the buffers.
          */

@@ -10,7 +10,7 @@
 
 namespace rw::gfx {
     /**
-     * @brief 2D quad.
+     * @brief 2D quad data that can be submitted to the renderer.
      */
     struct Quad {
         rw::math::Vec3 position{ 0.0F };      /**< Position of the quad in world coordinates. */
@@ -20,6 +20,19 @@ namespace rw::gfx {
         rw::math::Vec4 color{ color_white };  /**< Colour. */
         float          tiling_factor{ 1.0F }; /**< Texture tiling multiplier. */
     };
+
+#pragma pack(push, 1)
+    /**
+     * @brief Vertex data for a quad on the GPU.
+     */
+    struct QuadVertex {
+        rw::math::Vec3 position{ 0.0F };      /**< Position of the vertex. */
+        rw::math::Vec4 color{ 0.0F };         /**< Colour of the vertex. */
+        rw::math::Vec2 tex_coord{ 0.0F };     /**< Texture coordinate of the vertex. */
+        float          tex_index{ 0.0F };     /**< Index of the texture to use for this vertex. */
+        float          tiling_factor{ 1.0F }; /**< Tiling factor of the texture. */
+    };
+#pragma pack(pop)
 } // namespace rw::gfx
 
 #endif // SRC_REDWOLF_QUAD_HPP
