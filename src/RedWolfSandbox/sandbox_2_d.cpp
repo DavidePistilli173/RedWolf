@@ -9,6 +9,7 @@
 #include <RedWolf/engine/app.hpp>
 
 static constexpr uint64_t texture_id{ rw::gfx::Renderer2D::max_reserved_texture_id + 1U };
+static constexpr uint64_t spritesheet_id{ texture_id + 1U };
 
 Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0F } {
     renderer_interface_ = rw::engine::App::get().window().renderer_interface_2d();
@@ -55,6 +56,21 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
         RW_ERR("Failed to get texture {}", texture_id);
         return;
     }
+
+    spritesheet_quad_ = {
+        .position = { 0.0F, 0.0F, 0.0F },
+        .rotation = 0.0F,
+        .size     = { 1.0F, 1.0F },
+        .texture  = renderer_interface_->load_texture(spritesheet_id, "../src/RedWolfSandbox/assets/textures/rpg_spritesheet.png").get(),
+        .color    = { 1.0F, 1.0F, 1.0F, 1.0F },
+        .tiling_factor = 1.0F
+    };
+
+    rgp_spritesheet_ = spritesheet_quad_.texture;
+    if (nullptr == rgp_spritesheet_) {
+        RW_ERR("Failed to get texture {}", spritesheet_id);
+        return;
+    }
 }
 
 void Sandbox2D::attach() {}
@@ -91,7 +107,7 @@ void Sandbox2D::update(const float delta_time) {
     // Update
     camera_controller_.update(delta_time);
     static float rotation{ 0.0F };
-    rotation += 50.0F * delta_time;
+    rotation += 2.0F * delta_time;
     quad_3_.rotation = rotation;
 
     // Render
@@ -100,29 +116,40 @@ void Sandbox2D::update(const float delta_time) {
         renderer_interface_->reset_stats();
 
         renderer_interface_->clear_screen();
-        renderer_interface_->begin_scene(camera_controller_.camera());
-        renderer_interface_->draw_quad(base_shader_, quad_4_);
-        renderer_interface_->draw_quad(base_shader_, quad_5_);
-        renderer_interface_->draw_quad(base_shader_, quad_1_);
-        renderer_interface_->draw_quad(base_shader_, quad_2_);
-        renderer_interface_->draw_quad(base_shader_, quad_3_);
-        renderer_interface_->end_scene();
-    }
 
-    {
-        renderer_interface_->begin_scene(camera_controller_.camera());
-        for (float y{ -5.0F }; y < 5.0F; y += 0.5F) {
-            for (float x{ -5.0F }; x < 5.0F; x += 0.5F) {
-                rw::gfx::Quad quad{ .position      = { x, y, 0.1F },
-                                    .rotation      = 0.0F,
-                                    .size          = { 0.45F, 0.45F },
-                                    .texture       = nullptr,
-                                    .color         = { (x + 5.0F) / 10.0F, 0.4F, (y + 5.0F) / 10.0F, 0.7F },
-                                    .tiling_factor = 1.0F };
-                renderer_interface_->draw_quad(base_shader_, quad);
-            }
+        /*
+        {
+            renderer_interface_->begin_scene(camera_controller_.camera());
+            renderer_interface_->draw_quad(base_shader_, quad_4_);
+            renderer_interface_->draw_quad(base_shader_, quad_5_);
+            renderer_interface_->draw_quad(base_shader_, quad_1_);
+            renderer_interface_->draw_quad(base_shader_, quad_2_);
+            renderer_interface_->draw_quad(base_shader_, quad_3_);
+            renderer_interface_->end_scene();
         }
-        renderer_interface_->end_scene();
+
+        {
+            renderer_interface_->begin_scene(camera_controller_.camera());
+            for (float y{ -5.0F }; y < 5.0F; y += 0.5F) {
+                for (float x{ -5.0F }; x < 5.0F; x += 0.5F) {
+                    rw::gfx::Quad quad{ .position      = { x, y, 0.1F },
+                                        .rotation      = 0.0F,
+                                        .size          = { 0.45F, 0.45F },
+                                        .texture       = nullptr,
+                                        .color         = { (x + 5.0F) / 10.0F, 0.4F, (y + 5.0F) / 10.0F, 0.7F },
+                                        .tiling_factor = 1.0F };
+                    renderer_interface_->draw_quad(base_shader_, quad);
+                }
+            }
+            renderer_interface_->end_scene();
+        }
+        */
+
+        {
+            renderer_interface_->begin_scene(camera_controller_.camera());
+            renderer_interface_->draw_quad(base_shader_, spritesheet_quad_);
+            renderer_interface_->end_scene();
+        }
     }
 }
 

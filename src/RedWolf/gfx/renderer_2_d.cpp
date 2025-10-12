@@ -69,31 +69,31 @@ void rw::gfx::Renderer2D::draw_quad(Shader* shader, Quad quad) {
 
     // Compute the vertex attributes.
     const rw::math::Mat4 transform{ rw::math::translate(rw::math::Mat4(1.0F), quad.position) *
-                                    rw::math::rotate(rw::math::Mat4(1.0F), rw::math::radians(quad.rotation), { 0.0F, 0.0F, 1.0F }) *
+                                    rw::math::rotate(rw::math::Mat4(1.0F), quad.rotation, { 0.0F, 0.0F, 1.0F }) *
                                     rw::math::scale(rw::math::Mat4(1.0F), { quad.size.x, quad.size.y, 1.0F }) };
 
     quad_vertex_buffer_data_.emplace_back(
         QuadVertex{ .position      = transform * quad_vertice_positions_[0],
                     .color         = quad.color,
-                    .tex_coord     = { 0.0F, 1.0F },
+                    .tex_coord     = { 0.0F, 0.0F },
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
     quad_vertex_buffer_data_.emplace_back(
         QuadVertex{ .position      = transform * quad_vertice_positions_[1],
                     .color         = quad.color,
-                    .tex_coord     = { 0.0F, 0.0F },
+                    .tex_coord     = { 1.0F, 0.0F },
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
     quad_vertex_buffer_data_.emplace_back(
         QuadVertex{ .position      = transform * quad_vertice_positions_[2],
                     .color         = quad.color,
-                    .tex_coord     = { 1.0F, 0.0F },
+                    .tex_coord     = { 1.0F, 1.0F },
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
     quad_vertex_buffer_data_.emplace_back(
         QuadVertex{ .position      = transform * quad_vertice_positions_[3],
                     .color         = quad.color,
-                    .tex_coord     = { 1.0F, 1.0F },
+                    .tex_coord     = { 0.0F, 1.0F },
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
 

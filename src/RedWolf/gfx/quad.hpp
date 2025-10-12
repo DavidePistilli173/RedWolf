@@ -14,7 +14,7 @@ namespace rw::gfx {
      */
     struct Quad {
         rw::math::Vec3 position{ 0.0F };      /**< Position of the quad in world coordinates. */
-        float          rotation{ 0.0F };      /**< Rotation of the quad around the z axis. [deg] */
+        float          rotation{ 0.0F };      /**< Rotation of the quad around the z axis. [rad] */
         rw::math::Vec2 size{ 1.0F };          /**< Size of the quad. */
         Texture2D*     texture{ nullptr };    /**< Texture. */
         rw::math::Vec4 color{ color_white };  /**< Colour. */
