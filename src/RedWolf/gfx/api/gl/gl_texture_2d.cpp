@@ -110,6 +110,20 @@ uint32_t rw::gfx::api::gl::Texture2D::bytes_per_pixel() const {
     }
 }
 
+rw::gfx::api::gl::Texture2D::SubRegion rw::gfx::api::gl::Texture2D::compute_sub_region(const rw::math::Rect<float>& region) const {
+    const float min_x{ region.x / static_cast<float>(width_) };
+    const float max_x{ (region.x + region.width) / static_cast<float>(width_) };
+    const float min_y{ region.y / static_cast<float>(height_) };
+    const float max_y{ (region.y + region.height) / static_cast<float>(height_) };
+
+    SubRegion result{};
+    result[0] = { min_x, min_y }; // Bottom-left
+    result[1] = { max_x, min_y }; // Bottom-right
+    result[2] = { max_x, max_y }; // Top-right
+    result[3] = { min_x, max_y }; // Top-left
+    return result;
+}
+
 uint32_t rw::gfx::api::gl::Texture2D::height() const {
     return height_;
 }

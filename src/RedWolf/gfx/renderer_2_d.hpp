@@ -106,6 +106,13 @@ namespace rw::gfx {
 
      private:
         /**
+         * @brief Compute the appropriate shader texture index for the given texture.
+         * @param texture Texture to compute the index for.
+         * @return Shader texture index for the given texture.
+         */
+        [[nodiscard]] float compute_texture_index_(const Texture2D* texture);
+
+        /**
          * @brief Initialise the data needed to draw quads.
          */
         void initQuadData_();
@@ -140,8 +147,8 @@ namespace rw::gfx {
         rw::math::Vec4 quad_vertice_positions_[4]{
             { -0.5F, -0.5F, 0.0F, 1.0F }, { 0.5F, -0.5F, 0.0F, 1.0F }, { 0.5F, 0.5F, 0.0F, 1.0F }, { -0.5F, 0.5F, 0.0F, 1.0F }
         };
-        std::vector<QuadVertex> quad_vertex_buffer_data_; /**< Quad vertex buffer data. */
-        std::vector<Texture2D*> texture_slots_;           /**< Active textures for the current draw batch. */
+        std::vector<QuadVertex>       quad_vertex_buffer_data_; /**< Quad vertex buffer data. */
+        std::vector<const Texture2D*> texture_slots_;           /**< Active textures for the current draw batch. */
 
         Renderer2DStats temp_stats_; /**< Temporary statistics for the current recording. */
         Renderer2DStats stats_;      /**< Statistics for the renderer's last recording. */

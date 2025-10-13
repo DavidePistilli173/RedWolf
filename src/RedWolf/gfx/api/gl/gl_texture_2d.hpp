@@ -5,9 +5,12 @@
 #ifndef SRC_REDWOLF_GL_TEXTURE_HPP
 #define SRC_REDWOLF_GL_TEXTURE_HPP
 
-#include "glad/glad.h"
+#include "RedWolf/math/geometry.hpp"
+#include "RedWolf/math/math.hpp"
 
+#include <array>
 #include <cstdint>
+#include <glad/glad.h>
 #include <span>
 #include <string>
 #include <string_view>
@@ -18,6 +21,7 @@ namespace rw::gfx::api::gl {
      */
     class Texture2D {
      public:
+        using SubRegion = std::array<rw::math::Vec2, 4>; /**< Texture coordinates of a texture sub-region. */
         /**
          * @brief Constructor that loads a texture from a file.
          * @param path Path to the texture file.
@@ -67,6 +71,13 @@ namespace rw::gfx::api::gl {
          * @return Bytes required for each pixel.
          */
         [[nodiscard]] uint32_t bytes_per_pixel() const;
+
+        /**
+         * @brief Compute a sub-region of the texture.
+         * @param region Region of the texture to compute, in pixels.
+         * @return Texture coordinates of the sub-region.
+         */
+        [[nodiscard]] SubRegion compute_sub_region(const rw::math::Rect<float>& region) const;
 
         /**
          * @brief Get the height of the texture.

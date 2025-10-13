@@ -10,7 +10,7 @@
 #include <ranges>
 
 static constexpr std::array<uint8_t, 4> white_texture_data{ 0xFF, 0xFF, 0xFF, 0xFF };
-static constexpr rw::math::Vec4         clear_color{ 1.0F, 1.0F, 0.0F, 0.0F };
+static constexpr rw::math::Vec4         clear_color{ 0.1F, 0.1F, 0.1F, 0.0F };
 static constexpr uint32_t               max_quads_per_batch{ 10000 };
 static constexpr uint32_t               max_vertices_per_batch{ max_quads_per_batch * 4 };
 static constexpr uint32_t               max_indices_per_batch{ max_quads_per_batch * 6 };
@@ -49,51 +49,42 @@ void rw::gfx::Renderer2D::draw_quad(Shader* shader, Quad quad) {
     }
 
     // Compute the texture index.
-    float texture_index{ 0.0F };
-    if (nullptr != quad.texture) {
-        if (const auto it{ std::ranges::find(texture_slots_, quad.texture) }; texture_slots_.end() != it) {
-            texture_index = static_cast<float>(std::distance(texture_slots_.begin(), it));
-        } else {
-            if (texture_slots_.size() >= max_texture_slots) {
-                flush_();
-
-                quad_vertex_buffer_data_.clear();
-                texture_slots_.clear();
-                texture_slots_.emplace_back(white_texture_);
-            }
-
-            texture_slots_.emplace_back(quad.texture);
-            texture_index = static_cast<float>(texture_slots_.size() - 1U);
-        }
-    }
+    const float texture_index{ compute_texture_index_(quad.texture) };
 
     // Compute the vertex attributes.
     const rw::math::Mat4 transform{ rw::math::translate(rw::math::Mat4(1.0F), quad.position) *
                                     rw::math::rotate(rw::math::Mat4(1.0F), quad.rotation, { 0.0F, 0.0F, 1.0F }) *
                                     rw::math::scale(rw::math::Mat4(1.0F), { quad.size.x, quad.size.y, 1.0F }) };
 
+    Texture2D::SubRegion tex_coords{
+        rw::math::Vec2{ 0.0F, 0.0F }, rw::math::Vec2{ 1.0F, 0.0F }, rw::math::Vec2{ 1.0F, 1.0F }, rw::math::Vec2{ 0.0F, 1.0F }
+    };
+    if (quad.texture_sub_region.has_value()) {
+        tex_coords = quad.texture_sub_region.value();
+    }
+
     quad_vertex_buffer_data_.emplace_back(
         QuadVertex{ .position      = transform * quad_vertice_positions_[0],
                     .color         = quad.color,
-                    .tex_coord     = { 0.0F, 0.0F },
+                    .tex_coord     = tex_coords[0],
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
     quad_vertex_buffer_data_.emplace_back(
         QuadVertex{ .position      = transform * quad_vertice_positions_[1],
                     .color         = quad.color,
-                    .tex_coord     = { 1.0F, 0.0F },
+                    .tex_coord     = tex_coords[1],
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
     quad_vertex_buffer_data_.emplace_back(
         QuadVertex{ .position      = transform * quad_vertice_positions_[2],
                     .color         = quad.color,
-                    .tex_coord     = { 1.0F, 1.0F },
+                    .tex_coord     = tex_coords[2],
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
     quad_vertex_buffer_data_.emplace_back(
         QuadVertex{ .position      = transform * quad_vertice_positions_[3],
                     .color         = quad.color,
-                    .tex_coord     = { 0.0F, 1.0F },
+                    .tex_coord     = tex_coords[3],
                     .tex_index     = texture_index,
                     .tiling_factor = quad.tiling_factor });
 
@@ -125,6 +116,27 @@ void rw::gfx::Renderer2D::reset_stats() {
 
 const rw::gfx::Renderer2DStats& rw::gfx::Renderer2D::stats() const {
     return stats_;
+}
+
+float rw::gfx::Renderer2D::compute_texture_index_(const Texture2D* texture) {
+    if (nullptr == texture) {
+        return 0.0F;
+    }
+
+    if (const auto it{ std::ranges::find(texture_slots_, texture) }; texture_slots_.end() != it) {
+        return static_cast<float>(std::distance(texture_slots_.begin(), it));
+    }
+
+    if (texture_slots_.size() >= max_texture_slots) {
+        flush_();
+
+        quad_vertex_buffer_data_.clear();
+        texture_slots_.clear();
+        texture_slots_.emplace_back(white_texture_);
+    }
+
+    texture_slots_.emplace_back(texture);
+    return static_cast<float>(texture_slots_.size() - 1U);
 }
 
 void rw::gfx::Renderer2D::initQuadData_() {

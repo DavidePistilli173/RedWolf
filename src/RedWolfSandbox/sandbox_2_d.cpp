@@ -20,37 +20,45 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
         return;
     }
 
-    quad_1_ = {
-        .position = { -1.0F, 0.0F, 0.0F }, .rotation = 0.0F, .size = { 0.8F, 0.8F }, .texture = nullptr, .color = {}, .tiling_factor = 1.0F
-    };
+    quad_1_ = { .position           = { -1.0F, 0.0F, 0.0F },
+                .rotation           = 0.0F,
+                .size               = { 0.8F, 0.8F },
+                .color              = {},
+                .tiling_factor      = 1.0F,
+                .texture            = nullptr,
+                .texture_sub_region = std::nullopt };
 
-    quad_2_ = { .position      = { 0.5F, -0.5F, 0.0F },
-                .rotation      = 0.0F,
-                .size          = { 0.5F, 0.75F },
-                .texture       = nullptr,
-                .color         = { 0.2F, 0.3F, 0.8F, 1.0F },
-                .tiling_factor = 1.0F };
+    quad_2_ = { .position           = { 0.5F, -0.5F, 0.0F },
+                .rotation           = 0.0F,
+                .size               = { 0.5F, 0.75F },
+                .color              = { 0.2F, 0.3F, 0.8F, 1.0F },
+                .tiling_factor      = 1.0F,
+                .texture            = nullptr,
+                .texture_sub_region = std::nullopt };
 
-    quad_3_ = { .position      = { 0.5F, 0.5F, 0.0F },
-                .rotation      = 45.0F,
-                .size          = { 0.55F, 0.87F },
-                .texture       = nullptr,
-                .color         = { 0.2F, 0.8F, 0.3F, 1.0F },
-                .tiling_factor = 1.0F };
+    quad_3_ = { .position           = { 0.5F, 0.5F, 0.0F },
+                .rotation           = 45.0F,
+                .size               = { 0.55F, 0.87F },
+                .color              = { 0.2F, 0.8F, 0.3F, 1.0F },
+                .tiling_factor      = 1.0F,
+                .texture            = nullptr,
+                .texture_sub_region = std::nullopt };
 
-    quad_4_ = { .position = { 0.0F, 0.0F, -0.1F },
-                .rotation = -30.0F,
-                .size     = { 100.0F, 100.0F },
-                .texture  = renderer_interface_->load_texture(texture_id, "../src/RedWolfSandbox/assets/textures/checkerboard.png").get(),
-                .color    = { 0.2F, 0.2F, 0.8F, 1.0F },
-                .tiling_factor = 100.0F };
+    quad_4_ = { .position      = { 0.0F, 0.0F, -0.1F },
+                .rotation      = -30.0F,
+                .size          = { 100.0F, 100.0F },
+                .color         = { 0.2F, 0.2F, 0.8F, 1.0F },
+                .tiling_factor = 100.0F,
+                .texture = renderer_interface_->load_texture(texture_id, "../src/RedWolfSandbox/assets/textures/checkerboard.png").get(),
+                .texture_sub_region = std::nullopt };
 
-    quad_5_ = { .position      = { 0.0F, 0.0F, -0.05F },
-                .rotation      = 0.0F,
-                .size          = { 50.0F, 50.0F },
-                .texture       = quad_4_.texture,
-                .color         = { 1.0F, 1.0F, 1.0F, 1.0F },
-                .tiling_factor = 1.0F };
+    quad_5_ = { .position           = { 0.0F, 0.0F, -0.05F },
+                .rotation           = 0.0F,
+                .size               = { 50.0F, 50.0F },
+                .color              = { 1.0F, 1.0F, 1.0F, 1.0F },
+                .tiling_factor      = 1.0F,
+                .texture            = quad_4_.texture,
+                .texture_sub_region = std::nullopt };
 
     if (nullptr == quad_4_.texture) {
         RW_ERR("Failed to get texture {}", texture_id);
@@ -58,12 +66,13 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
     }
 
     spritesheet_quad_ = {
-        .position = { 0.0F, 0.0F, 0.0F },
-        .rotation = 0.0F,
-        .size     = { 1.0F, 1.0F },
-        .texture  = renderer_interface_->load_texture(spritesheet_id, "../src/RedWolfSandbox/assets/textures/rpg_spritesheet.png").get(),
-        .color    = { 1.0F, 1.0F, 1.0F, 1.0F },
-        .tiling_factor = 1.0F
+        .position      = { 0.0F, 0.0F, 0.0F },
+        .rotation      = 0.0F,
+        .size          = { 1.0F, 1.0F },
+        .color         = { 1.0F, 1.0F, 1.0F, 1.0F },
+        .tiling_factor = 1.0F,
+        .texture = renderer_interface_->load_texture(spritesheet_id, "../src/RedWolfSandbox/assets/textures/rpg_spritesheet.png").get(),
+        .texture_sub_region = std::nullopt
     };
 
     rgp_spritesheet_ = spritesheet_quad_.texture;
@@ -71,6 +80,9 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
         RW_ERR("Failed to get texture {}", spritesheet_id);
         return;
     }
+
+    static constexpr rw::math::Rect<float> sub_region_rect{ .x = 256.0F, .y = 128.0F, .width = 128.0F, .height = 256.0F };
+    spritesheet_quad_.texture_sub_region = spritesheet_quad_.texture->compute_sub_region(sub_region_rect);
 }
 
 void Sandbox2D::attach() {}
