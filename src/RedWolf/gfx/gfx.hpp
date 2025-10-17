@@ -9,6 +9,7 @@
 
 #if defined(RW_GFX_API_OPENGL)
     #include "api/gl/gl_context.hpp"
+    #include "api/gl/gl_framebuffer.hpp"
     #include "api/gl/gl_index_buffer.hpp"
     #include "api/gl/gl_renderer_api.hpp"
     #include "api/gl/gl_shader.hpp"
@@ -26,6 +27,7 @@ namespace rw::gfx {
     enum class GraphicsApi : uint8_t { opengl };
 
 #if defined(RW_GFX_API_OPENGL)
+    using Framebuffer     = rw::gfx::api::gl::Framebuffer;
     using GraphicsContext = rw::gfx::api::gl::Context;
     using IndexBuffer     = rw::gfx::api::gl::IndexBuffer;
     using RendererApi     = rw::gfx::api::gl::RendererApi;

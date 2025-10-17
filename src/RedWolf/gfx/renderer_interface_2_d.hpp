@@ -34,6 +34,14 @@ namespace rw::gfx {
         void clear_screen();
 
         /**
+         * @brief Create a framebuffer with the given descriptor.
+         * @param id ID of the framebuffer to create.
+         * @param descriptor Framebuffer creation options.
+         * @return Non-owning pointer to the created framebuffer.
+         */
+        [[nodiscard]] std::future<Framebuffer*> create_framebuffer(const uint64_t id, const FramebufferDescriptor& descriptor);
+
+        /**
          * @brief Draw a textured quad to the screen, using the Z coordinate to sort the draw order.
          * @param shader Shader to use for rendering.
          * @param quad Quad data to render.

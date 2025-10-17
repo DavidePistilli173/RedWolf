@@ -38,6 +38,10 @@ void rw::gfx::Renderer2D::clear_screen() {
     RendererApi::clear_screen();
 }
 
+rw::gfx::Framebuffer* rw::gfx::Renderer2D::create_framebuffer(const uint64_t id, const FramebufferDescriptor& descriptor) {
+    return framebuffer_library_.create(id, descriptor);
+}
+
 void rw::gfx::Renderer2D::draw_quad(Shader* shader, Quad quad) {
     if (nullptr == shader) {
         RW_CORE_ERR("Null draw parameter: shader");

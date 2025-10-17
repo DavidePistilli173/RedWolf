@@ -13,6 +13,7 @@ target_sources(RedWolf PRIVATE
         evt/key_event.cpp
         evt/mouse_event.cpp
         gfx/api/gl/gl_context.cpp
+        gfx/api/gl/gl_framebuffer.cpp
         gfx/api/gl/gl_index_buffer.cpp
         gfx/api/gl/gl_renderer_api.cpp
         gfx/api/gl/gl_shader.cpp

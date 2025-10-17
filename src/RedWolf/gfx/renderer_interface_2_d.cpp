@@ -13,6 +13,13 @@ void rw::gfx::RendererInterface2D::clear_screen() {
     renderer_->clear_screen();
 }
 
+std::future<rw::gfx::Framebuffer*>
+    rw::gfx::RendererInterface2D::create_framebuffer(const uint64_t id, const FramebufferDescriptor& descriptor) {
+    std::promise<rw::gfx::Framebuffer*> promise;
+    promise.set_value(renderer_->create_framebuffer(id, descriptor));
+    return promise.get_future();
+}
+
 void rw::gfx::RendererInterface2D::draw_quad(Shader* shader, const Quad& quad) {
     renderer_->draw_quad(shader, quad);
 }

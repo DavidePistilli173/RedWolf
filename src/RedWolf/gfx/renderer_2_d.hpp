@@ -43,6 +43,13 @@ namespace rw::gfx {
          */
         static constexpr uint64_t max_reserved_texture_id{ 10000U };
 
+        // Reserved framebuffer IDs.
+
+        /**
+         * @brief Maximum number of engine-reserved framebuffer IDs for the 2D renderer.
+         */
+        static constexpr uint64_t max_reserved_framebuffer_id{ 10000U };
+
         /**
          * @brief Constructor.
          */
@@ -58,6 +65,14 @@ namespace rw::gfx {
          * @brief Clear the screen with the currently set colour.
          */
         void clear_screen();
+
+        /**
+         * @brief Create a framebuffer with the given descriptor.
+         * @param id ID of the framebuffer to create.
+         * @param descriptor Framebuffer creation options.
+         * @return Non-owning pointer to the created framebuffer.
+         */
+        [[nodiscard]] Framebuffer* create_framebuffer(const uint64_t id, const FramebufferDescriptor& descriptor);
 
         /**
          * @brief Draw a quad to the screen, using the Z coordinate to sort the draw order.
@@ -132,11 +147,13 @@ namespace rw::gfx {
          */
         void flush_and_reset_();
 
-        rw::core::AssetLibrary<Shader>    shader_library_;         /**< Collection of all loaded shaders. */
-        rw::core::AssetLibrary<Texture2D> texture_library_;        /**< Collection of all loaded textures. */
-        std::shared_ptr<VertexArray>      quad_vertex_array_;      /**< Vertex array used for drawing quads. */
-        std::shared_ptr<VertexBuffer>     quad_vertex_buffer_;     /**< Vertex buffer used for drawing quads. */
-        Shader*                           base_shader_{ nullptr }; /**< Textured shader. */
+        rw::core::AssetLibrary<Shader>      shader_library_;      /**< Collection of all loaded shaders. */
+        rw::core::AssetLibrary<Texture2D>   texture_library_;     /**< Collection of all loaded textures. */
+        rw::core::AssetLibrary<Framebuffer> framebuffer_library_; /**< Collection of all created framebuffers. */
+
+        std::shared_ptr<VertexArray>  quad_vertex_array_;      /**< Vertex array used for drawing quads. */
+        std::shared_ptr<VertexBuffer> quad_vertex_buffer_;     /**< Vertex buffer used for drawing quads. */
+        Shader*                       base_shader_{ nullptr }; /**< Textured shader. */
 
         rw::gfx::Texture2D* white_texture_{ nullptr }; /**< Completely white texture. */
 

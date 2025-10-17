@@ -11,6 +11,8 @@
 static constexpr uint64_t texture_id{ rw::gfx::Renderer2D::max_reserved_texture_id + 1U };
 static constexpr uint64_t spritesheet_id{ texture_id + 1U };
 
+static constexpr uint64_t test_framebuffer_id{ rw::gfx::Renderer2D::max_reserved_framebuffer_id + 1U };
+
 Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0F } {
     renderer_interface_ = rw::engine::App::get().window().renderer_interface_2d();
 
@@ -83,6 +85,14 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
 
     static constexpr rw::math::Rect<float> sub_region_rect{ .x = 256.0F, .y = 128.0F, .width = 128.0F, .height = 256.0F };
     spritesheet_quad_.texture_sub_region = spritesheet_quad_.texture->compute_sub_region(sub_region_rect);
+
+    const rw::gfx::FramebufferDescriptor framebuffer_descriptor{ .width  = rw::engine::App::get().window().width(),
+                                                                 .height = rw::engine::App::get().window().height() };
+    test_framebuffer_ = renderer_interface_->create_framebuffer(test_framebuffer_id, framebuffer_descriptor).get();
+    if (nullptr == test_framebuffer_) {
+        RW_ERR("Failed to create framebuffer {}", test_framebuffer_id);
+        return;
+    }
 }
 
 void Sandbox2D::attach() {}
@@ -92,6 +102,11 @@ void Sandbox2D::detach() {}
 void Sandbox2D::render_imgui() {
     ImGui::Begin("Settings");
     ImGui::ColorEdit4("Square colour.", rw::math::value_ptr(quad_1_.color));
+    ImGui::End();
+
+    ImGui::Begin("Test");
+    uint32_t framebuffer_id{ test_framebuffer_->color_attachment_id_() };
+    ImGui::Image(reinterpret_cast<void*>(framebuffer_id), ImVec2{ 320.0F, 180.0F });
     ImGui::End();
 
     ImGui::Begin("Profiling");
@@ -129,7 +144,7 @@ void Sandbox2D::update(const float delta_time) {
 
         renderer_interface_->clear_screen();
 
-        /*
+        test_framebuffer_->bind();
         {
             renderer_interface_->begin_scene(camera_controller_.camera());
             renderer_interface_->draw_quad(base_shader_, quad_4_);
@@ -144,18 +159,19 @@ void Sandbox2D::update(const float delta_time) {
             renderer_interface_->begin_scene(camera_controller_.camera());
             for (float y{ -5.0F }; y < 5.0F; y += 0.5F) {
                 for (float x{ -5.0F }; x < 5.0F; x += 0.5F) {
-                    rw::gfx::Quad quad{ .position      = { x, y, 0.1F },
-                                        .rotation      = 0.0F,
-                                        .size          = { 0.45F, 0.45F },
-                                        .texture       = nullptr,
-                                        .color         = { (x + 5.0F) / 10.0F, 0.4F, (y + 5.0F) / 10.0F, 0.7F },
-                                        .tiling_factor = 1.0F };
+                    rw::gfx::Quad quad{ .position           = { x, y, 0.1F },
+                                        .rotation           = 0.0F,
+                                        .size               = { 0.45F, 0.45F },
+                                        .color              = { (x + 5.0F) / 10.0F, 0.4F, (y + 5.0F) / 10.0F, 0.7F },
+                                        .tiling_factor      = 1.0F,
+                                        .texture            = nullptr,
+                                        .texture_sub_region = std::nullopt };
                     renderer_interface_->draw_quad(base_shader_, quad);
                 }
             }
             renderer_interface_->end_scene();
         }
-        */
+        test_framebuffer_->unbind();
 
         {
             renderer_interface_->begin_scene(camera_controller_.camera());
