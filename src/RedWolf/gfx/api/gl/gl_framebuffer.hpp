@@ -50,10 +50,16 @@ namespace rw::gfx::api::gl {
         void bind() const;
 
         /**
+         * @brief Get the raw framebuffer ID.
+         * @return Raw framebuffer ID.
+         */
+        [[nodiscard]] uint32_t id() const;
+
+        /**
          * @brief Get the renderer ID of the framebuffer's colour attachment.
          * @return Renderer ID of the colour attachment texture.
          */
-        [[nodiscard]] uint32_t color_attachment_id_() const;
+        [[nodiscard]] uint32_t color_attachment_id() const;
 
         /**
          * @brief Get the current framebuffer settings.

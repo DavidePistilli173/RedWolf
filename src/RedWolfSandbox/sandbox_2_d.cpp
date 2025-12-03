@@ -105,8 +105,9 @@ void Sandbox2D::render_imgui() {
     ImGui::End();
 
     ImGui::Begin("Test");
-    uint32_t framebuffer_id{ test_framebuffer_->color_attachment_id_() };
-    ImGui::Image(reinterpret_cast<void*>(framebuffer_id), ImVec2{ 320.0F, 180.0F });
+    uint32_t framebuffer_id{ test_framebuffer_->color_attachment_id() };
+    RW_WARN("Framebuffer ID {}", framebuffer_id);
+    ImGui::Image(framebuffer_id, ImVec2{ 320.0F, 160.0F });
     ImGui::End();
 
     ImGui::Begin("Profiling");
@@ -145,6 +146,7 @@ void Sandbox2D::update(const float delta_time) {
         renderer_interface_->clear_screen();
 
         test_framebuffer_->bind();
+        renderer_interface_->clear_screen();
         {
             renderer_interface_->begin_scene(camera_controller_.camera());
             renderer_interface_->draw_quad(base_shader_, quad_4_);

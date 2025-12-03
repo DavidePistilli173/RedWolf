@@ -45,7 +45,11 @@ void rw::gfx::api::gl::Framebuffer::bind() const {
     glBindFramebuffer(GL_FRAMEBUFFER, id_);
 }
 
-uint32_t rw::gfx::api::gl::Framebuffer::color_attachment_id_() const {
+uint32_t rw::gfx::api::gl::Framebuffer::id() const {
+    return id_;
+}
+
+uint32_t rw::gfx::api::gl::Framebuffer::color_attachment_id() const {
     return color_attachment_;
 }
 
