@@ -5,6 +5,8 @@
 #ifndef SRC_REDWOLF_SHADER_LIBRARY_HPP
 #define SRC_REDWOLF_SHADER_LIBRARY_HPP
 
+#include "RedWolf/common.hpp"
+
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -13,6 +15,7 @@
 namespace rw::core {
     /**
      * @brief Class for managing a collection of assets.
+     * @tparam T Type of asset to manage.
      */
     template<typename T>
     class AssetLibrary {
@@ -31,9 +34,9 @@ namespace rw::core {
          * @return Non-owning pointer to the newly-constructed asset.
          */
         template<typename... Args>
-        [[nodiscard]] T* create(const uint64_t id, Args&&... args) {
-            auto  new_asset{ std::unique_ptr<T>(new T(std::forward<Args>(args)...)) };
-            auto* result{ new_asset.get() };
+        [[nodiscard]] rw::Handle<T> create(const uint64_t id, Args&&... args) {
+            auto       new_asset{ std::make_unique<T>(std::forward<Args>(args)...) };
+            rw::Handle result{ .id = id, .ptr = new_asset.get() };
             assets_[id] = std::move(new_asset);
             return result;
         }
@@ -43,12 +46,12 @@ namespace rw::core {
          * @param id ID of the asset to get.
          * @return Non-owning pointer to the asset with the specified ID, if it exists. nullptr otherwise.
          */
-        [[nodiscard]] T* get(const uint64_t id) {
+        [[nodiscard]] rw::Handle<T> get(const uint64_t id) {
             const auto it{ assets_.find(id) };
             if (assets_.end() == it) {
-                return nullptr;
+                return {};
             }
-            return it->second.get();
+            return rw::Handle{ .id = id, .ptr = it->second.get() };
         }
 
      private:

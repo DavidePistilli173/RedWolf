@@ -72,14 +72,14 @@ namespace rw::gfx {
          * @param descriptor Framebuffer creation options.
          * @return Non-owning pointer to the created framebuffer.
          */
-        [[nodiscard]] Framebuffer* create_framebuffer(const uint64_t id, const FramebufferDescriptor& descriptor);
+        [[nodiscard]] Handle<Framebuffer> create_framebuffer(const uint64_t id, const FramebufferDescriptor& descriptor);
 
         /**
          * @brief Draw a quad to the screen, using the Z coordinate to sort the draw order.
          * @param shader Shader to use for rendering.
          * @param quad Quad data to render.
          */
-        void draw_quad(Shader* shader, Quad quad);
+        void draw_quad(rw::Handle<Shader> shader, Quad quad);
 
         /**
          * @brief Finish rendering a scene.
@@ -91,14 +91,14 @@ namespace rw::gfx {
          * @param id ID of the loaded shader.
          * @return Pointer to the loaded shader, or nullptr if it wasn't loaded.
          */
-        [[nodiscard]] Shader* get_shader(const uint64_t id);
+        [[nodiscard]] Handle<Shader> get_shader(const uint64_t id);
 
         /**
          * @brief Get a texture that was previously loaded by the renderer.
          * @param id ID of the loaded texture.
          * @return Pointer to the loaded texture, or nullptr if it wasn't loaded.
          */
-        [[nodiscard]] Texture2D* get_texture(const uint64_t id);
+        [[nodiscard]] Handle<Texture2D> get_texture(const uint64_t id);
 
         /**
          * @brief Load a texture from file.
@@ -106,12 +106,21 @@ namespace rw::gfx {
          * @param file_path Path where the texture image is located.
          * @return Non-owning pointer to the newly created texture.
          */
-        [[nodiscard]] Texture2D* load_texture(const uint64_t id, const std::string& file_path);
+        [[nodiscard]] Handle<Texture2D> load_texture(const uint64_t id, const std::string& file_path);
 
         /**
          * @brief Reset the stored renderer statistics.
          */
         void reset_stats();
+
+        /**
+         * @brief Set a new viewport for rendering.
+         * @param x X coordinate of the bottom-left corner of the viewport.
+         * @param y Y coordinate of the bottom-left corner of the viewport.
+         * @param width New width.
+         * @param height New height.
+         */
+        void set_viewport(const uint32_t x, uint32_t y, const uint32_t width, const uint32_t height);
 
         /**
          * @brief Get the current renderer statistics.
@@ -125,7 +134,7 @@ namespace rw::gfx {
          * @param texture Texture to compute the index for.
          * @return Shader texture index for the given texture.
          */
-        [[nodiscard]] float compute_texture_index_(const Texture2D* texture);
+        [[nodiscard]] float compute_texture_index_(const Handle<Texture2D> texture);
 
         /**
          * @brief Initialise the data needed to draw quads.
@@ -151,11 +160,11 @@ namespace rw::gfx {
         rw::core::AssetLibrary<Texture2D>   texture_library_;     /**< Collection of all loaded textures. */
         rw::core::AssetLibrary<Framebuffer> framebuffer_library_; /**< Collection of all created framebuffers. */
 
-        std::shared_ptr<VertexArray>  quad_vertex_array_;      /**< Vertex array used for drawing quads. */
-        std::shared_ptr<VertexBuffer> quad_vertex_buffer_;     /**< Vertex buffer used for drawing quads. */
-        Shader*                       base_shader_{ nullptr }; /**< Textured shader. */
+        std::shared_ptr<VertexArray>  quad_vertex_array_;  /**< Vertex array used for drawing quads. */
+        std::shared_ptr<VertexBuffer> quad_vertex_buffer_; /**< Vertex buffer used for drawing quads. */
+        rw::Handle<Shader>            base_shader_;        /**< Textured shader. */
 
-        rw::gfx::Texture2D* white_texture_{ nullptr }; /**< Completely white texture. */
+        rw::Handle<Texture2D> white_texture_; /**< Completely white texture. */
 
         rw::math::Mat4 view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
         /**
@@ -164,8 +173,8 @@ namespace rw::gfx {
         rw::math::Vec4 quad_vertice_positions_[4]{
             { -0.5F, -0.5F, 0.0F, 1.0F }, { 0.5F, -0.5F, 0.0F, 1.0F }, { 0.5F, 0.5F, 0.0F, 1.0F }, { -0.5F, 0.5F, 0.0F, 1.0F }
         };
-        std::vector<QuadVertex>       quad_vertex_buffer_data_; /**< Quad vertex buffer data. */
-        std::vector<const Texture2D*> texture_slots_;           /**< Active textures for the current draw batch. */
+        std::vector<QuadVertex>        quad_vertex_buffer_data_; /**< Quad vertex buffer data. */
+        std::vector<Handle<Texture2D>> texture_slots_;           /**< Active textures for the current draw batch. */
 
         Renderer2DStats temp_stats_; /**< Temporary statistics for the current recording. */
         Renderer2DStats stats_;      /**< Statistics for the renderer's last recording. */

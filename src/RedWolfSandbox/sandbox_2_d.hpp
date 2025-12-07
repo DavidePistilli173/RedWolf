@@ -29,7 +29,7 @@ class Sandbox2D : public rw::layers::Layer {
     rw::engine::CameraController                  camera_controller_;
     std::unique_ptr<rw::gfx::RendererInterface2D> renderer_interface_; /**< Interface to the renderer. */
 
-    rw::gfx::Shader* base_shader_{ nullptr };
+    rw::Handle<rw::gfx::Shader> base_shader_;
 
     rw::gfx::Quad quad_1_;
     rw::gfx::Quad quad_2_;
@@ -37,10 +37,10 @@ class Sandbox2D : public rw::layers::Layer {
     rw::gfx::Quad quad_4_;
     rw::gfx::Quad quad_5_;
 
-    rw::gfx::Texture2D* rgp_spritesheet_{ nullptr };
-    rw::gfx::Quad       spritesheet_quad_;
+    rw::Handle<rw::gfx::Texture2D> rgp_spritesheet_;
+    rw::gfx::Quad                  spritesheet_quad_;
 
-    rw::gfx::Framebuffer* test_framebuffer_{ nullptr };
+    rw::Handle<rw::gfx::Framebuffer> test_framebuffer_;
 
     rw::time::ProfilerData update_timing_{ "Sandbox2D::update" };
     rw::time::ProfilerData render_timing_{ "Sandbox2D::update - render" };

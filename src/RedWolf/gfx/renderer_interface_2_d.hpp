@@ -39,14 +39,14 @@ namespace rw::gfx {
          * @param descriptor Framebuffer creation options.
          * @return Non-owning pointer to the created framebuffer.
          */
-        [[nodiscard]] std::future<Framebuffer*> create_framebuffer(const uint64_t id, const FramebufferDescriptor& descriptor);
+        [[nodiscard]] std::future<Handle<Framebuffer>> create_framebuffer(const uint64_t id, const FramebufferDescriptor& descriptor);
 
         /**
          * @brief Draw a textured quad to the screen, using the Z coordinate to sort the draw order.
          * @param shader Shader to use for rendering.
          * @param quad Quad data to render.
          */
-        void draw_quad(Shader* shader, const Quad& quad);
+        void draw_quad(rw::Handle<Shader> shader, const Quad& quad);
 
         /**
          * @brief Finish rendering a scene.
@@ -58,14 +58,14 @@ namespace rw::gfx {
          * @param id ID of the loaded shader.
          * @return Pointer to the loaded shader, or nullptr if it wasn't loaded.
          */
-        [[nodiscard]] std::future<Shader*> get_shader(const uint64_t id);
+        [[nodiscard]] std::future<Handle<Shader>> get_shader(const uint64_t id);
 
         /**
          * @brief Get a texture that was previously loaded by the renderer.
          * @param id ID of the loaded texture.
          * @return Pointer to the loaded texture, or nullptr if it wasn't loaded.
          */
-        [[nodiscard]] std::future<Texture2D*> get_texture(const uint64_t id);
+        [[nodiscard]] std::future<Handle<Texture2D>> get_texture(const uint64_t id);
 
         /**
          * @brief Load a texture from file.
@@ -73,12 +73,21 @@ namespace rw::gfx {
          * @param file_path Path where the texture image is located.
          * @return Non-owning pointer to the newly created texture.
          */
-        [[nodiscard]] std::future<Texture2D*> load_texture(const uint64_t id, const std::string& file_path);
+        [[nodiscard]] std::future<Handle<Texture2D>> load_texture(const uint64_t id, const std::string& file_path);
 
         /**
          * @brief Reset the renderer statistics.
          */
         void reset_stats();
+
+        /**
+         * @brief Set a new viewport for rendering.
+         * @param x X coordinate of the bottom-left corner of the viewport.
+         * @param y Y coordinate of the bottom-left corner of the viewport.
+         * @param width New width.
+         * @param height New height.
+         */
+        void set_viewport(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height);
 
         /**
          * @brief Get the current renderer statistics.

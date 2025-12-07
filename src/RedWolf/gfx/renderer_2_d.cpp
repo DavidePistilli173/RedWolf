@@ -38,12 +38,12 @@ void rw::gfx::Renderer2D::clear_screen() {
     RendererApi::clear_screen();
 }
 
-rw::gfx::Framebuffer* rw::gfx::Renderer2D::create_framebuffer(const uint64_t id, const FramebufferDescriptor& descriptor) {
+rw::Handle<rw::gfx::Framebuffer> rw::gfx::Renderer2D::create_framebuffer(const uint64_t id, const FramebufferDescriptor& descriptor) {
     return framebuffer_library_.create(id, descriptor);
 }
 
-void rw::gfx::Renderer2D::draw_quad(Shader* shader, Quad quad) {
-    if (nullptr == shader) {
+void rw::gfx::Renderer2D::draw_quad(rw::Handle<Shader> shader, Quad quad) {
+    if (!shader.valid()) {
         RW_CORE_ERR("Null draw parameter: shader");
         return;
     }
@@ -100,15 +100,15 @@ void rw::gfx::Renderer2D::end_scene() {
     flush_();
 }
 
-rw::gfx::Shader* rw::gfx::Renderer2D::get_shader(const uint64_t id) {
+rw::Handle<rw::gfx::Shader> rw::gfx::Renderer2D::get_shader(const uint64_t id) {
     return shader_library_.get(id);
 }
 
-rw::gfx::Texture2D* rw::gfx::Renderer2D::get_texture(const uint64_t id) {
+rw::Handle<rw::gfx::Texture2D> rw::gfx::Renderer2D::get_texture(const uint64_t id) {
     return texture_library_.get(id);
 }
 
-rw::gfx::Texture2D* rw::gfx::Renderer2D::load_texture(const uint64_t id, const std::string& file_path) {
+rw::Handle<rw::gfx::Texture2D> rw::gfx::Renderer2D::load_texture(const uint64_t id, const std::string& file_path) {
     return texture_library_.create(id, file_path);
 }
 
@@ -118,16 +118,21 @@ void rw::gfx::Renderer2D::reset_stats() {
     temp_stats_.quad_count = 0;
 }
 
+void rw::gfx::Renderer2D::set_viewport(const uint32_t x, uint32_t y, const uint32_t width, const uint32_t height) {
+    RendererApi::set_viewport(x, y, width, height);
+}
+
 const rw::gfx::Renderer2DStats& rw::gfx::Renderer2D::stats() const {
     return stats_;
 }
 
-float rw::gfx::Renderer2D::compute_texture_index_(const Texture2D* texture) {
-    if (nullptr == texture) {
+float rw::gfx::Renderer2D::compute_texture_index_(const Handle<Texture2D> texture) {
+    if (!texture.valid()) {
         return 0.0F;
     }
 
-    if (const auto it{ std::ranges::find(texture_slots_, texture) }; texture_slots_.end() != it) {
+    if (const auto it{ std::ranges::find_if(texture_slots_, [texture](const auto& item) { return item.id == texture.id; }) };
+        texture_slots_.end() != it) {
         return static_cast<float>(std::distance(texture_slots_.begin(), it));
     }
 

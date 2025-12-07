@@ -14,6 +14,40 @@ namespace rw {
     static constexpr float nanoseconds_to_milliseconds{ 1e-6F }; /**< Conversion factor between nanoseconds and milliseconds. */
     static constexpr float nanoseconds_to_seconds{ 1e-9F };      /**< Conversion factor between nanoseconds and seconds. */
 
+    /**
+     * @brief ID for ReaWolf resources.
+     */
+    using Id = uint64_t;
+
+    static constexpr Id invalid_id{ 0U }; /**< Constant representing an invalid resource ID. */
+
+    /**
+     * @brief Generic handle for RedWolf resources, cheap enough to be copied around.
+     * @details This handle does not own the resource it points to, and is only valid as long as the resource exists.
+     * @tparam T Type of resource contained in the handle.
+     */
+    template<typename T>
+    struct Handle {
+        /**
+         * @brief Arrow operator to access the underlying resource.
+         * @return Pointer to the resource.
+         */
+        [[nodiscard]] T* operator->() const noexcept {
+            return ptr;
+        }
+
+        /**
+         * @brief Check if the handle is valid (i.e., points to a resource).
+         * @return True if the handle is valid, false otherwise.
+         */
+        [[nodiscard]] bool valid() const noexcept {
+            return nullptr != ptr;
+        }
+
+        Id id{ invalid_id }; /**< Unique identifier for the resource. */
+        T* ptr{ nullptr };   /**< Pointer to the resource. */
+    };
+
     namespace core {
         /**
          * @brief Concept for objects that can be used as std::format arguments.

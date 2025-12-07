@@ -17,7 +17,7 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
     renderer_interface_ = rw::engine::App::get().window().renderer_interface_2d();
 
     base_shader_ = renderer_interface_->get_shader(rw::gfx::Renderer2D::base_shader_id).get();
-    if (nullptr == base_shader_) {
+    if (!base_shader_.valid()) {
         RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::base_shader_id);
         return;
     }
@@ -27,7 +27,7 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
                 .size               = { 0.8F, 0.8F },
                 .color              = {},
                 .tiling_factor      = 1.0F,
-                .texture            = nullptr,
+                .texture            = rw::Handle<rw::gfx::Texture2D>{},
                 .texture_sub_region = std::nullopt };
 
     quad_2_ = { .position           = { 0.5F, -0.5F, 0.0F },
@@ -35,7 +35,7 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
                 .size               = { 0.5F, 0.75F },
                 .color              = { 0.2F, 0.3F, 0.8F, 1.0F },
                 .tiling_factor      = 1.0F,
-                .texture            = nullptr,
+                .texture            = rw::Handle<rw::gfx::Texture2D>{},
                 .texture_sub_region = std::nullopt };
 
     quad_3_ = { .position           = { 0.5F, 0.5F, 0.0F },
@@ -43,7 +43,7 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
                 .size               = { 0.55F, 0.87F },
                 .color              = { 0.2F, 0.8F, 0.3F, 1.0F },
                 .tiling_factor      = 1.0F,
-                .texture            = nullptr,
+                .texture            = rw::Handle<rw::gfx::Texture2D>{},
                 .texture_sub_region = std::nullopt };
 
     quad_4_ = { .position      = { 0.0F, 0.0F, -0.1F },
@@ -62,7 +62,7 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
                 .texture            = quad_4_.texture,
                 .texture_sub_region = std::nullopt };
 
-    if (nullptr == quad_4_.texture) {
+    if (!quad_4_.texture.valid()) {
         RW_ERR("Failed to get texture {}", texture_id);
         return;
     }
@@ -78,7 +78,7 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
     };
 
     rgp_spritesheet_ = spritesheet_quad_.texture;
-    if (nullptr == rgp_spritesheet_) {
+    if (!rgp_spritesheet_.valid()) {
         RW_ERR("Failed to get texture {}", spritesheet_id);
         return;
     }
@@ -89,7 +89,7 @@ Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0
     const rw::gfx::FramebufferDescriptor framebuffer_descriptor{ .width  = rw::engine::App::get().window().width(),
                                                                  .height = rw::engine::App::get().window().height() };
     test_framebuffer_ = renderer_interface_->create_framebuffer(test_framebuffer_id, framebuffer_descriptor).get();
-    if (nullptr == test_framebuffer_) {
+    if (!test_framebuffer_.valid()) {
         RW_ERR("Failed to create framebuffer {}", test_framebuffer_id);
         return;
     }
@@ -106,7 +106,6 @@ void Sandbox2D::render_imgui() {
 
     ImGui::Begin("Test");
     uint32_t framebuffer_id{ test_framebuffer_->color_attachment_id() };
-    RW_WARN("Framebuffer ID {}", framebuffer_id);
     ImGui::Image(framebuffer_id, ImVec2{ 320.0F, 160.0F });
     ImGui::End();
 
@@ -166,7 +165,7 @@ void Sandbox2D::update(const float delta_time) {
                                         .size               = { 0.45F, 0.45F },
                                         .color              = { (x + 5.0F) / 10.0F, 0.4F, (y + 5.0F) / 10.0F, 0.7F },
                                         .tiling_factor      = 1.0F,
-                                        .texture            = nullptr,
+                                        .texture            = rw::Handle<rw::gfx::Texture2D>{},
                                         .texture_sub_region = std::nullopt };
                     renderer_interface_->draw_quad(base_shader_, quad);
                 }

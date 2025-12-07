@@ -20,7 +20,7 @@ namespace rw::gfx {
         rw::math::Vec2                               size{ 1.0F };          /**< Size of the quad. */
         rw::math::Vec4                               color{ color_white };  /**< Colour. */
         float                                        tiling_factor{ 1.0F }; /**< Texture tiling multiplier. */
-        rw::gfx::Texture2D*                          texture{ nullptr };    /**< Optional texture to fill the quad. */
+        Handle<Texture2D>                            texture;               /**< Optional texture to fill the quad. */
         std::optional<rw::gfx::Texture2D::SubRegion> texture_sub_region{};  /**< Optional sub-region of the texture. */
     };
 

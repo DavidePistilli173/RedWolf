@@ -44,7 +44,6 @@ rw::ui::Window::Window(const WindowDescriptor& descriptor) :
     glfwSetWindowUserPointer(handle_, this);
     set_vsync(true);
 
-    renderer_    = std::make_shared<rw::gfx::Renderer>();
     renderer_2d_ = std::make_shared<rw::gfx::Renderer2D>();
 
     init_callbacks_();
@@ -66,10 +65,6 @@ rw::ui::WindowHandle rw::ui::Window::handle() {
 
 uint32_t rw::ui::Window::height() const {
     return height_;
-}
-
-std::unique_ptr<rw::gfx::RendererInterface> rw::ui::Window::renderer_interface() {
-    return std::make_unique<rw::gfx::RendererInterface>(renderer_);
 }
 
 std::unique_ptr<rw::gfx::RendererInterface2D> rw::ui::Window::renderer_interface_2d() {

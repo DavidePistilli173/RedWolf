@@ -27,7 +27,7 @@ rw::engine::App::App(const rw::ui::WindowDescriptor& window_data) {
     window_ = std::make_unique<rw::ui::Window>(window_data);
     window_->set_event_callback([this](const rw::evt::Event& event) { return on_event(event); });
 
-    renderer_interface_ = window_->renderer_interface();
+    renderer_interface_2d_ = window_->renderer_interface_2d();
 
     debug_layer_ = dynamic_cast<rw::layers::DebugLayer*>(layer_stack_.push_layer<rw::layers::DebugLayer>());
     if (nullptr == debug_layer_) {
@@ -110,5 +110,5 @@ void rw::engine::App::on_window_resize_(const rw::evt::WindowResizedEvent& event
     }
     minimized_ = false;
 
-    renderer_interface_->set_viewport(0, 0, event.width, event.height);
+    renderer_interface_2d_->set_viewport(0, 0, event.width, event.height);
 }
