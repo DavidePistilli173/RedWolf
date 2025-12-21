@@ -16,12 +16,18 @@ namespace rw::engine {
      */
     class CameraController {
      public:
+        static constexpr float speed_scaling{ 300.0F }; /**< Speed scaling factor for camera movement. */
+
         /**
          * @brief Constructor.
-         * @param aspect_ratio Target aspect ratio of the camera.
+         * @param width Width of the viewport.
+         * @param height Height of the viewport.
+         * @param movement_enabled If true, enables movement input control. Otherwise, the camera position will be fixed.
          * @param rotation_enabled If true, enables rotation input control. Otherwise, the camera orientation will be fixed.
+         * @param zoom_enabled If true, enables zoom input control. Otherwise, the camera zoom level will be fixed.
          */
-        explicit CameraController(const float aspect_ratio, const bool rotation_enabled = false);
+        explicit CameraController(
+            const uint32_t width, const uint32_t height, const bool movement_enabled, const bool rotation_enabled, const bool zoom_enabled);
 
         /**
          * @brief Get a reference to the actual camera.
@@ -56,12 +62,16 @@ namespace rw::engine {
          */
         [[nodiscard]] bool on_window_resized_(const rw::evt::WindowResizedEvent& event);
 
-        float aspect_ratio_{ 0.0F };      /**< Aspect ratio of the camera. */
-        float zoom_level_{ 1.0F };        /**< Camera zoom level. Higher values mean the camera is further out. */
-        bool  rotation_enabled_{ false }; /**< If true, input controls the camera rotation. */
+        uint32_t width_{ 0 };                /**< Width of the viewport. */
+        uint32_t height_{ 0 };               /**< Height of the viewport. */
+        float    aspect_ratio_{ 0.0F };      /**< Aspect ratio of the camera. */
+        float    zoom_level_{ 1.0F };        /**< Camera zoom level. Higher values mean the camera is further out. */
+        bool     movement_enabled_{ false }; /**< If true, input controls the camera movement. */
+        bool     rotation_enabled_{ false }; /**< If true, input controls the camera rotation. */
+        bool     zoom_enabled_{ false };     /**< If true, input controls the camera zoom level. */
 
-        float translation_speed_{ zoom_level_ * 4.0F }; /**< Camera translation speed. */
-        float rotation_speed_{ 90.0F };                 /**< Camera rotation speed. [deg/s] */
+        float translation_speed_{ zoom_level_ * speed_scaling }; /**< Camera translation speed. */
+        float rotation_speed_{ 90.0F };                          /**< Camera rotation speed. [deg/s] */
 
         rw::gfx::Camera camera_; /**< Actual camera. */
     };

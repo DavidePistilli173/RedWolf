@@ -13,7 +13,7 @@ static constexpr uint64_t spritesheet_id{ texture_id + 1U };
 
 static constexpr uint64_t test_framebuffer_id{ rw::gfx::Renderer2D::max_reserved_framebuffer_id + 1U };
 
-Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280.0F / 720.0F } {
+Sandbox2D::Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280, 720, true, false, true } {
     renderer_interface_ = rw::engine::App::get().window().renderer_interface_2d();
 
     base_shader_ = renderer_interface_->get_shader(rw::gfx::Renderer2D::base_shader_id).get();
