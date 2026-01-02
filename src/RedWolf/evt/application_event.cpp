@@ -6,8 +6,8 @@
 
 #include <string>
 
-rw::evt::WindowResizedEvent::WindowResizedEvent(const uint32_t new_width, const uint32_t new_height) :
-    Event(), width{ new_width }, height{ new_height } {}
+rw::evt::WindowResizedEvent::WindowResizedEvent(const uint32_t new_width, const uint32_t new_height, const rw::math::Vec2 p_scale_factor) :
+    Event(), width{ new_width }, height{ new_height }, scale_factor{ p_scale_factor } {}
 
 rw::evt::EventCategory rw::evt::WindowResizedEvent::category() const {
     return compose_categories<EventCategoryType::application>();

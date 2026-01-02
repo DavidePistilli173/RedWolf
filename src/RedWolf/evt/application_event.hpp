@@ -5,6 +5,7 @@
 #ifndef APPLICATION_EVENT_HPP
 #define APPLICATION_EVENT_HPP
 
+#include "RedWolf/math/math.hpp"
 #include "event.hpp"
 
 #include <cstdint>
@@ -18,8 +19,9 @@ namespace rw::evt {
          * @brief Constructor.
          * @param new_width New window width.
          * @param new_height New window height.
+         * @param p_scale_factor Scale factor (new over old).
          */
-        WindowResizedEvent(const uint32_t new_width, const uint32_t new_height);
+        WindowResizedEvent(const uint32_t new_width, const uint32_t new_height, const rw::math::Vec2 p_scale_factor);
 
         /**
          * @brief Destructor.
@@ -67,8 +69,9 @@ namespace rw::evt {
          */
         [[nodiscard]] EventType type() const override;
 
-        uint32_t width{ 0 };  /**< New window width. */
-        uint32_t height{ 0 }; /**< New window height. */
+        uint32_t       width{ 0 };           /**< New window width. */
+        uint32_t       height{ 0 };          /**< New window height. */
+        rw::math::Vec2 scale_factor{ 1.0F }; /**< Scale factor (new over old). */
     };
 
     /**

@@ -242,12 +242,16 @@ void rw::ui::Window::window_resize_clbk_(rw::ui::WindowHandle window, int width,
         RW_CORE_WARN("Invalid window size: {}x{}", width, height);
         return;
     }
-    self->width_  = static_cast<uint32_t>(width);
-    self->height_ = static_cast<uint32_t>(height);
+    const rw::evt::WindowResizedEvent event{ static_cast<uint32_t>(width),
+                                             static_cast<uint32_t>(height),
+                                             rw::math::Vec2{ static_cast<float>(width) / static_cast<float>(self->width_),
+                                                             static_cast<float>(height) / static_cast<float>(self->height_) } };
+
+    self->width_  = event.width;
+    self->height_ = event.height;
 
     if (nullptr == self->event_callback_) {
         return;
     }
-    const rw::evt::WindowResizedEvent event{ self->width_, self->height_ };
     (void) self->event_callback_(event);
 }
