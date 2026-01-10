@@ -87,15 +87,6 @@ bool MainGame::on_event(const rw::evt::Event& event) {
         background_quad_.position.x *= resize_event.scale_factor.x;
         background_quad_.position.y *= resize_event.scale_factor.y;
 
-        RW_TRACE(
-            "new_win_size: {}x{}; bg pos: {}x{}; size: {}x{}",
-            resize_event.width,
-            resize_event.height,
-            background_quad_.position.x,
-            background_quad_.position.y,
-            background_quad_.size.x,
-            background_quad_.size.y);
-
         mid_field_quad_.position.x *= resize_event.scale_factor.x;
         mid_field_quad_.position.y *= resize_event.scale_factor.y;
         mid_field_quad_.size *= resize_event.scale_factor;
