@@ -7,6 +7,7 @@
 #include "common.hpp"
 
 #include <RedWolf/engine/app.hpp>
+#include <RedWolf/gfx/font.hpp>
 #include <RedWolf/input/polling.hpp>
 #include <RedWolf/util/logger.hpp>
 
@@ -64,6 +65,8 @@ MainGame::MainGame() : Layer("PongMainGame"), camera_controller_{ window_setting
                    .tiling_factor      = 1.0F,
                    .texture            = ball_texture,
                    .texture_sub_region = std::nullopt };
+
+    rw::gfx::Font font("C:/Windows/Fonts/arial.ttf");
 }
 
 void MainGame::attach() {}

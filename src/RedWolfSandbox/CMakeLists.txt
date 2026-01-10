@@ -7,7 +7,7 @@ target_sources(RedWolfSandbox PRIVATE
 
 if (MSVC)
     target_compile_options(RedWolf PRIVATE
-            /W4
+            /W3
             /WX
     )
 else ()

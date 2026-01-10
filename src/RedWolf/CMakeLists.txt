@@ -22,6 +22,7 @@ target_sources(RedWolf PRIVATE
         gfx/api/gl/gl_vertex_buffer.cpp
         gfx/buffer_layout.cpp
         gfx/camera.cpp
+        gfx/font.cpp
         gfx/renderer_2_d.cpp
         gfx/renderer_interface_2_d.cpp
         input/polling.cpp
@@ -49,7 +50,7 @@ target_compile_definitions(RedWolf PUBLIC
 
 if (MSVC)
     target_compile_options(RedWolf PRIVATE
-            /W4
+            /W3
             /WX
     )
 else ()

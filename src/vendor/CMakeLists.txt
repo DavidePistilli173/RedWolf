@@ -77,6 +77,7 @@ target_sources(freetype PRIVATE
         freetype/src/sdf/sdf.c
         freetype/src/sfnt/sfnt.c
         freetype/src/smooth/smooth.c
+        freetype/src/svg/svg.c
         freetype/src/truetype/truetype.c
         freetype/src/type1/type1.c
         freetype/src/type42/type42.c
@@ -155,6 +156,8 @@ target_sources(vendor PRIVATE
 target_include_directories(vendor PUBLIC
         ${PROJECT_SOURCE_DIR}/src/vendor/glfw/include
         ${PROJECT_SOURCE_DIR}/src/vendor/glm
+        ${PROJECT_SOURCE_DIR}/src/vendor/msdf_atlas_gen
+        ${FREETYPE_INCLUDE_DIR}
 )
 
 target_link_libraries(vendor PUBLIC
@@ -163,6 +166,4 @@ target_link_libraries(vendor PUBLIC
         glm::glm
         imgui
         msdf-atlas-gen
-        PNG::PNG
-        ZLIB::ZLIB
 )
