@@ -48,6 +48,17 @@ namespace rw {
         T* ptr{ nullptr };   /**< Pointer to the resource. */
     };
 
+    /**
+     * @brief Structure representing version information.
+     */
+    struct VersionInfo {
+        uint32_t major{ 0U }; /**< Major version number. */
+        uint32_t minor{ 0U }; /**< Minor version number. */
+        uint32_t patch{ 0U }; /**< Patch version number. */
+    };
+
+    static constexpr VersionInfo current_version{ .major = 0U, .minor = 6U, .patch = 0U }; /**< Current version of the RedWolf engine. */
+
     namespace core {
         /**
          * @brief Concept for objects that can be used as std::format arguments.
@@ -66,5 +77,16 @@ namespace rw {
                                 std::is_same_v<T, std::filesystem::file_time_type::clock> || std::is_same_v<T, std::chrono::file_clock>;
     } // namespace time
 } // namespace rw
+
+/**
+ * @brief std::formatter specialization for rw::VersionInfo
+ */
+template<>
+struct std::formatter<rw::VersionInfo> : std::formatter<std::string> {
+    auto format(const rw::VersionInfo& version_info, std::format_context& ctx) const {
+        return std::formatter<std::string>::format(
+            std::format("v{}.{}.{}", version_info.major, version_info.minor, version_info.patch), ctx);
+    }
+};
 
 #endif // COMMON_HPP

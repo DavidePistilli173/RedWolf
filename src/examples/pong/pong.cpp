@@ -11,7 +11,7 @@
 Pong::Pong() :
     rw::engine::App(window_settings), // example_layer_{ push_layer<ExampleLayer>() },
     main_game_{ push_layer<MainGame>() } {
-    RW_INFO("Welcome to Pong, powered by RedWolf.");
+    RW_INFO("Welcome to Pong, powered by RedWolf {}.", rw::current_version);
 }
 
 std::unique_ptr<rw::engine::App> rw::engine::create_app() {
