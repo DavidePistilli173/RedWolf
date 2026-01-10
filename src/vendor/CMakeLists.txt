@@ -1,0 +1,59 @@
+# GLAD
+add_subdirectory(glad)
+
+# GLFW
+set(BUILD_SHARED_LIBS OFF)
+set(GLFW_BUILD_DOCS OFF)
+set(GLFW_INSTALL OFF)
+add_subdirectory(glfw)
+
+# GLM
+set(GLM_BUILD_TESTS OFF)
+set(GLM_ENABLE_CXX_20 ON)
+add_subdirectory(glm)
+
+# IMGUI
+add_library(imgui STATIC)
+target_sources(imgui PRIVATE
+        imgui/backends/imgui_impl_glfw.cpp
+        imgui/backends/imgui_impl_opengl3.cpp
+        imgui/imgui.cpp
+        imgui/imgui_demo.cpp
+        imgui/imgui_draw.cpp
+        imgui/imgui_tables.cpp
+        imgui/imgui_widgets.cpp
+)
+
+target_include_directories(imgui PUBLIC
+        ${PROJECT_SOURCE_DIR}/src/vendor
+        ${PROJECT_SOURCE_DIR}/src/vendor/imgui
+)
+
+target_compile_definitions(imgui PRIVATE
+        IMGUI_IMPL_OPENGL_LOADER_GLAD
+)
+
+target_link_libraries(imgui PUBLIC
+        glfw
+)
+
+# Vendor Library
+add_library(vendor STATIC)
+
+target_sources(vendor PRIVATE
+        glfw.cpp
+        stb.cpp
+)
+
+target_include_directories(vendor PUBLIC
+        ${PROJECT_SOURCE_DIR}/vendor/glfw/include
+        ${PROJECT_SOURCE_DIR}/vendor/glm
+)
+
+target_link_libraries(vendor PUBLIC
+        glad
+        glfw
+        ${GLFW_LIBRARIES}
+        glm::glm
+        imgui
+)
