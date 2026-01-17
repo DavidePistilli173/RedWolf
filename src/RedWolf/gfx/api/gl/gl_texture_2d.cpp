@@ -9,6 +9,17 @@
 #include <glad/glad.h>
 #include <stb/stb_image.h>
 
+rw::gfx::api::gl::Texture2D::Texture2D() {
+    glCreateTextures(GL_TEXTURE_2D, 1, &id_);
+
+    glTextureParameteri(id_, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(id_, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(id_, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(id_, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    RW_CORE_TRACE("Texture {} created (empty).", id_);
+}
+
 rw::gfx::api::gl::Texture2D::Texture2D(const std::string_view path) : path_{ path } {
     int channels{ 0 };
     int width{ 0 };
@@ -53,22 +64,6 @@ rw::gfx::api::gl::Texture2D::Texture2D(const std::string_view path) : path_{ pat
 
     glTextureSubImage2D(id_, 0, 0, 0, width, height, data_format_, GL_UNSIGNED_BYTE, texture_data);
     stbi_image_free(texture_data);
-
-    RW_CORE_TRACE("Texture {} created from {}", id_, path_);
-}
-
-rw::gfx::api::gl::Texture2D::Texture2D(const uint32_t width, const uint32_t height) : width_{ width }, height_{ height } {
-    // Adjust the format depending on the loaded channels.
-    internal_format_ = GL_RGBA8;
-    data_format_     = GL_RGBA;
-
-    glCreateTextures(GL_TEXTURE_2D, 1, &id_);
-    glTextureStorage2D(id_, 1, internal_format_, static_cast<GLsizei>(width_), static_cast<GLsizei>(height_));
-
-    glTextureParameteri(id_, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTextureParameteri(id_, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTextureParameteri(id_, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTextureParameteri(id_, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     RW_CORE_TRACE("Texture {} created from {}", id_, path_);
 }
@@ -132,14 +127,49 @@ const std::string& rw::gfx::api::gl::Texture2D::path() const {
     return path_;
 }
 
-void rw::gfx::api::gl::Texture2D::set_data(const std::span<const uint8_t> data) {
-    if (data.size() < width_ * height_ * bytes_per_pixel()) {
-        RW_CORE_ERR("Insufficient data to fill the texture: size={}; width={}; height={}", data.size(), width_, height_);
+void rw::gfx::api::gl::Texture2D::set_data(const std::span<const uint8_t> data, const TextureDescriptor& descriptor) {
+    width_  = descriptor.width;
+    height_ = descriptor.height;
+
+    // Set the data format.
+    if (!set_data_format_(descriptor.format)) {
+        RW_CORE_ERR("Failed to set data format for texture {id}.", id_);
         return;
     }
+
+    if (data.size() < width_ * height_ * bytes_per_pixel()) {
+        RW_CORE_ERR(
+            "Insufficient data to fill the texture: size={}; width={}; height={}; bytes_per_pixel={}",
+            data.size(),
+            width_,
+            height_,
+            bytes_per_pixel());
+        return;
+    }
+    glTextureStorage2D(id_, 1, internal_format_, static_cast<GLsizei>(width_), static_cast<GLsizei>(height_));
     glTextureSubImage2D(id_, 0, 0, 0, static_cast<int>(width_), static_cast<int>(height_), data_format_, GL_UNSIGNED_BYTE, data.data());
 }
 
 uint32_t rw::gfx::api::gl::Texture2D::width() const {
     return width_;
+}
+
+bool rw::gfx::api::gl::Texture2D::set_data_format_(const TextureFormat format) {
+    switch (format) {
+    case TextureFormat::rgb8:
+        internal_format_ = GL_RGB8;
+        data_format_     = GL_RGB;
+        break;
+    case TextureFormat::rgba8:
+        internal_format_ = GL_RGBA8;
+        data_format_     = GL_RGBA;
+        break;
+    case TextureFormat::r8:
+    case TextureFormat::rgba32f:
+    default:
+        RW_CORE_ERR("Unsupported texture format: {}", static_cast<int>(format));
+        return false;
+    }
+
+    return true;
 }

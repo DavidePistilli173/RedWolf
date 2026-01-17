@@ -2,11 +2,12 @@
 // Created by david on 21/12/2025.
 //
 
-#ifndef SRC_REDWOLF_MAIN_GAME_HPP
-#define SRC_REDWOLF_MAIN_GAME_HPP
+#ifndef SRC_REDWOLF_EXAMPLES_PONG_MAIN_GAME_HPP
+#define SRC_REDWOLF_EXAMPLES_PONG_MAIN_GAME_HPP
 
 #include <RedWolf/engine/app.hpp>
 #include <RedWolf/engine/camera_controller.hpp>
+#include <RedWolf/gfx/font.hpp>
 #include <RedWolf/gfx/renderer_interface_2_d.hpp>
 #include <RedWolf/layers/layer.hpp>
 #include <RedWolf/ui/window.hpp>
@@ -46,6 +47,8 @@ class MainGame : public rw::layers::Layer {
     rw::gfx::Quad ball_quad_;       /**< Quad for the ball. */
 
     rw::math::Vec2 ball_velocity_{ default_ball_velocity }; /**< Current velocity of the ball. */
+
+    rw::gfx::Font font_;
 };
 
 #endif // SRC_REDWOLF_MAIN_GAME_HPP

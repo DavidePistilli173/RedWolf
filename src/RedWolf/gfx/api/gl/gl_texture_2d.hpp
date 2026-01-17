@@ -7,6 +7,7 @@
 
 #include "RedWolf/math/geometry.hpp"
 #include "RedWolf/math/math.hpp"
+#include "Redwolf/gfx/common.hpp"
 
 #include <array>
 #include <cstdint>
@@ -22,18 +23,17 @@ namespace rw::gfx::api::gl {
     class Texture2D {
      public:
         using SubRegion = std::array<rw::math::Vec2, 4>; /**< Texture coordinates of a texture sub-region. */
+
+        /**
+         * @brief Constructor that creates an empty texture.
+         */
+        explicit Texture2D();
+
         /**
          * @brief Constructor that loads a texture from a file.
          * @param path Path to the texture file.
          */
         explicit Texture2D(const std::string_view path);
-
-        /**
-         * @brief Constructor that creates a texture with a given size.
-         * @param width Width of the texture.
-         * @param height Height of the texture.
-         */
-        explicit Texture2D(const uint32_t width, const uint32_t height);
 
         /**
          * @brief Destructor.
@@ -92,10 +92,19 @@ namespace rw::gfx::api::gl {
         [[nodiscard]] const std::string& path() const;
 
         /**
+         * @brief Get the renderer Id of the texture.
+         * @return Renderer ID of the texture.
+         */
+        [[nodiscard]] uint32_t renderer_id() const noexcept {
+            return id_;
+        }
+
+        /**
          * @brief Set the texture data.
          * @param data Data to set into the texture.
+         * @param descriptor Parameters for setting the data correctly.
          */
-        void set_data(const std::span<const uint8_t> data);
+        void set_data(const std::span<const uint8_t> data, const TextureDescriptor& descriptor);
 
         /**
          * @brief Get the width of the texture.
@@ -104,6 +113,13 @@ namespace rw::gfx::api::gl {
         [[nodiscard]] uint32_t width() const;
 
      private:
+        /**
+         * @brief Set the internal data format of the texture.
+         * @param format User-specified texture format.
+         * @return true on success, false otherwise.
+         */
+        [[nodiscard]] bool set_data_format_(const TextureFormat format);
+
         uint32_t id_{ 0U }; /**< OpenGL texture ID. */
 
         std::string path_;                       /**< Path to the texture file. */

@@ -11,7 +11,9 @@
 #include <RedWolf/input/polling.hpp>
 #include <RedWolf/util/logger.hpp>
 
-MainGame::MainGame() : Layer("PongMainGame"), camera_controller_{ window_settings.width, window_settings.height, false, false, false } {
+MainGame::MainGame() :
+    Layer("PongMainGame"), camera_controller_{ window_settings.width, window_settings.height, false, false, false },
+    font_{ "C:/Windows/Fonts/arial.ttf" } {
     renderer_interface_ = window_.renderer_interface_2d();
 
     base_shader_ = renderer_interface_->get_shader(rw::gfx::Renderer2D::base_shader_id).get();
@@ -65,15 +67,17 @@ MainGame::MainGame() : Layer("PongMainGame"), camera_controller_{ window_setting
                    .tiling_factor      = 1.0F,
                    .texture            = ball_texture,
                    .texture_sub_region = std::nullopt };
-
-    rw::gfx::Font font("C:/Windows/Fonts/arial.ttf");
 }
 
 void MainGame::attach() {}
 
 void MainGame::detach() {}
 
-void MainGame::render_imgui() {}
+void MainGame::render_imgui() {
+    ImGui::Begin("Test");
+    ImGui::Image(font_.atlas_texture().renderer_id(), { 512, 512 }, { 0, 1 }, { 1, 0 });
+    ImGui::End();
+}
 
 void MainGame::update(const float delta_time) {
     update_logic_(delta_time);

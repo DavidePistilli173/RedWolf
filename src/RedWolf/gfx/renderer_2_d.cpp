@@ -191,8 +191,8 @@ void rw::gfx::Renderer2D::loadBasicAssets_() {
     base_shader_->set_i32_array("u_textures", texture_samplers);
 
     // Textures
-    white_texture_ = texture_library_.create(white_texture_id, 1, 1);
-    white_texture_->set_data(white_texture_data);
+    white_texture_ = texture_library_.create(white_texture_id);
+    white_texture_->set_data(white_texture_data, TextureDescriptor{ .width = 1, .height = 1, .format = TextureFormat::rgba8 });
 }
 
 void rw::gfx::Renderer2D::flush_() {

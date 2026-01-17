@@ -2,8 +2,8 @@
 // Created by david on 21/12/2025.
 //
 
-#ifndef SRC_REDWOLF_COMMON_HPP
-#define SRC_REDWOLF_COMMON_HPP
+#ifndef SRC_REDWOLF_EXAMPLES_PONG_COMMON_HPP
+#define SRC_REDWOLF_EXAMPLES_PONG_COMMON_HPP
 
 #include <RedWolf/ui/window.hpp>
 

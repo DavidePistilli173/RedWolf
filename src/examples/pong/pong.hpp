@@ -2,8 +2,8 @@
 // Created by david on 21/12/2025.
 //
 
-#ifndef SRC_REDWOLF_PONG_HPP
-#define SRC_REDWOLF_PONG_HPP
+#ifndef SRC_REDWOLF_EXAMPLES_PONG_PONG_HPP
+#define SRC_REDWOLF_EXAMPLES_PONG_PONG_HPP
 
 #include "main_game.hpp"
 
