@@ -110,9 +110,13 @@ set(GLFW_INSTALL OFF)
 add_subdirectory(glfw)
 
 ############################# GLM #############################
-set(GLM_BUILD_TESTS OFF)
-set(GLM_ENABLE_CXX_20 ON)
-add_subdirectory(glm)
+add_library(glm STATIC)
+target_sources(glm PUBLIC
+        FILE_SET CXX_MODULES FILES glm/glm/glm.cppm
+)
+target_include_directories(glm PUBLIC
+        ${PROJECT_SOURCE_DIR}/src/vendor/glm
+)
 
 ############################# IMGUI #############################
 add_library(imgui STATIC)
@@ -163,7 +167,7 @@ target_include_directories(vendor PUBLIC
 target_link_libraries(vendor PUBLIC
         glad
         glfw
-        glm::glm
+        glm
         imgui
         msdf-atlas-gen
 )

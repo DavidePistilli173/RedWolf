@@ -1,8 +1,10 @@
 add_executable(Pong)
 
 target_sources(Pong PRIVATE
-        "pong.cpp"
-        "main_game.cpp"
+        FILE_SET CXX_MODULES FILES
+        "common.cppm"
+        "pong_app.cppm"
+        "pong_main_layer.cppm"
 )
 
 target_link_libraries(Pong PRIVATE RedWolf)

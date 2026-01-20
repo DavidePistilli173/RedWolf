@@ -37,44 +37,48 @@ namespace rw::vendor {
  * @brief std::formatter specialization for rw::vendor::GlfwError
  */
 template<>
-struct std::formatter<rw::vendor::GlfwError> : std::formatter<std::string> {
-    auto format(const rw::vendor::GlfwError& error, std::format_context& ctx) const {
+struct std::formatter<rw::vendor::GlfwError> {
+    constexpr auto parse(std::format_parse_context& ctx) {
+        return ctx.begin();
+    }
+
+    auto format(const rw::vendor::GlfwError error, std::format_context& ctx) const {
         switch (error) {
         case rw::vendor::GlfwError::None:
-            return std::formatter<std::string>::format("None", ctx);
+            return std::format_to(ctx.out(), "None");
             break;
         case rw::vendor::GlfwError::NotInitialized:
-            return std::formatter<std::string>::format("NotInitialized", ctx);
+            return std::format_to(ctx.out(), "NotInitialized");
             break;
         case rw::vendor::GlfwError::NoCurrentContext:
-            return std::formatter<std::string>::format("NoCurrentContext", ctx);
+            return std::format_to(ctx.out(), "NoCurrentContext");
             break;
         case rw::vendor::GlfwError::InvalidEnum:
-            return std::formatter<std::string>::format("InvalidEnum", ctx);
+            return std::format_to(ctx.out(), "InvalidEnum");
             break;
         case rw::vendor::GlfwError::InvalidValue:
-            return std::formatter<std::string>::format("InvalidValue", ctx);
+            return std::format_to(ctx.out(), "InvalidValue");
             break;
         case rw::vendor::GlfwError::OutOfMemory:
-            return std::formatter<std::string>::format("OutOfMemory", ctx);
+            return std::format_to(ctx.out(), "OutOfMemory");
             break;
         case rw::vendor::GlfwError::ApiUnavailable:
-            return std::formatter<std::string>::format("ApiUnavailable", ctx);
+            return std::format_to(ctx.out(), "ApiUnavailable");
             break;
         case rw::vendor::GlfwError::VersionUnavailable:
-            return std::formatter<std::string>::format("VersionUnavailable", ctx);
+            return std::format_to(ctx.out(), "VersionUnavailable");
             break;
         case rw::vendor::GlfwError::PlatformError:
-            return std::formatter<std::string>::format("PlatformError", ctx);
+            return std::format_to(ctx.out(), "PlatformError");
             break;
         case rw::vendor::GlfwError::FormatUnavailable:
-            return std::formatter<std::string>::format("FormatUnavailable", ctx);
+            return std::format_to(ctx.out(), "FormatUnavailable");
             break;
         case rw::vendor::GlfwError::NoWindowContext:
-            return std::formatter<std::string>::format("NoWindowContext", ctx);
+            return std::format_to(ctx.out(), "NoWindowContext");
             break;
         default:
-            return std::formatter<std::string>::format("Unknown", ctx);
+            return std::format_to(ctx.out(), "Unknown");
             break;
         }
     }

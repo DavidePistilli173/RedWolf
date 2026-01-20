@@ -1,8 +1,9 @@
 add_executable(RedWolfSandbox)
 
 target_sources(RedWolfSandbox PRIVATE
-        sandbox_2_d.cpp
-        sandbox_app.cpp
+        FILE_SET CXX_MODULES FILES
+        sandbox_2_d.cppm
+        sandbox_app.cppm
 )
 
 if (MSVC)
