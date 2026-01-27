@@ -2,6 +2,7 @@ module;
 
 #include "RedWolf/macros.hpp"
 
+#include <cstdint>
 #include <glad/glad.h>
 
 module redwolf.gfx.framebuffer;
@@ -44,6 +45,7 @@ rw::gfx::Framebuffer& rw::gfx::Framebuffer::operator=(Framebuffer&& other) {
 
 void rw::gfx::Framebuffer::bind() const {
     glBindFramebuffer(GL_FRAMEBUFFER, id_);
+    glViewport(0, 0, static_cast<int32_t>(descriptor_.width), static_cast<int32_t>(descriptor_.height));
 }
 
 uint32_t rw::gfx::Framebuffer::id() const {
@@ -59,6 +61,17 @@ const rw::gfx::FramebufferDescriptor& rw::gfx::Framebuffer::descriptor() const {
 }
 
 bool rw::gfx::Framebuffer::recreate() {
+    if (0 != id_) {
+        glDeleteFramebuffers(1, &id_);
+        glDeleteTextures(1, &color_attachment_);
+        glDeleteTextures(1, &depth_attachment_);
+        RW_CORE_TRACE("Framebuffer {} deleted.", id_);
+
+        id_               = 0;
+        color_attachment_ = 0;
+        depth_attachment_ = 0;
+    }
+
     glCreateFramebuffers(1, &id_);
     glBindFramebuffer(GL_FRAMEBUFFER, id_);
 
@@ -96,6 +109,14 @@ bool rw::gfx::Framebuffer::recreate() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     return true;
+}
+
+void rw::gfx::Framebuffer::resize(uint32_t width, uint32_t height) {
+    descriptor_.width  = width;
+    descriptor_.height = height;
+    if (!recreate()) {
+        RW_CORE_ERR("Failed to resize framebuffer {} to {}x{}.", id_, width, height);
+    }
 }
 
 void rw::gfx::Framebuffer::unbind() {

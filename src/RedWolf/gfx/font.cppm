@@ -6,6 +6,7 @@ module;
 #include <msdf-atlas-gen/FontGeometry.h>
 #include <msdf-atlas-gen/GlyphGeometry.h>
 #include <msdf-atlas-gen/msdf-atlas-gen.h>
+#include <span>
 #include <string_view>
 #include <thread>
 #include <vector>
@@ -29,9 +30,12 @@ export namespace rw::gfx {
             std::pair{ 0x0020U, 0x00FFU } // Basic Latin + Latin-1 Supplement
         };
 
-        static constexpr double font_scale{ 1.0 };    /**< Scale factor for font loading. */
-        static constexpr double pixel_range{ 2.0 };   /**< Pixel range for atlas packing. */
-        static constexpr double packer_scale{ 40.0 }; /**< Scale for the atlas packer. */
+        static constexpr double   font_scale{ 1.0 };                        /**< Scale factor for font loading. */
+        static constexpr double   pixel_range{ 2.0 };                       /**< Pixel range for atlas packing. */
+        static constexpr double   packer_scale{ 80.0 };                     /**< Scale for the atlas packer. */
+        static constexpr uint64_t lcg_multiplier{ 6364136223846793005ULL }; /**< LCG multiplier taken from msdf-atlas-gen. */
+        static constexpr uint64_t lcg_increment{ 1442695040888963407ULL };  /**< LCG increment taken from msdf-atlas-gen. */
+        static constexpr double   default_angle_threshold{ 3.0 };           /**< Default angle threshold for edge coloring. */
 
         /**
          * @brief Constructor.
@@ -62,17 +66,21 @@ export namespace rw::gfx {
             }
 
             // Load glyphs from font.
-            msdf_atlas::FontGeometry font_geometry(&glyphs_);
-            const int32_t            loaded_glyphs{ font_geometry.loadCharset(font, font_scale, charset) };
+            font_geometry_ = msdf_atlas::FontGeometry(&glyphs_);
+            const int32_t loaded_glyphs{ font_geometry_.loadCharset(font, font_scale, charset) };
             RW_CORE_TRACE("Loaded {}/{} glyphs from font at path: {}", loaded_glyphs, charset.size(), path);
+
+            // Apply MSDF edge coloring.
+            for (msdf_atlas::GlyphGeometry& glyph : glyphs_) {
+                glyph.edgeColoring(msdfgen::edgeColoringInkTrap, default_angle_threshold, 0);
+            }
 
             // Configure atlas packer and pack.
             msdf_atlas::TightAtlasPacker atlas_packer;
+            atlas_packer.setDimensionsConstraint(msdf_atlas::DimensionsConstraint::POWER_OF_TWO_SQUARE);
+            atlas_packer.setMinimumScale(packer_scale);
             atlas_packer.setPixelRange(pixel_range);
             atlas_packer.setMiterLimit(1.0);
-            atlas_packer.setInnerPixelPadding(0);
-            atlas_packer.setOuterPixelPadding(0);
-            atlas_packer.setScale(packer_scale);
             if (const int32_t remaining{ atlas_packer.pack(glyphs_.data(), static_cast<int32_t>(glyphs_.size())) }; 0 != remaining) {
                 RW_CORE_ERR("Failed to pack {} glyphs into the atlas for font at path: {}", remaining, path);
                 return;
@@ -85,7 +93,7 @@ export namespace rw::gfx {
 
             // Create atlas texture.
             auto texture_res{ create_and_cache_atlas_<uint8_t, float, 3, msdf_atlas::msdfGenerator>(
-                path, scale, glyphs_, font_geometry, width, height) };
+                path, scale, glyphs_, font_geometry_, width, height) };
             if (!texture_res.has_value()) {
                 RW_CORE_ERR("Failed to create texture atlas for font at path: {}", path);
                 return;
@@ -103,6 +111,14 @@ export namespace rw::gfx {
          */
         [[nodiscard]] const rw::gfx::Texture2D& atlas_texture() const noexcept {
             return atlas_texture_;
+        }
+
+        /**
+         * @brief Get the font geometry.
+         * @return Font geometry.
+         */
+        [[nodiscard]] const msdf_atlas::FontGeometry& font_geometry() const noexcept {
+            return font_geometry_;
         }
 
      private:
@@ -139,5 +155,6 @@ export namespace rw::gfx {
 
         std::vector<msdf_atlas::GlyphGeometry> glyphs_;        /**< Vector of glyph geometries contained in the font. */
         rw::gfx::Texture2D                     atlas_texture_; /**< Texture atlas containing the rendered font glyphs. */
+        msdf_atlas::FontGeometry               font_geometry_; /**< Font geometry containing glyph metrics and other data. */
     };
 } // namespace rw::gfx

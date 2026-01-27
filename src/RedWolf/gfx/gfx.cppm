@@ -18,6 +18,7 @@ export import redwolf.gfx.renderer_api;
 export import redwolf.gfx.renderer_interface_2_d;
 export import redwolf.gfx.shader;
 export import redwolf.gfx.shader_data;
+export import redwolf.gfx.text;
 export import redwolf.gfx.texture_2d;
 export import redwolf.gfx.vertex_array;
 export import redwolf.gfx.vertex_buffer;

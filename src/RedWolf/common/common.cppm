@@ -34,11 +34,37 @@ export namespace rw {
         }
 
         /**
+         * @brief Check if two handles are equal.
+         * @param other Handle to compare against.
+         * @return True if the handles point to the same resource, false otherwise.
+         */
+        [[nodiscard]] bool operator==(const Handle<T>& other) const noexcept {
+            return (id == other.id) && (ptr == other.ptr);
+        }
+
+        /**
+         * @brief Check if two handles are different.
+         * @param other Handle to compare against.
+         * @return True if the handles DO NOT point to the same resource, false otherwise.
+         */
+        [[nodiscard]] bool operator!=(const Handle<T>& other) const noexcept {
+            return (id != other.id) || (ptr != other.ptr);
+        }
+
+        /**
+         * @brief Check if the handle is invalid (i.e., does not point to a resource).
+         * @return True if the handle is invalid, false otherwise.
+         */
+        [[nodiscard]] bool invalid() const noexcept {
+            return (invalid_id == id) || (nullptr == ptr);
+        }
+
+        /**
          * @brief Check if the handle is valid (i.e., points to a resource).
          * @return True if the handle is valid, false otherwise.
          */
         [[nodiscard]] bool valid() const noexcept {
-            return nullptr != ptr;
+            return (invalid_id != id) && (nullptr != ptr);
         }
 
         Id id{ invalid_id }; /**< Unique identifier for the resource. */

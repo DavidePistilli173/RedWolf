@@ -2,7 +2,7 @@ module;
 
 #include <cstdint>
 #include <memory>
-#include <unordered_map>
+#include <vector>
 
 export module redwolf.core.asset_library;
 
@@ -19,38 +19,37 @@ export namespace rw::core {
         /**
          * @brief Constructor.
          */
-        AssetLibrary() = default;
+        AssetLibrary() {
+            assets_.emplace_back(); // Reserve ID 0 as invalid.
+        }
 
         /**
-         * @brief Create a new asset with the given ID and arguments.
-         * @details If an asset with the given ID already exists, it is replaced.
+         * @brief Create a new asset with its arguments.
          * @tparam Args Types of arguments to pass to the asset's constructor.
-         * @param id ID of the asset.
          * @param args Parameters for the asset's constructor.
-         * @return Non-owning pointer to the newly-constructed asset.
+         * @return Non-owning handle to the newly-constructed asset.
          */
         template<typename... Args>
-        [[nodiscard]] rw::Handle<T> create(const uint64_t id, Args&&... args) {
-            auto       new_asset{ std::make_unique<T>(std::forward<Args>(args)...) };
+        [[nodiscard]] rw::Handle<T> create(Args&&... args) {
+            const auto id{ static_cast<Id>(assets_.size()) };
+            auto&      new_asset{ assets_.emplace_back(std::make_unique<T>(std::forward<Args>(args)...)) };
             rw::Handle result{ .id = id, .ptr = new_asset.get() };
-            assets_[id] = std::move(new_asset);
             return result;
         }
 
         /**
          * @brief Get the specified asset.
          * @param id ID of the asset to get.
-         * @return Non-owning pointer to the asset with the specified ID, if it exists. nullptr otherwise.
+         * @return Non-owning handle to the asset with the specified ID, if it exists. nullptr otherwise.
          */
         [[nodiscard]] rw::Handle<T> get(const uint64_t id) {
-            const auto it{ assets_.find(id) };
-            if (assets_.end() == it) {
+            if (id >= assets_.size()) {
                 return {};
             }
-            return rw::Handle{ .id = id, .ptr = it->second.get() };
+            return rw::Handle{ .id = id, .ptr = assets_[id].get() };
         }
 
      private:
-        std::unordered_map<uint64_t, std::unique_ptr<T>> assets_; /**< Actual asset collection. */
+        std::vector<std::unique_ptr<T>> assets_; /**< Actual asset collection. */
     };
 } // namespace rw::core

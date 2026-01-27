@@ -9,19 +9,14 @@ export module sandbox.sandbox2d;
 
 import redwolf;
 
-static constexpr uint64_t texture_id{ rw::gfx::Renderer2D::max_reserved_texture_id + 1U };
-static constexpr uint64_t spritesheet_id{ texture_id + 1U };
-
-static constexpr uint64_t test_framebuffer_id{ rw::gfx::Renderer2D::max_reserved_framebuffer_id + 1U };
-
 export class Sandbox2D : public rw::layers::Layer {
  public:
     Sandbox2D() : Layer("Sandbox2D"), camera_controller_{ 1280, 720, true, false, true } {
         renderer_interface_ = rw::engine::App::get().window().renderer_interface_2d();
 
-        base_shader_ = renderer_interface_->get_shader(rw::gfx::Renderer2D::base_shader_id).get();
+        base_shader_ = renderer_interface_->get_default_shader(rw::gfx::Renderer2D::DefaultShader::quad_2d).get();
         if (!base_shader_.valid()) {
-            RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::base_shader_id);
+            RW_ERR("Failed to get default shader {}", rw::gfx::Renderer2D::DefaultShader::quad_2d);
             return;
         }
 
@@ -49,13 +44,12 @@ export class Sandbox2D : public rw::layers::Layer {
                     .texture            = rw::Handle<rw::gfx::Texture2D>{},
                     .texture_sub_region = std::nullopt };
 
-        quad_4_ = { .position      = { 0.0F, 0.0F, -0.1F },
-                    .rotation      = -30.0F,
-                    .size          = { 100.0F, 100.0F },
-                    .color         = { 0.2F, 0.2F, 0.8F, 1.0F },
-                    .tiling_factor = 100.0F,
-                    .texture =
-                        renderer_interface_->load_texture(texture_id, "../src/RedWolfSandbox/assets/textures/checkerboard.png").get(),
+        quad_4_ = { .position           = { 0.0F, 0.0F, -0.1F },
+                    .rotation           = -30.0F,
+                    .size               = { 100.0F, 100.0F },
+                    .color              = { 0.2F, 0.2F, 0.8F, 1.0F },
+                    .tiling_factor      = 100.0F,
+                    .texture            = renderer_interface_->load_texture("../src/RedWolfSandbox/assets/textures/checkerboard.png").get(),
                     .texture_sub_region = std::nullopt };
 
         quad_5_ = { .position           = { 0.0F, 0.0F, -0.05F },
@@ -67,23 +61,22 @@ export class Sandbox2D : public rw::layers::Layer {
                     .texture_sub_region = std::nullopt };
 
         if (!quad_4_.texture.valid()) {
-            RW_ERR("Failed to get texture {}", texture_id);
+            RW_ERR("Failed to get texture {}", "../src/RedWolfSandbox/assets/textures/checkerboard.png");
             return;
         }
 
-        spritesheet_quad_ = {
-            .position      = { 0.0F, 0.0F, 0.0F },
-            .rotation      = 0.0F,
-            .size          = { 1.0F, 1.0F },
-            .color         = { 1.0F, 1.0F, 1.0F, 1.0F },
-            .tiling_factor = 1.0F,
-            .texture = renderer_interface_->load_texture(spritesheet_id, "../src/RedWolfSandbox/assets/textures/rpg_spritesheet.png").get(),
-            .texture_sub_region = std::nullopt
-        };
+        spritesheet_quad_ = { .position      = { 0.0F, 0.0F, 0.0F },
+                              .rotation      = 0.0F,
+                              .size          = { 1.0F, 1.0F },
+                              .color         = { 1.0F, 1.0F, 1.0F, 1.0F },
+                              .tiling_factor = 1.0F,
+                              .texture =
+                                  renderer_interface_->load_texture("../src/RedWolfSandbox/assets/textures/rpg_spritesheet.png").get(),
+                              .texture_sub_region = std::nullopt };
 
         rgp_spritesheet_ = spritesheet_quad_.texture;
         if (!rgp_spritesheet_.valid()) {
-            RW_ERR("Failed to get texture {}", spritesheet_id);
+            RW_ERR("Failed to get texture {}", "../src/RedWolfSandbox/assets/textures/rpg_spritesheet.png");
             return;
         }
 
@@ -92,9 +85,9 @@ export class Sandbox2D : public rw::layers::Layer {
 
         const rw::gfx::FramebufferDescriptor framebuffer_descriptor{ .width  = rw::engine::App::get().window().width(),
                                                                      .height = rw::engine::App::get().window().height() };
-        test_framebuffer_ = renderer_interface_->create_framebuffer(test_framebuffer_id, framebuffer_descriptor).get();
+        test_framebuffer_ = renderer_interface_->create_framebuffer(framebuffer_descriptor).get();
         if (!test_framebuffer_.valid()) {
-            RW_ERR("Failed to create framebuffer {}", test_framebuffer_id);
+            RW_ERR("Failed to create framebuffer.");
             return;
         }
     }

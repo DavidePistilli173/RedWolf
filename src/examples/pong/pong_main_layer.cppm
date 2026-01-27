@@ -4,6 +4,7 @@ module;
 #include <imgui/imgui.h>
 #include <memory>
 #include <optional>
+#include <string>
 
 export module pong.main_layer;
 
@@ -14,14 +15,18 @@ export class PongMainLayer : public rw::layers::Layer {
  public:
     static constexpr rw::math::Vec2 default_ball_velocity{ 400.0F, 200.0F };
 
-    PongMainLayer() :
-        Layer("PongMainGame"), camera_controller_{ window_settings.width, window_settings.height, false, false, false },
-        font_{ "C:/Windows/Fonts/arial.ttf" } {
+    PongMainLayer() : Layer("PongMainGame"), camera_controller_{ window_settings.width, window_settings.height, false, false, false } {
         renderer_interface_ = window_.renderer_interface_2d();
 
-        base_shader_ = renderer_interface_->get_shader(rw::gfx::Renderer2D::base_shader_id).get();
+        base_shader_ = renderer_interface_->get_default_shader(rw::gfx::Renderer2D::DefaultShader::quad_2d).get();
         if (!base_shader_.valid()) {
-            RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::base_shader_id);
+            RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::DefaultShader::quad_2d);
+            return;
+        }
+
+        text_shader_ = renderer_interface_->get_default_shader(rw::gfx::Renderer2D::DefaultShader::text_2d).get();
+        if (!text_shader_.valid()) {
+            RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::DefaultShader::text_2d);
             return;
         }
 
@@ -57,7 +62,7 @@ export class PongMainLayer : public rw::layers::Layer {
                            .texture            = rw::Handle<rw::gfx::Texture2D>{},
                            .texture_sub_region = std::nullopt };
 
-        auto ball_texture{ renderer_interface_->load_texture(100005U, "assets/textures/ball.png").get() };
+        auto ball_texture{ renderer_interface_->load_texture("assets/textures/ball.png").get() };
         if (!ball_texture.valid()) {
             RW_ERR("Failed to load ball texture: {}", "assets/textures/ball.png");
             return;
@@ -70,6 +75,26 @@ export class PongMainLayer : public rw::layers::Layer {
                        .tiling_factor      = 1.0F,
                        .texture            = ball_texture,
                        .texture_sub_region = std::nullopt };
+
+        font_ = renderer_interface_->get_default_font(rw::gfx::Renderer2D::DefaultFont::cmu).get();
+        if (!font_.valid()) {
+            RW_ERR("Failed to get default font {}", rw::gfx::Renderer2D::DefaultFont::zector);
+            return;
+        }
+
+        left_score_text_ = { .string           = std::to_string(left_score_),
+                             .position         = rw::math::Vec3{ window_.width() / 4, window_.height() - (window_.height() / 20), 0.5F },
+                             .rotation         = 0.0F,
+                             .pixel_size       = 50.0F,
+                             .foreground_color = rw::gfx::color_white,
+                             .font             = font_ };
+
+        right_score_text_ = { .string     = std::to_string(left_score_),
+                              .position   = rw::math::Vec3{ (window_.width() / 4) * 3, window_.height() - (window_.height() / 20), 0.5F },
+                              .rotation   = 0.0F,
+                              .pixel_size = 50.0F,
+                              .foreground_color = rw::gfx::color_white,
+                              .font             = font_ };
     }
 
     ~PongMainLayer() override                      = default;
@@ -81,11 +106,7 @@ export class PongMainLayer : public rw::layers::Layer {
     void attach() override {}
     void detach() override {}
 
-    void render_imgui() override {
-        ImGui::Begin("Test");
-        ImGui::Image(font_.atlas_texture().renderer_id(), { 512, 512 }, { 0, 1 }, { 1, 0 });
-        ImGui::End();
-    }
+    void render_imgui() override {}
 
     void update(const float delta_time) override {
         update_logic_(delta_time);
@@ -97,6 +118,8 @@ export class PongMainLayer : public rw::layers::Layer {
 
         if (event.type() == rw::evt::EventType::window_resize) {
             const auto& resize_event = static_cast<const rw::evt::WindowResizedEvent&>(event);
+
+            window_scale_factor_ = resize_event.scale_factor;
 
             background_quad_.size *= resize_event.scale_factor;
             background_quad_.position.x *= resize_event.scale_factor.x;
@@ -118,6 +141,14 @@ export class PongMainLayer : public rw::layers::Layer {
             ball_quad_.position.y *= resize_event.scale_factor.y;
             ball_quad_.size *= resize_event.scale_factor;
             ball_velocity_ *= resize_event.scale_factor;
+
+            left_score_text_.position.x *= resize_event.scale_factor.x;
+            left_score_text_.position.y *= resize_event.scale_factor.y;
+            left_score_text_.pixel_size *= resize_event.scale_factor.y;
+
+            right_score_text_.position.x *= resize_event.scale_factor.x;
+            right_score_text_.position.y *= resize_event.scale_factor.y;
+            right_score_text_.pixel_size *= resize_event.scale_factor.y;
         };
 
         return false;
@@ -185,13 +216,26 @@ export class PongMainLayer : public rw::layers::Layer {
         if (ball_velocity_.y < -max_vy) ball_velocity_.y = -max_vy;
 
         // Reset if out of horizontal bounds (score)
-        if (ball_right < 0.0F || ball_left > window_.width()) {
+        bool reset_ball{ false };
+        if (ball_right < 0.0F) {
+            RW_INFO("Right player scores!");
+            ++right_score_;
+            right_score_text_.string = std::to_string(right_score_);
+            reset_ball               = true;
+        } else if (ball_left > window_.width()) {
+            RW_INFO("Left player scores!");
+            ++left_score_;
+            left_score_text_.string = std::to_string(left_score_);
+            reset_ball              = true;
+        }
+
+        if (reset_ball) {
             // toggle direction so ball serves to the side that conceded
             reset_dir             = -reset_dir;
             ball_quad_.position.x = window_.width() * 0.5F;
             ball_quad_.position.y = window_.height() * 0.5F;
-            ball_velocity_.x      = default_ball_velocity.x * static_cast<float>(reset_dir);
-            ball_velocity_.y      = default_ball_velocity.y * ((reset_dir > 0) ? 0.5F : -0.5F); // slight vertical bias
+            ball_velocity_.x      = default_ball_velocity.x * static_cast<float>(reset_dir) * window_scale_factor_.x;
+            ball_velocity_.y = default_ball_velocity.y * ((reset_dir > 0) ? 0.5F : -0.5F) * window_scale_factor_.y; // slight vertical bias
         }
     }
 
@@ -241,6 +285,9 @@ export class PongMainLayer : public rw::layers::Layer {
         renderer_interface_->draw_quad(base_shader_, paddle_1_quad_);
         renderer_interface_->draw_quad(base_shader_, paddle_2_quad_);
         renderer_interface_->draw_quad(base_shader_, ball_quad_);
+
+        renderer_interface_->draw_text(text_shader_, left_score_text_);
+        renderer_interface_->draw_text(text_shader_, right_score_text_);
         renderer_interface_->end_scene();
     }
 
@@ -248,6 +295,7 @@ export class PongMainLayer : public rw::layers::Layer {
     rw::ui::Window&                               window_{ rw::engine::App::get().window() }; /**< Reference to the application window. */
     std::unique_ptr<rw::gfx::RendererInterface2D> renderer_interface_;                        /**< Interface to the renderer. */
     rw::Handle<rw::gfx::Shader>                   base_shader_; /**< Base shader for rendering textured quads. */
+    rw::Handle<rw::gfx::Shader>                   text_shader_; /**< Shader for rendering text. */
 
     rw::gfx::Quad background_quad_; /**< Quad for the background. */
     rw::gfx::Quad mid_field_quad_;  /**< Quad for the mid-field line. */
@@ -257,5 +305,12 @@ export class PongMainLayer : public rw::layers::Layer {
 
     rw::math::Vec2 ball_velocity_{ default_ball_velocity }; /**< Current velocity of the ball. */
 
-    rw::gfx::Font font_;
+    uint32_t      left_score_{ 0U };  /**< Score of the left player. */
+    uint32_t      right_score_{ 0U }; /**< Score of the right player. */
+    rw::gfx::Text left_score_text_;   /**< Text for the left player's score. */
+    rw::gfx::Text right_score_text_;  /**< Text for the right player's score. */
+
+    rw::Handle<rw::gfx::Font> font_; /**< Font for rendering the score. */
+
+    rw::math::Vec2 window_scale_factor_{ 1.0F }; /**< Current scale factor with respect to the starting window size. */
 };

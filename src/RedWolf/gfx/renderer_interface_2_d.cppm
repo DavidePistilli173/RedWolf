@@ -6,12 +6,15 @@ export module redwolf.gfx.renderer_interface_2_d;
 
 import redwolf.common;
 import redwolf.gfx.camera;
+import redwolf.gfx.font;
 import redwolf.gfx.framebuffer;
 import redwolf.gfx.framebuffer_descriptor;
 import redwolf.gfx.quad;
 import redwolf.gfx.renderer_2_d;
 import redwolf.gfx.shader;
+import redwolf.gfx.text;
 import redwolf.gfx.texture_2d;
+import redwolf.math;
 
 export namespace rw::gfx {
     /**
@@ -42,13 +45,12 @@ export namespace rw::gfx {
 
         /**
          * @brief Create a framebuffer with the given descriptor.
-         * @param id ID of the framebuffer to create.
          * @param descriptor Framebuffer creation options.
          * @return Non-owning pointer to the created framebuffer.
          */
-        [[nodiscard]] std::future<Handle<Framebuffer>> create_framebuffer(const uint64_t id, const FramebufferDescriptor& descriptor) {
+        [[nodiscard]] std::future<Handle<Framebuffer>> create_framebuffer(const FramebufferDescriptor& descriptor) {
             std::promise<Handle<Framebuffer>> promise;
-            promise.set_value(renderer_->create_framebuffer(id, descriptor));
+            promise.set_value(renderer_->create_framebuffer(descriptor));
             return promise.get_future();
         }
 
@@ -62,10 +64,52 @@ export namespace rw::gfx {
         }
 
         /**
+         * @brief Draw a string to the screen.
+         * @param shader Shader to use for rendering.
+         * @param text Text data to render.
+         */
+        void draw_text(rw::Handle<Shader> shader, const Text& text) {
+            renderer_->draw_text(shader, text);
+        }
+
+        /**
          * @brief Finish rendering a scene.
          */
         void end_scene() {
             renderer_->end_scene();
+        }
+
+        /**
+         * @brief Get one of the default fonts.
+         * @param font Font to get.
+         * @return Handle to the specified font.
+         */
+        [[nodiscard]] std::future<Handle<Font>> get_default_font(const Renderer2D::DefaultFont font) {
+            std::promise<Handle<Font>> promise;
+            promise.set_value(renderer_->get_default_font(font));
+            return promise.get_future();
+        }
+
+        /**
+         * @brief Get one of the default shaders.
+         * @param shader Shader to get.
+         * @return Handle to the requested shader.
+         */
+        [[nodiscard]] std::future<Handle<Shader>> get_default_shader(const Renderer2D::DefaultShader shader) {
+            std::promise<Handle<Shader>> promise;
+            promise.set_value(renderer_->get_default_shader(shader));
+            return promise.get_future();
+        }
+
+        /**
+         * @brief Get one of the default textures.
+         * @param texture Texture to get.
+         * @return Handle to the requested texture.
+         */
+        [[nodiscard]] std::future<Handle<Texture2D>> get_default_texture(const Renderer2D::DefaultTexture texture) {
+            std::promise<Handle<Texture2D>> promise;
+            promise.set_value(renderer_->get_default_texture(texture));
+            return promise.get_future();
         }
 
         /**
@@ -92,13 +136,12 @@ export namespace rw::gfx {
 
         /**
          * @brief Load a texture from file.
-         * @param id ID of the texture to load. If the ID already exists, the texture is replaced.
          * @param file_path Path where the texture image is located.
          * @return Non-owning pointer to the newly created texture.
          */
-        [[nodiscard]] std::future<Handle<Texture2D>> load_texture(const uint64_t id, const std::string& file_path) {
+        [[nodiscard]] std::future<Handle<Texture2D>> load_texture(const std::string& file_path) {
             std::promise<Handle<Texture2D>> promise;
-            promise.set_value(renderer_->load_texture(id, file_path));
+            promise.set_value(renderer_->load_texture(file_path));
             return promise.get_future();
         }
 

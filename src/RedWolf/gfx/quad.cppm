@@ -5,8 +5,9 @@ module;
 export module redwolf.gfx.quad;
 
 import redwolf.common;
-import redwolf.math;
+import redwolf.gfx.common;
 import redwolf.gfx.texture_2d;
+import redwolf.math;
 
 export namespace rw::gfx {
     /**
@@ -21,17 +22,4 @@ export namespace rw::gfx {
         Handle<Texture2D>                            texture;               /**< Optional texture to fill the quad. */
         std::optional<rw::gfx::Texture2D::SubRegion> texture_sub_region{};  /**< Optional sub-region of the texture. */
     };
-
-#pragma pack(push, 1)
-    /**
-     * @brief Vertex data for a quad on the GPU.
-     */
-    struct QuadVertex {
-        rw::math::Vec3 position{ 0.0F };      /**< Position of the vertex. */
-        rw::math::Vec4 color{ 0.0F };         /**< Colour of the vertex. */
-        rw::math::Vec2 tex_coord{ 0.0F };     /**< Texture coordinate of the vertex. */
-        float          tex_index{ 0.0F };     /**< Index of the texture to use for this vertex. */
-        float          tiling_factor{ 1.0F }; /**< Tiling factor of the texture. */
-    };
-#pragma pack(pop)
 } // namespace rw::gfx

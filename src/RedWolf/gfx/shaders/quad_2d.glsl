@@ -1,4 +1,4 @@
-// Basic texture shader.
+// Basic quad shader.
 
 #type vertex
 #version 460 core

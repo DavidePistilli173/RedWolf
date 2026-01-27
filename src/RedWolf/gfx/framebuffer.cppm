@@ -73,6 +73,13 @@ export namespace rw::gfx {
         [[nodiscard]] bool recreate();
 
         /**
+         * @brief Resize the framebuffer.
+         * @param width New framebuffer width.
+         * @param height New framebuffer height.
+         */
+        void resize(uint32_t width, uint32_t height);
+
+        /**
          * @brief Unbind the framebuffer.
          */
         void unbind();
