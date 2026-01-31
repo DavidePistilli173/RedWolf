@@ -1,0 +1,178 @@
+module;
+
+#include "RedWolf/macros.hpp"
+
+#include <glad/glad.h>
+#include <stb/stb_image.h>
+#include <string>
+#include <string_view>
+
+module redwolf.gfx.texture_2d;
+
+import redwolf.gfx.common;
+import redwolf.util.logger;
+
+rw::gfx::Texture2D::Texture2D() {
+    glCreateTextures(GL_TEXTURE_2D, 1, &id_);
+
+    glTextureParameteri(id_, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(id_, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(id_, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(id_, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    RW_CORE_TRACE("Texture {} created (empty).", id_);
+}
+
+rw::gfx::Texture2D::Texture2D(const std::string_view path) : path_{ path } {
+    int channels{ 0 };
+    int width{ 0 };
+    int height{ 0 };
+    stbi_set_flip_vertically_on_load(1);
+    stbi_uc* texture_data{ stbi_load(path_.c_str(), &width, &height, &channels, 0) };
+    if (nullptr == texture_data) {
+        RW_CORE_ERR("Failed to load image: {}", path_);
+        return;
+    }
+
+    if (0 > width || 0 > height) {
+        RW_CORE_ERR("Invalid image dimensions: {}x{} for image: {}", width, height, path_);
+        stbi_image_free(texture_data);
+        return;
+    }
+    width_  = width;
+    height_ = height;
+
+    // Adjust the format depending on the loaded channels.
+    if (4 == channels) {
+        internal_format_ = GL_RGBA8;
+        data_format_     = GL_RGBA;
+    } else if (3 == channels) {
+        internal_format_ = GL_RGB8;
+        data_format_     = GL_RGB;
+    } else if (1 == channels) {
+        internal_format_ = GL_R8;
+        data_format_     = GL_RED;
+    } else {
+        RW_CORE_ERR("Unsupported number of channels: {} for image: {}", channels, path_);
+        return;
+    }
+
+    glCreateTextures(GL_TEXTURE_2D, 1, &id_);
+    glTextureStorage2D(id_, 1, internal_format_, static_cast<GLsizei>(width_), static_cast<GLsizei>(height_));
+
+    glTextureParameteri(id_, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(id_, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(id_, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(id_, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTextureSubImage2D(id_, 0, 0, 0, width, height, data_format_, GL_UNSIGNED_BYTE, texture_data);
+    stbi_image_free(texture_data);
+
+    RW_CORE_TRACE("Texture {} created from {}", id_, path_);
+}
+
+rw::gfx::Texture2D::~Texture2D() {
+    glDeleteTextures(1, &id_);
+    RW_CORE_TRACE("Texture {} deleted.", id_);
+}
+
+rw::gfx::Texture2D::Texture2D(Texture2D&& other) noexcept :
+    id_{ other.id_ }, path_{ std::move(other.path_) }, width_{ other.width_ }, height_{ other.height_ } {
+    other.id_ = 0U;
+}
+
+rw::gfx::Texture2D& rw::gfx::Texture2D::operator=(Texture2D&& other) noexcept {
+    if (this != &other) {
+        id_       = other.id_;
+        path_     = std::move(other.path_);
+        width_    = other.width_;
+        height_   = other.height_;
+        other.id_ = 0U;
+    }
+    return *this;
+}
+
+void rw::gfx::Texture2D::bind(const uint32_t slot) const {
+    glBindTextureUnit(slot, id_);
+}
+
+uint32_t rw::gfx::Texture2D::bytes_per_pixel() const {
+    switch (data_format_) {
+    case GL_RGB:
+        return 3;
+    case GL_RGBA:
+        return 4;
+    default:
+        RW_CORE_ERR("Invalid data format: {}", data_format_);
+        return 4;
+    }
+}
+
+rw::gfx::Texture2D::SubRegion rw::gfx::Texture2D::compute_sub_region(const rw::math::Rect<float>& region) const {
+    const float min_x{ region.x / static_cast<float>(width_) };
+    const float max_x{ (region.x + region.width) / static_cast<float>(width_) };
+    const float min_y{ region.y / static_cast<float>(height_) };
+    const float max_y{ (region.y + region.height) / static_cast<float>(height_) };
+
+    SubRegion result{};
+    result[0] = { min_x, min_y }; // Bottom-left
+    result[1] = { max_x, min_y }; // Bottom-right
+    result[2] = { max_x, max_y }; // Top-right
+    result[3] = { min_x, max_y }; // Top-left
+    return result;
+}
+
+uint32_t rw::gfx::Texture2D::height() const {
+    return height_;
+}
+
+const std::string& rw::gfx::Texture2D::path() const {
+    return path_;
+}
+
+void rw::gfx::Texture2D::set_data(const std::span<const uint8_t> data, const TextureDescriptor& descriptor) {
+    width_  = descriptor.width;
+    height_ = descriptor.height;
+
+    // Set the data format.
+    if (!set_data_format_(descriptor.format)) {
+        RW_CORE_ERR("Failed to set data format for texture {id}.", id_);
+        return;
+    }
+
+    if (data.size() < width_ * height_ * bytes_per_pixel()) {
+        RW_CORE_ERR(
+            "Insufficient data to fill the texture: size={}; width={}; height={}; bytes_per_pixel={}",
+            data.size(),
+            width_,
+            height_,
+            bytes_per_pixel());
+        return;
+    }
+    glTextureStorage2D(id_, 1, internal_format_, static_cast<GLsizei>(width_), static_cast<GLsizei>(height_));
+    glTextureSubImage2D(id_, 0, 0, 0, static_cast<int>(width_), static_cast<int>(height_), data_format_, GL_UNSIGNED_BYTE, data.data());
+}
+
+uint32_t rw::gfx::Texture2D::width() const {
+    return width_;
+}
+
+bool rw::gfx::Texture2D::set_data_format_(const TextureFormat format) {
+    switch (format) {
+    case TextureFormat::rgb8:
+        internal_format_ = GL_RGB8;
+        data_format_     = GL_RGB;
+        break;
+    case TextureFormat::rgba8:
+        internal_format_ = GL_RGBA8;
+        data_format_     = GL_RGBA;
+        break;
+    case TextureFormat::r8:
+    case TextureFormat::rgba32f:
+    default:
+        RW_CORE_ERR("Unsupported texture format: {}", static_cast<int>(format));
+        return false;
+    }
+
+    return true;
+}
