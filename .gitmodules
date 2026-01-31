@@ -10,3 +10,12 @@
 [submodule "src/vendor/stb"]
 	path = src/vendor/stb
 	url = https://github.com/nothings/stb.git
+[submodule "src/vendor/msdf_atlas_gen"]
+	path = src/vendor/msdf_atlas_gen
+	url = https://github.com/Chlumsky/msdf-atlas-gen.git
+[submodule "src/vendor/zlib"]
+	path = src/vendor/zlib
+	url = https://github.com/madler/zlib.git
+[submodule "src/vendor/libpng"]
+	path = src/vendor/libpng
+	url = https://github.com/pnggroup/libpng.git

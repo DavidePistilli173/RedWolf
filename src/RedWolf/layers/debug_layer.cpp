@@ -1,17 +1,12 @@
-//
-// Created by cjm036653 on 14/08/2025.
-//
+module;
 
-#include "debug_layer.hpp"
-
-#include "../engine/app.hpp"
-
-#include <GLFW/glfw3.h>
+#include <glfw/glfw3.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
-#include <imgui/imgui.h>
 
-rw::layers::DebugLayer::DebugLayer() : Layer("DebugLayer") {}
+module redwolf.layers.debug_layer;
+
+import redwolf.engine.app;
 
 void rw::layers::DebugLayer::attach() {
     ImGui::CreateContext();
@@ -24,26 +19,14 @@ void rw::layers::DebugLayer::attach() {
 
     ImGuiStyle& style{ ImGui::GetStyle() };
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-        style.WindowRounding              = 0.0f;
-        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+        style.WindowRounding              = 0.0F;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0F;
     }
 
     rw::ui::WindowHandle window{ rw::engine::App::get().window().handle() };
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 410");
-}
-
-void rw::layers::DebugLayer::begin_frame() {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-}
-
-void rw::layers::DebugLayer::detach() {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
 }
 
 void rw::layers::DebugLayer::end_frame() {
@@ -61,15 +44,4 @@ void rw::layers::DebugLayer::end_frame() {
         ImGui::RenderPlatformWindowsDefault();
         glfwMakeContextCurrent(context_backup);
     }
-}
-
-/**
- * @brief Render ImGui UI for the layer.
- */
-void rw::layers::DebugLayer::render_imgui() {}
-
-void rw::layers::DebugLayer::update([[maybe_unused]] const float delta_time) {}
-
-bool rw::layers::DebugLayer::on_event([[maybe_unused]] const rw::evt::Event& event) {
-    return false;
 }
