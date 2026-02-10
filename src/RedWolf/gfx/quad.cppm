@@ -6,7 +6,7 @@ export module redwolf.gfx.quad;
 
 import redwolf.common;
 import redwolf.gfx.common;
-import redwolf.gfx.texture_2d;
+import redwolf.gfx.texture2d;
 import redwolf.math;
 
 export namespace rw::gfx {

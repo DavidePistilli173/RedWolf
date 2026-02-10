@@ -1,6 +1,7 @@
 module;
 
 #include "RedWolf/macros.hpp"
+#include "msdf-atlas-gen/FontGeometry.h"
 
 #include <array>
 #include <format>
@@ -19,15 +20,19 @@ import redwolf.gfx.buffer_layout;
 import redwolf.gfx.common;
 import redwolf.gfx.camera;
 import redwolf.gfx.font;
+import redwolf.gfx.font_manager;
 import redwolf.gfx.framebuffer;
 import redwolf.gfx.framebuffer_descriptor;
+import redwolf.gfx.framebuffer_manager;
 import redwolf.gfx.index_buffer;
 import redwolf.gfx.quad;
 import redwolf.gfx.renderer_api;
 import redwolf.gfx.shader;
 import redwolf.gfx.shader_data;
+import redwolf.gfx.shader_manager;
 import redwolf.gfx.text;
-import redwolf.gfx.texture_2d;
+import redwolf.gfx.texture2d;
+import redwolf.gfx.texture2d_manager;
 import redwolf.gfx.vertex_array;
 import redwolf.gfx.vertex_buffer;
 import redwolf.math;
@@ -130,6 +135,34 @@ export namespace rw::gfx {
         }
 
         /**
+         * @begin Bind a framebuffer for rendering.
+         * @param framebuffer_handle Handle of the framebuffer to bind.
+         */
+        void bind_framebuffer(const Handle<Framebuffer> framebuffer_handle) const {
+            framebuffer_manager_.bind(framebuffer_handle);
+        }
+
+        /**
+         * @brief Clone the data of a single framebuffer.
+         * @param framebuffer_handle Handle of the framebuffer to clone.
+         * @return Framebuffer data.
+         */
+        [[nodiscard]] Framebuffer clone_framebuffer(const Handle<Framebuffer> framebuffer_handle) {
+            return framebuffer_manager_.clone_framebuffer(framebuffer_handle);
+        }
+
+        /**
+         * @brief Compute a sub-region of the texture.
+         * @param texture_handle Handle to the texture.
+         * @param region Region of the texture to compute, in pixels.
+         * @return Texture coordinates of the sub-region.
+         */
+        [[nodiscard]] rw::gfx::Texture2D::SubRegion
+            compute_texture_subregion(const Handle<Texture2D> texture_handle, const rw::math::Rect<float>& region) const {
+            return texture_manager_.compute_subregion(texture_handle, region);
+        }
+
+        /**
          * @brief Clear the screen with the currently set colour.
          */
         void clear_screen() {
@@ -142,7 +175,7 @@ export namespace rw::gfx {
          * @return Non-owning pointer to the created framebuffer.
          */
         [[nodiscard]] Handle<Framebuffer> create_framebuffer(const FramebufferDescriptor& descriptor) {
-            return framebuffer_library_.create(descriptor);
+            return framebuffer_manager_.new_from_descriptor(descriptor);
         }
 
         /**
@@ -208,9 +241,14 @@ export namespace rw::gfx {
                 active_font_ = text.font;
             }
 
-            const auto&               font_geometry{ text.font->font_geometry() };
-            const auto&               metrics{ font_geometry.getMetrics() };
-            const rw::gfx::Texture2D& atlas_texture{ text.font->atlas_texture() };
+            auto font_raw_res{ font_manager_.unsafe_get_raw(text.font) };
+            if (!font_raw_res.has_value()) {
+                RW_CORE_WARN("Invalid font specified for string {}", text.string);
+                return;
+            }
+            auto& font_raw{ font_raw_res.value().get() };
+
+            const auto& metrics{ font_raw.font_geometry.getMetrics() };
 
             const rw::math::Mat4 transform{ rw::math::translate(rw::math::Mat4(1.0F), text.position) *
                                             rw::math::rotate(rw::math::Mat4(1.0F), text.rotation, { 0.0F, 0.0F, 1.0F }) *
@@ -233,14 +271,14 @@ export namespace rw::gfx {
                     continue;
                 }
 
-                auto glyph{ font_geometry.getGlyph(character) };
+                auto glyph{ font_raw.font_geometry.getGlyph(character) };
                 if (nullptr == glyph) {
                     RW_CORE_WARN(
                         "Font does not contain glyph for character: {} (raw: {}), while drawing string: {}",
                         character,
                         static_cast<uint8_t>(character),
                         text.string);
-                    glyph = font_geometry.getGlyph('?');
+                    glyph = font_raw.font_geometry.getGlyph('?');
                     if (nullptr == glyph) {
                         RW_CORE_ERR("Font does not contain glyph for fallback character '?', while drawing string: {}", text.string);
                         return;
@@ -269,8 +307,12 @@ export namespace rw::gfx {
                 quad_coord_min += rw::math::Vec2{ static_cast<float>(x), static_cast<float>(y) };
                 quad_coord_max += rw::math::Vec2{ static_cast<float>(x), static_cast<float>(y) };
 
-                float texel_width{ 1.0F / static_cast<float>(atlas_texture.width()) };
-                float texel_height{ 1.0F / static_cast<float>(atlas_texture.height()) };
+                const rw::math::Vec2 atlas_texture_size{ texture_manager_.texture_size(font_raw.atlas_texture) };
+                if (0.0F == atlas_texture_size.x || 0.0F == atlas_texture_size.y) {
+                    RW_CORE_WARN("Invalid font atlas size {}x{} when drawing text {}.", atlas_texture_size.x, atlas_texture_size.y);
+                }
+                float texel_width{ 1.0F / atlas_texture_size.x };
+                float texel_height{ 1.0F / atlas_texture_size.y };
 
                 tex_coord_min *= rw::math::Vec2{ texel_width, texel_height };
                 tex_coord_max *= rw::math::Vec2{ texel_width, texel_height };
@@ -298,7 +340,7 @@ export namespace rw::gfx {
                 if (static_cast<size_t>(i) < (text.string.size() - 1U)) {
                     double advance{ glyph->getAdvance() };
                     char   next_char{ text.string[i + 1U] };
-                    (void) font_geometry.getAdvance(advance, character, next_char);
+                    (void) font_raw.font_geometry.getAdvance(advance, character, next_char);
 
                     float kerning_offset{ 0.0F };
                     x += fs_scale * advance + kerning_offset;
@@ -371,30 +413,12 @@ export namespace rw::gfx {
         }
 
         /**
-         * @brief Get a shader that was previously loaded by the renderer.
-         * @param id ID of the loaded shader.
-         * @return Pointer to the loaded shader, or nullptr if it wasn't loaded.
-         */
-        [[nodiscard]] Handle<Shader> get_shader(const uint64_t id) {
-            return shader_library_.get(id);
-        }
-
-        /**
-         * @brief Get a texture that was previously loaded by the renderer.
-         * @param id ID of the loaded texture.
-         * @return Pointer to the loaded texture, or nullptr if it wasn't loaded.
-         */
-        [[nodiscard]] Handle<Texture2D> get_texture(const uint64_t id) {
-            return texture_library_.get(id);
-        }
-
-        /**
          * @brief Load a texture from file.
          * @param file_path Path where the texture image is located.
          * @return Non-owning pointer to the newly created texture.
          */
         [[nodiscard]] Handle<Texture2D> load_texture(const std::string& file_path) {
-            return texture_library_.create(file_path);
+            return texture_manager_.new_from_path(file_path);
         }
 
         /**
@@ -425,6 +449,13 @@ export namespace rw::gfx {
             return stats_;
         }
 
+        /**
+         * @brief Unbind any currently bound framebuffer.
+         */
+        void unbind_framebuffer() const {
+            framebuffer_manager_.unbind();
+        }
+
      private:
         /**
          * @brief Compute the appropriate shader texture index for the given texture.
@@ -436,7 +467,8 @@ export namespace rw::gfx {
                 return 0.0F;
             }
 
-            if (const auto it{ std::ranges::find_if(quad_texture_slots_, [texture](const auto& item) { return item.id == texture.id; }) };
+            if (const auto it{
+                    std::ranges::find_if(quad_texture_slots_, [texture](const auto& item) { return item.index == texture.index; }) };
                 quad_texture_slots_.end() != it) {
                 return static_cast<float>(std::distance(quad_texture_slots_.begin(), it));
             }
@@ -534,22 +566,23 @@ export namespace rw::gfx {
          */
         void load_basic_assets_() {
             // Shaders
-            quad_shader_ = shader_library_.create("engine_assets/shaders/quad_2d.glsl");
-            quad_shader_->bind();
-            quad_shader_->set_i32_array("u_textures", texture_samplers);
+            quad_shader_ = shader_manager_.new_from_path("engine_assets/shaders/quad_2d.glsl");
+            shader_manager_.bind(quad_shader_);
+            shader_manager_.set_i32_array(quad_shader_, "u_textures", texture_samplers);
 
-            text_shader_ = shader_library_.create("engine_assets/shaders/text_2d.glsl");
-            text_shader_->bind();
-            text_shader_->set_i32("u_font_atlas", 0);
+            text_shader_ = shader_manager_.new_from_path("engine_assets/shaders/text_2d.glsl");
+            shader_manager_.bind(text_shader_);
+            shader_manager_.set_i32(text_shader_, "u_font_atlas", 0);
 
             // Textures
-            white_texture_ = texture_library_.create();
-            white_texture_->set_data(white_texture_data, TextureDescriptor{ .width = 1, .height = 1, .format = TextureFormat::rgba8 });
+            white_texture_ = texture_manager_.new_empty();
+            texture_manager_.set_data(
+                white_texture_, white_texture_data, TextureDescriptor{ .width = 1, .height = 1, .format = TextureFormat::rgba8 });
 
             // Fonts
-            cmu_font_           = font_library_.create("engine_assets/fonts/cmu/cmunbmr.ttf");
-            courier_prime_font_ = font_library_.create("engine_assets/fonts/courier_prime/courier_prime.ttf");
-            zector_font_        = font_library_.create("engine_assets/fonts/zector/Zector.ttf");
+            cmu_font_           = font_manager_.new_from_path("engine_assets/fonts/cmu/cmunbmr.ttf", texture_manager_);
+            courier_prime_font_ = font_manager_.new_from_path("engine_assets/fonts/courier_prime/courier_prime.ttf", texture_manager_);
+            zector_font_        = font_manager_.new_from_path("engine_assets/fonts/zector/Zector.ttf", texture_manager_);
         }
 
         /**
@@ -558,14 +591,14 @@ export namespace rw::gfx {
         void flush_() {
             // Draw quads if necessary.
             if (!quad_vertex_buffer_data_.empty()) {
-                quad_shader_->bind();
-                quad_shader_->set_mat_f32_4("u_view_projection", view_projection_matrix_);
+                shader_manager_.bind(quad_shader_);
+                shader_manager_.set_mat_f32_4(quad_shader_, "u_view_projection", view_projection_matrix_);
                 quad_vertex_buffer_->set_data(std::span<const QuadVertex>(quad_vertex_buffer_data_));
                 quad_vertex_array_->bind();
 
                 // Bind all active textures.
                 for (const auto [i, texture] : std::views::enumerate(quad_texture_slots_)) {
-                    texture->bind(static_cast<uint32_t>(i));
+                    texture_manager_.bind(texture, static_cast<uint32_t>(i));
                 }
 
                 RendererApi::draw_indexed(quad_vertex_array_.get(), static_cast<uint32_t>((quad_vertex_buffer_data_.size() / 4) * 6));
@@ -574,13 +607,13 @@ export namespace rw::gfx {
 
             // Draw text if necessary.
             if (!text_vertex_buffer_data_.empty()) {
-                text_shader_->bind();
-                text_shader_->set_mat_f32_4("u_view_projection", view_projection_matrix_);
+                shader_manager_.bind(text_shader_);
+                shader_manager_.set_mat_f32_4(text_shader_, "u_view_projection", view_projection_matrix_);
                 text_vertex_buffer_->set_data(std::span<const TextVertex>(text_vertex_buffer_data_));
                 text_vertex_array_->bind();
 
                 // Bind the active font atlas.
-                active_font_->atlas_texture().bind(0U);
+                font_manager_.bind_atlas(active_font_, texture_manager_);
 
                 RendererApi::draw_indexed(text_vertex_array_.get(), static_cast<uint32_t>((text_vertex_buffer_data_.size() / 4) * 6));
                 ++temp_stats_.draw_calls;
@@ -598,10 +631,10 @@ export namespace rw::gfx {
             quad_texture_slots_.emplace_back(white_texture_); // The white texture is always available.
         }
 
-        rw::core::AssetLibrary<Shader>      shader_library_;      /**< Collection of all loaded shaders. */
-        rw::core::AssetLibrary<Texture2D>   texture_library_;     /**< Collection of all loaded textures. */
-        rw::core::AssetLibrary<Framebuffer> framebuffer_library_; /**< Collection of all created framebuffers. */
-        rw::core::AssetLibrary<Font>        font_library_;        /**< Collection of all loaded fonts. */
+        ShaderManager      shader_manager_;      /**< Collection of all loaded shaders. */
+        Texture2DManager   texture_manager_;     /**< Collection of all loaded textures. */
+        FramebufferManager framebuffer_manager_; /**< Collection of all created framebuffers. */
+        FontManager        font_manager_;        /**< Collection of all loaded fonts. */
 
         std::shared_ptr<VertexArray>  quad_vertex_array_;  /**< Vertex array used for drawing quads. */
         std::shared_ptr<VertexBuffer> quad_vertex_buffer_; /**< Vertex buffer used for drawing quads. */

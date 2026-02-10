@@ -81,7 +81,8 @@ export class Sandbox2D : public rw::layers::Layer {
         }
 
         static constexpr rw::math::Rect<float> sub_region_rect{ .x = 256.0F, .y = 128.0F, .width = 128.0F, .height = 256.0F };
-        spritesheet_quad_.texture_sub_region = spritesheet_quad_.texture->compute_sub_region(sub_region_rect);
+        spritesheet_quad_.texture_sub_region =
+            renderer_interface_->compute_texture_subregion(spritesheet_quad_.texture, sub_region_rect).get();
 
         const rw::gfx::FramebufferDescriptor framebuffer_descriptor{ .width  = rw::engine::App::get().window().width(),
                                                                      .height = rw::engine::App::get().window().height() };
@@ -107,8 +108,8 @@ export class Sandbox2D : public rw::layers::Layer {
         ImGui::End();
 
         ImGui::Begin("Test");
-        uint32_t framebuffer_id{ test_framebuffer_->color_attachment_id() };
-        ImGui::Image(framebuffer_id, ImVec2{ 320.0F, 160.0F });
+        rw::gfx::Framebuffer framebuffer{ renderer_interface_->clone_framebuffer(test_framebuffer_).get() };
+        ImGui::Image(framebuffer.color_attachment, ImVec2{ 320.0F, 160.0F });
         ImGui::End();
 
         ImGui::Begin("Profiling");
@@ -146,7 +147,7 @@ export class Sandbox2D : public rw::layers::Layer {
 
             renderer_interface_->clear_screen();
 
-            test_framebuffer_->bind();
+            renderer_interface_->bind_framebuffer(test_framebuffer_);
             renderer_interface_->clear_screen();
             {
                 renderer_interface_->begin_scene(camera_controller_.camera());
@@ -174,7 +175,7 @@ export class Sandbox2D : public rw::layers::Layer {
                 }
                 renderer_interface_->end_scene();
             }
-            test_framebuffer_->unbind();
+            renderer_interface_->unbind_framebuffer();
 
             {
                 renderer_interface_->begin_scene(camera_controller_.camera());

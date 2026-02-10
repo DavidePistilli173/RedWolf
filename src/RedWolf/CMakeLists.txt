@@ -22,18 +22,16 @@ target_sources(RedWolf PUBLIC
         gfx/common.cppm
         gfx/context.cppm
         gfx/font.cppm
-        gfx/framebuffer.cppm
+        gfx/font_manager.cppm
         gfx/framebuffer_descriptor.cppm
         gfx/gfx.cppm
         gfx/index_buffer.cppm
         gfx/quad.cppm
-        gfx/renderer_2_d.cppm
+        gfx/renderer2d.cppm
         gfx/renderer_api.cppm
-        gfx/renderer_interface_2_d.cppm
-        gfx/shader.cppm
+        gfx/renderer_interface_2d.cppm
         gfx/shader_data.cppm
         gfx/text.cppm
-        gfx/texture_2d.cppm
         gfx/vertex_array.cppm
         gfx/vertex_buffer.cppm
         input/input.cppm
@@ -66,13 +64,20 @@ target_sources(RedWolf PRIVATE
 )
 
 if (RW_GFX_API STREQUAL "RW_GFX_API_OPENGL")
+    target_sources(RedWolf PUBLIC
+            FILE_SET CXX_MODULES FILES
+            gfx/api/gl/framebuffer.cppm
+            gfx/api/gl/framebuffer_manager.cppm
+            gfx/api/gl/shader.cppm
+            gfx/api/gl/shader_manager.cppm
+            gfx/api/gl/texture2d.cppm
+            gfx/api/gl/texture2d_manager.cppm
+    )
+
     target_sources(RedWolf PRIVATE
             gfx/api/gl/context.cpp
-            gfx/api/gl/framebuffer.cpp
             gfx/api/gl/index_buffer.cpp
             gfx/api/gl/renderer_api.cpp
-            gfx/api/gl/shader.cpp
-            gfx/api/gl/texture_2d.cpp
             gfx/api/gl/vertex_array.cpp
             gfx/api/gl/vertex_buffer.cpp
     )

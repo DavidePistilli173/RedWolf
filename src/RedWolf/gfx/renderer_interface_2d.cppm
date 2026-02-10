@@ -13,7 +13,7 @@ import redwolf.gfx.quad;
 import redwolf.gfx.renderer_2_d;
 import redwolf.gfx.shader;
 import redwolf.gfx.text;
-import redwolf.gfx.texture_2d;
+import redwolf.gfx.texture2d;
 import redwolf.math;
 
 export namespace rw::gfx {
@@ -37,10 +37,42 @@ export namespace rw::gfx {
         }
 
         /**
+         * @begin Bind a framebuffer for rendering.
+         * @param framebuffer_handle Handle of the framebuffer to bind.
+         */
+        void bind_framebuffer(const Handle<Framebuffer> framebuffer_handle) const {
+            renderer_->bind_framebuffer(framebuffer_handle);
+        }
+
+        /**
+         * @brief Compute a sub-region of the texture.
+         * @param texture_handle Handle to the texture.
+         * @param region Region of the texture to compute, in pixels.
+         * @return Texture coordinates of the sub-region.
+         */
+        [[nodiscard]] std::future<Texture2D::SubRegion>
+            compute_texture_subregion(const Handle<Texture2D> texture_handle, const rw::math::Rect<float>& region) const {
+            std::promise<Texture2D::SubRegion> promise;
+            promise.set_value(renderer_->compute_texture_subregion(texture_handle, region));
+            return promise.get_future();
+        }
+
+        /**
          * @brief Clear the screen with the currently set colour.
          */
         void clear_screen() {
             renderer_->clear_screen();
+        }
+
+        /**
+         * @brief Clone the data of a single framebuffer.
+         * @param framebuffer_handle Handle of the framebuffer to clone.
+         * @return Framebuffer data.
+         */
+        [[nodiscard]] std::future<Framebuffer> clone_framebuffer(const Handle<Framebuffer> framebuffer_handle) {
+            std::promise<Framebuffer> promise;
+            promise.set_value(renderer_->clone_framebuffer(framebuffer_handle));
+            return promise.get_future();
         }
 
         /**
@@ -113,28 +145,6 @@ export namespace rw::gfx {
         }
 
         /**
-         * @brief Get a shader that was previously loaded by the renderer.
-         * @param id ID of the loaded shader.
-         * @return Pointer to the loaded shader, or nullptr if it wasn't loaded.
-         */
-        [[nodiscard]] std::future<Handle<Shader>> get_shader(const uint64_t id) {
-            std::promise<Handle<Shader>> promise;
-            promise.set_value(renderer_->get_shader(id));
-            return promise.get_future();
-        }
-
-        /**
-         * @brief Get a texture that was previously loaded by the renderer.
-         * @param id ID of the loaded texture.
-         * @return Pointer to the loaded texture, or nullptr if it wasn't loaded.
-         */
-        [[nodiscard]] std::future<Handle<Texture2D>> get_texture(const uint64_t id) {
-            std::promise<Handle<Texture2D>> promise;
-            promise.set_value(renderer_->get_texture(id));
-            return promise.get_future();
-        }
-
-        /**
          * @brief Load a texture from file.
          * @param file_path Path where the texture image is located.
          * @return Non-owning pointer to the newly created texture.
@@ -171,6 +181,13 @@ export namespace rw::gfx {
             std::promise<Renderer2DStats> promise;
             promise.set_value(renderer_->stats());
             return promise.get_future();
+        }
+
+        /**
+         * @brief Unbind any currently bound framebuffer.
+         */
+        void unbind_framebuffer() const {
+            renderer_->unbind_framebuffer();
         }
 
      private:

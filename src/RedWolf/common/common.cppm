@@ -12,26 +12,13 @@ export namespace rw {
     constexpr float nanoseconds_to_seconds{ 1e-9F };      /**< Conversion factor between nanoseconds and seconds. */
 
     /**
-     * @brief ID for ReaWolf resources.
-     */
-    using Id = uint64_t;
-
-    constexpr Id invalid_id{ 0U }; /**< Constant representing an invalid resource ID. */
-
-    /**
      * @brief Generic handle for RedWolf resources, cheap enough to be copied around.
      * @details This handle does not own the resource it points to, and is only valid as long as the resource exists.
      * @tparam T Type of resource contained in the handle.
      */
     template<typename T>
     struct Handle {
-        /**
-         * @brief Arrow operator to access the underlying resource.
-         * @return Pointer to the resource.
-         */
-        [[nodiscard]] T* operator->() const noexcept {
-            return ptr;
-        }
+        static constexpr uint64_t invalid_uid{ 0U }; /**< Constant representing an invalid resource ID. */
 
         /**
          * @brief Check if two handles are equal.
@@ -39,7 +26,7 @@ export namespace rw {
          * @return True if the handles point to the same resource, false otherwise.
          */
         [[nodiscard]] bool operator==(const Handle<T>& other) const noexcept {
-            return (id == other.id) && (ptr == other.ptr);
+            return index == other.index;
         }
 
         /**
@@ -48,7 +35,7 @@ export namespace rw {
          * @return True if the handles DO NOT point to the same resource, false otherwise.
          */
         [[nodiscard]] bool operator!=(const Handle<T>& other) const noexcept {
-            return (id != other.id) || (ptr != other.ptr);
+            return index != other.index;
         }
 
         /**
@@ -56,7 +43,7 @@ export namespace rw {
          * @return True if the handle is invalid, false otherwise.
          */
         [[nodiscard]] bool invalid() const noexcept {
-            return (invalid_id == id) || (nullptr == ptr);
+            return invalid_uid == index;
         }
 
         /**
@@ -64,11 +51,10 @@ export namespace rw {
          * @return True if the handle is valid, false otherwise.
          */
         [[nodiscard]] bool valid() const noexcept {
-            return (invalid_id != id) && (nullptr != ptr);
+            return invalid_uid != index;
         }
 
-        Id id{ invalid_id }; /**< Unique identifier for the resource. */
-        T* ptr{ nullptr };   /**< Pointer to the resource. */
+        uint64_t index{ invalid_uid }; /**< Unique identifier for the resource. */
     };
 
     /**
@@ -80,7 +66,7 @@ export namespace rw {
         uint32_t patch{ 0U }; /**< Patch version number. */
     };
 
-    constexpr VersionInfo current_version{ .major = 0U, .minor = 6U, .patch = 0U }; /**< Current version of the RedWolf engine. */
+    constexpr VersionInfo current_version{ .major = 0U, .minor = 7U, .patch = 0U }; /**< Current version of the RedWolf engine. */
 
     namespace core {
         /**
