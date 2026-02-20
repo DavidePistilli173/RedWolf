@@ -1,6 +1,5 @@
 module;
 
-#include <Redwolf/macros.hpp>
 #include <imgui/imgui.h>
 #include <memory>
 #include <optional>
@@ -13,84 +12,30 @@ import pong.common;
 
 export class PongMainLayer : public rw::layers::Layer {
  public:
-    static constexpr rw::math::Vec2 default_ball_velocity{ 400.0F, 200.0F };
+    static constexpr rw::core::Vec2 default_ball_velocity{ 400.0F, 200.0F };
 
     PongMainLayer() : Layer("PongMainGame"), camera_controller_{ window_settings.width, window_settings.height, false, false, false } {
         renderer_interface_ = window_.renderer_interface_2d();
 
-        base_shader_ = renderer_interface_->get_default_shader(rw::gfx::Renderer2D::DefaultShader::quad_2d).get();
-        if (!base_shader_.valid()) {
-            RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::DefaultShader::quad_2d);
+        if (!load_assets_()) {
+            RW_ERR("Failed to load game assets.");
             return;
         }
 
-        text_shader_ = renderer_interface_->get_default_shader(rw::gfx::Renderer2D::DefaultShader::text_2d).get();
-        if (!text_shader_.valid()) {
-            RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::DefaultShader::text_2d);
-            return;
-        }
-
-        background_quad_ = { .position           = { window_settings.width / 2.0F, window_settings.height / 2.0F, -0.5F },
-                             .rotation           = 0.0F,
-                             .size               = { window_settings.width, window_settings.height },
-                             .color              = {},
-                             .tiling_factor      = 1.0F,
-                             .texture            = rw::Handle<rw::gfx::Texture2D>{},
-                             .texture_sub_region = std::nullopt };
-
-        mid_field_quad_ = { .position           = { window_settings.width / 2.0F, window_settings.height / 2.0F, 0.0F },
-                            .rotation           = 0.0F,
-                            .size               = { 10.0F, window_settings.height },
-                            .color              = { 1.0F, 1.0F, 1.0F, 1.0F },
-                            .tiling_factor      = 1.0F,
-                            .texture            = rw::Handle<rw::gfx::Texture2D>{},
-                            .texture_sub_region = std::nullopt };
-
-        paddle_1_quad_ = { .position           = { 50.0F, window_settings.height / 2.0F, 0.0F },
-                           .rotation           = 0.0F,
-                           .size               = { 25.0F, 100.0F },
-                           .color              = { 1.0F, 1.0F, 1.0F, 1.0F },
-                           .tiling_factor      = 1.0F,
-                           .texture            = rw::Handle<rw::gfx::Texture2D>{},
-                           .texture_sub_region = std::nullopt };
-
-        paddle_2_quad_ = { .position           = { window_settings.width - 50.0F, window_settings.height / 2.0F, 0.0F },
-                           .rotation           = 0.0F,
-                           .size               = { 25.0F, 100.0F },
-                           .color              = { 1.0F, 1.0F, 1.0F, 1.0F },
-                           .tiling_factor      = 1.0F,
-                           .texture            = rw::Handle<rw::gfx::Texture2D>{},
-                           .texture_sub_region = std::nullopt };
-
-        auto ball_texture{ renderer_interface_->load_texture("assets/textures/ball.png").get() };
-        if (!ball_texture.valid()) {
-            RW_ERR("Failed to load ball texture: {}", "assets/textures/ball.png");
-            return;
-        }
-
-        ball_quad_ = { .position           = { window_settings.width / 2.0F, window_settings.height / 2.0F, 0.0F },
-                       .rotation           = 0.0F,
-                       .size               = { 20.0F, 20.0F },
-                       .color              = { 1.0F, 1.0F, 1.0F, 1.0F },
-                       .tiling_factor      = 1.0F,
-                       .texture            = ball_texture,
-                       .texture_sub_region = std::nullopt };
-
-        font_ = renderer_interface_->get_default_font(rw::gfx::Renderer2D::DefaultFont::cmu).get();
-        if (!font_.valid()) {
-            RW_ERR("Failed to get default font {}", rw::gfx::Renderer2D::DefaultFont::zector);
+        if (!init_entities_()) {
+            RW_ERR("Failed to create game entities.");
             return;
         }
 
         left_score_text_ = { .string           = std::to_string(left_score_),
-                             .position         = rw::math::Vec3{ window_.width() / 4, window_.height() - (window_.height() / 20), 0.5F },
+                             .position         = rw::core::Vec3{ window_.width() / 4, window_.height() - (window_.height() / 20), 0.5F },
                              .rotation         = 0.0F,
                              .pixel_size       = 50.0F,
                              .foreground_color = rw::gfx::color_white,
                              .font             = font_ };
 
         right_score_text_ = { .string     = std::to_string(left_score_),
-                              .position   = rw::math::Vec3{ (window_.width() / 4) * 3, window_.height() - (window_.height() / 20), 0.5F },
+                              .position   = rw::core::Vec3{ (window_.width() / 4) * 3, window_.height() - (window_.height() / 20), 0.5F },
                               .rotation   = 0.0F,
                               .pixel_size = 50.0F,
                               .foreground_color = rw::gfx::color_white,
@@ -155,12 +100,78 @@ export class PongMainLayer : public rw::layers::Layer {
     }
 
  private:
+    [[nodiscard]] bool init_entities_() {
+        background_ = entity_manager_.new_from_transform_and_quad(
+            { .position = { window_settings.width / 2.0F, window_settings.height / 2.0F, -0.5F },
+              .rotation = 0.0F,
+              .size     = { window_settings.width, window_settings.height } },
+            { .color = {}, .tiling_factor = 1.0F, .texture = rw::Handle<rw::gfx::Texture2D>{}, .texture_sub_region = std::nullopt });
+
+        mid_field_ = entity_manager_.new_from_transform_and_quad(
+            { .position = { window_settings.width / 2.0F, window_settings.height / 2.0F, 0.0F },
+              .rotation = 0.0F,
+              .size     = { 10.0F, window_settings.height } },
+            { .color              = { 1.0F, 1.0F, 1.0F, 1.0F },
+              .tiling_factor      = 1.0F,
+              .texture            = rw::Handle<rw::gfx::Texture2D>{},
+              .texture_sub_region = std::nullopt });
+
+        paddle_1_ = entity_manager_.new_from_transform_and_quad(
+            { .position = { 50.0F, window_settings.height / 2.0F, 0.0F }, .rotation = 0.0F, .size = { 25.0F, 100.0F } },
+            { .color              = { 1.0F, 1.0F, 1.0F, 1.0F },
+              .tiling_factor      = 1.0F,
+              .texture            = rw::Handle<rw::gfx::Texture2D>{},
+              .texture_sub_region = std::nullopt });
+
+        paddle_2_ = entity_manager_.new_from_transform_and_quad(
+            { .position = { window_settings.width - 50.0F, window_settings.height / 2.0F, 0.0F },
+              .rotation = 0.0F,
+              .size     = { 25.0F, 100.0F } },
+            { .color              = { 1.0F, 1.0F, 1.0F, 1.0F },
+              .tiling_factor      = 1.0F,
+              .texture            = rw::Handle<rw::gfx::Texture2D>{},
+              .texture_sub_region = std::nullopt });
+
+        ball_ = entity_manager_.new_from_transform_and_quad(
+            { .position = { window_settings.width / 2.0F, window_settings.height / 2.0F, 0.0F },
+              .rotation = 0.0F,
+              .size     = { 20.0F, 20.0F } },
+            { .color = { 1.0F, 1.0F, 1.0F, 1.0F }, .tiling_factor = 1.0F, .texture = ball_texture_, .texture_sub_region = std::nullopt });
+    }
+
+    [[nodiscard]] bool load_assets_() {
+        base_shader_ = renderer_interface_->get_default_shader(rw::gfx::Renderer2D::DefaultShader::quad_2d).get();
+        if (!base_shader_.valid()) {
+            RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::DefaultShader::quad_2d);
+            return false;
+        }
+
+        text_shader_ = renderer_interface_->get_default_shader(rw::gfx::Renderer2D::DefaultShader::text_2d).get();
+        if (!text_shader_.valid()) {
+            RW_ERR("Failed to get shader {}", rw::gfx::Renderer2D::DefaultShader::text_2d);
+            return false;
+        }
+
+        ball_texture_ = renderer_interface_->load_texture("assets/textures/ball.png").get();
+        if (!ball_texture_.valid()) {
+            RW_ERR("Failed to load ball texture: {}", "assets/textures/ball.png");
+            return false;
+        }
+
+        font_ = renderer_interface_->get_default_font(rw::gfx::Renderer2D::DefaultFont::cmu).get();
+        if (!font_.valid()) {
+            RW_ERR("Failed to get default font {}", rw::gfx::Renderer2D::DefaultFont::zector);
+            return false;
+        }
+
+        return true;
+    }
+
     void update_ball_(const float delta_time) {
         static int reset_dir = 1; // toggles horizontal direction on reset
 
         // Move
-        ball_quad_.position.x += ball_velocity_.x * delta_time;
-        ball_quad_.position.y += ball_velocity_.y * delta_time;
+        entity_manager_.translate(ball_, { ball_velocity_ * delta_time, 0.0F });
 
         // Helpers
         const float half_ball_w = ball_quad_.size.x * 0.5F;
@@ -294,16 +305,19 @@ export class PongMainLayer : public rw::layers::Layer {
     rw::engine::CameraController                  camera_controller_; /**< Camera controller for 2D orthographic camera. */
     rw::ui::Window&                               window_{ rw::engine::App::get().window() }; /**< Reference to the application window. */
     std::unique_ptr<rw::gfx::RendererInterface2D> renderer_interface_;                        /**< Interface to the renderer. */
-    rw::Handle<rw::gfx::Shader>                   base_shader_; /**< Base shader for rendering textured quads. */
-    rw::Handle<rw::gfx::Shader>                   text_shader_; /**< Shader for rendering text. */
+    rw::engine::EntityManager&  entity_manager_{ rw::engine::App::get().entity_manager() };   /**< Application entity manager. */
+    rw::Handle<rw::gfx::Shader> base_shader_; /**< Base shader for rendering textured quads. */
+    rw::Handle<rw::gfx::Shader> text_shader_; /**< Shader for rendering text. */
 
-    rw::gfx::Quad background_quad_; /**< Quad for the background. */
-    rw::gfx::Quad mid_field_quad_;  /**< Quad for the mid-field line. */
-    rw::gfx::Quad paddle_1_quad_;   /**< Quad for the first paddle. */
-    rw::gfx::Quad paddle_2_quad_;   /**< Quad for the second paddle. */
-    rw::gfx::Quad ball_quad_;       /**< Quad for the ball. */
+    rw::Handle<rw::gfx::Texture2D> ball_texture_; /**< Texture for the ball. */
 
-    rw::math::Vec2 ball_velocity_{ default_ball_velocity }; /**< Current velocity of the ball. */
+    rw::Handle<rw::engine::Entity> background_; /**< Entity for the background. */
+    rw::Handle<rw::engine::Entity> mid_field_;  /**< Entity for the mid-field line. */
+    rw::Handle<rw::engine::Entity> paddle_1_;   /**< Entity for the first paddle. */
+    rw::Handle<rw::engine::Entity> paddle_2_;   /**< Entity for the second paddle. */
+    rw::Handle<rw::engine::Entity> ball_;       /**< Entity for the ball. */
+
+    rw::core::Vec2 ball_velocity_{ default_ball_velocity }; /**< Current velocity of the ball. */
 
     uint32_t      left_score_{ 0U };  /**< Score of the left player. */
     uint32_t      right_score_{ 0U }; /**< Score of the right player. */
@@ -312,5 +326,5 @@ export class PongMainLayer : public rw::layers::Layer {
 
     rw::Handle<rw::gfx::Font> font_; /**< Font for rendering the score. */
 
-    rw::math::Vec2 window_scale_factor_{ 1.0F }; /**< Current scale factor with respect to the starting window size. */
+    rw::core::Vec2 window_scale_factor_{ 1.0F }; /**< Current scale factor with respect to the starting window size. */
 };

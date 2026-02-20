@@ -7,14 +7,14 @@ module;
 
 export module redwolf.gfx.texture2d;
 
-import redwolf.math;
+import redwolf.core.math;
 
 export namespace rw::gfx {
     /**
      * @brief 2D texture class for OpenGL.
      */
     struct Texture2D {
-        using SubRegion = std::array<rw::math::Vec2, 4>; /**< Texture coordinates of a texture sub-region. */
+        using SubRegion = std::array<rw::core::Vec2, 4>; /**< Texture coordinates of a texture sub-region. */
 
         uint32_t gid{ 0U }; /**< OpenGL texture ID. */
 

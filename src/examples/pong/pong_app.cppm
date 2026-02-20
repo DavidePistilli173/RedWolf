@@ -1,6 +1,5 @@
 module;
 
-#include <RedWolf/macros.hpp>
 #include <memory>
 
 export module pong.app;
@@ -12,7 +11,7 @@ import redwolf;
 export class PongApp : public rw::engine::App {
  public:
     PongApp() : rw::engine::App(window_settings), main_game_{ push_layer<PongMainLayer>() } {
-        RW_INFO("Welcome to Pong, powered by RedWolf {}.", rw::current_version);
+        rw::info("Welcome to Pong, powered by RedWolf {}.", rw::current_version);
     }
     ~PongApp() override                = default;
     PongApp(const PongApp&)            = delete;

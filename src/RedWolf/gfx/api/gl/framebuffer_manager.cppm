@@ -1,13 +1,11 @@
 module;
 
-#include "RedWolf/macros.hpp"
-
 #include <cstdint>
 #include <glad/glad.h>
 
 export module redwolf.gfx.framebuffer_manager;
 
-import redwolf.common;
+import redwolf.core.handle;
 import redwolf.core.asset_library;
 import redwolf.gfx.framebuffer;
 import redwolf.gfx.framebuffer_descriptor;
@@ -88,7 +86,7 @@ export namespace rw::gfx {
             auto [framebuffer, framebuffer_handle]{ framebuffers_.create() };
             framebuffer.descriptor = descriptor;
             if (!recreate_internal_(framebuffer)) {
-                RW_CORE_ERR("Failed to create framebuffer.");
+                rw::err("Failed to create framebuffer.");
                 return {};
             }
             return framebuffer_handle;
@@ -114,7 +112,7 @@ export namespace rw::gfx {
                 framebuffer.descriptor.width  = width;
                 framebuffer.descriptor.height = height;
                 if (!recreate_internal_(framebuffer)) {
-                    RW_CORE_ERR("Failed to resize framebuffer {} to {}x{}.", framebuffer.gid, width, height);
+                    rw::err("Failed to resize framebuffer {} to {}x{}.", framebuffer.gid, width, height);
                     return false;
                 }
                 return true;
@@ -139,7 +137,7 @@ export namespace rw::gfx {
                 glDeleteFramebuffers(1, &framebuffer.gid);
                 glDeleteTextures(1, &framebuffer.color_attachment);
                 glDeleteTextures(1, &framebuffer.depth_attachment);
-                RW_CORE_TRACE("Framebuffer {} deleted.", framebuffer.gid);
+                rw::trace("Framebuffer {} deleted.", framebuffer.gid);
 
                 framebuffer.gid              = 0;
                 framebuffer.color_attachment = 0;
@@ -180,7 +178,7 @@ export namespace rw::gfx {
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, framebuffer.depth_attachment, 0);
 
             if (GL_FRAMEBUFFER_COMPLETE != glCheckFramebufferStatus(GL_FRAMEBUFFER)) {
-                RW_CORE_ERR("Framebuffer {} is incomplete!", framebuffer.gid);
+                rw::err("Framebuffer {} is incomplete!", framebuffer.gid);
                 return false;
             }
 

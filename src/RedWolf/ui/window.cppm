@@ -1,6 +1,5 @@
 module;
 
-#include "Redwolf/macros.hpp"
 #include "vendor/glfw.hpp"
 
 #include <functional>
@@ -17,9 +16,8 @@ import redwolf.evt.key_event;
 import redwolf.evt.mouse_event;
 import redwolf.gfx.context;
 import redwolf.gfx.renderer_2_d;
-import redwolf.gfx.renderer_interface_2_d;
 import redwolf.input.keyboard;
-import redwolf.math;
+import redwolf.core.math;
 import redwolf.ui.common;
 import redwolf.util.logger;
 
@@ -50,26 +48,26 @@ export namespace rw::ui {
             // Initialize GLFW
             if (!glfw_initialized_) {
                 if (GLFW_TRUE != glfwInit()) {
-                    RW_CORE_FATAL("Failed to initialise GLFW: {}", rw::vendor::glfw_get_error());
+                    rw::fatal("Failed to initialise GLFW: {}", rw::vendor::glfw_get_error());
                     return;
                 }
 
                 glfwSetErrorCallback(glfw_error_clbk_);
-                RW_CORE_INFO("GLFW initialised successfully");
+                rw::info("GLFW initialised successfully");
                 glfw_initialized_ = true;
             }
 
             // Create the window
             handle_ = glfwCreateWindow(static_cast<int>(width_), static_cast<int>(height_), title_.c_str(), nullptr, nullptr);
             if (nullptr == handle_) {
-                RW_CORE_ERR("Failed to create window: {}", rw::vendor::glfw_get_error());
+                rw::err("Failed to create window: {}", rw::vendor::glfw_get_error());
                 return;
             }
 
             // Create and initialise the graphics Context.
             graphics_context_ = std::make_unique<rw::gfx::Context>(handle_);
             if (!graphics_context_->init()) {
-                RW_CORE_ERR("Failed to initialise the graphics Context.");
+                rw::err("Failed to initialise the graphics Context.");
                 return;
             }
 
@@ -132,8 +130,8 @@ export namespace rw::ui {
          * @brief Get an interface to this window's 2D renderer.
          * @return Interface to this window's 2D renderer.
          */
-        [[nodiscard]] std::unique_ptr<rw::gfx::RendererInterface2D> renderer_interface_2d() {
-            return std::make_unique<rw::gfx::RendererInterface2D>(renderer_2d_);
+        [[nodiscard]] std::shared_ptr<rw::gfx::Renderer2D>& renderer() {
+            return renderer_2d_;
         }
 
         /**
@@ -153,10 +151,10 @@ export namespace rw::ui {
 
             if (vsync_) {
                 glfwSwapInterval(1); // Enable VSync
-                RW_CORE_INFO("VSync enabled");
+                rw::info("VSync enabled");
             } else {
                 glfwSwapInterval(0); // Disable VSync
-                RW_CORE_INFO("VSync disabled");
+                rw::info("VSync disabled");
             }
         }
 
@@ -239,7 +237,7 @@ export namespace rw::ui {
          * @param description Error description.
          */
         static void glfw_error_clbk_(int code, const char* description) {
-            RW_CORE_ERR("GLFW error: code: {}; description: {}", static_cast<rw::vendor::GlfwError>(code), description);
+            rw::err("GLFW error: code: {}; description: {}", static_cast<rw::vendor::GlfwError>(code), description);
         }
 
         /**
@@ -291,7 +289,7 @@ export namespace rw::ui {
                 }
             } break;
             default:
-                RW_CORE_ERR("Invalid GLFW action: {}", action);
+                rw::err("Invalid GLFW action: {}", action);
                 break;
             }
         }
@@ -325,7 +323,7 @@ export namespace rw::ui {
                 }
             } break;
             default:
-                RW_CORE_ERR("Invalid GLFW action: {}", action);
+                rw::err("Invalid GLFW action: {}", action);
                 break;
             }
         }
@@ -380,12 +378,12 @@ export namespace rw::ui {
             auto* self{ static_cast<Window*>(user_ptr) };
 
             if (width < 0 || height < 0) {
-                RW_CORE_WARN("Invalid window size: {}x{}", width, height);
+                rw::warn("Invalid window size: {}x{}", width, height);
                 return;
             }
             const rw::evt::WindowResizedEvent event{ static_cast<uint32_t>(width),
                                                      static_cast<uint32_t>(height),
-                                                     rw::math::Vec2{ static_cast<float>(width) / static_cast<float>(self->width_),
+                                                     rw::core::Vec2{ static_cast<float>(width) / static_cast<float>(self->width_),
                                                                      static_cast<float>(height) / static_cast<float>(self->height_) } };
 
             self->width_  = event.width;

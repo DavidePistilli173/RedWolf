@@ -4,17 +4,18 @@ set(RW_GFX_API "RW_GFX_API_OPENGL" CACHE STRING "Rendering API for RedWolf")
 
 target_sources(RedWolf PUBLIC
         FILE_SET CXX_MODULES FILES
-        common/common.cppm
         core/animated.cppm
         core/asset_library.cppm
-        core/core.cppm
-        engine/app.cppm
+        core/common.cppm
+        core/geometry.cppm
+        core/handle.cppm
+        core/math.cppm
+        core/version.cppm
         engine/camera_controller.cppm
         engine/engine.cppm
-        engine/entry_point.cppm
+        engine/entity.cppm
         evt/application_event.cppm
         evt/event.cppm
-        evt/evt.cppm
         evt/key_event.cppm
         evt/mouse_event.cppm
         gfx/buffer_layout.cppm
@@ -24,43 +25,28 @@ target_sources(RedWolf PUBLIC
         gfx/font.cppm
         gfx/font_manager.cppm
         gfx/framebuffer_descriptor.cppm
-        gfx/gfx.cppm
         gfx/index_buffer.cppm
         gfx/quad.cppm
         gfx/renderer2d.cppm
         gfx/renderer_api.cppm
-        gfx/renderer_interface_2d.cppm
         gfx/shader_data.cppm
         gfx/text.cppm
         gfx/vertex_array.cppm
         gfx/vertex_buffer.cppm
-        input/input.cppm
         input/keyboard.cppm
         input/mouse.cppm
         input/polling.cppm
-        layers/debug_layer.cppm
-        layers/layer.cppm
-        layers/layer_stack.cppm
-        layers/layers.cppm
-        math/geometry.cppm
-        math/math.cppm
-        thread/thread.cppm
+        phy/physics_descriptor.cppm
+        phy/physics_engine.cppm
         thread/thread_pool.cppm
         time/date_time.cppm
         time/profiler.cppm
         time/profiler_data.cppm
-        time/time.cppm
         ui/common.cppm
-        ui/ui.cppm
         ui/window.cppm
         util/log_msg.cppm
         util/logger.cppm
-        util/util.cppm
         redwolf.cppm
-)
-
-target_sources(RedWolf PRIVATE
-        layers/debug_layer.cpp
 )
 
 if (RW_GFX_API STREQUAL "RW_GFX_API_OPENGL")

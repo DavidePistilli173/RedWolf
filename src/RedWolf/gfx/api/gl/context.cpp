@@ -1,6 +1,5 @@
 module;
 
-#include "Redwolf/macros.hpp"
 #include "vendor/glfw.hpp"
 
 #include <glad/glad.h>
@@ -11,7 +10,7 @@ import redwolf.util.logger;
 
 rw::gfx::Context::Context(rw::ui::WindowHandle window) : window_{ window } {
     if (rw::ui::invalid_window_handle == window_) {
-        RW_CORE_ERR("Invalid window handle.");
+        rw::err("Invalid window handle.");
         return;
     }
 }
@@ -21,15 +20,15 @@ bool rw::gfx::Context::init() {
 
     // Load OpenGL functions using GLAD
     if (0 == gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-        RW_CORE_ERR("Failed to initialize GLAD: {}", rw::vendor::glfw_get_error());
+        rw::err("Failed to initialize GLAD: {}", rw::vendor::glfw_get_error());
         return false;
     }
 
-    RW_CORE_INFO("Loaded OpenGL functions.");
-    RW_CORE_INFO("Graphics driver:");
-    RW_CORE_INFO("   Vendor: {}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
-    RW_CORE_INFO("   Renderer: {}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
-    RW_CORE_INFO("   Version: {}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+    rw::info("Loaded OpenGL functions.");
+    rw::info("Graphics driver:");
+    rw::info("   Vendor: {}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+    rw::info("   Renderer: {}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+    rw::info("   Version: {}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
     return true;
 }
 

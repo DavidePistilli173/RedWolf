@@ -1,7 +1,5 @@
 module;
 
-#include "RedWolf/macros.hpp"
-
 #include <glad/glad.h>
 
 module redwolf.gfx.index_buffer;
@@ -10,12 +8,12 @@ import redwolf.util.logger;
 
 rw::gfx::IndexBuffer::IndexBuffer() {
     glCreateBuffers(1, &id_);
-    RW_CORE_TRACE("Index buffer {} created.", id_);
+    rw::trace("Index buffer {} created.", id_);
 }
 
 rw::gfx::IndexBuffer::~IndexBuffer() {
     glDeleteBuffers(1, &id_);
-    RW_CORE_TRACE("Index buffer {} deleted.", id_);
+    rw::trace("Index buffer {} deleted.", id_);
 }
 
 rw::gfx::IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept : id_{ other.id_ } {

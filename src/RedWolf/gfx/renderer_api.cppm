@@ -5,7 +5,7 @@ module;
 export module redwolf.gfx.renderer_api;
 
 import redwolf.gfx.vertex_array;
-import redwolf.math;
+import redwolf.core.math;
 
 export namespace rw::gfx {
     /**
@@ -34,7 +34,7 @@ export namespace rw::gfx {
          * @brief Set the colour to use to clear the screen.
          * @param color Colour to use when clearing the screen.
          */
-        static void set_clear_color(const rw::math::Vec4& color);
+        static void set_clear_color(const rw::core::Vec4& color);
 
         /**
          * @brief Set a new viewport for rendering.

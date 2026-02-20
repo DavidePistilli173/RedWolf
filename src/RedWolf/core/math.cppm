@@ -1,17 +1,24 @@
 module;
 
-export module redwolf.math;
-
-export import redwolf.math.geometry;
+export module redwolf.core.math;
 
 import glm;
 
-export namespace rw::math {
+export namespace rw::core {
     using Vec2 = glm::vec2; /**< 2D vector type. */
     using Vec3 = glm::vec3; /**< 3D vector type. */
     using Vec4 = glm::vec4; /**< 4D vector type. */
     using Mat3 = glm::mat3; /**< 3x3 matrix type. */
     using Mat4 = glm::mat4; /**< 4x4 matrix type. */
+
+    /**
+     * @brief Translation, rotation and scale.
+     */
+    struct Transform {
+        Vec3  position{ 0.0F }; /**< Position. */
+        float rotation{ 0.0F }; /**< Rotation angle. [rad] */
+        Vec2  size{ 1.0F };     /**< Size (x, y axes). */
+    };
 
     /**
      * @brief Convert degrees to radians.
@@ -62,7 +69,7 @@ export namespace rw::math {
      */
     [[nodiscard]] Mat4 build_2d_transform(const Vec3& translation, const float rotation, const Vec2& scale) {
         return translate(Mat4(1.0F), translation) * rotate(Mat4(1.0F), radians(rotation), Vec3(0.0F, 0.0F, 1.0F)) *
-               rw::math::scale(Mat4(1.0F), { scale.x, scale.y, 1.0F });
+               rw::core::scale(Mat4(1.0F), { scale.x, scale.y, 1.0F });
     }
 
     /**
@@ -114,4 +121,4 @@ export namespace rw::math {
     [[nodiscard]] float* value_ptr(Mat4& matrix) {
         return glm::gtc::value_ptr(matrix);
     }
-} // namespace rw::math
+} // namespace rw::core

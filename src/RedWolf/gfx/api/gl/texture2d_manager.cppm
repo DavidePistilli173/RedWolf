@@ -1,7 +1,5 @@
 module;
 
-#include "Redwolf/macros.hpp"
-
 #include <glad/glad.h>
 #include <span>
 #include <stb/stb_image.h>
@@ -11,9 +9,10 @@ export module redwolf.gfx.texture2d_manager;
 
 import redwolf.common;
 import redwolf.core.asset_library;
+import redwolf.core.geometry;
+import redwolf.core.math;
 import redwolf.gfx.common;
 import redwolf.gfx.texture2d;
-import redwolf.math;
 import redwolf.util.logger;
 
 export namespace rw::gfx {
@@ -36,7 +35,7 @@ export namespace rw::gfx {
                 texture.gid = 0;
             });
 
-            RW_CORE_TRACE("All textures unloaded.");
+            rw::trace("All textures unloaded.");
         }
 
         /**
@@ -75,7 +74,7 @@ export namespace rw::gfx {
          * @return Texture coordinates of the sub-region.
          */
         [[nodiscard]] rw::gfx::Texture2D::SubRegion
-            compute_subregion(const Handle<Texture2D> texture_handle, const rw::math::Rect<float>& region) const {
+            compute_subregion(const Handle<Texture2D> texture_handle, const rw::core::Rect<float>& region) const {
             return textures_.visit<Texture2D::SubRegion>(texture_handle, [&region](const Texture2D& texture) {
                 const float min_x{ region.x / static_cast<float>(texture.width) };
                 const float max_x{ (region.x + region.width) / static_cast<float>(texture.width) };
@@ -105,7 +104,7 @@ export namespace rw::gfx {
             glTextureParameteri(texture.gid, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTextureParameteri(texture.gid, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-            RW_CORE_TRACE("Texture {} (gid={}) created (empty).", texture_handle.index, texture.gid);
+            rw::trace("Texture {} (gid={}) created (empty).", texture_handle.index, texture.gid);
             return texture_handle;
         }
 
@@ -125,13 +124,13 @@ export namespace rw::gfx {
             stbi_set_flip_vertically_on_load(1);
             stbi_uc* texture_data{ stbi_load(texture.path.c_str(), &width, &height, &channels, 0) };
             if (nullptr == texture_data) {
-                RW_CORE_ERR("Failed to load image: {}", texture.path);
+                rw::err("Failed to load image: {}", texture.path);
                 textures_.remove(texture_handle, []([[maybe_unused]] Texture2D&) {});
                 return {};
             }
 
             if (0 > width || 0 > height) {
-                RW_CORE_ERR("Invalid image dimensions: {}x{} for image: {}", width, height, texture.path);
+                rw::err("Invalid image dimensions: {}x{} for image: {}", width, height, texture.path);
                 stbi_image_free(texture_data);
                 textures_.remove(texture_handle, []([[maybe_unused]] Texture2D&) {});
                 return {};
@@ -150,7 +149,7 @@ export namespace rw::gfx {
                 texture.internal_format = GL_R8;
                 texture.data_format     = GL_RED;
             } else {
-                RW_CORE_ERR("Unsupported number of channels: {} for image: {}", channels, texture.path);
+                rw::err("Unsupported number of channels: {} for image: {}", channels, texture.path);
                 stbi_image_free(texture_data);
                 textures_.remove(texture_handle, []([[maybe_unused]] Texture2D&) {});
                 return {};
@@ -167,7 +166,7 @@ export namespace rw::gfx {
             glTextureSubImage2D(texture.gid, 0, 0, 0, width, height, texture.data_format, GL_UNSIGNED_BYTE, texture_data);
             stbi_image_free(texture_data);
 
-            RW_CORE_TRACE("Texture {} (gid={}) created from {}", texture_handle.index, texture.gid, texture.path);
+            rw::trace("Texture {} (gid={}) created from {}", texture_handle.index, texture.gid, texture.path);
             return texture_handle;
         }
 
@@ -178,12 +177,12 @@ export namespace rw::gfx {
 
                 // Set the data format.
                 if (!set_data_format_(texture, descriptor.format)) {
-                    RW_CORE_ERR("Failed to set data format for texture (index:{},gid:{}).", texture_handle.index, texture.gid);
+                    rw::err("Failed to set data format for texture (index:{},gid:{}).", texture_handle.index, texture.gid);
                     return;
                 }
 
                 if (data.size() < texture.width * texture.height * bytes_per_pixel_(texture.data_format)) {
-                    RW_CORE_ERR(
+                    rw::err(
                         "Insufficient data to fill the texture: size={}; width={}; height={}; bytes_per_pixel={}",
                         data.size(),
                         texture.width,
@@ -211,9 +210,9 @@ export namespace rw::gfx {
          * @param texture_handle Handle to the texture to get the size of.
          * @return Size of the texture. (0,0) if it wasn't found.
          */
-        [[nodiscard]] rw::math::Vec2 texture_size(const Handle<Texture2D> texture_handle) const {
-            return textures_.visit<rw::math::Vec2>(texture_handle, [](const Texture2D& texture) {
-                return rw::math::Vec2{ static_cast<float>(texture.width), static_cast<float>(texture.height) };
+        [[nodiscard]] rw::core::Vec2 texture_size(const Handle<Texture2D> texture_handle) const {
+            return textures_.visit<rw::core::Vec2>(texture_handle, [](const Texture2D& texture) {
+                return rw::core::Vec2{ static_cast<float>(texture.width), static_cast<float>(texture.height) };
             });
         }
 
@@ -227,7 +226,7 @@ export namespace rw::gfx {
                 texture.gid = 0;
             });
 
-            RW_CORE_TRACE("Texture {} unloaded.", handle.index);
+            rw::trace("Texture {} unloaded.", handle.index);
         }
 
      private:
@@ -243,7 +242,7 @@ export namespace rw::gfx {
             case GL_RGBA:
                 return 4;
             default:
-                RW_CORE_ERR("Invalid data format: {}", data_format);
+                rw::err("Invalid data format: {}", data_format);
                 return 4;
             }
         }
@@ -267,7 +266,7 @@ export namespace rw::gfx {
             case TextureFormat::r8:
             case TextureFormat::rgba32f:
             default:
-                RW_CORE_ERR("Unsupported texture format: {}", static_cast<int>(format));
+                rw::err("Unsupported texture format: {}", static_cast<int>(format));
                 return false;
             }
 

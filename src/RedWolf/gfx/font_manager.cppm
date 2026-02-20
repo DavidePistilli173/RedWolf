@@ -1,7 +1,5 @@
 module;
 
-#include "RedWolf/macros.hpp"
-
 #include <cstdint>
 #include <msdf-atlas-gen/FontGeometry.h>
 #include <msdf-atlas-gen/GlyphGeometry.h>
@@ -13,7 +11,7 @@ module;
 
 export module redwolf.gfx.font_manager;
 
-import redwolf.common;
+import redwolf.core.handle;
 import redwolf.core.asset_library;
 import redwolf.gfx.common;
 import redwolf.gfx.font;
@@ -58,7 +56,7 @@ export namespace rw::gfx {
             // Initialise FreeType.
             msdfgen::FreetypeHandle* ft{ msdfgen::initializeFreetype() };
             if (nullptr == ft) {
-                RW_CORE_ERR("Failed to initialize FreeType library for font loading.");
+                rw::err("Failed to initialize FreeType library for font loading.");
                 return {};
             }
 
@@ -66,7 +64,7 @@ export namespace rw::gfx {
             msdfgen::FontHandle* font_raw{ msdfgen::loadFont(ft, std::string{ path }.c_str()) };
             if (nullptr == font_raw) {
                 msdfgen::deinitializeFreetype(ft);
-                RW_CORE_ERR("Failed to load font from path: {}", path);
+                rw::err("Failed to load font from path: {}", path);
                 return {};
             }
 
@@ -84,7 +82,7 @@ export namespace rw::gfx {
             font.glyphs        = std::make_unique<std::vector<msdf_atlas::GlyphGeometry>>();
             font.font_geometry = msdf_atlas::FontGeometry(font.glyphs.get());
             const int32_t loaded_glyphs{ font.font_geometry.loadCharset(font_raw, font_scale, charset) };
-            RW_CORE_TRACE("Loaded {}/{} glyphs from font at path: {}", loaded_glyphs, charset.size(), path);
+            rw::trace("Loaded {}/{} glyphs from font at path: {}", loaded_glyphs, charset.size(), path);
 
             // Apply MSDF edge coloring.
             for (msdf_atlas::GlyphGeometry& glyph : *font.glyphs) {
@@ -99,7 +97,7 @@ export namespace rw::gfx {
             atlas_packer.setMiterLimit(1.0);
             if (const int32_t remaining{ atlas_packer.pack(font.glyphs->data(), static_cast<int32_t>(font.glyphs->size())) };
                 0 != remaining) {
-                RW_CORE_ERR("Failed to pack {} glyphs into the atlas for font at path: {}", remaining, path);
+                rw::err("Failed to pack {} glyphs into the atlas for font at path: {}", remaining, path);
                 fonts_.remove(font_handle, []([[maybe_unused]] const Font& font) {});
                 return {};
             }
@@ -112,7 +110,7 @@ export namespace rw::gfx {
             font.atlas_texture =
                 create_and_cache_atlas_<uint8_t, float, 3, msdf_atlas::msdfGenerator>(path, *font.glyphs, width, height, texture_manager);
             if (font.atlas_texture.invalid()) {
-                RW_CORE_ERR("Failed to create texture atlas for font at path: {}", path);
+                rw::err("Failed to create texture atlas for font at path: {}", path);
                 fonts_.remove(font_handle, []([[maybe_unused]] const Font& font) {});
                 return {};
             }
@@ -152,7 +150,7 @@ export namespace rw::gfx {
             generator.generate(glyphs.data(), static_cast<int32_t>(glyphs.size()));
             msdfgen::BitmapConstRef<T, N> bitmap{ generator.atlasStorage() };
             if (0 > bitmap.width || 0 > bitmap.height) {
-                RW_CORE_ERR("Invalid size {}x{} for font atlas: {}", bitmap.width, bitmap.height, font_name);
+                rw::err("Invalid size {}x{} for font atlas: {}", bitmap.width, bitmap.height, font_name);
                 return {};
             }
 

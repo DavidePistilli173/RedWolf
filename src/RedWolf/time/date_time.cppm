@@ -1,13 +1,20 @@
 module;
 
 #include <chrono>
+#include <filesystem>
 #include <format>
 
 export module redwolf.time.date_time;
 
-import redwolf.common;
-
 export namespace rw::time {
+    /**
+     * @brief Concept for representing an std::chrono clock.
+     */
+    template<typename T>
+    concept IsChronoClock = std::is_same_v<T, std::chrono::system_clock> || std::is_same_v<T, std::chrono::steady_clock> ||
+                            std::is_same_v<T, std::chrono::high_resolution_clock> ||
+                            std::is_same_v<T, std::filesystem::file_time_type::clock> || std::is_same_v<T, std::chrono::file_clock>;
+
     /**
      * @brief Class containing date and time information.
      */
@@ -18,7 +25,7 @@ export namespace rw::time {
          * @tparam T Type of clock the time point is based on.
          * @param time_point Time point from which to create the object.
          */
-        template<rw::time::IsChronoClock T>
+        template<IsChronoClock T>
         explicit DateTime(std::chrono::time_point<T> time_point) :
             date_{ std::chrono::floor<std::chrono::days>(time_point) },
             time_{ std::chrono::duration_cast<std::chrono::nanoseconds>(T::now() - std::chrono::floor<std::chrono::days>(time_point)) } {}

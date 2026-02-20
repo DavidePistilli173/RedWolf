@@ -10,10 +10,15 @@ module;
 
 export module redwolf.util.logger;
 
-import redwolf.common;
 import redwolf.util.log_msg;
 
 export namespace rw::util {
+    /**
+     * @brief Concept for objects that can be used as std::format arguments.
+     */
+    template<typename T>
+    concept IsFormattable = std::is_default_constructible_v<std::formatter<T>>;
+
     /**
      * @brief Singleton, thread-safe logger.
      */
@@ -38,42 +43,12 @@ export namespace rw::util {
         };
 
         /**
-         * @brief Log an error message.
-         * @param msg Message to log. Supports the std::format syntax.
-         * @param args Optional arguments to insert into the message.
-         */
-        template<rw::core::IsFormattable... Args>
-        void err(const MessageWithLocation& msg, const Args&... args) {
-            message_base(Level::error, msg, args...);
-        }
-
-        /**
-         * @brief Log a fatal message.
-         * @param msg Message to log. Supports the std::format syntax.
-         * @param args Optional arguments to insert into the message.
-         */
-        template<rw::core::IsFormattable... Args>
-        void fatal(const MessageWithLocation& msg, const Args&... args) {
-            message_base(Level::fatal, msg, args...);
-        }
-
-        /**
          * @brief Get the instance of the logger.
          * @return Instance of the logger.
          */
         [[nodiscard]] static Logger& get() {
             static Logger instance;
             return instance;
-        }
-
-        /**
-         * @brief Log an information message.
-         * @param msg Message to log. Supports the std::format syntax.
-         * @param args Optional arguments to insert into the message.
-         */
-        template<rw::core::IsFormattable... Args>
-        void info(const MessageWithLocation& msg, const Args&... args) {
-            message_base(Level::info, msg, args...);
         }
 
         /**
@@ -91,7 +66,7 @@ export namespace rw::util {
          * @param msg Message to log. Supports the std::format syntax.
          * @param args Optional arguments for the format string.
          */
-        template<rw::core::IsFormattable... Args>
+        template<IsFormattable... Args>
         void message_base(const Level level, const MessageWithLocation& msg, const Args&... args) {
             if (level >= level_) {
                 LogMsg message{ level, msg.loc, std::vformat(msg.txt, std::make_format_args(args...)) };
@@ -123,28 +98,8 @@ export namespace rw::util {
          * @param level New logging level for release builds.
          */
         void set_level(Level level) {
-            info("Logger level changed from {} to {}.", level_.load(), level);
+            message_base(Level::info, "Logger level changed from {} to {}.", level_.load(), level);
             level_ = level;
-        }
-
-        /**
-         * @brief Log a trace message only in debug builds.
-         * @param msg Message to log. Supports the std::format syntax.
-         * @param args Optional arguments to insert into the message.
-         */
-        template<rw::core::IsFormattable... Args>
-        void trace(const MessageWithLocation& msg, const Args&... args) {
-            message_base(Level::trace, msg, args...);
-        }
-
-        /**
-         * @brief Log a warning message only in debug builds.
-         * @param msg Message to log. Supports the std::format syntax.
-         * @param args Optional arguments to insert into the message.
-         */
-        template<rw::core::IsFormattable... Args>
-        void warn(const MessageWithLocation& msg, const Args&... args) {
-            message_base(Level::warning, msg, args...);
         }
 
      private:
@@ -152,10 +107,62 @@ export namespace rw::util {
          * @brief Default constructor.
          */
         Logger() {
-            info("Logger created.");
+            message_base(Level::info, "Logger created.");
         }
 
         std::mutex         mtx_;                   /**< Logging mutex. */
         std::atomic<Level> level_{ Level::trace }; /**< Logging level. */
     };
 } // namespace rw::util
+
+export namespace rw {
+    /**
+     * @brief Log an error message.
+     * @param msg Message to log. Supports the std::format syntax.
+     * @param args Optional arguments to insert into the message.
+     */
+    template<rw::util::IsFormattable... Args>
+    void err(const rw::util::Logger::MessageWithLocation& msg, const Args&... args) {
+        rw::util::Logger::get().message_base(rw::util::Logger::Level::error, msg, args...);
+    }
+
+    /**
+     * @brief Log a fatal message.
+     * @param msg Message to log. Supports the std::format syntax.
+     * @param args Optional arguments to insert into the message.
+     */
+    template<rw::util::IsFormattable... Args>
+    void fatal(const rw::util::Logger::MessageWithLocation& msg, const Args&... args) {
+        rw::util::Logger::get().message_base(rw::util::Logger::Level::fatal, msg, args...);
+    }
+
+    /**
+     * @brief Log an information message.
+     * @param msg Message to log. Supports the std::format syntax.
+     * @param args Optional arguments to insert into the message.
+     */
+    template<rw::util::IsFormattable... Args>
+    void info(const rw::util::Logger::MessageWithLocation& msg, const Args&... args) {
+        rw::util::Logger::get().message_base(rw::util::Logger::Level::info, msg, args...);
+    }
+
+    /**
+     * @brief Log a trace message only in debug builds.
+     * @param msg Message to log. Supports the std::format syntax.
+     * @param args Optional arguments to insert into the message.
+     */
+    template<rw::util::IsFormattable... Args>
+    void trace(const rw::util::Logger::MessageWithLocation& msg, const Args&... args) {
+        rw::util::Logger::get().message_base(rw::util::Logger::Level::trace, msg, args...);
+    }
+
+    /**
+     * @brief Log a warning message only in debug builds.
+     * @param msg Message to log. Supports the std::format syntax.
+     * @param args Optional arguments to insert into the message.
+     */
+    template<rw::util::IsFormattable... Args>
+    void warn(const rw::util::Logger::MessageWithLocation& msg, const Args&... args) {
+        rw::util::Logger::get().message_base(rw::util::Logger::Level::warning, msg, args...);
+    }
+} // namespace rw

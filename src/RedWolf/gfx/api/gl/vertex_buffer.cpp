@@ -1,7 +1,5 @@
 module;
 
-#include "RedWolf/macros.hpp"
-
 #include <glad/glad.h>
 
 module redwolf.gfx.vertex_buffer;
@@ -11,12 +9,12 @@ import redwolf.util.logger;
 
 rw::gfx::VertexBuffer::VertexBuffer() {
     glCreateBuffers(1, &id_);
-    RW_CORE_TRACE("Vertex buffer {} created.", id_);
+    rw::trace("Vertex buffer {} created.", id_);
 }
 
 rw::gfx::VertexBuffer::~VertexBuffer() {
     glDeleteBuffers(1, &id_);
-    RW_CORE_TRACE("Vertex buffer {} deleted.", id_);
+    rw::trace("Vertex buffer {} deleted.", id_);
 }
 
 rw::gfx::VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept : id_{ other.id_ } {

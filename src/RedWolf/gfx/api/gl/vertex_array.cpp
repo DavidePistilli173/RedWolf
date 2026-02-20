@@ -4,8 +4,6 @@
 
 module;
 
-#include "RedWolf/macros.hpp"
-
 #include <cstdint>
 #include <glad/glad.h>
 #include <utility>
@@ -39,7 +37,7 @@ namespace {
         case rw::gfx::ShaderDataType::boolean:
             return GL_BOOL;
         default:
-            RW_CORE_ERR("Invalid shader data type: {}", static_cast<uint8_t>(type));
+            rw::err("Invalid shader data type: {}", static_cast<uint8_t>(type));
             return GL_NONE; // Invalid type
         }
     }
@@ -47,12 +45,12 @@ namespace {
 
 rw::gfx::VertexArray::VertexArray() {
     glCreateVertexArrays(1, &id_);
-    RW_CORE_TRACE("Vertex array {} created.", id_);
+    rw::trace("Vertex array {} created.", id_);
 }
 
 rw::gfx::VertexArray::~VertexArray() {
     glDeleteVertexArrays(1, &id_);
-    RW_CORE_TRACE("Vertex array {} deleted.", id_);
+    rw::trace("Vertex array {} deleted.", id_);
 }
 
 rw::gfx::VertexArray::VertexArray(VertexArray&& other) noexcept :
@@ -76,7 +74,7 @@ void rw::gfx::VertexArray::add_vertex_buffer(std::shared_ptr<VertexBuffer> verte
     vertex_buffer->bind();
 
     if (vertex_buffer->layout().elements().empty()) {
-        RW_CORE_WARN("Adding vertex buffer to vertex array without setting a layout.");
+        rw::warn("Adding vertex buffer to vertex array without setting a layout.");
     }
 
     uint32_t index{ 0U };

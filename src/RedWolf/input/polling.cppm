@@ -6,7 +6,7 @@ export module redwolf.input.polling;
 
 import redwolf.engine.app;
 import redwolf.input.keyboard;
-import redwolf.math;
+import redwolf.core.math;
 import redwolf.ui.common;
 
 export namespace rw::input {
@@ -87,11 +87,11 @@ export namespace rw::input {
      * @brief Get the current mouse position.
      * @return Current mouse position.
      */
-    [[nodiscard]] rw::math::Vec2 mouse_pos() {
+    [[nodiscard]] rw::core::Vec2 mouse_pos() {
         rw::ui::WindowHandle window{ rw::engine::App::get().window().handle() };
         double               x{ 0.0 };
         double               y{ 0.0 };
-        rw::math::Vec2       position;
+        rw::core::Vec2       position;
         glfwGetCursorPos(window, &x, &y);
         position.x = static_cast<float>(x);
         position.y = static_cast<float>(y);

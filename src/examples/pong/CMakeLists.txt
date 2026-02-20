@@ -2,7 +2,6 @@ add_executable(Pong)
 
 target_sources(Pong PRIVATE
         FILE_SET CXX_MODULES FILES
-        "common.cppm"
         "pong_app.cppm"
         "pong_main_layer.cppm"
 )

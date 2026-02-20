@@ -1,8 +1,10 @@
 module;
 
-export module redwolf.math.geometry;
+export module redwolf.core.geometry;
 
-export namespace rw::math {
+import redwolf.core.math;
+
+export namespace rw::core {
     /**
      * @brief Struct representing a rectangle.
      * @tparam T Type of the underlying data.
@@ -14,4 +16,12 @@ export namespace rw::math {
         T width{};  /**< Width of the rectangle. */
         T height{}; /**< Height of the rectangle. */
     };
-} // namespace rw::math
+
+    /**
+     * @brief 2D line segment defined by a start and an end point.
+     */
+    struct Line {
+        Vec2 start{}; /**< Starting point of the line. */
+        Vec2 end{};   /**< Ending point of the line. */
+    };
+} // namespace rw::core

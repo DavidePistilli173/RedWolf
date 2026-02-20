@@ -1,7 +1,5 @@
 module;
 
-#include "RedWolf/macros.hpp"
-
 #include <fstream>
 #include <glad/glad.h>
 #include <optional>
@@ -12,10 +10,10 @@ module;
 
 export module redwolf.gfx.shader_manager;
 
-import redwolf.common;
+import redwolf.core.handle;
 import redwolf.core.asset_library;
 import redwolf.gfx.shader;
-import redwolf.math;
+import redwolf.core.math;
 import redwolf.util.logger;
 
 export namespace rw::gfx {
@@ -38,7 +36,7 @@ export namespace rw::gfx {
                 shader.gid = 0;
             });
 
-            RW_CORE_TRACE("All shaders unloaded.");
+            rw::trace("All shaders unloaded.");
         }
 
         /**
@@ -76,7 +74,7 @@ export namespace rw::gfx {
         [[nodiscard]] Handle<Shader> new_from_path(const std::string_view path) {
             const auto shader_sources{ pre_process_(read_file_(path)) };
             const auto result{ compile_(shader_sources) };
-            RW_CORE_TRACE("Shader (id:{}) created from {}.", result.index, path);
+            rw::trace("Shader (id:{}) created from {}.", result.index, path);
             return result;
         }
 
@@ -96,7 +94,7 @@ export namespace rw::gfx {
          * @param name Name of the uniform.
          * @param vec Vector to set.
          */
-        void set_f32_2(const Handle<Shader> shader_handle, const std::string_view name, const rw::math::Vec2& vec) const {
+        void set_f32_2(const Handle<Shader> shader_handle, const std::string_view name, const rw::core::Vec2& vec) const {
             upload_uniform_f32_2_(shader_handle, name, vec);
         }
 
@@ -106,7 +104,7 @@ export namespace rw::gfx {
          * @param name Name of the uniform.
          * @param vec Vector to set.
          */
-        void set_f32_3(const Handle<Shader> shader_handle, const std::string_view name, const rw::math::Vec3& vec) const {
+        void set_f32_3(const Handle<Shader> shader_handle, const std::string_view name, const rw::core::Vec3& vec) const {
             upload_uniform_f32_3_(shader_handle, name, vec);
         }
 
@@ -116,7 +114,7 @@ export namespace rw::gfx {
          * @param name Name of the uniform.
          * @param vec Vector to set.
          */
-        void set_f32_4(const Handle<Shader> shader_handle, const std::string_view name, const rw::math::Vec4& vec) const {
+        void set_f32_4(const Handle<Shader> shader_handle, const std::string_view name, const rw::core::Vec4& vec) const {
             upload_uniform_f32_4_(shader_handle, name, vec);
         }
 
@@ -146,7 +144,7 @@ export namespace rw::gfx {
          * @param name Name of the uniform.
          * @param matrix Matrix to set.
          */
-        void set_mat_f32_3(const Handle<Shader> shader_handle, const std::string_view name, const rw::math::Mat3& matrix) const {
+        void set_mat_f32_3(const Handle<Shader> shader_handle, const std::string_view name, const rw::core::Mat3& matrix) const {
             upload_uniform_mat_f32_3_(shader_handle, name, matrix);
         }
 
@@ -156,7 +154,7 @@ export namespace rw::gfx {
          * @param name Name of the uniform.
          * @param matrix Matrix to set.
          */
-        void set_mat_f32_4(const Handle<Shader> shader_handle, const std::string_view name, const rw::math::Mat4& matrix) const {
+        void set_mat_f32_4(const Handle<Shader> shader_handle, const std::string_view name, const rw::core::Mat4& matrix) const {
             upload_uniform_mat_f32_4_(shader_handle, name, matrix);
         }
         /**
@@ -176,7 +174,7 @@ export namespace rw::gfx {
                 shader.gid = 0;
             });
 
-            RW_CORE_TRACE("Shader {} unloaded.", handle.index);
+            rw::trace("Shader {} unloaded.", handle.index);
         }
 
      private:
@@ -221,7 +219,7 @@ export namespace rw::gfx {
                     glDeleteShader(shader);
                     glDeleteProgram(program);
 
-                    RW_CORE_ERR("Failed to compile shader {}: {}", type, info_log.data());
+                    rw::err("Failed to compile shader {}: {}", type, info_log.data());
                     return {};
                 }
                 glAttachShader(program, shader);
@@ -248,7 +246,7 @@ export namespace rw::gfx {
                 }
                 glDeleteProgram(program);
 
-                RW_CORE_ERR("Failed to link shader: {}", info_log.data());
+                rw::err("Failed to link shader: {}", info_log.data());
                 return {};
             }
 
@@ -276,7 +274,7 @@ export namespace rw::gfx {
             while (pos != std::string_view::npos) {
                 const size_t eol{ source.find_first_of("\r\n", pos) };
                 if (std::string_view::npos == eol) {
-                    RW_CORE_ERR("Failed to pre-process shader: syntax error, no shader code after type specifier '{}'", type_token);
+                    rw::err("Failed to pre-process shader: syntax error, no shader code after type specifier '{}'", type_token);
                     return {};
                 }
 
@@ -284,7 +282,7 @@ export namespace rw::gfx {
                 const std::string_view type = source.substr(begin, eol - begin);
                 const auto             shader_type{ shader_type_from_string_(type) };
                 if (!shader_type.has_value()) {
-                    RW_CORE_ERR("Invalid shader type: {}", type);
+                    rw::err("Invalid shader type: {}", type);
                     return {};
                 }
 
@@ -299,7 +297,7 @@ export namespace rw::gfx {
         [[nodiscard]] static std::string read_file_(const std::string_view path) {
             std::ifstream in_stream{ path.data(), std::ios::in | std::ios::binary };
             if (!in_stream) {
-                RW_CORE_ERR("Failed to open shader file: {}", path);
+                rw::err("Failed to open shader file: {}", path);
                 return {};
             }
 
@@ -354,7 +352,7 @@ export namespace rw::gfx {
             shaders_.visit<void>(shader_handle, [name, value](const Shader& shader) {
                 const GLint location{ glGetUniformLocation(shader.gid, name.data()) };
                 if (-1 == location) {
-                    RW_CORE_ERR("Failed to get uniform location: {}", name);
+                    rw::err("Failed to get uniform location: {}", name);
                     return;
                 }
 
@@ -368,11 +366,11 @@ export namespace rw::gfx {
          * @param name Name of the uniform.
          * @param vec Vector to upload.
          */
-        void upload_uniform_f32_2_(const Handle<Shader> shader_handle, const std::string_view name, const rw::math::Vec2& vec) const {
+        void upload_uniform_f32_2_(const Handle<Shader> shader_handle, const std::string_view name, const rw::core::Vec2& vec) const {
             shaders_.visit<void>(shader_handle, [name, &vec](const Shader& shader) {
                 const GLint location{ glGetUniformLocation(shader.gid, name.data()) };
                 if (-1 == location) {
-                    RW_CORE_ERR("Failed to get uniform location: {}", name);
+                    rw::err("Failed to get uniform location: {}", name);
                     return;
                 }
 
@@ -386,11 +384,11 @@ export namespace rw::gfx {
          * @param name Name of the uniform.
          * @param vec Vector to upload.
          */
-        void upload_uniform_f32_3_(const Handle<Shader> shader_handle, const std::string_view name, const rw::math::Vec3& vec) const {
+        void upload_uniform_f32_3_(const Handle<Shader> shader_handle, const std::string_view name, const rw::core::Vec3& vec) const {
             shaders_.visit<void>(shader_handle, [name, &vec](const Shader& shader) {
                 const GLint location{ glGetUniformLocation(shader.gid, name.data()) };
                 if (-1 == location) {
-                    RW_CORE_ERR("Failed to get uniform location: {}", name);
+                    rw::err("Failed to get uniform location: {}", name);
                     return;
                 }
 
@@ -404,11 +402,11 @@ export namespace rw::gfx {
          * @param name Name of the uniform.
          * @param vec Vector to upload.
          */
-        void upload_uniform_f32_4_(const Handle<Shader> shader_handle, const std::string_view name, const rw::math::Vec4& vec) const {
+        void upload_uniform_f32_4_(const Handle<Shader> shader_handle, const std::string_view name, const rw::core::Vec4& vec) const {
             shaders_.visit<void>(shader_handle, [name, &vec](const Shader& shader) {
                 const GLint location{ glGetUniformLocation(shader.gid, name.data()) };
                 if (-1 == location) {
-                    RW_CORE_ERR("Failed to get uniform location: {}", name);
+                    rw::err("Failed to get uniform location: {}", name);
                     return;
                 }
 
@@ -426,7 +424,7 @@ export namespace rw::gfx {
             shaders_.visit<void>(shader_handle, [name, value](const Shader& shader) {
                 const GLint location{ glGetUniformLocation(shader.gid, name.data()) };
                 if (-1 == location) {
-                    RW_CORE_ERR("Failed to get uniform location: {}", name);
+                    rw::err("Failed to get uniform location: {}", name);
                     return;
                 }
 
@@ -445,7 +443,7 @@ export namespace rw::gfx {
             shaders_.visit<void>(shader_handle, [name, values](const Shader& shader) {
                 const GLint location{ glGetUniformLocation(shader.gid, name.data()) };
                 if (-1 == location) {
-                    RW_CORE_ERR("Failed to get uniform location: {}", name);
+                    rw::err("Failed to get uniform location: {}", name);
                     return;
                 }
                 glUniform1iv(location, static_cast<GLsizei>(values.size()), values.data());
@@ -459,15 +457,15 @@ export namespace rw::gfx {
          * @param matrix Matrix to upload.
          */
         void
-            upload_uniform_mat_f32_3_(const Handle<Shader> shader_handle, const std::string_view name, const rw::math::Mat3& matrix) const {
+            upload_uniform_mat_f32_3_(const Handle<Shader> shader_handle, const std::string_view name, const rw::core::Mat3& matrix) const {
             shaders_.visit<void>(shader_handle, [name, &matrix](const Shader& shader) {
                 const GLint location{ glGetUniformLocation(shader.gid, name.data()) };
                 if (-1 == location) {
-                    RW_CORE_ERR("Failed to get uniform location: {}", name);
+                    rw::err("Failed to get uniform location: {}", name);
                     return;
                 }
 
-                glUniformMatrix3fv(location, 1, GL_FALSE, rw::math::value_ptr(matrix));
+                glUniformMatrix3fv(location, 1, GL_FALSE, rw::core::value_ptr(matrix));
             });
         }
 
@@ -478,15 +476,15 @@ export namespace rw::gfx {
          * @param matrix Matrix to upload.
          */
         void
-            upload_uniform_mat_f32_4_(const Handle<Shader> shader_handle, const std::string_view name, const rw::math::Mat4& matrix) const {
+            upload_uniform_mat_f32_4_(const Handle<Shader> shader_handle, const std::string_view name, const rw::core::Mat4& matrix) const {
             shaders_.visit<void>(shader_handle, [name, &matrix](const Shader& shader) {
                 const GLint location{ glGetUniformLocation(shader.gid, name.data()) };
                 if (-1 == location) {
-                    RW_CORE_ERR("Failed to get uniform location: {}", name);
+                    rw::err("Failed to get uniform location: {}", name);
                     return;
                 }
 
-                glUniformMatrix4fv(location, 1, GL_FALSE, rw::math::value_ptr(matrix));
+                glUniformMatrix4fv(location, 1, GL_FALSE, rw::core::value_ptr(matrix));
             });
         }
         rw::core::AssetLibrary<Shader> shaders_; /**< Actual storage for shaders. */

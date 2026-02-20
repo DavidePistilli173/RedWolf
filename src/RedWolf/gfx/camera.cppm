@@ -2,7 +2,7 @@ module;
 
 export module redwolf.gfx.camera;
 
-import redwolf.math;
+import redwolf.core.math;
 
 export namespace rw::gfx {
     /**
@@ -25,7 +25,7 @@ export namespace rw::gfx {
          */
         [[nodiscard]] static Camera orthographic(const float left, const float right, const float bottom, const float top) {
             Camera camera;
-            camera.prj_mat_ = rw::math::ortho(left, right, bottom, top, -1.0F, 1.0F);
+            camera.prj_mat_ = rw::core::ortho(left, right, bottom, top, -1.0F, 1.0F);
             camera.recompute_view_matrix_();
             return camera;
         }
@@ -34,7 +34,7 @@ export namespace rw::gfx {
          * @brief Get the camera position.
          * @return Camera position in world space.
          */
-        [[nodiscard]] const rw::math::Vec3& position() const {
+        [[nodiscard]] const rw::core::Vec3& position() const {
             return position_;
         }
 
@@ -42,7 +42,7 @@ export namespace rw::gfx {
          * @brief Get the projection matrix of the camera.
          * @return Projection matrix.
          */
-        [[nodiscard]] const rw::math::Mat4& projection_matrix() const {
+        [[nodiscard]] const rw::core::Mat4& projection_matrix() const {
             return prj_mat_;
         }
 
@@ -68,7 +68,7 @@ export namespace rw::gfx {
          * @param delta Translation vector in world space.
          * @param angle Rotation angle in degrees around the Z axis.
          */
-        void roto_translate(const rw::math::Vec3& delta, const float angle) {
+        void roto_translate(const rw::core::Vec3& delta, const float angle) {
             position_ += delta;
             rotation_ += angle;
             recompute_view_matrix_();
@@ -78,7 +78,7 @@ export namespace rw::gfx {
          * @brief Set a new camera position in world space.
          * @param position New camera position.
          */
-        void set_position(const rw::math::Vec3& position) {
+        void set_position(const rw::core::Vec3& position) {
             position_ = position;
             recompute_view_matrix_();
         }
@@ -91,7 +91,7 @@ export namespace rw::gfx {
          * @param top Top limit of the frustum.
          */
         void set_ortho_projection(const float left, const float right, const float bottom, const float top) {
-            prj_mat_ = rw::math::ortho(left, right, bottom, top, -1.0F, 1.0F);
+            prj_mat_ = rw::core::ortho(left, right, bottom, top, -1.0F, 1.0F);
             recompute_view_matrix_();
         }
 
@@ -108,7 +108,7 @@ export namespace rw::gfx {
          * @brief Move the camera by a given delta in world space.
          * @param delta Translation vector.
          */
-        void translate(const rw::math::Vec3& delta) {
+        void translate(const rw::core::Vec3& delta) {
             position_ += delta;
             recompute_view_matrix_();
         }
@@ -117,7 +117,7 @@ export namespace rw::gfx {
          * @brief Get the view matrix of the camera.
          * @return View matrix.
          */
-        [[nodiscard]] const rw::math::Mat4& view_matrix() const {
+        [[nodiscard]] const rw::core::Mat4& view_matrix() const {
             return view_mat_;
         }
 
@@ -125,7 +125,7 @@ export namespace rw::gfx {
          * @brief Get the combined view-projection matrix.
          * @return Combined view-projection matrix.
          */
-        [[nodiscard]] const rw::math::Mat4& view_projection_matrix() const {
+        [[nodiscard]] const rw::core::Mat4& view_projection_matrix() const {
             return view_prj_mat_;
         }
 
@@ -134,17 +134,17 @@ export namespace rw::gfx {
          * @brief Recompute the view matrix and the combined view-projection matrix.
          */
         void recompute_view_matrix_() {
-            const rw::math::Mat4 transform{ rw::math::rotate(
-                rw::math::translate(rw::math::Mat4(1.0F), position_), rw::math::radians(rotation_), rw::math::Vec3(0.0F, 0.0F, 1.0F)) };
-            view_mat_     = rw::math::inverse(transform);
+            const rw::core::Mat4 transform{ rw::core::rotate(
+                rw::core::translate(rw::core::Mat4(1.0F), position_), rw::core::radians(rotation_), rw::core::Vec3(0.0F, 0.0F, 1.0F)) };
+            view_mat_     = rw::core::inverse(transform);
             view_prj_mat_ = prj_mat_ * view_mat_;
         }
 
-        rw::math::Mat4 prj_mat_{ 1.0F };      /**< Projection matrix of the camera. */
-        rw::math::Mat4 view_mat_{ 1.0F };     /**< View matrix of the camera. */
-        rw::math::Mat4 view_prj_mat_{ 1.0F }; /**< Combined view-projection matrix of the camera. */
+        rw::core::Mat4 prj_mat_{ 1.0F };      /**< Projection matrix of the camera. */
+        rw::core::Mat4 view_mat_{ 1.0F };     /**< View matrix of the camera. */
+        rw::core::Mat4 view_prj_mat_{ 1.0F }; /**< Combined view-projection matrix of the camera. */
 
-        rw::math::Vec3 position_{ 0.0F }; /**< Position of the camera in world space. */
+        rw::core::Vec3 position_{ 0.0F }; /**< Position of the camera in world space. */
         float          rotation_{ 0.0F }; /**< Rotation of the camera in degrees in the Z axis. */
     };
 } // namespace rw::gfx

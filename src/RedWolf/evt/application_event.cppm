@@ -6,7 +6,7 @@ module;
 export module redwolf.evt.application_event;
 
 import redwolf.evt.event;
-import redwolf.math;
+import redwolf.core.math;
 
 export namespace rw::evt {
     /**
@@ -19,7 +19,7 @@ export namespace rw::evt {
          * @param new_height New window height.
          * @param p_scale_factor Scale factor (new over old).
          */
-        WindowResizedEvent(const uint32_t new_width, const uint32_t new_height, const rw::math::Vec2 p_scale_factor) :
+        WindowResizedEvent(const uint32_t new_width, const uint32_t new_height, const rw::core::Vec2 p_scale_factor) :
             Event(), width{ new_width }, height{ new_height }, scale_factor{ p_scale_factor } {}
 
         /**
@@ -78,7 +78,7 @@ export namespace rw::evt {
 
         uint32_t       width{ 0 };           /**< New window width. */
         uint32_t       height{ 0 };          /**< New window height. */
-        rw::math::Vec2 scale_factor{ 1.0F }; /**< Scale factor (new over old). */
+        rw::core::Vec2 scale_factor{ 1.0F }; /**< Scale factor (new over old). */
     };
 
     /**

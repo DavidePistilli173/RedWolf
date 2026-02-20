@@ -1,6 +1,5 @@
 module;
 
-#include "RedWolf/macros.hpp"
 #include "msdf-atlas-gen/FontGeometry.h"
 
 #include <array>
@@ -16,6 +15,8 @@ export module redwolf.gfx.renderer_2_d;
 
 import redwolf.common;
 import redwolf.core.asset_library;
+import redwolf.core.geometry;
+import redwolf.core.math;
 import redwolf.gfx.buffer_layout;
 import redwolf.gfx.common;
 import redwolf.gfx.camera;
@@ -35,7 +36,6 @@ import redwolf.gfx.texture2d;
 import redwolf.gfx.texture2d_manager;
 import redwolf.gfx.vertex_array;
 import redwolf.gfx.vertex_buffer;
-import redwolf.math;
 import redwolf.util.logger;
 
 export namespace rw::gfx {
@@ -44,9 +44,9 @@ export namespace rw::gfx {
      * @brief Vertex data for a quad on the GPU.
      */
     struct QuadVertex {
-        rw::math::Vec3 position{ 0.0F };      /**< Position of the vertex. */
-        rw::math::Vec4 color{ 0.0F };         /**< Colour of the vertex. */
-        rw::math::Vec2 tex_coord{ 0.0F };     /**< Texture coordinate of the vertex. */
+        rw::core::Vec3 position{ 0.0F };      /**< Position of the vertex. */
+        rw::core::Vec4 color{ 0.0F };         /**< Colour of the vertex. */
+        rw::core::Vec2 tex_coord{ 0.0F };     /**< Texture coordinate of the vertex. */
         float          tex_index{ 0.0F };     /**< Index of the texture to use for this vertex. */
         float          tiling_factor{ 1.0F }; /**< Tiling factor of the texture. */
     };
@@ -55,9 +55,9 @@ export namespace rw::gfx {
      * @brief Vertex data for a text glyph on the GPU.
      */
     struct TextVertex {
-        rw::math::Vec3 position{ 0.0F };  /**< Position of the vertex. */
-        rw::math::Vec4 color{ 0.0F };     /**< Colour of the vertex. */
-        rw::math::Vec2 tex_coord{ 0.0F }; /**< Texture coordinate of the vertex. */
+        rw::core::Vec3 position{ 0.0F };  /**< Position of the vertex. */
+        rw::core::Vec4 color{ 0.0F };     /**< Colour of the vertex. */
+        rw::core::Vec2 tex_coord{ 0.0F }; /**< Texture coordinate of the vertex. */
     };
 #pragma pack(pop)
 
@@ -76,7 +76,7 @@ export namespace rw::gfx {
     class Renderer2D {
      public:
         static constexpr std::array<uint8_t, 4> white_texture_data{ 0xFF, 0xFF, 0xFF, 0xFF };
-        static constexpr rw::math::Vec4         clear_color{ 0.1F, 0.1F, 0.1F, 0.0F };
+        static constexpr rw::core::Vec4         clear_color{ 0.1F, 0.1F, 0.1F, 0.0F };
         static constexpr uint32_t               max_quads_per_batch{ 10000 };
         static constexpr uint32_t               max_vertices_per_batch{ max_quads_per_batch * 4 };
         static constexpr uint32_t               max_indices_per_batch{ max_quads_per_batch * 6 };
@@ -158,7 +158,7 @@ export namespace rw::gfx {
          * @return Texture coordinates of the sub-region.
          */
         [[nodiscard]] rw::gfx::Texture2D::SubRegion
-            compute_texture_subregion(const Handle<Texture2D> texture_handle, const rw::math::Rect<float>& region) const {
+            compute_texture_subregion(const Handle<Texture2D> texture_handle, const rw::core::Rect<float>& region) const {
             return texture_manager_.compute_subregion(texture_handle, region);
         }
 
@@ -181,11 +181,12 @@ export namespace rw::gfx {
         /**
          * @brief Draw a quad to the screen, using the Z coordinate to sort the draw order.
          * @param shader Shader to use for rendering.
+         * @param transform Quad's transform in the world.
          * @param quad Quad data to render.
          */
-        void draw_quad(rw::Handle<Shader> shader, Quad quad) {
+        void draw_quad(rw::Handle<Shader> shader, const rw::core::Transform& transform, Quad quad) {
             if (!shader.valid()) {
-                RW_CORE_ERR("Null draw parameter: shader");
+                rw::err("Null draw parameter: shader");
                 return;
             }
 
@@ -197,12 +198,12 @@ export namespace rw::gfx {
             const float texture_index{ compute_texture_index_(quad.texture) };
 
             // Compute the vertex attributes.
-            const rw::math::Mat4 transform{ rw::math::translate(rw::math::Mat4(1.0F), quad.position) *
-                                            rw::math::rotate(rw::math::Mat4(1.0F), quad.rotation, { 0.0F, 0.0F, 1.0F }) *
-                                            rw::math::scale(rw::math::Mat4(1.0F), { quad.size.x, quad.size.y, 1.0F }) };
+            const rw::core::Mat4 mat_transform{ rw::core::translate(rw::core::Mat4(1.0F), transform.position) *
+                                                rw::core::rotate(rw::core::Mat4(1.0F), transform.rotation, { 0.0F, 0.0F, 1.0F }) *
+                                                rw::core::scale(rw::core::Mat4(1.0F), { transform.scale.x, transform.scale.y, 1.0F }) };
 
             Texture2D::SubRegion tex_coords{
-                rw::math::Vec2{ 0.0F, 0.0F }, rw::math::Vec2{ 1.0F, 0.0F }, rw::math::Vec2{ 1.0F, 1.0F }, rw::math::Vec2{ 0.0F, 1.0F }
+                rw::core::Vec2{ 0.0F, 0.0F }, rw::core::Vec2{ 1.0F, 0.0F }, rw::core::Vec2{ 1.0F, 1.0F }, rw::core::Vec2{ 0.0F, 1.0F }
             };
             if (quad.texture_sub_region.has_value()) {
                 tex_coords = quad.texture_sub_region.value();
@@ -210,7 +211,7 @@ export namespace rw::gfx {
 
             for (size_t i{ 0U }; i < 4U; ++i) {
                 quad_vertex_buffer_data_.emplace_back(
-                    QuadVertex{ .position      = transform * quad_vertice_positions_[i],
+                    QuadVertex{ .position      = mat_transform * quad_vertice_positions_[i],
                                 .color         = quad.color,
                                 .tex_coord     = tex_coords[i],
                                 .tex_index     = texture_index,
@@ -227,12 +228,12 @@ export namespace rw::gfx {
          */
         void draw_text(rw::Handle<Shader> shader, Text text) {
             if (shader.invalid()) {
-                RW_CORE_ERR("Null draw parameter: shader, while drawing string: {}", text.string);
+                rw::err("Null draw parameter: shader, while drawing string: {}", text.string);
                 return;
             }
 
             if (text.font.invalid()) {
-                RW_CORE_ERR("Null draw parameter: font, while drawing string: {}", text.string);
+                rw::err("Null draw parameter: font, while drawing string: {}", text.string);
                 return;
             }
 
@@ -243,16 +244,16 @@ export namespace rw::gfx {
 
             auto font_raw_res{ font_manager_.unsafe_get_raw(text.font) };
             if (!font_raw_res.has_value()) {
-                RW_CORE_WARN("Invalid font specified for string {}", text.string);
+                rw::warn("Invalid font specified for string {}", text.string);
                 return;
             }
             auto& font_raw{ font_raw_res.value().get() };
 
             const auto& metrics{ font_raw.font_geometry.getMetrics() };
 
-            const rw::math::Mat4 transform{ rw::math::translate(rw::math::Mat4(1.0F), text.position) *
-                                            rw::math::rotate(rw::math::Mat4(1.0F), text.rotation, { 0.0F, 0.0F, 1.0F }) *
-                                            rw::math::scale(rw::math::Mat4(1.0F), { text.pixel_size, text.pixel_size, 1.0F }) };
+            const rw::core::Mat4 transform{ rw::core::translate(rw::core::Mat4(1.0F), text.position) *
+                                            rw::core::rotate(rw::core::Mat4(1.0F), text.rotation, { 0.0F, 0.0F, 1.0F }) *
+                                            rw::core::scale(rw::core::Mat4(1.0F), { text.pixel_size, text.pixel_size, 1.0F }) };
 
             double       x{ 0.0 };
             double       fs_scale{ 1.0 / metrics.ascenderY - metrics.descenderY };
@@ -273,14 +274,14 @@ export namespace rw::gfx {
 
                 auto glyph{ font_raw.font_geometry.getGlyph(character) };
                 if (nullptr == glyph) {
-                    RW_CORE_WARN(
+                    rw::warn(
                         "Font does not contain glyph for character: {} (raw: {}), while drawing string: {}",
                         character,
                         static_cast<uint8_t>(character),
                         text.string);
                     glyph = font_raw.font_geometry.getGlyph('?');
                     if (nullptr == glyph) {
-                        RW_CORE_ERR("Font does not contain glyph for fallback character '?', while drawing string: {}", text.string);
+                        rw::err("Font does not contain glyph for fallback character '?', while drawing string: {}", text.string);
                         return;
                     }
                 }
@@ -290,50 +291,50 @@ export namespace rw::gfx {
                 double atlas_right{ 0.0 };
                 double atlas_top{ 0.0 };
                 glyph->getQuadAtlasBounds(atlas_left, atlas_bottom, atlas_right, atlas_top);
-                rw::math::Vec2 tex_coord_min{ static_cast<float>(atlas_left), static_cast<float>(atlas_bottom) };
-                rw::math::Vec2 tex_coord_max{ static_cast<float>(atlas_right), static_cast<float>(atlas_top) };
+                rw::core::Vec2 tex_coord_min{ static_cast<float>(atlas_left), static_cast<float>(atlas_bottom) };
+                rw::core::Vec2 tex_coord_max{ static_cast<float>(atlas_right), static_cast<float>(atlas_top) };
 
                 double plane_left{ 0.0 };
                 double plane_bottom{ 0.0 };
                 double plane_right{ 0.0 };
                 double plane_top{ 0.0 };
                 glyph->getQuadPlaneBounds(plane_left, plane_bottom, plane_right, plane_top);
-                rw::math::Vec2 quad_coord_min{ static_cast<float>(plane_left), static_cast<float>(plane_bottom) };
-                rw::math::Vec2 quad_coord_max{ static_cast<float>(plane_right), static_cast<float>(plane_top) };
+                rw::core::Vec2 quad_coord_min{ static_cast<float>(plane_left), static_cast<float>(plane_bottom) };
+                rw::core::Vec2 quad_coord_max{ static_cast<float>(plane_right), static_cast<float>(plane_top) };
 
                 quad_coord_min *= fs_scale;
                 quad_coord_max *= fs_scale;
 
-                quad_coord_min += rw::math::Vec2{ static_cast<float>(x), static_cast<float>(y) };
-                quad_coord_max += rw::math::Vec2{ static_cast<float>(x), static_cast<float>(y) };
+                quad_coord_min += rw::core::Vec2{ static_cast<float>(x), static_cast<float>(y) };
+                quad_coord_max += rw::core::Vec2{ static_cast<float>(x), static_cast<float>(y) };
 
-                const rw::math::Vec2 atlas_texture_size{ texture_manager_.texture_size(font_raw.atlas_texture) };
+                const rw::core::Vec2 atlas_texture_size{ texture_manager_.texture_size(font_raw.atlas_texture) };
                 if (0.0F == atlas_texture_size.x || 0.0F == atlas_texture_size.y) {
-                    RW_CORE_WARN("Invalid font atlas size {}x{} when drawing text {}.", atlas_texture_size.x, atlas_texture_size.y);
+                    rw::warn("Invalid font atlas size {}x{} when drawing text {}.", atlas_texture_size.x, atlas_texture_size.y);
                 }
                 float texel_width{ 1.0F / atlas_texture_size.x };
                 float texel_height{ 1.0F / atlas_texture_size.y };
 
-                tex_coord_min *= rw::math::Vec2{ texel_width, texel_height };
-                tex_coord_max *= rw::math::Vec2{ texel_width, texel_height };
+                tex_coord_min *= rw::core::Vec2{ texel_width, texel_height };
+                tex_coord_max *= rw::core::Vec2{ texel_width, texel_height };
 
                 text_vertex_buffer_data_.emplace_back(
-                    TextVertex{ .position  = transform * rw::math::Vec4{ quad_coord_min.x, quad_coord_min.y, 0.0F, 1.0F },
+                    TextVertex{ .position  = transform * rw::core::Vec4{ quad_coord_min.x, quad_coord_min.y, 0.0F, 1.0F },
                                 .color     = text.foreground_color,
                                 .tex_coord = { tex_coord_min.x, tex_coord_min.y } });
 
                 text_vertex_buffer_data_.emplace_back(
-                    TextVertex{ .position  = transform * rw::math::Vec4{ quad_coord_min.x, quad_coord_max.y, 0.0F, 1.0F },
+                    TextVertex{ .position  = transform * rw::core::Vec4{ quad_coord_min.x, quad_coord_max.y, 0.0F, 1.0F },
                                 .color     = text.foreground_color,
                                 .tex_coord = { tex_coord_min.x, tex_coord_max.y } });
 
                 text_vertex_buffer_data_.emplace_back(
-                    TextVertex{ .position  = transform * rw::math::Vec4{ quad_coord_max.x, quad_coord_max.y, 0.0F, 1.0F },
+                    TextVertex{ .position  = transform * rw::core::Vec4{ quad_coord_max.x, quad_coord_max.y, 0.0F, 1.0F },
                                 .color     = text.foreground_color,
                                 .tex_coord = { tex_coord_max.x, tex_coord_max.y } });
 
                 text_vertex_buffer_data_.emplace_back(
-                    TextVertex{ .position  = transform * rw::math::Vec4{ quad_coord_max.x, quad_coord_min.y, 0.0F, 1.0F },
+                    TextVertex{ .position  = transform * rw::core::Vec4{ quad_coord_max.x, quad_coord_min.y, 0.0F, 1.0F },
                                 .color     = text.foreground_color,
                                 .tex_coord = { tex_coord_max.x, tex_coord_min.y } });
 
@@ -650,11 +651,11 @@ export namespace rw::gfx {
 
         rw::Handle<Texture2D> white_texture_; /**< Completely white texture. */
 
-        rw::math::Mat4 view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
+        rw::core::Mat4 view_projection_matrix_{ 1.0F }; /**< Combined view and projection matrix of the current scene. */
         /**
          * @brief Local space positions of the quad vertices.
          */
-        rw::math::Vec4 quad_vertice_positions_[4]{
+        rw::core::Vec4 quad_vertice_positions_[4]{
             { -0.5F, -0.5F, 0.0F, 1.0F }, { 0.5F, -0.5F, 0.0F, 1.0F }, { 0.5F, 0.5F, 0.0F, 1.0F }, { -0.5F, 0.5F, 0.0F, 1.0F }
         };
         std::vector<QuadVertex>        quad_vertex_buffer_data_; /**< Quad vertex buffer data. */

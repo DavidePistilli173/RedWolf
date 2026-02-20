@@ -4,7 +4,7 @@ module;
 
 export module redwolf.gfx.common;
 
-import redwolf.math;
+import redwolf.core.math;
 
 export namespace rw::gfx {
     /**
@@ -21,7 +21,7 @@ export namespace rw::gfx {
     /**
      * @brief Pure white.
      */
-    constexpr rw::math::Vec4 color_white{ 1.0F, 1.0F, 1.0F, 1.0F };
+    constexpr rw::core::Vec4 color_white{ 1.0F, 1.0F, 1.0F, 1.0F };
 
     /**
      * @brief Data formats supported by textures.

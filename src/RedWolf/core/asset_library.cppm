@@ -8,7 +8,7 @@ module;
 
 export module redwolf.core.asset_library;
 
-import redwolf.common;
+import redwolf.core.handle;
 
 export namespace rw::core {
     /**
@@ -64,6 +64,14 @@ export namespace rw::core {
             const auto index{ static_cast<uint64_t>(assets_.size()) };
             auto&      new_asset{ assets_.emplace_back(T{}) };
             return std::pair<T&, rw::Handle<T>>(new_asset.value(), rw::Handle<T>{ .index = index });
+        }
+
+        /**
+         * @brief Get the number of currently loaded assets.
+         * @return Number of currently loaded assets.
+         */
+        [[nodiscard]] size_t size() const {
+            return assets_.size() - free_slots_.size() - 1; // Subtract the invalid asset and the free slots.
         }
 
         /**
@@ -167,6 +175,20 @@ export namespace rw::core {
             }
 
             return func(assets_[handle.index].value());
+        }
+
+        /**
+         * @brief Visit all entities, applying the given function to each of them.
+         * @tparam FuncT Type of function object.
+         * @param func Function to apply to each asset. Should take a reference to an asset as its parameter.
+         */
+        template<typename FuncT>
+        void visit_all(FuncT func) {
+            for (auto& asset : assets_) {
+                if (asset.has_value()) {
+                    func(asset.value());
+                }
+            }
         }
 
      private:

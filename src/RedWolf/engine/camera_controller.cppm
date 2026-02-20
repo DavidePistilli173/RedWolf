@@ -11,7 +11,7 @@ import redwolf.evt.application_event;
 import redwolf.evt.mouse_event;
 import redwolf.input.keyboard;
 import redwolf.input.polling;
-import redwolf.math;
+import redwolf.core.math;
 
 export namespace rw::engine {
     /**
@@ -19,7 +19,7 @@ export namespace rw::engine {
      */
     class CameraController {
      public:
-        static constexpr rw::math::Vec3 zero_velocity{ 0.0 };
+        static constexpr rw::core::Vec3 zero_velocity{ 0.0 };
         static constexpr float          max_zoom_level{ 0.75F };
         static constexpr float          zoom_scaling{ 0.25F };
         static constexpr float          speed_scaling{ 300.0F }; /**< Speed scaling factor for camera movement. */
@@ -76,7 +76,7 @@ export namespace rw::engine {
          * @param delta_time Time elapsed since the last update in seconds.
          */
         void update(const float delta_time) {
-            rw::math::Vec3 actual_translation_speed{ 0.0 };
+            rw::core::Vec3 actual_translation_speed{ 0.0 };
 
             // Check translation input keys.
             if (movement_enabled_) {

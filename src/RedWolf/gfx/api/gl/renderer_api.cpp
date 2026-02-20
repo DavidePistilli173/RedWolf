@@ -1,14 +1,12 @@
 module;
 
-#include "Redwolf/macros.hpp"
-
 #include <glad/glad.h>
 #include <string>
 
 module redwolf.gfx.renderer_api;
 
 import redwolf.gfx.vertex_array;
-import redwolf.math;
+import redwolf.core.math;
 import redwolf.util.logger;
 
 static void error_callback(
@@ -80,20 +78,20 @@ static void error_callback(
 
     switch (severity) {
     case GL_DEBUG_SEVERITY_HIGH:
-        RW_CORE_ERR("OpenGL: source:{}, type: {}, message: {}", source_str, type_str, message);
+        rw::err("OpenGL: source:{}, type: {}, message: {}", source_str, type_str, message);
         break;
     case GL_DEBUG_SEVERITY_MEDIUM:
-        RW_CORE_WARN("OpenGL: source:{}, type: {}, message: {}", source_str, type_str, message);
+        rw::warn("OpenGL: source:{}, type: {}, message: {}", source_str, type_str, message);
         break;
     case GL_DEBUG_SEVERITY_LOW:
-        RW_CORE_INFO("OpenGL: source:{}, type: {}, message: {}", source_str, type_str, message);
+        rw::info("OpenGL: source:{}, type: {}, message: {}", source_str, type_str, message);
         break;
     case GL_DEBUG_SEVERITY_NOTIFICATION:
         // Ignore notifications because they are noisy.
-        // RW_CORE_TRACE("OpenGL: source:{}, type: {}, message: {}", source_str, type_str, message);
+        // rw::trace("OpenGL: source:{}, type: {}, message: {}", source_str, type_str, message);
         break;
     default:
-        RW_CORE_FATAL("OpenGL: source:{}, type: {}, severity: {}, message: {}", source_str, type_str, severity, message);
+        rw::fatal("OpenGL: source:{}, type: {}, severity: {}, message: {}", source_str, type_str, severity, message);
         break;
     }
 }
@@ -121,7 +119,7 @@ void rw::gfx::RendererApi::init() {
     glEnable(GL_DEPTH_TEST);
 }
 
-void rw::gfx::RendererApi::set_clear_color(const rw::math::Vec4& color) {
+void rw::gfx::RendererApi::set_clear_color(const rw::core::Vec4& color) {
     glClearColor(color.r, color.g, color.b, color.a);
 }
 
