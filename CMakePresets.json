@@ -1,0 +1,40 @@
+{
+  "version": 4,
+  "cmakeMinimumRequired": {
+    "major": 4,
+    "minor": 0,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "redwolf_tester_debug",
+      "displayName": "redwolf_tester Debug",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "RW_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "redwolf_tester_release",
+      "displayName": "redwolf_tester Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "RW_BUILD_TESTS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "redwolf_tester_debug",
+      "configurePreset": "redwolf_tester_debug"
+    },
+    {
+      "name": "redwolf_tester_release",
+      "configurePreset": "redwolf_tester_release"
+    }
+  ]
+}

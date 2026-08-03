@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 4.0)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-project("src/RedWolf" VERSION 0.5.0 LANGUAGES C CXX)
+project("redwolf" VERSION 0.8.0 LANGUAGES C CXX)
+
+option(RW_BUILD_TESTS "Build tests" ON)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
@@ -16,3 +18,7 @@ if (MSVC)
 endif ()
 
 add_subdirectory(src)
+
+if (RW_BUILD_TESTS) 
+    add_subdirectory(test)
+endif () 

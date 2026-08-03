@@ -1,4 +1,1 @@
-add_subdirectory(examples)
-add_subdirectory(RedWolf)
-add_subdirectory(RedWolfSandbox)
-add_subdirectory(vendor)
+add_subdirectory(redwolf)
