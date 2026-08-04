@@ -39,78 +39,50 @@ namespace rw {
         };
 
         /**
-         * @brief Utility structure for storing a message and the source code location that generated it.
+         * @brief Initialise the logger.
          */
-        struct MessageWithLocation {
-            /**
-             * @brief Constructor. It is not made explicit on purpose, so that it is transparent to the user.
-             * @param p_msg Text message with ftm formatting syntax.
-             * @param p_loc Source code location data.
-             */
-            template<typename T>
-            MessageWithLocation(T p_msg, const std::source_location p_loc = std::source_location::current()) : txt{ p_msg }, loc{ p_loc } {}
-
-            std::string_view     txt; /**< Text message with formatting syntax. */
-            std::source_location loc; /**< Source code location data. */
-        };
+        static void init();
 
         /**
-         * @brief Log an error message.
-         * @param msg Message to log. Supports the std::format syntax.
-         * @param args Optional arguments to insert into the message.
+         * @brief Get the logger's instance.
+         * @return Logger's instance.
          */
-        template<rw::IsFormattable... Args>
-        void err(const MessageWithLocation& msg, const Args&... args) {
-            message_base(LogLevel::error, msg, args...);
-        }
-
-        /**
-         * @brief Log a fatal message.
-         * @param msg Message to log. Supports the std::format syntax.
-         * @param args Optional arguments to insert into the message.
-         */
-        template<rw::IsFormattable... Args>
-        void fatal(const MessageWithLocation& msg, const Args&... args) {
-            message_base(LogLevel::fatal, msg, args...);
-        }
-
-        /**
-         * @brief Log an information message.
-         * @param msg Message to log. Supports the std::format syntax.
-         * @param args Optional arguments to insert into the message.
-         */
-        template<rw::IsFormattable... Args>
-        void info(const MessageWithLocation& msg, const Args&... args) {
-            message_base(LogLevel::info, msg, args...);
-        }
+        [[nodiscard]] static Logger* instance();
 
         /**
          * @brief Base message logging function, should not be used directly.
+         * @tparam FmtMsg Message to log, with std::format syntax.
          * @tparam Args Optional argument type for the format string.
          * @param level Logging level.
-         * @param msg Message to log. Supports the std::format syntax.
          * @param args Optional arguments for the format string.
+         * @param loc Source code location that originated the log.
          */
-        template<FixedString FmtMsg, rw::IsFormattable... Args>
-        void message_base(const LogLevel level, const MessageWithLocation& msg, Args&&... args) {
+        template<rw::IsFormattable... Args>
+        void message_base(
+            const LogLevel              level,
+            std::format_string<Args...> fmt,
+            Args&&... args,
+            std::source_location loc = std::source_location::current()) {
             std::array<char, max_message_size> formatted_msg{};
 
             // Format the header.
             const auto header_res{ std::format_to_n(
                 formatted_msg.data(),
                 formatted_msg.size() - 1,
-                "[{:30.6}] - ",
+                "[{:10.6}]({}:{}) - ",
                 static_cast<f64>(
                     std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start_time_)
                         .count()) *
-                    microseconds_to_seconds) };
+                    microseconds_to_seconds,
+                loc.file_name(),
+                loc.line()) };
             if (header_res.size > max_message_size - 1) {
                 return;
             }
 
             const usize remaining_size{ formatted_msg.size() - header_res.size - 1 };
             const auto  final_res{ std::format_to_n(
-                header_res.out, formatted_msg.size() - header_res.size - 1, FmtMsg, std::forward<Args>(args)...) };
+                header_res.out, formatted_msg.size() - header_res.size - 1, fmt, std::forward<Args>(args)...) };
             if (final_res.size > remaining_size) {
                 return;
             }
@@ -135,37 +107,20 @@ namespace rw {
             }
         }
 
-        /**
-         * @brief Log a trace message only in debug builds.
-         * @param msg Message to log. Supports the std::format syntax.
-         * @param args Optional arguments to insert into the message.
-         */
-        template<rw::IsFormattable... Args>
-        void trace(const MessageWithLocation& msg, const Args&... args) {
-            message_base(LogLevel::trace, msg, args...);
-        }
-
-        /**
-         * @brief Log a warning message only in debug builds.
-         * @param msg Message to log. Supports the std::format syntax.
-         * @param args Optional arguments to insert into the message.
-         */
-        template<rw::IsFormattable... Args>
-        void warn(const MessageWithLocation& msg, const Args&... args) {
-            message_base(LogLevel::warn, msg, args...);
-        }
-
      private:
         /**
          * @brief Default constructor.
          */
-        Logger() {
-            info("Logger created.");
-        }
+        Logger();
 
         /**
          * @brief Starting time of the logger.
          */
         std::chrono::time_point<std::chrono::high_resolution_clock> start_time_{ std::chrono::high_resolution_clock::now() };
     };
+
+    template<rw::IsFormattable... Args>
+    void trace(std::format_string<Args...> fmt, Args&&... args, std::source_location src_loc = std::source_location::current()) {
+        Logger::instance()->message_base(LogLevel::trace, fmt, std::forward<Args>(args)..., src_loc);
+    }
 } // namespace rw

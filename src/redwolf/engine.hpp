@@ -6,6 +6,8 @@ namespace rw {
      */
     class Engine {
      public:
+        Engine();
+
      private:
     };
 } // namespace rw
