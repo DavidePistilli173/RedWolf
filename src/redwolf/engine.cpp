@@ -4,5 +4,5 @@
 
 rw::Engine::Engine() {
     Logger::init();
-    trace("Logger initialised.");
+    info("Logger initialised.");
 }

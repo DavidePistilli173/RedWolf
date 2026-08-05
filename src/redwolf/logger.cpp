@@ -5,12 +5,15 @@ namespace {
 }
 
 void rw::Logger::init() {
-    if (nullptr != instance) {
+#ifdef RW_ENABLE_LOGS
+    if (nullptr != g_instance) {
         return;
     }
 
     g_instance = new Logger();
     trace("Logger created");
+#else
+#endif
 }
 
 rw::Logger* rw::Logger::instance() {
