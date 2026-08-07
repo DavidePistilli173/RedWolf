@@ -7,34 +7,70 @@
   },
   "configurePresets": [
     {
-      "name": "redwolf_tester_debug",
-      "displayName": "redwolf_tester Debug",
+      "name": "redwolf_debug",
+      "displayName": "redwolf Debug",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "RW_BUILD_TESTS": "ON"
+        "RW_BUILD_PROFILER": "OFF",
+        "RW_BUILD_TESTS": "ON",
+        "RW_ENABLE_LOGGING": "ON",
+        "RW_ENABLE_PROFILING": "OFF"
       }
     },
     {
-      "name": "redwolf_tester_release",
-      "displayName": "redwolf_tester Release",
+      "name": "redwolf_release_with_profiler",
+      "displayName": "redwolf Release",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
-        "RW_BUILD_TESTS": "ON"
+        "RW_BUILD_PROFILER": "ON",
+        "RW_BUILD_TESTS": "ON",
+        "RW_ENABLE_LOGGING": "ON",
+        "RW_ENABLE_PROFILING": "ON"
+      }
+    },
+    {
+      "name": "redwolf_release",
+      "displayName": "redwolf Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "RW_BUILD_PROFILER": "OFF",
+        "RW_BUILD_TESTS": "ON",
+        "RW_ENABLE_LOGGING": "ON",
+        "RW_ENABLE_PROFILING": "ON"
+      }
+    },
+    {
+      "name": "redwolf_release_performance",
+      "displayName": "redwolf Release Performance",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "RW_BUILD_PROFILER": "OFF",
+        "RW_BUILD_TESTS": "ON",
+        "RW_ENABLE_LOGGING": "OFF",
+        "RW_ENABLE_PROFILING": "OFF"
       }
     }
   ],
   "buildPresets": [
     {
-      "name": "redwolf_tester_debug",
-      "configurePreset": "redwolf_tester_debug"
+      "name": "redwolf_debug",
+      "configurePreset": "redwolf_debug"
     },
     {
-      "name": "redwolf_tester_release",
-      "configurePreset": "redwolf_tester_release"
+      "name": "redwolf_release",
+      "configurePreset": "redwolf_release"
+    },
+    {
+      "name": "redwolf_release_performance",
+      "configurePreset": "redwolf_release_performance"
     }
   ]
 }

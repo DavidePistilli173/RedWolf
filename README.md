@@ -9,11 +9,15 @@ It is written using C++23 and should be compatible with both Windows and Linux.
 
 ## COMPILATION
 
-Just configure and build the project using CMake.
-The project supports the following options:
+First, install these dependencies using your package manager:
 
-- `RW_GFX_API` => Choose the graphics API to use. Currently only the `RW_GFX_API_OPENGL` value is supported (and
-  defaulted).
+- dbus
+- libxkbcommon
+- wayland
+- wayland-protocols
+- libglvnd
+
+Just configure and build the project using CMake and one of the provided profiles.
 
 ## DOCUMENTATION
 

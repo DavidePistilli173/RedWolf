@@ -4,10 +4,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 project("redwolf" VERSION 0.8.0 LANGUAGES C CXX)
 
+option(RW_BUILD_PROFILER "Build the profiler application" OFF)
 option(RW_BUILD_TESTS "Build tests" ON)
-option(RW_ENABLE_LOGS "Enable logging" ON)
+option(RW_ENABLE_LOGGING "Enable logging" ON)
+option(RW_ENABLE_PROFILING "Enable profiling" OFF)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
@@ -18,8 +19,12 @@ if(MSVC)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
-if(RW_ENABLE_LOGS)
-    add_compile_definitions(RW_ENABLE_LOGS)
+if(RW_ENABLE_LOGGING)
+    add_compile_definitions(RW_ENABLE_LOGGING)
+endif()
+
+if(RW_ENABLE_PROFILING)
+    add_compile_definitions(RW_ENABLE_PROFILING)
 endif()
 
 add_subdirectory(src)

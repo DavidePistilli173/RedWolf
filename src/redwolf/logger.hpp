@@ -1,6 +1,7 @@
 #pragma once
 
 #include "redwolf/common.hpp"
+#include "redwolf/profiler.hpp"
 
 #include <array>
 #include <chrono>
@@ -13,12 +14,26 @@ namespace rw {
      * @brief Concept for objects that can be used as std::format arguments.
      */
     template<typename T>
-    concept IsFormattable = std::is_default_constructible_v<std::formatter<T>>;
+    concept IsFormattable = std::formattable<T, char>;
 
     /**
      * @brief Logging levels.
      */
-    enum class LogLevel : u8 { fatal, error, warn, info, trace };
+    enum class LogLevel : u8 { fatal, error, warn, info, debug, trace };
+
+    /**
+     * @brief Message with a source location.
+     */
+    template<typename... Args>
+    struct SourceMessage {
+        template<typename T>
+            requires(!std::same_as<std::remove_cvref_t<T>, SourceMessage>)
+        consteval SourceMessage(T&& p_fmt, std::source_location p_loc = std::source_location::current()) :
+            fmt{ std::forward<T>(p_fmt) }, loc{ p_loc } {}
+
+        std::format_string<Args...> fmt;
+        std::source_location        loc;
+    };
 
     /**
      * @brief Engine logger.
@@ -26,17 +41,6 @@ namespace rw {
     class Logger {
      public:
         static constexpr usize max_message_size{ 2048 }; /**< Maximum size of a log message, with null terminator. */
-
-        template<usize N>
-        struct FixedString {
-            std::array<char, N> data{};
-
-            consteval FixedString(const std::array<char, N>& str) : data{ str } {}
-
-            consteval operator std::string_view() const {
-                return { data.data(), N - 1 };
-            }
-        };
 
         /**
          * @brief Initialise the logger.
@@ -54,15 +58,10 @@ namespace rw {
          * @tparam FmtMsg Message to log, with std::format syntax.
          * @tparam Args Optional argument type for the format string.
          * @param level Logging level.
-         * @param args Optional arguments for the format string.
-         * @param loc Source code location that originated the log.
+         * @param msg Message to be formatted.
          */
         template<rw::IsFormattable... Args>
-        void message_base(
-            const LogLevel              level,
-            std::format_string<Args...> fmt,
-            Args&&... args,
-            std::source_location loc = std::source_location::current()) {
+        void message_base(const LogLevel level, SourceMessage<Args...> msg, Args&&... args) {
             std::array<char, max_message_size> formatted_msg{};
 
             // Format the header.
@@ -74,15 +73,15 @@ namespace rw {
                     std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start_time_)
                         .count()) *
                     microseconds_to_seconds,
-                loc.function_name(),
-                loc.line()) };
+                msg.loc.function_name(),
+                msg.loc.line()) };
             if (header_res.size > max_message_size - 1) {
                 return;
             }
 
             const usize remaining_size{ formatted_msg.size() - header_res.size - 1 };
             const auto  final_res{ std::format_to_n(
-                header_res.out, formatted_msg.size() - header_res.size - 1, fmt, std::forward<Args>(args)...) };
+                header_res.out, formatted_msg.size() - header_res.size - 1, msg.fmt, std::forward<Args>(args)...) };
             if (final_res.size > remaining_size) {
                 return;
             }
@@ -91,6 +90,9 @@ namespace rw {
             switch (level) {
             case LogLevel::trace:
                 std::println("\033[0;90m{}\033[0m", std::string_view(formatted_msg.data(), header_res.size + final_res.size));
+                break;
+            case LogLevel::debug:
+                std::println("\033[0;34m{}\033[0m", std::string_view(formatted_msg.data(), header_res.size + final_res.size));
                 break;
             case LogLevel::info:
                 std::println("\033[0;32m{}\033[0m", std::string_view(formatted_msg.data(), header_res.size + final_res.size));
@@ -107,11 +109,16 @@ namespace rw {
             }
         }
 
+        /**
+         * @brief Shutdown the logger.
+         */
+        static void shutdown();
+
      private:
         /**
          * @brief Default constructor.
          */
-        Logger();
+        Logger() = default;
 
         /**
          * @brief Starting time of the logger.
@@ -119,60 +126,59 @@ namespace rw {
         std::chrono::time_point<std::chrono::high_resolution_clock> start_time_{ std::chrono::high_resolution_clock::now() };
     };
 
-#ifdef RW_ENABLE_LOGS
+#ifdef RW_ENABLE_LOGGING
     template<rw::IsFormattable... Args>
-    void trace(std::format_string<Args...> fmt, Args&&... args, std::source_location src_loc = std::source_location::current()) {
-        Logger::instance()->message_base(LogLevel::trace, fmt, std::forward<Args>(args)..., src_loc);
+    void trace(SourceMessage<std::type_identity_t<Args>...> msg, Args&&... args) {
+        RW_PROFILE_SCOPE
+        Logger::instance()->message_base(LogLevel::trace, msg, std::forward<Args>(args)...);
     }
 
     template<rw::IsFormattable... Args>
-    void info(std::format_string<Args...> fmt, Args&&... args, std::source_location src_loc = std::source_location::current()) {
-        Logger::instance()->message_base(LogLevel::info, fmt, std::forward<Args>(args)..., src_loc);
+    void debug(SourceMessage<std::type_identity_t<Args>...> msg, Args&&... args) {
+        RW_PROFILE_SCOPE
+        Logger::instance()->message_base(LogLevel::debug, msg, std::forward<Args>(args)...);
     }
 
     template<rw::IsFormattable... Args>
-    void warn(std::format_string<Args...> fmt, Args&&... args, std::source_location src_loc = std::source_location::current()) {
-        Logger::instance()->message_base(LogLevel::warn, fmt, std::forward<Args>(args)..., src_loc);
+    void info(SourceMessage<std::type_identity_t<Args>...> msg, Args&&... args) {
+        RW_PROFILE_SCOPE
+        Logger::instance()->message_base(LogLevel::info, msg, std::forward<Args>(args)...);
     }
 
     template<rw::IsFormattable... Args>
-    void error(std::format_string<Args...> fmt, Args&&... args, std::source_location src_loc = std::source_location::current()) {
-        Logger::instance()->message_base(LogLevel::error, fmt, std::forward<Args>(args)..., src_loc);
+    void warn(SourceMessage<std::type_identity_t<Args>...> msg, Args&&... args) {
+        RW_PROFILE_SCOPE
+        Logger::instance()->message_base(LogLevel::warn, msg, std::forward<Args>(args)...);
     }
 
     template<rw::IsFormattable... Args>
-    void fatal(std::format_string<Args...> fmt, Args&&... args, std::source_location src_loc = std::source_location::current()) {
-        Logger::instance()->message_base(LogLevel::fatal, fmt, std::forward<Args>(args)..., src_loc);
+    void error(SourceMessage<std::type_identity_t<Args>...> msg, Args&&... args) {
+        RW_PROFILE_SCOPE
+        Logger::instance()->message_base(LogLevel::error, msg, std::forward<Args>(args)...);
+    }
+
+    template<rw::IsFormattable... Args>
+    void fatal(SourceMessage<std::type_identity_t<Args>...> msg, Args&&... args) {
+        RW_PROFILE_SCOPE
+        Logger::instance()->message_base(LogLevel::fatal, msg, std::forward<Args>(args)...);
     }
 #else
     template<rw::IsFormattable... Args>
-    void trace(
-        [[maybe_unused]] std::format_string<Args...> fmt,
-        [[maybe_unused]] Args&&... args,
-        [[maybe_unused]] std::source_location src_loc = std::source_location::current()) {}
+    void trace([[maybe_unused]] SourceMessage<std::type_identity_t<Args>...> msg, [[maybe_unused]] Args&&... args) {}
 
     template<rw::IsFormattable... Args>
-    void info(
-        [[maybe_unused]] std::format_string<Args...> fmt,
-        [[maybe_unused]] Args&&... args,
-        [[maybe_unused]] std::source_location src_loc = std::source_location::current()) {}
+    void debug([[maybe_unused]] SourceMessage<std::type_identity_t<Args>...> msg, [[maybe_unused]] Args&&... args) {}
 
     template<rw::IsFormattable... Args>
-    void warn(
-        [[maybe_unused]] std::format_string<Args...> fmt,
-        [[maybe_unused]] Args&&... args,
-        [[maybe_unused]] std::source_location src_loc = std::source_location::current()) {}
+    void info([[maybe_unused]] SourceMessage<std::type_identity_t<Args>...> msg, [[maybe_unused]] Args&&... args) {}
 
     template<rw::IsFormattable... Args>
-    void error(
-        [[maybe_unused]] std::format_string<Args...> fmt,
-        [[maybe_unused]] Args&&... args,
-        [[maybe_unused]] std::source_location src_loc = std::source_location::current()) {}
+    void warn([[maybe_unused]] SourceMessage<std::type_identity_t<Args>...> msg, [[maybe_unused]] Args&&... args) {}
 
     template<rw::IsFormattable... Args>
-    void fatal(
-        [[maybe_unused]] std::format_string<Args...> fmt,
-        [[maybe_unused]] Args&&... args,
-        [[maybe_unused]] std::source_location src_loc = std::source_location::current()) {}
+    void error([[maybe_unused]] SourceMessage<std::type_identity_t<Args>...> msg, [[maybe_unused]] Args&&... args) {}
+
+    template<rw::IsFormattable... Args>
+    void fatal([[maybe_unused]] SourceMessage<std::type_identity_t<Args>...> msg, [[maybe_unused]] Args&&... args) {}
 #endif
 } // namespace rw
