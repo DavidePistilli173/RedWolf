@@ -14,7 +14,7 @@ rw::Engine::Engine() {
 bool rw::Engine::init(std::string_view app_name) {
     trace("Initialising platform.");
     if (!Platform::init(app_name)) {
-        error("Failed to initialised platform.");
+        error("Failed to initialise platform.");
         return false;
     }
     info("Platform initialised.");
@@ -27,4 +27,10 @@ rw::Engine::~Engine() {
     Logger::shutdown();
 }
 
-void rw::Engine::loop() {}
+void rw::Engine::loop() {
+    usize counter{ 0U };
+    while (counter < 100'000) {
+        Platform::poll_events();
+        ++counter;
+    }
+}
