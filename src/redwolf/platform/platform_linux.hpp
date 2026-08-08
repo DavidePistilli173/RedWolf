@@ -16,7 +16,7 @@ namespace rw {
      */
     class Platform {
      public:
-        ~Platform() = default;
+        ~Platform();
 
         Platform(const Platform&)            = delete;
         Platform& operator=(const Platform&) = delete;

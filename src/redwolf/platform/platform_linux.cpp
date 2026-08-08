@@ -14,6 +14,29 @@ namespace {
     rw::Platform* g_platform{ nullptr }; // Platform instance.
 }
 
+rw::Platform::~Platform() {
+    if (nullptr != touch_) {
+        wl_touch_release(touch_);
+    }
+
+    if (nullptr != keyboard_) {
+        wl_keyboard_release(keyboard_);
+    }
+
+    if (nullptr != pointer_) {
+        wl_pointer_release(pointer_);
+    }
+
+    wl_seat_release(seat_);
+    xdg_toplevel_destroy(xdg_top_level_);
+    xdg_surface_destroy(xdg_surface_);
+    wl_surface_destroy(surface_);
+    xdg_wm_base_destroy(xdg_wm_base_);
+    wl_compositor_destroy(compositor_);
+    wl_registry_destroy(registry_);
+    wl_display_disconnect(display_);
+}
+
 bool rw::Platform::init(std::string_view title) {
     RW_PROFILE_SCOPE
 
@@ -59,27 +82,6 @@ void rw::Platform::shutdown() {
         warn("Platform already shut down.");
         return;
     }
-
-    if (nullptr != g_platform->touch_) {
-        wl_touch_release(g_platform->touch_);
-    }
-
-    if (nullptr != g_platform->keyboard_) {
-        wl_keyboard_release(g_platform->keyboard_);
-    }
-
-    if (nullptr != g_platform->pointer_) {
-        wl_pointer_release(g_platform->pointer_);
-    }
-
-    wl_seat_release(g_platform->seat_);
-    xdg_toplevel_destroy(g_platform->xdg_top_level_);
-    xdg_surface_destroy(g_platform->xdg_surface_);
-    wl_surface_destroy(g_platform->surface_);
-    xdg_wm_base_destroy(g_platform->xdg_wm_base_);
-    wl_compositor_destroy(g_platform->compositor_);
-    wl_registry_destroy(g_platform->registry_);
-    wl_display_disconnect(g_platform->display_);
 
     delete g_platform;
     g_platform = nullptr;
