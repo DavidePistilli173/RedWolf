@@ -14,16 +14,36 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(redwolf PUBLIC wayland-client)
 
     function(add_wayland_protocol_target TARGET_NAME SPEC NAME)
-        add_custom_target(wayland_${TARGET_NAME}_header COMMAND wayland-scanner client-header /usr/share/wayland-protocols/${SPEC} ${CMAKE_CURRENT_SOURCE_DIR}/platform/${NAME}.h)
-        add_dependencies(redwolf wayland_${TARGET_NAME}_header)
-        add_custom_target(wayland_${TARGET_NAME}_source COMMAND wayland-scanner private-code /usr/share/wayland-protocols/${SPEC} ${CMAKE_CURRENT_SOURCE_DIR}/platform/${NAME}.c)
-        add_dependencies(redwolf wayland_${TARGET_NAME}_source)
+        set(PROTO_XML /usr/share/wayland-protocols/${SPEC})
+        set(HEADER_FILE ${CMAKE_CURRENT_SOURCE_DIR}/platform/${NAME}.h)
+        set(SOURCE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/platform/${NAME}.c)
+
+        add_custom_command(
+            OUTPUT ${HEADER_FILE}
+            COMMAND wayland-scanner client-header ${PROTO_XML} ${HEADER_FILE}
+            DEPENDS ${PROTO_XML}
+            COMMENT "Generating ${NAME}.h"
+            VERBATIM
+        )
+
+        add_custom_command(
+            OUTPUT ${SOURCE_FILE}
+            COMMAND wayland-scanner private-code ${PROTO_XML} ${SOURCE_FILE}
+            DEPENDS ${PROTO_XML}
+            COMMENT "Generating ${NAME}.c"
+            VERBATIM
+        )
+
+    target_sources(redwolf PRIVATE
+        ${SOURCE_FILE}
+        ${HEADER_FILE}
+    )
     endfunction()
+    
     add_wayland_protocol_target(xdg_shell "stable/xdg-shell/xdg-shell.xml" xdg-shell)
 
     target_sources(redwolf PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/platform/platform_linux.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/platform/xdg-shell.c
     )
 endif()
 

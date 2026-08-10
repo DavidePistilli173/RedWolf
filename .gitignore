@@ -1,11 +1,8 @@
 # Directories
 .vs
+.cache
 bin
 build
 out
-src/RedWolf/docs/RedWolf.doxygen
-src/RedWolf/.vscode/
-.vscode/
-/cmake-build-debug/
-/cmake-build-release/
-/.idea/
+src/redwolf/platform/xdg-shell.c
+src/redwolf/platform/xdg-shell.h
