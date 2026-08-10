@@ -1,7 +1,7 @@
 #include "engine.hpp"
 
 #include "redwolf/logger.hpp"
-#include "redwolf/memory.hpp"
+#include "redwolf/memory/memory.hpp"
 #include "redwolf/platform/platform.hpp"
 #include "redwolf/profiler.hpp"
 
@@ -28,6 +28,8 @@ bool rw::Engine::init(std::string_view app_name) {
         return false;
     }
     info("Memory manager initialised.");
+
+    auto test_allocation{ Memory::new_object<std::array<u32, 1'000'000>>(MemoryType::engine) };
 
     return true;
 }
