@@ -2,6 +2,7 @@
 
 #include "redwolf/memory/memory.hpp"
 #include "redwolf/memory/memory_pool.hpp"
+#include "redwolf/profiler.hpp"
 
 #include <atomic>
 
@@ -33,6 +34,8 @@ namespace rw {
          * @brief Copy constructor.
          */
         Ptr(const Ptr& other) : pool_{ other.pool_ }, block_{ other.block_ } {
+            RW_PROFILE_SCOPE
+
             if (nullptr != block_) {
                 ++(block_->ref_count_);
             }
@@ -42,6 +45,8 @@ namespace rw {
          * @brief Copy-assignment operator.
          */
         Ptr& operator=(const Ptr& other) {
+            RW_PROFILE_SCOPE
+
             if (this != &other) {
                 reset();
                 pool_  = other.pool_;
@@ -58,6 +63,8 @@ namespace rw {
          * @brief Move constructor.
          */
         Ptr(Ptr&& other) noexcept : pool_{ other.pool_ }, block_{ other.block_ } {
+            RW_PROFILE_SCOPE
+
             if (nullptr != block_) {
                 ++(block_->ref_count_);
             }
@@ -68,6 +75,8 @@ namespace rw {
          * @brief Move-assignment operator.
          */
         Ptr& operator=(Ptr&& other) noexcept {
+            RW_PROFILE_SCOPE
+
             if (this != other) {
                 reset();
                 pool_  = other.pool_;
@@ -106,6 +115,8 @@ namespace rw {
          * @brief Reset the pointer.
          */
         void reset() {
+            RW_PROFILE_SCOPE
+
             if (nullptr == block_) {
                 return;
             }
@@ -129,6 +140,8 @@ namespace rw {
          */
         template<typename... Args>
         explicit Ptr(MemoryPool* pool, Args&&... args) : pool_{ pool }, block_{ pool_->allocate<Block>() } {
+            RW_PROFILE_SCOPE
+
             new (&block_->ref_count) std::atomic<u32>(1U);
             new (&block_->data_) T(std::forward<Args>(args)...);
         }

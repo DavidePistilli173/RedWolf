@@ -1,5 +1,6 @@
 #include "engine.hpp"
 
+#include "redwolf/events/events.hpp"
 #include "redwolf/logger.hpp"
 #include "redwolf/memory/memory.hpp"
 #include "redwolf/platform/platform.hpp"
@@ -29,7 +30,12 @@ bool rw::Engine::init(std::string_view app_name) {
     }
     info("Memory manager initialised.");
 
-    auto test_allocation{ Memory::new_object<std::array<u32, 1'000'000>>(MemoryType::engine) };
+    trace("Initialising event system.");
+    if (!Events::init()) {
+        error("Failed to initialise the event system.");
+        return false;
+    }
+    info("Event system initialised.");
 
     return true;
 }

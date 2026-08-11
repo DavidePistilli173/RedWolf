@@ -3,6 +3,7 @@
 #include "redwolf/common.hpp"
 #include "redwolf/memory/memory_pool.hpp"
 #include "redwolf/memory/ptr.hpp"
+#include "redwolf/profiler.hpp"
 
 #include <utility>
 
@@ -27,6 +28,8 @@ namespace rw {
          */
         template<typename T, typename... Args>
         [[nodiscard]] static Ptr<T> new_object(MemoryType type, Args&&... args) {
+            RW_PROFILE_SCOPE
+
             auto* instance{ instance_() };
             switch (type) {
             case MemoryType::engine:
