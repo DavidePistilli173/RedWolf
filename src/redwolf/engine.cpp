@@ -1,11 +1,14 @@
 #include "engine.hpp"
 
+#include "redwolf/containers/vec.hpp"
 #include "redwolf/events/events.hpp"
 #include "redwolf/logger.hpp"
 #include "redwolf/memory/memory.hpp"
+#include "redwolf/memory/memory_pool.hpp"
 #include "redwolf/platform/platform.hpp"
 #include "redwolf/profiler.hpp"
 
+#include <limits>
 #include <vector>
 
 rw::Engine::Engine() {
@@ -36,6 +39,15 @@ bool rw::Engine::init(std::string_view app_name) {
         return false;
     }
     info("Event system initialised.");
+
+    Vec<u64> tmp_vec(MemoryType::engine);
+    for (u16 i{ 0 }; i < std::numeric_limits<u16>::max(); ++i) {
+        (void) tmp_vec.emplace_back(i);
+        trace("Added item '{}'", i);
+    }
+    tmp_vec.reserve(tmp_vec.size() * 2);
+    tmp_vec.shrink_to_fit();
+    tmp_vec.resize(tmp_vec.size() / 2);
 
     return true;
 }

@@ -19,6 +19,24 @@ bool rw::Memory::init() {
     return true;
 }
 
+rw::MemoryPool& rw::Memory::pool(MemoryType type) {
+    RW_PROFILE_SCOPE
+
+    switch (type) {
+    case MemoryType::engine:
+        return g_memory->pool_engine_;
+        break;
+    case MemoryType::app:
+        return g_memory->pool_app_;
+        break;
+    case MemoryType::invalid:
+    default:
+        error("Invalid allocation type: '{}'", static_cast<u8>(type));
+        return g_memory->pool_invalid_;
+        break;
+    }
+}
+
 void rw::Memory::shutdown() {
     RW_PROFILE_SCOPE
 

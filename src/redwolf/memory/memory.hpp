@@ -38,12 +38,20 @@ namespace rw {
             case MemoryType::app:
                 return Ptr<T>(&(instance->pool_app_), std::forward<Args>(args)...);
                 break;
+            case MemoryType::invalid:
             default:
                 error("Invalid allocation type: '{}'", static_cast<u8>(type));
-                return Ptr<T>();
+                return Ptr<T>(&(instance->pool_invalid_), std::forward<Args>(args)...);
                 break;
             }
         }
+
+        /**
+         * @brief Get one of the engine's memory pools.
+         * @param type Allocation category.
+         * @return Reference to the requested memory pool.
+         */
+        [[nodiscard]] static MemoryPool& pool(MemoryType type);
 
         /**
          * @brief De-initialise the memory system.
@@ -58,8 +66,9 @@ namespace rw {
          */
         [[nodiscard]] static Memory* instance_();
 
-        MemoryPool pool_engine_{ MemoryType::engine }; /**< Generic engine memory pool. */
-        MemoryPool pool_app_{ MemoryType::app };       /**< Generic application memory pool. */
+        MemoryPool pool_invalid_{ MemoryType::invalid }; /**< Invalid memory pool, just to make the program not crash. */
+        MemoryPool pool_engine_{ MemoryType::engine };   /**< Generic engine memory pool. */
+        MemoryPool pool_app_{ MemoryType::app };         /**< Generic application memory pool. */
     };
 
 } // namespace rw
