@@ -14,6 +14,103 @@ namespace rw {
     class Vec {
      public:
         static constexpr usize growth_factor{ 2 }; /**< Memory growth when automatic reallocation is needed. */
+        static constexpr usize min_capacity{ 8 };  /**< Minimum number of items that can be stored. */
+
+        /**
+         * @brief Iterator for the Vec.
+         */
+        template<bool IsConst>
+        class Iterator {
+         public:
+            // --- Required member types for std::contiguous_iterator ---
+            using iterator_concept  = std::contiguous_iterator_tag;
+            using iterator_category = std::random_access_iterator_tag;
+            using value_type        = std::remove_cv_t<T>;
+            using difference_type   = std::ptrdiff_t;
+            using pointer           = std::conditional_t<IsConst, const T*, T*>;
+            using reference         = std::conditional_t<IsConst, const T&, T&>;
+            using element_type      = std::conditional_t<IsConst, const T, T>; // required by contiguous_iterator
+
+            // --- Constructors ---
+            constexpr Iterator() noexcept = default;
+            constexpr explicit Iterator(pointer ptr) noexcept : ptr_{ ptr } {}
+
+            // Allow implicit conversion from iterator -> const_iterator
+            template<bool WasConst>
+                requires(IsConst && !WasConst)
+            constexpr Iterator(const Iterator<WasConst>& other) noexcept : ptr_{ other.ptr_ } {}
+
+            // --- Dereference ---
+            constexpr reference operator*() const noexcept {
+                return *ptr_;
+            }
+            constexpr pointer operator->() const noexcept {
+                return ptr_;
+            }
+            constexpr reference operator[](difference_type n) const noexcept {
+                return *(ptr_ + n);
+            }
+
+            // --- Increment / decrement ---
+            constexpr Iterator& operator++() noexcept {
+                ++ptr_;
+                return *this;
+            }
+            constexpr Iterator operator++(int) noexcept {
+                auto result{ Iterator(ptr_++) };
+                return result;
+            }
+            constexpr Iterator& operator--() noexcept {
+                --ptr_;
+                return *this;
+            }
+            constexpr Iterator operator--(int) noexcept {
+                auto result{ Iteratlr(ptr_--) };
+                return result;
+            }
+
+            // --- Arithmetic ---
+            constexpr Iterator& operator+=(difference_type n) noexcept {
+                ptr_ += n;
+                return *this;
+            }
+            constexpr Iterator& operator-=(difference_type n) noexcept {
+                ptr_ -= n;
+                return *this;
+            }
+
+            constexpr Iterator operator+(difference_type n) const noexcept {
+                return Iterator(ptr_ + n);
+            }
+            constexpr Iterator operator-(difference_type n) const noexcept {
+                return Iterator(ptr_ - n);
+            }
+
+            friend constexpr Iterator operator+(difference_type n, const Iterator& it) noexcept {
+                return Iterator(it.ptr_ + n);
+            }
+
+            constexpr difference_type operator-(const Iterator& other) const noexcept {
+                return ptr_ - other.ptr_;
+            }
+
+            // --- Comparisons (rewritten operators cover ==, !=, <, >, <=, >= via <=>) ---
+            constexpr bool                 operator==(const Iterator& other) const noexcept  = default;
+            constexpr std::strong_ordering operator<=>(const Iterator& other) const noexcept = default;
+
+            // Needed for cross iterator/const_iterator comparison (e.g. it == carr.cend())
+            template<bool OtherConst>
+            constexpr bool operator==(const Iterator<OtherConst>& other) const noexcept {
+                return ptr_ == other.ptr_;
+            }
+            template<bool OtherConst>
+            constexpr std::strong_ordering operator<=>(const Iterator<OtherConst>& other) const noexcept {
+                return ptr_ <=> other.ptr_;
+            }
+
+         private:
+            pointer ptr_{ nullptr };
+        };
 
         /**
          * @brief Constructor.
@@ -97,10 +194,38 @@ namespace rw {
         }
 
         /**
+         * @brief Get an iterator to the first element of the vector.
+         */
+        [[nodiscard]] Iterator<false> begin() {
+            return Iterator(elements_);
+        }
+
+        /**
+         * @brief Get an iterator to the first element of the vector.
+         */
+        [[nodiscard]] Iterator<true> begin() const {
+            return Iterator(elements_);
+        }
+
+        /**
          * @brief Get the current vector capacity (number of elements).
          */
         [[nodiscard]] usize capacity() const {
             return capacity_;
+        }
+
+        /**
+         * @brief Get an iterator to the first element of the vector.
+         */
+        [[nodiscard]] Iterator<true> cbegin() const {
+            return Iterator(elements_);
+        }
+
+        /**
+         * @brief Get the end iterator of the vector. (One item past the last valid item.)
+         */
+        [[nodiscard]] Iterator<true> cend() const {
+            return Iterator(elements_ + size_);
         }
 
         /**
@@ -145,7 +270,7 @@ namespace rw {
         [[nodiscard]] T& emplace_back(Args&&... args) {
             // Needs reallocation.
             if (capacity_ == size_) {
-                const usize new_size{ std::max(static_cast<usize>(1), size_ * growth_factor) };
+                const usize new_size{ std::max(min_capacity, size_ * growth_factor) };
                 elements_ = memory_pool_->reallocate(elements_, new_size);
                 debug("elements_: '{:x}'", (usize) elements_);
                 capacity_ = new_size;
@@ -162,6 +287,20 @@ namespace rw {
          */
         [[nodiscard]] bool empty() const {
             return 0 == size_;
+        }
+
+        /**
+         * @brief Get the end iterator of the vector. (One item past the last valid item.)
+         */
+        [[nodiscard]] Iterator<false> end() {
+            return Iterator(elements_ + size_);
+        }
+
+        /**
+         * @brief Get the end iterator of the vector. (One item past the last valid item.)
+         */
+        [[nodiscard]] Iterator<true> end() const {
+            return Iterator(elements_ + size_);
         }
 
         /**

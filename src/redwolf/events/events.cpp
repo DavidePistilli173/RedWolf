@@ -25,3 +25,7 @@ void rw::Events::shutdown() {
     delete g_events;
     g_events = nullptr;
 }
+
+rw::Events* rw::Events::instance_() {
+    return g_events;
+}
