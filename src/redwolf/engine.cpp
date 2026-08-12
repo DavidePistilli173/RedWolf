@@ -40,15 +40,6 @@ bool rw::Engine::init(std::string_view app_name) {
     }
     info("Event system initialised.");
 
-    Vec<u64> tmp_vec(MemoryType::engine);
-    for (u16 i{ 0 }; i < std::numeric_limits<u16>::max(); ++i) {
-        (void) tmp_vec.emplace_back(i);
-        trace("Added item '{}'", i);
-    }
-    tmp_vec.reserve(tmp_vec.size() * 2);
-    tmp_vec.shrink_to_fit();
-    tmp_vec.resize(tmp_vec.size() / 2);
-
     return true;
 }
 

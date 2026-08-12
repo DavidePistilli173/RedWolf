@@ -106,9 +106,10 @@ namespace rw {
             }
 
             if constexpr (std::is_trivially_copyable_v<T>) {
-                std::memmove(new_it.first->first, memory, curr_size);
+                debug("memory: '{:x}' | new_it.first->first: '{:x}'", (usize) memory, (usize) new_it.first->first);
+                std::memmove(new_it.first->first, memory, std::min(curr_size, new_size));
             } else {
-                for (usize i{ 0U }; i < (curr_size / sizeof(T)); ++i) {
+                for (usize i{ 0U }; i < (std::min(curr_size, new_size) / sizeof(T)); ++i) {
                     new (&(reinterpret_cast<T*>(new_it.first->first[i]))) T(std::move(memory[i]));
                 }
             }

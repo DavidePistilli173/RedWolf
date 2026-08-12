@@ -147,7 +147,7 @@ namespace rw {
             if (capacity_ == size_) {
                 const usize new_size{ std::max(static_cast<usize>(1), size_ * growth_factor) };
                 elements_ = memory_pool_->reallocate(elements_, new_size);
-                trace("elements_: '{:x}'", (usize) elements_);
+                debug("elements_: '{:x}'", (usize) elements_);
                 capacity_ = new_size;
             }
 
@@ -241,7 +241,9 @@ namespace rw {
                 return;
             }
 
+            debug("elements_ before reallocate: '{:x}'", (usize) elements_);
             elements_ = memory_pool_->reallocate(elements_, size);
+            debug("elements_ after reallocate: '{:x}'", (usize) elements_);
             capacity_ = size;
         }
 
@@ -282,7 +284,9 @@ namespace rw {
                 return;
             }
 
+            debug("elements_ before reallocate: '{:x}'", (usize) elements_);
             elements_ = memory_pool_->reallocate(elements_, size_);
+            debug("elements_ after reallocate: '{:x}'", (usize) elements_);
             capacity_ = size_;
         }
 
