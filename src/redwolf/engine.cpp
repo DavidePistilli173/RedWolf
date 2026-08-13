@@ -9,6 +9,7 @@
 #include "redwolf/platform/platform.hpp"
 #include "redwolf/profiler.hpp"
 
+#include <chrono>
 #include <limits>
 #include <vector>
 
@@ -45,10 +46,26 @@ rw::Engine::~Engine() {
 
 void rw::Engine::loop() {
     usize counter{ 0U };
+    auto  last_loop_ts{ std::chrono::high_resolution_clock::now() };
     while (running_) {
         RW_PROFILE_SCOPE
 
+        const auto current_loop_ts{ std::chrono::high_resolution_clock::now() };
+        const auto delta_time{ static_cast<f32>(static_cast<f64>((current_loop_ts - last_loop_ts).count()) * nanoseconds_to_seconds) };
+
         Platform::poll_events();
+
+        // Compute all module updates.
+        for (auto& module : modules_) {
+            module->on_update(delta_time);
+        }
+
+        // Compute all module rendering.
+        for (auto& module : modules_) {
+            module->on_render(delta_time);
+        }
+
+        last_loop_ts = current_loop_ts;
 
         RW_PROFILE_MARK_FRAME
     }

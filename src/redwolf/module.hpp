@@ -33,16 +33,14 @@ namespace rw {
         /**
          * @brief Called on each update tick.
          * @param delta_time Time since the last update. [s]
-         * @return true on success, false otherwise.
          */
-        [[nodiscard]] virtual bool on_update(f32 delta_time) = 0;
+        virtual void on_update(f32 delta_time) = 0;
 
         /**
          * @brief Called on each render tick.
          * @param delat_time Time since the last render. [s]
-         * @return true on success, false otherwise.
          */
-        [[nodiscard]] virtual bool on_render(f32 delta_time) = 0;
+        virtual void on_render(f32 delta_time) = 0;
 
      private:
     };
