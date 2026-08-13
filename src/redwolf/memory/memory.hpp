@@ -35,6 +35,9 @@ namespace rw {
             case MemoryType::engine:
                 return Ptr<T>(&(instance->pool_engine_), std::forward<Args>(args)...);
                 break;
+            case MemoryType::modules:
+                return Ptr<T>(&(instance->pool_modules_), std::forward<Args>(args)...);
+                break;
             case MemoryType::app:
                 return Ptr<T>(&(instance->pool_app_), std::forward<Args>(args)...);
                 break;
@@ -68,6 +71,7 @@ namespace rw {
 
         MemoryPool pool_invalid_{ MemoryType::invalid }; /**< Invalid memory pool, just to make the program not crash. */
         MemoryPool pool_engine_{ MemoryType::engine };   /**< Generic engine memory pool. */
+        MemoryPool pool_modules_{ MemoryType::modules }; /**< User modules memory pool. */
         MemoryPool pool_app_{ MemoryType::app };         /**< Generic application memory pool. */
     };
 

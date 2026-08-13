@@ -197,14 +197,14 @@ namespace rw {
          * @brief Get an iterator to the first element of the vector.
          */
         [[nodiscard]] Iterator<false> begin() {
-            return Iterator(elements_);
+            return Iterator<false>(elements_);
         }
 
         /**
          * @brief Get an iterator to the first element of the vector.
          */
         [[nodiscard]] Iterator<true> begin() const {
-            return Iterator(elements_);
+            return Iterator<true>(elements_);
         }
 
         /**
@@ -272,7 +272,6 @@ namespace rw {
             if (capacity_ == size_) {
                 const usize new_size{ std::max(min_capacity, size_ * growth_factor) };
                 elements_ = memory_pool_->reallocate(elements_, new_size);
-                debug("elements_: '{:x}'", (usize) elements_);
                 capacity_ = new_size;
             }
 
@@ -293,14 +292,14 @@ namespace rw {
          * @brief Get the end iterator of the vector. (One item past the last valid item.)
          */
         [[nodiscard]] Iterator<false> end() {
-            return Iterator(elements_ + size_);
+            return Iterator<false>(elements_ + size_);
         }
 
         /**
          * @brief Get the end iterator of the vector. (One item past the last valid item.)
          */
         [[nodiscard]] Iterator<true> end() const {
-            return Iterator(elements_ + size_);
+            return Iterator<true>(elements_ + size_);
         }
 
         /**

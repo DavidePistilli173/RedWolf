@@ -26,6 +26,9 @@ rw::MemoryPool& rw::Memory::pool(MemoryType type) {
     case MemoryType::engine:
         return g_memory->pool_engine_;
         break;
+    case MemoryType::modules:
+        return g_memory->pool_modules_;
+        break;
     case MemoryType::app:
         return g_memory->pool_app_;
         break;

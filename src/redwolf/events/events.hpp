@@ -51,6 +51,12 @@ namespace rw {
             static_pointer_cast<Event<PayloadT>>(it->value)->fire(payload);
         }
 
+        /**
+         * @brief Subscribe to an event.
+         * @tparam PayloadT Type of payload the event carries.
+         * @param callback Callback to call when the event gets fired.
+         * @return RAII connection object.
+         */
         template<typename PayloadT>
         [[nodiscard]] static Connection<PayloadT> subscribe(Event<PayloadT>::Callback callback) {
             auto* g_events{ instance_() };

@@ -15,6 +15,7 @@ namespace rw {
     enum class MemoryType : u8 {
         invalid, /**< Invalid allocation type. */
         engine,  /**< Generic engine allocation. */
+        modules, /**< User modules allocations. */
         app      /**< Generic application allocation. */
     };
 
@@ -110,7 +111,7 @@ namespace rw {
                 std::memmove(new_it.first->first, memory, std::min(curr_size, new_size));
             } else {
                 for (usize i{ 0U }; i < (std::min(curr_size, new_size) / sizeof(T)); ++i) {
-                    new (&(reinterpret_cast<T*>(new_it.first->first[i]))) T(std::move(memory[i]));
+                    new (reinterpret_cast<T*>(new_it.first->first) + i) T(std::move(memory[i]));
                 }
             }
 

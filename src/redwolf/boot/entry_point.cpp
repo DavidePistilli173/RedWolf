@@ -7,7 +7,7 @@
 
 i32 main(i32 argc, const char** argv) {
     auto engine{ std::make_unique<rw::Engine>() };
-    if (!engine->init(rw_user::app_name())) {
+    if (!engine->init()) {
         rw::fatal("Failed to initialise RedWolf.");
         return 1;
     }

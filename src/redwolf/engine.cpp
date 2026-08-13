@@ -1,5 +1,6 @@
 #include "engine.hpp"
 
+#include "redwolf/boot/entry_point.hpp"
 #include "redwolf/containers/vec.hpp"
 #include "redwolf/events/events.hpp"
 #include "redwolf/logger.hpp"
@@ -16,11 +17,60 @@ rw::Engine::Engine() {
     info("Logger initialised.");
 }
 
-bool rw::Engine::init(std::string_view app_name) {
+bool rw::Engine::init() {
     RW_PROFILE_SCOPE
 
+    if (!init_subsystems_()) {
+        rw::error("Failed to initialise the engine sub-systems.");
+        return false;
+    }
+
+    if (!init_modules_()) {
+        rw::error("Failed to initialise the user modules.");
+        return false;
+    }
+
+    return true;
+}
+
+rw::Engine::~Engine() {
+    RW_PROFILE_SCOPE
+
+    info("Shutting down engine.");
+    Platform::shutdown();
+    info("Engine shut down.");
+
+    Logger::shutdown();
+}
+
+void rw::Engine::loop() {
+    usize counter{ 0U };
+    while (running_) {
+        RW_PROFILE_SCOPE
+
+        Platform::poll_events();
+
+        RW_PROFILE_MARK_FRAME
+    }
+}
+
+bool rw::Engine::init_modules_() {
+    modules_ = rw_user::create_modules();
+
+    for (auto& module : modules_) {
+        if (!module->init()) {
+            rw::error("Failed to initialise module '{}'", module->name());
+            return false;
+        }
+        rw::info("Initialised module '{}'.", module->name());
+    }
+
+    return true;
+}
+
+bool rw::Engine::init_subsystems_() {
     trace("Initialising platform.");
-    if (!Platform::init(app_name)) {
+    if (!Platform::init(rw_user::app_name())) {
         error("Failed to initialise platform.");
         return false;
     }
@@ -41,26 +91,4 @@ bool rw::Engine::init(std::string_view app_name) {
     info("Event system initialised.");
 
     return true;
-}
-
-rw::Engine::~Engine() {
-    RW_PROFILE_SCOPE
-
-    info("Shutting down engine.");
-    Platform::shutdown();
-    info("Engine shut down.");
-
-    Logger::shutdown();
-}
-
-void rw::Engine::loop() {
-    usize counter{ 0U };
-    while (counter < 100'000) {
-        RW_PROFILE_SCOPE
-
-        Platform::poll_events();
-        ++counter;
-
-        RW_PROFILE_MARK_FRAME
-    }
 }

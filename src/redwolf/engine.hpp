@@ -1,5 +1,10 @@
 #pragma once
 
+#include "redwolf/containers/vec.hpp"
+#include "redwolf/memory/memory_pool.hpp"
+#include "redwolf/memory/ptr.hpp"
+#include "redwolf/module.hpp"
+
 #include <string_view>
 
 namespace rw {
@@ -19,10 +24,9 @@ namespace rw {
 
         /**
          * @brief Initialise the engine.
-         * @param app_name Name of the application.
          * @return true if successfull, false otherwise.
          */
-        [[nodiscard]] bool init(std::string_view app_name);
+        [[nodiscard]] bool init();
 
         /**
          * @brief Engine main loop.
@@ -30,5 +34,19 @@ namespace rw {
         void loop();
 
      private:
+        /**
+         * @brief Initialise the user modules.
+         * @return true on success, false otherwise.
+         */
+        [[nodiscard]] bool init_modules_();
+
+        /**
+         * @brief Initialise the engine sub-systems.
+         * @return true on success, false otherwise.
+         */
+        [[nodiscard]] bool init_subsystems_();
+
+        bool             running_{ true };               /**< Main loop conditino flag. */
+        Vec<Ptr<Module>> modules_{ MemoryType::engine }; /**< User modules. */
     };
 } // namespace rw

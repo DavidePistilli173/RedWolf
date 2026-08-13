@@ -2,26 +2,33 @@
 
 #include "redwolf/common.hpp"
 
+#include <string_view>
+
 namespace rw {
     /**
-     * @brief Base application class, meant to be inherited by user application classes.
+     * @brief Base module class, meant to be inherited by users of RedWolf to build application-specific functionality.
      */
-    class App {
+    class Module {
      public:
-        App()          = default;
-        virtual ~App() = default;
+        Module()          = default;
+        virtual ~Module() = default;
 
-        App(const App&)            = delete;
-        App& operator=(const App&) = delete;
+        Module(const Module&)            = delete;
+        Module& operator=(const Module&) = delete;
 
-        App(App&&)            = delete;
-        App& operator=(App&&) = delete;
+        Module(Module&&)            = delete;
+        Module& operator=(Module&&) = delete;
 
         /**
-         * @brief Called at startup to initialise the application.
+         * @brief Called at startup to initialise the module.
          * @return true on success, false otherwise.
          */
         [[nodiscard]] virtual bool init() = 0;
+
+        /**
+         * @brief Get the name of the module.
+         */
+        [[nodiscard]] virtual std::string_view name() = 0;
 
         /**
          * @brief Called on each update tick.
