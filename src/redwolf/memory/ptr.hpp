@@ -271,7 +271,7 @@ namespace rw {
         result.control_ = other.control_;
         result.ptr_     = static_cast<To*>(other.ptr_);
         if (nullptr != result.control_) {
-            ++(result.control->ref_count);
+            ++(result.control_->ref_count);
         }
         return result;
     }

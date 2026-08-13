@@ -3,6 +3,7 @@ add_library(redwolf STATIC)
 target_sources(redwolf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/boot/entry_point.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/events/events.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/input/input.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory_pool.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/engine.cpp

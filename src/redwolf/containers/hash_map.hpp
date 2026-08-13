@@ -53,12 +53,14 @@ namespace rw {
             using pointer           = std::conditional_t<IsConst, const Entry*, Entry*>;
             using reference         = std::conditional_t<IsConst, const Entry&, Entry&>;
 
+            using vec_iterator = Vec<std::optional<Entry>>::template Iterator<IsConst>;
+
             // --- Constructors ---
             constexpr Iterator() noexcept = default;
 
             // ptr: current slot; end: one-past-last slot of the backing vector,
             // needed so operator++ knows where to stop skipping.
-            constexpr Iterator(pointer ptr, pointer end) noexcept : ptr_{ ptr }, end_{ end } {}
+            constexpr Iterator(vec_iterator ptr, vec_iterator end) noexcept : ptr_{ ptr }, end_{ end } {}
 
             // Allow implicit conversion from iterator -> const_iterator
             template<bool WasConst>
@@ -213,14 +215,14 @@ namespace rw {
          * @brief Get an iterator to the first element after the last valid one.
          */
         [[nodiscard]] Iterator<false> end() {
-            return Iterator(table_.end(), table_.end());
+            return Iterator<false>(table_.end(), table_.end());
         }
 
         /**
          * @brief Get an iterator to the first element after the last valid one.
          */
         [[nodiscard]] Iterator<true> end() const {
-            return Iterator(table_.end(), table_.end());
+            return Iterator<true>(table_.end(), table_.end());
         }
 
         /**
@@ -249,9 +251,9 @@ namespace rw {
         [[nodiscard]] Iterator<false> find(const KeyT& key) {
             const usize index{ find_(key) };
             if (table_[index].has_value()) {
-                return Iterator(table_.begin() + index, table_.end());
+                return Iterator<false>(table_.begin() + index, table_.end());
             }
-            return Iterator(table_.end(), table_.end());
+            return Iterator<false>(table_.end(), table_.end());
         }
 
         /**
@@ -262,9 +264,9 @@ namespace rw {
         [[nodiscard]] Iterator<true> find(const KeyT& key) const {
             const usize index{ find_(key) };
             if (table_[index].has_value()) {
-                return Iterator(table_.begin() + index, table_.end());
+                return Iterator<true>(table_.begin() + index, table_.end());
             }
-            return Iterator(table_.end(), table_.end());
+            return Iterator<true>(table_.end(), table_.end());
         }
 
         /**

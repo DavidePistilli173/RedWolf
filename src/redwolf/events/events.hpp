@@ -36,7 +36,7 @@ namespace rw {
          * @param payload Payload to transmit with the event.
          */
         template<typename PayloadT>
-        void fire(const PayloadT& payload) {
+        static void fire(const PayloadT& payload) {
             auto* g_events{ instance_() };
 
             const TypeId id{ g_events->type_id<PayloadT>() };
@@ -48,7 +48,7 @@ namespace rw {
             }
 
             // Already existing event.
-            static_pointer_cast<Event<PayloadT>>(it->value)->fire(payload);
+            static_ptr_cast<Event<PayloadT>>(it->value)->fire(payload);
         }
 
         /**

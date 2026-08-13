@@ -1,9 +1,9 @@
 #pragma once
 
-#include <wayland-client-protocol.h>
 #ifdef linux
 
     #include "redwolf/common.hpp"
+    #include "redwolf/input/mouse.hpp"
     #include "xdg-shell.h"
 
     #include <string>
@@ -55,6 +55,67 @@ namespace rw {
          * @return true on success, false otherwise.
          */
         [[nodiscard]] bool create_surface_();
+
+        /**
+         * @brief Handler for pointer->axis events.
+         */
+        static void handle_pointer_axis_(void* data, wl_pointer* pointer, u32 time, u32 axis, wl_fixed_t value);
+
+        /**
+         * @brief Handler for pointer->axis_discrete events.
+         */
+        static void handle_pointer_axis_discrete_(void* data, wl_pointer* pointer, u32 axis, i32 discrete);
+
+        /**
+         * @brief Handler for pointer->axis_relative_direction events.
+         */
+        static void handle_pointer_axis_relative_direction_(void* data, wl_pointer* pointer, u32 axis, u32 direction);
+
+        /**
+         * @brief Handler for pointer->axis_source events.
+         */
+        static void handle_pointer_axis_source_(void* data, wl_pointer* pointer, u32 axis_source);
+
+        /**
+         * @brief Handler for pointer->axis_stop events.
+         */
+        static void handle_pointer_axis_stop_(void* data, wl_pointer* pointer, u32 time, u32 axis);
+
+        /**
+         * @brief Handler for pointer->axis_value120 events.
+         */
+        static void handle_pointer_axis_value120_(void* data, wl_pointer*, u32 axis, i32 value120);
+
+        /**
+         * @brief Handler for pointer->button events.
+         */
+        static void handle_pointer_button_(void* data, wl_pointer* pointer, u32 serial, u32 time, u32 button, u32 state);
+
+        /**
+         * @brief Handler for pointer->enter events.
+         */
+        static void handle_pointer_enter_(
+            void* data, wl_pointer* pointer, u32 serial, wl_surface* surface, wl_fixed_t surface_x, wl_fixed_t surface_y);
+
+        /**
+         * @brief Handler for pointer->frame events.
+         */
+        static void handle_pointer_frame_(void* data, wl_pointer* pointer);
+
+        /**
+         * @brief Handler for pointer->leave events.
+         */
+        static void handle_pointer_leave_(void* data, wl_pointer* pointer, u32 serial, wl_surface* surface);
+
+        /**
+         * @brief Handler for pointer->motion events.
+         */
+        static void handle_pointer_motion_(void* data, wl_pointer* pointer, u32 time, wl_fixed_t surface_x, wl_fixed_t surface_y);
+
+        /**
+         * @brief Handler for pointer->warp events.
+         */
+        static void handle_pointer_warp_(void* data, wl_pointer* pointer, wl_fixed_t surface_x, wl_fixed_t surface_y);
 
         /**
          * @brief Handler for registry->global events.
@@ -135,6 +196,13 @@ namespace rw {
          */
         [[nodiscard]] bool setup_touch_();
 
+        /**
+         * @brief Translate a mouse button code from linux to engine.
+         * @param linux_code Linux-specific code for the mouse button.
+         * @return Equivalent engine code.
+         */
+        [[nodiscard]] static MouseBtn translate_mouse_btn_(u32 linux_code);
+
         std::string window_title_; /**< Window title. */
 
         wl_registry_listener  registry_listener_{};      /**< wl_registry event listener. */
@@ -165,6 +233,9 @@ namespace rw {
         wl_pointer*  pointer_{ nullptr };  /**< Mouse pointer object. */
         wl_keyboard* keyboard_{ nullptr }; /**< Keyboard object. */
         wl_touch*    touch_{ nullptr };    /**< Touch screen object. */
+
+        f64 pointer_scroll_x_{ 0.0F }; /**< Horizontal mouse scroll since the last pointer->frame event. */
+        f64 pointer_scroll_y_{ 0.0F }; /**< Horizontal mouse scroll since the last pointer->frame event. */
     };
 } // namespace rw
 

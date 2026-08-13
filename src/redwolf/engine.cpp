@@ -3,6 +3,7 @@
 #include "redwolf/boot/entry_point.hpp"
 #include "redwolf/containers/vec.hpp"
 #include "redwolf/events/events.hpp"
+#include "redwolf/input/input.hpp"
 #include "redwolf/logger.hpp"
 #include "redwolf/memory/memory.hpp"
 #include "redwolf/memory/memory_pool.hpp"
@@ -39,6 +40,9 @@ rw::Engine::~Engine() {
 
     info("Shutting down engine.");
     Platform::shutdown();
+    Input::shutdown();
+    Events::shutdown();
+    Memory::shutdown();
     info("Engine shut down.");
 
     Logger::shutdown();
@@ -86,13 +90,6 @@ bool rw::Engine::init_modules_() {
 }
 
 bool rw::Engine::init_subsystems_() {
-    trace("Initialising platform.");
-    if (!Platform::init(rw_user::app_name())) {
-        error("Failed to initialise platform.");
-        return false;
-    }
-    info("Platform initialised.");
-
     trace("Initialising memory manager.");
     if (!Memory::init()) {
         error("Failed to initialise memory manager.");
@@ -106,6 +103,20 @@ bool rw::Engine::init_subsystems_() {
         return false;
     }
     info("Event system initialised.");
+
+    trace("Initialising input manager.");
+    if (!Input::init()) {
+        error("Failed to initialise input manager.");
+        return false;
+    }
+    info("Input manager initialised.");
+
+    trace("Initialising platform.");
+    if (!Platform::init(rw_user::app_name())) {
+        error("Failed to initialise platform.");
+        return false;
+    }
+    info("Platform initialised.");
 
     return true;
 }

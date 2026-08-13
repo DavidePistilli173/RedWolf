@@ -1,14 +1,19 @@
 #include "platform_linux.hpp"
 
-#include "redwolf/logger.hpp"
-#include "redwolf/platform/xdg-shell.h"
-#include "redwolf/profiler.hpp"
-
-#include <cstring>
-#include <wayland-client-core.h>
-#include <wayland-client-protocol.h>
+#include <wayland-util.h>
 
 #ifdef linux
+
+    #include "redwolf/input/input.hpp"
+    #include "redwolf/input/mouse.hpp"
+    #include "redwolf/logger.hpp"
+    #include "redwolf/platform/xdg-shell.h"
+    #include "redwolf/profiler.hpp"
+
+    #include <cstring>
+    #include <linux/input-event-codes.h>
+    #include <wayland-client-core.h>
+    #include <wayland-client-protocol.h>
 
 namespace {
     rw::Platform* g_platform{ nullptr }; // Platform instance.
@@ -151,6 +156,65 @@ bool rw::Platform::create_surface_() {
     wl_surface_commit(g_platform->surface_);
 
     return true;
+}
+
+void rw::Platform::handle_pointer_axis_(void* data, wl_pointer* pointer, u32 time, u32 axis, wl_fixed_t value) {
+    if (WL_POINTER_AXIS_HORIZONTAL_SCROLL == axis) {
+        g_platform->pointer_scroll_x_ += wl_fixed_to_double(value);
+    } else if (WL_POINTER_AXIS_VERTICAL_SCROLL == axis) {
+        g_platform->pointer_scroll_y_ += wl_fixed_to_double(value);
+    } else {
+        warn("Unknown axis value: '{}'", axis);
+    }
+}
+
+void rw::Platform::handle_pointer_axis_discrete_(void* data, wl_pointer* pointer, u32 axis, i32 discrete) {
+    // Nothing to do.
+}
+
+void rw::Platform::handle_pointer_axis_relative_direction_(void* data, wl_pointer* pointer, u32 axis, u32 direction) {
+    // Nothing to do.
+}
+
+void rw::Platform::handle_pointer_axis_source_(void* data, wl_pointer* pointer, u32 axis_source) {
+    // Nothing to do.
+}
+
+void rw::Platform::handle_pointer_axis_stop_(void* data, wl_pointer* pointer, u32 time, u32 axis) {
+    // Nothing to do.
+}
+
+void rw::Platform::handle_pointer_axis_value120_(void* data, wl_pointer*, u32 axis, i32 value120) {
+    // Nothing to do.
+}
+
+void rw::Platform::handle_pointer_button_(void* data, wl_pointer* pointer, u32 serial, u32 time, u32 button, u32 state) {
+    Input::update_mouse_button(translate_mouse_btn_(button), WL_POINTER_BUTTON_STATE_PRESSED == state);
+}
+
+void rw::Platform::handle_pointer_enter_(
+    void* data, wl_pointer* pointer, u32 serial, wl_surface* surface, wl_fixed_t surface_x, wl_fixed_t surface_y) {
+    Input::update_mouse_position(static_cast<f32>(wl_fixed_to_double(surface_x)), static_cast<f32>(wl_fixed_to_double(surface_y)));
+}
+
+void rw::Platform::handle_pointer_frame_(void* data, wl_pointer* pointer) {
+    Input::update_mouse_scroll(
+        static_cast<f32>(g_platform->pointer_scroll_x_ / static_cast<f64>(g_platform->new_width_)),
+        static_cast<f32>(g_platform->pointer_scroll_y_ / static_cast<f64>(g_platform->new_height_)));
+    g_platform->pointer_scroll_x_ = 0.0F;
+    g_platform->pointer_scroll_y_ = 0.0F;
+}
+
+void rw::Platform::handle_pointer_leave_(void* data, wl_pointer* pointer, u32 serial, wl_surface* surface) {
+    // Nothing to do.
+}
+
+void rw::Platform::handle_pointer_motion_(void* data, wl_pointer* pointer, u32 time, wl_fixed_t surface_x, wl_fixed_t surface_y) {
+    Input::update_mouse_position(static_cast<f32>(wl_fixed_to_double(surface_x)), static_cast<f32>(wl_fixed_to_double(surface_y)));
+}
+
+void rw::Platform::handle_pointer_warp_(void* data, wl_pointer* pointer, wl_fixed_t surface_x, wl_fixed_t surface_y) {
+    Input::update_mouse_position(static_cast<f32>(wl_fixed_to_double(surface_x)), static_cast<f32>(wl_fixed_to_double(surface_y)));
 }
 
 void rw::Platform::handle_registry_global_(
@@ -304,6 +368,23 @@ bool rw::Platform::setup_pointer_() {
         return false;
     }
 
+    g_platform->pointer_listener_.axis                    = &Platform::handle_pointer_axis_;
+    g_platform->pointer_listener_.axis_discrete           = &Platform::handle_pointer_axis_discrete_;
+    g_platform->pointer_listener_.axis_relative_direction = &Platform::handle_pointer_axis_relative_direction_;
+    g_platform->pointer_listener_.axis_source             = &Platform::handle_pointer_axis_source_;
+    g_platform->pointer_listener_.axis_stop               = &Platform::handle_pointer_axis_stop_;
+    g_platform->pointer_listener_.axis_value120           = &Platform::handle_pointer_axis_value120_;
+    g_platform->pointer_listener_.button                  = &Platform::handle_pointer_button_;
+    g_platform->pointer_listener_.enter                   = &Platform::handle_pointer_enter_;
+    g_platform->pointer_listener_.frame                   = &Platform::handle_pointer_frame_;
+    g_platform->pointer_listener_.leave                   = &Platform::handle_pointer_leave_;
+    g_platform->pointer_listener_.motion                  = &Platform::handle_pointer_motion_;
+    g_platform->pointer_listener_.warp                    = &Platform::handle_pointer_warp_;
+    if (0 != wl_pointer_add_listener(g_platform->pointer_, &(g_platform->pointer_listener_), nullptr)) {
+        error("Failed to add pointer_listener.");
+        return false;
+    }
+
     trace("Pointer capability added.");
     return true;
 }
@@ -343,6 +424,29 @@ bool rw::Platform::setup_touch_() {
 
     trace("Touch capability added.");
     return true;
+}
+
+rw::MouseBtn rw::Platform::translate_mouse_btn_(u32 linux_code) {
+    switch (linux_code) {
+    case BTN_LEFT:
+        return MouseBtn::left;
+    case BTN_RIGHT:
+        return MouseBtn::right;
+    case BTN_MIDDLE:
+        return MouseBtn::middle;
+    case BTN_SIDE:
+        return MouseBtn::side;
+    case BTN_EXTRA:
+        return MouseBtn::extra;
+    case BTN_FORWARD:
+        return MouseBtn::forward;
+    case BTN_BACK:
+        return MouseBtn::back;
+    case BTN_TASK:
+        return MouseBtn::task;
+    default:
+        return MouseBtn::invalid;
+    }
 }
 
 #endif
