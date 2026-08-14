@@ -13,7 +13,7 @@ target_sources(redwolf PRIVATE
 target_include_directories(redwolf PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..) 
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
-    target_link_libraries(redwolf PUBLIC wayland-client)
+    target_link_libraries(redwolf PUBLIC xkbcommon wayland-client)
 
     function(add_wayland_protocol_target TARGET_NAME SPEC NAME)
         set(PROTO_XML /usr/share/wayland-protocols/${SPEC})

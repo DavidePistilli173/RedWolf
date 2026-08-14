@@ -1,5 +1,6 @@
 #pragma once
 
+#include "redwolf/input/keyboard.hpp"
 #include "redwolf/input/mouse.hpp"
 
 namespace rw {
@@ -15,9 +16,40 @@ namespace rw {
         [[nodiscard]] static bool init();
 
         /**
+         * @brief Reset the state of all keyboard keys.
+         */
+        static void reset_keyboard_keys();
+
+        /**
+         * @brief Enable/disable the text mode for keyboard input.
+         * @param enabled if true enables text mode, if false disables it.
+         */
+        static void set_text_mode(bool enabled);
+
+        /**
          * @brief Shutdown the input manager.
          */
         static void shutdown();
+
+        /**
+         * @brief Update the state of a keyboard key.
+         * @param key Key that changed state.
+         * @param pressed true if pressed, false if released.
+         */
+        static void update_keyboard_key(Key key, bool pressed);
+
+        /**
+         * @brief Update the keyboard repeat settings.
+         * @param delay Delay after a key press before considering it in repeat mode.
+         * @param rate Number of key repeats per second.
+         */
+        static void update_keyboard_repeat_info(std::chrono::milliseconds delay, i32 rate);
+
+        /**
+         * @brief Update the text input by the keyboard.
+         * @param text Text input from the keyboard.
+         */
+        static void update_keyboard_text(std::string_view text);
 
         /**
          * @brief Update the state of a mouse button.
@@ -43,6 +75,7 @@ namespace rw {
      private:
         Input() = default;
 
-        Mouse mouse_; /**< State of the mouse. */
+        Mouse    mouse_;    /**< State of the mouse. */
+        Keyboard keyboard_; /**< State of the keyboard. */
     };
 } // namespace rw

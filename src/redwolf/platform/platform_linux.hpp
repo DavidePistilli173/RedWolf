@@ -1,10 +1,13 @@
 #pragma once
 
+#include <wayland-client-protocol.h>
 #ifdef linux
 
     #include "redwolf/common.hpp"
+    #include "redwolf/input/keyboard.hpp"
     #include "redwolf/input/mouse.hpp"
     #include "xdg-shell.h"
+    #include "xkbcommon/xkbcommon.h"
 
     #include <string>
     #include <string_view>
@@ -16,6 +19,8 @@ namespace rw {
      */
     class Platform {
      public:
+        static constexpr usize text_buffer_size{ 16 }; /**< Size of the temporary text buffer. */
+
         ~Platform();
 
         Platform(const Platform&)            = delete;
@@ -37,6 +42,12 @@ namespace rw {
         static void poll_events();
 
         /**
+         * @brief Enable/disable the text mode for keyboard input.
+         * @param enabled if true enables text mode, if false disables it.
+         */
+        static void set_text_mode(bool enabled);
+
+        /**
          * @brief Shutdown the platform abstraction.
          */
         static void shutdown();
@@ -55,6 +66,37 @@ namespace rw {
          * @return true on success, false otherwise.
          */
         [[nodiscard]] bool create_surface_();
+
+        /**
+         * @brief Handler for keyboard->enter events.
+         */
+        static void handle_keyboard_enter_(void* data, wl_keyboard* keyboard, u32 serial, wl_surface* surface, wl_array* keys);
+
+        /**
+         * @brief Handler for keyboard->key events.
+         */
+        static void handle_keyboard_key_(void* data, wl_keyboard* keyboard, u32 serial, u32 time, u32 key, u32 state);
+
+        /**
+         * @brief Handler for keyboard->keymap events.
+         */
+        static void handle_keyboard_keymap_(void* data, wl_keyboard* keyboard, u32 format, i32 fd, u32 size);
+
+        /**
+         * @brief Handler for keyboard->leave events.
+         */
+        static void handle_keyboard_leave_(void* data, wl_keyboard* keyboard, u32 serial, wl_surface* surface);
+
+        /**
+         * @brief Handler for keyboard->modifiers events.
+         */
+        static void handle_keyboard_modifiers_(
+            void* data, wl_keyboard* keyboard, u32 serial, u32 mods_depressed, u32 mods_latched, u32 mods_locked, u32 group);
+
+        /**
+         * @brief Handler for keyboard->repeat_info events.
+         */
+        static void handle_repeat_info_(void* data, wl_keyboard* keyboard, i32 rate, i32 delay);
 
         /**
          * @brief Handler for pointer->axis events.
@@ -173,6 +215,20 @@ namespace rw {
         void prepare_listeners_();
 
         /**
+         * @brief Process raw key input.
+         * @param key wayland key scancode.
+         * @param state pressed/released state.
+         */
+        void process_raw_key_(u32 key, u32 state);
+
+        /**
+         * @brief Process text key input.
+         * @param key wayland key scancode.
+         * @param state pressed/released state.
+         */
+        void process_text_key_(u32 key, u32 state);
+
+        /**
          * @brief Setup keyboard input.
          * @return true on success, false otherwise.
          */
@@ -195,6 +251,13 @@ namespace rw {
          * @return true on success, false otherwise.
          */
         [[nodiscard]] bool setup_touch_();
+
+        /**
+         * @brief Translate a wayland keycode into an engine key.
+         * @param scancode Key scancode received from wayland.
+         * @return Equivalent engine key.
+         */
+        [[nodiscard]] static Key translate_keyboard_key_(u32 scancode);
 
         /**
          * @brief Translate a mouse button code from linux to engine.
@@ -236,6 +299,12 @@ namespace rw {
 
         f64 pointer_scroll_x_{ 0.0F }; /**< Horizontal mouse scroll since the last pointer->frame event. */
         f64 pointer_scroll_y_{ 0.0F }; /**< Horizontal mouse scroll since the last pointer->frame event. */
+
+        bool                               text_mode_{ false };     /**< If true, keyboard input is processed as text. */
+        std::array<char, text_buffer_size> text_buffer_{};          /**< Temporary buffer for input text. */
+        xkb_context*                       xkb_context_{ nullptr }; /**< X keyboard context. */
+        xkb_keymap*                        xkb_keymap_{ nullptr };  /**< X keyboard key mapping. */
+        xkb_state*                         xkb_state_{ nullptr };   /**< X keyboard state. */
     };
 } // namespace rw
 

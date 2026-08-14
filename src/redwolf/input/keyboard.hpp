@@ -1,7 +1,17 @@
 #pragma once
 
+#include "redwolf/common.hpp"
+
+#include <array>
+#include <chrono>
+#include <limits>
+#include <string_view>
+
 namespace rw {
-    enum class KeyCode {
+    /**
+     * @brief Keyboard keys.
+     */
+    enum class Key : u8 {
         invalid,
         esc,
         num_1,
@@ -43,7 +53,7 @@ namespace rw {
         l,
         semicolon,
         apostrophe,
-        gave,
+        grave,
         left_shift,
         backslash,
         z,
@@ -139,7 +149,26 @@ namespace rw {
     };
 
     /**
+     * @brief Payload of a keyboard key press/release event.
+     */
+    struct KeyboardKeyEvent {
+        Key  key{ Key::invalid }; /**< Key that changed state. */
+        bool pressed{ false };    /**< true if pressed, false if released. */
+    };
+
+    /**
+     * @brief Payload of a keyboard text input event.
+     */
+    struct KeyboardTextEvent {
+        std::string_view text; /**< Text that was inserted by the user. */
+    };
+
+    /**
      * @brief State of a keyboard.
      */
-    struct Keyboard {};
+    struct Keyboard {
+        std::array<bool, std::numeric_limits<u8>::max()> keys{};           /**< Current key states. */
+        std::chrono::milliseconds                        repeat_delay{};   /**< Delay for starting a key-repeat event. */
+        i32                                              repeat_rate{ 0 }; /**< Number of key repeats per second. */
+    };
 } // namespace rw
