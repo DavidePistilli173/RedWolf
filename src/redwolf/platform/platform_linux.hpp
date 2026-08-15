@@ -1,6 +1,5 @@
 #pragma once
 
-#include <wayland-client-protocol.h>
 #ifdef linux
 
     #include "redwolf/common.hpp"
@@ -31,10 +30,9 @@ namespace rw {
 
         /**
          * @brief Initialise the platform abstraction.
-         * @param title Window title.
          * @return true if successfull, false otherwise.
          */
-        [[nodiscard]] static bool init(std::string_view title);
+        [[nodiscard]] static bool init();
 
         /**
          * @brief Poll events from the window system.

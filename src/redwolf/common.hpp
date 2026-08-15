@@ -31,4 +31,14 @@ static_assert(sizeof(f64) == 8);
 namespace rw {
     static constexpr f64 nanoseconds_to_seconds{ 1e-9 };  /**< Conversion factor from nanoseconds to seconds. */
     static constexpr f64 microseconds_to_seconds{ 1e-6 }; /**< Conversion factor from microseconds to seconds. */
+
+    /**
+     * @brief Version information.
+     */
+    struct VersionInfo {
+        u8  major{ 0 }; /**< Major version number. */
+        u16 minor{ 0 }; /**< Minor version number. */
+        u16 patch{ 0 }; /**< Patch version number. */
+        u64 build{ 0 }; /**< Build version number. */
+    };
 } // namespace rw

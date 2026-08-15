@@ -1,5 +1,6 @@
 #pragma once
 
+#include "redwolf/common.hpp"
 #include "redwolf/containers/vec.hpp"
 #include "redwolf/memory/memory_pool.hpp"
 #include "redwolf/memory/ptr.hpp"
@@ -13,6 +14,13 @@ namespace rw {
      */
     class Engine {
      public:
+        static constexpr f64 target_framerate{ 60.0 }; /**< Target frames per second. */
+
+        /**
+         * @brief Target loop time.
+         */
+        static constexpr std::chrono::nanoseconds target_frame_time{ static_cast<u64>(1 / (nanoseconds_to_seconds * target_framerate)) };
+
         Engine();
         ~Engine();
 

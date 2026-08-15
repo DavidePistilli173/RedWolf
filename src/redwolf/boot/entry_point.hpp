@@ -21,6 +21,13 @@ namespace rw_user {
     [[nodiscard]] extern std::string_view app_name();
 
     /**
+     * @brief Get the version of the application.
+     * @details This must be implemented by the user of RedWolf.
+     * @return Version of the application.
+     */
+    [[nodiscard]] extern rw::VersionInfo app_version();
+
+    /**
      * @brief Create all modules required for the application.
      * @details This must be implemented by the user of RedWolf.
      * @return Vector with all modules that will be executed, costructed but not initialised.

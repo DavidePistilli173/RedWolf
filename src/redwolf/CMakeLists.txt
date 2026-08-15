@@ -6,14 +6,16 @@ target_sources(redwolf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/input/input.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory_pool.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/engine.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/profiler.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/profiler.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/user_data.cpp)
 
 target_include_directories(redwolf PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..) 
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
-    target_link_libraries(redwolf PUBLIC xkbcommon wayland-client)
+    target_link_libraries(redwolf PUBLIC vulkan xkbcommon wayland-client)
 
     function(add_wayland_protocol_target TARGET_NAME SPEC NAME)
         set(PROTO_XML /usr/share/wayland-protocols/${SPEC})
@@ -47,6 +49,10 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_sources(redwolf PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/platform/platform_linux.cpp
     )
+endif()
+
+if (RW_ENABLE_VULKAN)
+    target_sources(redwolf PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_renderer.cpp)
 endif()
 
 if(RW_ENABLE_PROFILING)

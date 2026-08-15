@@ -1,12 +1,17 @@
 #include "generic_module.hpp"
+#include "redwolf/common.hpp"
 #include "redwolf/memory/memory_pool.hpp"
+#include "version_info.hpp"
 
-#include <iostream>
 #include <redwolf/boot/entry_point.hpp>
 #include <redwolf/logger.hpp>
 
 std::string_view rw_user::app_name() {
     return "RedWolfTester";
+}
+
+rw::VersionInfo rw_user::app_version() {
+    return redwolf_tester::version;
 }
 
 rw::Vec<rw::Ptr<rw::Module>> rw_user::create_modules() {

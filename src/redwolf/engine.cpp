@@ -9,9 +9,14 @@
 #include "redwolf/memory/memory_pool.hpp"
 #include "redwolf/platform/platform.hpp"
 #include "redwolf/profiler.hpp"
+#include "redwolf/renderer/backends/vulkan/vulkan_renderer.hpp"
+#include "redwolf/renderer/render_packet.hpp"
+#include "redwolf/renderer/renderer.hpp"
+#include "redwolf/user_data.hpp"
 
 #include <chrono>
 #include <limits>
+#include <thread>
 #include <vector>
 
 rw::Engine::Engine() {
@@ -39,23 +44,26 @@ rw::Engine::~Engine() {
     RW_PROFILE_SCOPE
 
     info("Shutting down engine.");
+    Renderer::shutdown();
     Platform::shutdown();
     Input::shutdown();
     Events::shutdown();
     Memory::shutdown();
+    UserData::shutdown();
     info("Engine shut down.");
 
     Logger::shutdown();
 }
 
 void rw::Engine::loop() {
-    usize counter{ 0U };
-    auto  last_loop_ts{ std::chrono::high_resolution_clock::now() };
+    auto last_loop_ts{ std::chrono::high_resolution_clock::now() };
+
     while (running_) {
         RW_PROFILE_SCOPE
 
         const auto current_loop_ts{ std::chrono::high_resolution_clock::now() };
-        const auto delta_time{ static_cast<f32>(static_cast<f64>((current_loop_ts - last_loop_ts).count()) * nanoseconds_to_seconds) };
+        const auto elapsed_ns{ current_loop_ts - last_loop_ts };
+        const auto delta_time{ static_cast<f32>(static_cast<f64>((elapsed_ns).count()) * nanoseconds_to_seconds) };
 
         Platform::poll_events();
 
@@ -69,7 +77,23 @@ void rw::Engine::loop() {
             module->on_render(delta_time);
         }
 
+        // Actually render the frame.
+        RenderPacket render_packet{ .delta_time = delta_time };
+        if (!Renderer::draw_frame(render_packet)) {
+            fatal("Renderer failed to draw frame.");
+            running_ = false;
+        }
+
         last_loop_ts = current_loop_ts;
+
+        const auto end_ts{ std::chrono::high_resolution_clock::now() };
+        const auto elapsed{ end_ts - current_loop_ts };
+        if (elapsed > target_frame_time) {
+            warn("Main loop overrun by: '{}'", elapsed - target_frame_time);
+        } else if (elapsed < target_frame_time) {
+            RW_PROFILE_SCOPE
+            std::this_thread::sleep_for(target_frame_time - elapsed);
+        }
 
         RW_PROFILE_MARK_FRAME
     }
@@ -90,6 +114,13 @@ bool rw::Engine::init_modules_() {
 }
 
 bool rw::Engine::init_subsystems_() {
+    trace("Initialising user data manager.");
+    if (!UserData::init()) {
+        error("Failed to initialise user data manager.");
+        return false;
+    }
+    info("User data manager initialised.");
+
     trace("Initialising memory manager.");
     if (!Memory::init()) {
         error("Failed to initialise memory manager.");
@@ -112,11 +143,17 @@ bool rw::Engine::init_subsystems_() {
     info("Input manager initialised.");
 
     trace("Initialising platform.");
-    if (!Platform::init(rw_user::app_name())) {
+    if (!Platform::init()) {
         error("Failed to initialise platform.");
         return false;
     }
     info("Platform initialised.");
+
+    trace("Initialising renderer.");
+    if (!Renderer::init()) {
+        error("Failed to initialise renderer.");
+    }
+    info("Renderer initialised.");
 
     return true;
 }

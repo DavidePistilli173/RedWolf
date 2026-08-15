@@ -1,10 +1,5 @@
 #include "platform_linux.hpp"
 
-#include <cerrno>
-#include <chrono>
-#include <wayland-util.h>
-#include <xkbcommon/xkbcommon.h>
-
 #ifdef linux
 
     #include "redwolf/input/input.hpp"
@@ -12,6 +7,7 @@
     #include "redwolf/logger.hpp"
     #include "redwolf/platform/xdg-shell.h"
     #include "redwolf/profiler.hpp"
+    #include "redwolf/user_data.hpp"
 
     #include <cstring>
     #include <linux/input-event-codes.h>
@@ -47,7 +43,7 @@ rw::Platform::~Platform() {
     wl_display_disconnect(display_);
 }
 
-bool rw::Platform::init(std::string_view title) {
+bool rw::Platform::init() {
     RW_PROFILE_SCOPE
 
     // Platform already initialised.
@@ -57,7 +53,7 @@ bool rw::Platform::init(std::string_view title) {
     }
 
     g_platform                = new Platform();
-    g_platform->window_title_ = title;
+    g_platform->window_title_ = UserData::app_name();
 
     g_platform->prepare_listeners_();
 

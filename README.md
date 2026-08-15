@@ -16,6 +16,7 @@ First, install these dependencies using your package manager:
 - wayland
 - wayland-protocols
 - libglvnd
+- vulkan-devel
 
 Just configure and build the project using CMake and one of the provided profiles.
 
