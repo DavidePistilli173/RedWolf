@@ -1,27 +1,24 @@
 #include "vulkan_renderer.hpp"
 
-#include <vulkan/vk_platform.h>
+#include "redwolf/logger.hpp"
+#include "redwolf/platform/platform.hpp"
+#include "redwolf/user_data.hpp"
+#include "redwolf/version_info.hpp"
+
+#include <array>
+#include <vulkan/vk_enum_string_helper.h>
 #include <vulkan/vulkan_core.h>
-
-#ifdef RW_ENABLE_VULKAN
-
-    #include "redwolf/logger.hpp"
-    #include "redwolf/platform/platform.hpp"
-    #include "redwolf/user_data.hpp"
-    #include "redwolf/version_info.hpp"
-
-    #include <array>
-    #include <vulkan/vk_enum_string_helper.h>
+#include <vulkan/vulkan_wayland.h>
 
 namespace {
     /**
      * @brief Extensions required for Vulkan rendering.
      */
     constexpr std::array required_extensions{ VK_KHR_SURFACE_EXTENSION_NAME
-    #ifdef RW_ENABLE_VULKAN_DEBUG
+#ifdef RW_ENABLE_VULKAN_DEBUG
                                               ,
                                               VK_EXT_DEBUG_UTILS_EXTENSION_NAME
-    #endif
+#endif
     };
 
     VKAPI_ATTR VkBool32 VKAPI_CALL vk_debug_callback(
@@ -53,7 +50,9 @@ namespace {
 } // namespace
 
 rw::RendererBackend::~RendererBackend() {
-    #ifdef RW_ENABLE_VULKAN_DEBUG
+    vkDestroySurfaceKHR(vk_instance_, vk_surface_, vk_allocator_.get());
+
+#ifdef RW_ENABLE_VULKAN_DEBUG
     auto func{ reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
         vkGetInstanceProcAddr(vk_instance_, "vkDestroyDebugUtilsMessengerEXT")) };
     if (nullptr == func) {
@@ -61,7 +60,7 @@ rw::RendererBackend::~RendererBackend() {
     } else {
         func(vk_instance_, vk_debug_messenger_, vk_allocator_.get());
     }
-    #endif
+#endif
 
     vkDestroyInstance(vk_instance_, vk_allocator_.get());
 }
@@ -92,6 +91,16 @@ bool rw::RendererBackend::init() {
         return false;
     }
 
+    if (!g_backend->init_vk_surface_()) {
+        error("Failed to initialise Vulkan surface.");
+        return false;
+    }
+
+    if (!g_backend->device_.init(g_backend->vk_instance_, g_backend->vk_surface_)) {
+        error("Failed to initialise rendering device.");
+        return false;
+    }
+
     return true;
 }
 
@@ -107,7 +116,7 @@ void rw::RendererBackend::shutdown() {
 
 rw::Vec<const char*> rw::RendererBackend::init_layer_names_() {
     Vec<const char*> result{ MemoryType::renderer };
-    #ifdef RW_ENABLE_VULKAN_DEBUG
+#ifdef RW_ENABLE_VULKAN_DEBUG
 
     trace("Validation layers enabled.");
     (void) result.emplace_back("VK_LAYER_KHRONOS_validation");
@@ -141,12 +150,12 @@ rw::Vec<const char*> rw::RendererBackend::init_layer_names_() {
         }
     }
 
-    #endif
+#endif
     return result;
 }
 
 bool rw::RendererBackend::init_vk_debugger_() {
-    #ifdef RW_ENABLE_VULKAN_DEBUG
+#ifdef RW_ENABLE_VULKAN_DEBUG
     const VkDebugUtilsMessengerCreateInfoEXT debug_create_info{ .sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
                                                                 .flags           = 0,
                                                                 .messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
@@ -170,7 +179,7 @@ bool rw::RendererBackend::init_vk_debugger_() {
     }
 
     trace("Vulkan debugger created.");
-    #endif
+#endif
 
     return true;
 }
@@ -205,4 +214,16 @@ bool rw::RendererBackend::init_vk_instance_() {
     return true;
 }
 
-#endif
+bool rw::RendererBackend::init_vk_surface_() {
+    const VkWaylandSurfaceCreateInfoKHR create_info{ .sType   = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
+                                                     .flags   = 0,
+                                                     .display = Platform::display(),
+                                                     .surface = Platform::surface() };
+
+    if (const auto res{ vkCreateWaylandSurfaceKHR(vk_instance_, &create_info, vk_allocator_.get(), &vk_surface_) }; VK_SUCCESS != res) {
+        error("Failed to create Vulkan surface: '{}'", string_VkResult(res));
+        return false;
+    }
+
+    return true;
+}

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "redwolf/input/keyboard.hpp"
-#include "redwolf/input/mouse.hpp"
+#include "keyboard.hpp"
+#include "mouse.hpp"
 
 namespace rw {
     /**

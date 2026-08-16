@@ -1,7 +1,7 @@
 #pragma once
 
 #include "redwolf/common.hpp"
-#include "redwolf/renderer/render_packet.hpp"
+#include "render_packet.hpp"
 
 #include <string_view>
 

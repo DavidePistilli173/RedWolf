@@ -1,6 +1,6 @@
 #pragma once
 
-#include "redwolf/common.hpp"
+#include "common.hpp"
 
 #include <string>
 

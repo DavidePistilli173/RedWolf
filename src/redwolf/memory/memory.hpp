@@ -1,8 +1,8 @@
 #pragma once
 
+#include "memory_pool.hpp"
+#include "ptr.hpp"
 #include "redwolf/common.hpp"
-#include "redwolf/memory/memory_pool.hpp"
-#include "redwolf/memory/ptr.hpp"
 #include "redwolf/profiler.hpp"
 
 #include <utility>

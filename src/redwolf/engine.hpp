@@ -1,10 +1,10 @@
 #pragma once
 
-#include "redwolf/common.hpp"
-#include "redwolf/containers/vec.hpp"
-#include "redwolf/memory/memory_pool.hpp"
-#include "redwolf/memory/ptr.hpp"
-#include "redwolf/module.hpp"
+#include "common.hpp"
+#include "containers/vec.hpp"
+#include "memory/memory_pool.hpp"
+#include "memory/ptr.hpp"
+#include "module.hpp"
 
 #include <string_view>
 

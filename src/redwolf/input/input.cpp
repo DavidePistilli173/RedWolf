@@ -1,8 +1,8 @@
 #include "input.hpp"
 
+#include "keyboard.hpp"
+#include "mouse.hpp"
 #include "redwolf/events/events.hpp"
-#include "redwolf/input/keyboard.hpp"
-#include "redwolf/input/mouse.hpp"
 #include "redwolf/logger.hpp"
 #include "redwolf/platform/platform.hpp"
 

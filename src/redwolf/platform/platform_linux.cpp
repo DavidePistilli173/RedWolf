@@ -5,9 +5,9 @@
     #include "redwolf/input/input.hpp"
     #include "redwolf/input/mouse.hpp"
     #include "redwolf/logger.hpp"
-    #include "redwolf/platform/xdg-shell.h"
     #include "redwolf/profiler.hpp"
     #include "redwolf/user_data.hpp"
+    #include "xdg-shell.h"
 
     #include <cstring>
     #include <linux/input-event-codes.h>
@@ -45,6 +45,10 @@ rw::Platform::~Platform() {
 
 void rw::Platform::append_required_extension_names(Vec<const char*>& enabled_extensions) {
     (void) enabled_extensions.emplace_back("VK_KHR_wayland_surface");
+}
+
+wl_display* rw::Platform::display() {
+    return g_platform->display_;
 }
 
 bool rw::Platform::init() {
@@ -104,6 +108,10 @@ void rw::Platform::shutdown() {
 
     delete g_platform;
     g_platform = nullptr;
+}
+
+wl_surface* rw::Platform::surface() {
+    return g_platform->surface_;
 }
 
 bool rw::Platform::connect_to_display_() {

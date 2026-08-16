@@ -1,7 +1,7 @@
 #pragma once
 
 #include "redwolf/common.hpp"
-#include "redwolf/containers/vec.hpp"
+#include "vec.hpp"
 
 #include <bitset>
 #include <chrono>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "redwolf/events/event.hpp"
+#include "event.hpp"
 
 namespace rw {
     /**

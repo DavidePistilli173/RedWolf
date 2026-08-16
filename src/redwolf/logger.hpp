@@ -1,7 +1,7 @@
 #pragma once
 
-#include "redwolf/common.hpp"
-#include "redwolf/profiler.hpp"
+#include "common.hpp"
+#include "profiler.hpp"
 
 #include <array>
 #include <chrono>

@@ -1,8 +1,8 @@
 #include "renderer.hpp"
 
+#include "backends/renderer_backends.hpp"
+#include "backends/vulkan/vulkan_renderer.hpp"
 #include "redwolf/logger.hpp"
-#include "redwolf/renderer/backends/renderer_backends.hpp"
-#include "redwolf/renderer/backends/vulkan/vulkan_renderer.hpp"
 
 namespace {
     rw::Renderer* g_renderer{ nullptr }; // Renderer front-end instance.

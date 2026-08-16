@@ -1,8 +1,8 @@
 #pragma once
 
+#include "connection.hpp"
+#include "event.hpp"
 #include "redwolf/containers/hash_map.hpp"
-#include "redwolf/events/connection.hpp"
-#include "redwolf/events/event.hpp"
 #include "redwolf/memory/memory_pool.hpp"
 
 namespace rw {

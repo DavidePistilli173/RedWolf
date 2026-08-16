@@ -1,7 +1,7 @@
 #pragma once
 
-#include "redwolf/common.hpp"
+#include "common.hpp"
 
 namespace rw {
-    constexpr VersionInfo version{ .major = 0, .minor = 8, .patch = 0, .build = 2 };
+    constexpr VersionInfo version{ .major = 0, .minor = 8, .patch = 0, .build = 3 };
 }

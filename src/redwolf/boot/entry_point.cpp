@@ -1,4 +1,4 @@
-#include "redwolf/boot/entry_point.hpp"
+#include "entry_point.hpp"
 
 #include "redwolf/engine.hpp"
 #include "redwolf/logger.hpp"

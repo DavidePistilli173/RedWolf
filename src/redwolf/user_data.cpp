@@ -1,7 +1,7 @@
 #include "user_data.hpp"
 
-#include "redwolf/boot/entry_point.hpp"
-#include "redwolf/logger.hpp"
+#include "boot/entry_point.hpp"
+#include "logger.hpp"
 
 namespace {
     rw::UserData* g_user_data{ nullptr }; // User data manager instance.

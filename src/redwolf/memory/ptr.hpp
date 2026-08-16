@@ -1,7 +1,7 @@
 #pragma once
 
-#include "redwolf/memory/memory.hpp"
-#include "redwolf/memory/memory_pool.hpp"
+#include "memory.hpp"
+#include "memory_pool.hpp"
 #include "redwolf/profiler.hpp"
 
 #include <atomic>

@@ -1,12 +1,11 @@
 #pragma once
 
-#ifdef RW_ENABLE_VULKAN
+#include "redwolf/common.hpp"
+#include "redwolf/containers/vec.hpp"
+#include "vulkan_device.hpp"
 
-    #include "redwolf/common.hpp"
-    #include "redwolf/containers/vec.hpp"
-
-    #include <string_view>
-    #include <vulkan/vulkan.h>
+#include <string_view>
+#include <vulkan/vulkan.h>
 
 namespace rw {
     /**
@@ -73,15 +72,21 @@ namespace rw {
          */
         [[nodiscard]] bool init_vk_instance_();
 
+        /**
+         * @brief Initialise the Vulkan surface.
+         * @return true on success, false otherwise.
+         */
+        [[nodiscard]] bool init_vk_surface_();
+
         RendererBackend() = default;
 
         VkInstance                 vk_instance_{}; /**< Vulkan instance. */
         Ptr<VkAllocationCallbacks> vk_allocator_;  /**< Custom Vulkan allocator. */
+        VkSurfaceKHR               vk_surface_{};  /**< Surface to render to. */
+        VulkanDevice               device_;        /**< Rendering device. */
 
-    #ifdef RW_ENABLE_VULKAN_DEBUG
+#ifdef RW_ENABLE_VULKAN_DEBUG
         VkDebugUtilsMessengerEXT vk_debug_messenger_{}; /**< Vulkan debug messenger. */
-    #endif
+#endif
     };
 } // namespace rw
-
-#endif

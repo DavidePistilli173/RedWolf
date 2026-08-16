@@ -52,7 +52,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
 endif()
 
 if (RW_ENABLE_VULKAN)
-    target_sources(redwolf PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_renderer.cpp)
+    target_sources(redwolf PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_device.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_renderer.cpp)
 endif()
 
 if(RW_ENABLE_PROFILING)

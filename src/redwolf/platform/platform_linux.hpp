@@ -1,5 +1,6 @@
 #pragma once
 
+#include <wayland-client-core.h>
 #ifdef linux
 
     #include "redwolf/common.hpp"
@@ -36,6 +37,11 @@ namespace rw {
         static void append_required_extension_names(Vec<const char*>& enabled_extensions);
 
         /**
+         * @brief Get the window display.
+         */
+        [[nodiscard]] static wl_display* display();
+
+        /**
          * @brief Initialise the platform abstraction.
          * @return true if successfull, false otherwise.
          */
@@ -56,6 +62,11 @@ namespace rw {
          * @brief Shutdown the platform abstraction.
          */
         static void shutdown();
+
+        /**
+         * @brief Get the window surface to draw on.
+         */
+        [[nodiscard]] static wl_surface* surface();
 
      private:
         Platform() = default;
