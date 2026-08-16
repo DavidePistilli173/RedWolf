@@ -13,10 +13,11 @@ namespace rw {
      * @brief Memory categories.
      */
     enum class MemoryType : u8 {
-        invalid, /**< Invalid allocation type. */
-        engine,  /**< Generic engine allocation. */
-        modules, /**< User modules allocations. */
-        app      /**< Generic application allocation. */
+        invalid,  /**< Invalid allocation type. */
+        renderer, /**< Renderer allocations. */
+        engine,   /**< Generic engine allocation. */
+        modules,  /**< User modules allocations. */
+        app       /**< Generic application allocation. */
     };
 
     /**
@@ -107,7 +108,6 @@ namespace rw {
             }
 
             if constexpr (std::is_trivially_copyable_v<T>) {
-                debug("memory: '{:x}' | new_it.first->first: '{:x}'", (usize) memory, (usize) new_it.first->first);
                 std::memmove(new_it.first->first, memory, std::min(curr_size, new_size));
             } else {
                 for (usize i{ 0U }; i < (std::min(curr_size, new_size) / sizeof(T)); ++i) {

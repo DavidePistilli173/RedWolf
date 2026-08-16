@@ -13,6 +13,7 @@
 #include "redwolf/renderer/render_packet.hpp"
 #include "redwolf/renderer/renderer.hpp"
 #include "redwolf/user_data.hpp"
+#include "redwolf/version_info.hpp"
 
 #include <chrono>
 #include <limits>
@@ -21,7 +22,7 @@
 
 rw::Engine::Engine() {
     Logger::init();
-    info("Logger initialised.");
+    info("Starting RedWolf v{}.{}.{}.{}", rw::version.major, rw::version.minor, rw::version.patch, rw::version.build);
 }
 
 bool rw::Engine::init() {
@@ -152,6 +153,7 @@ bool rw::Engine::init_subsystems_() {
     trace("Initialising renderer.");
     if (!Renderer::init()) {
         error("Failed to initialise renderer.");
+        return false;
     }
     info("Renderer initialised.");
 

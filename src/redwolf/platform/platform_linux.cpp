@@ -43,6 +43,10 @@ rw::Platform::~Platform() {
     wl_display_disconnect(display_);
 }
 
+void rw::Platform::append_required_extension_names(Vec<const char*>& enabled_extensions) {
+    (void) enabled_extensions.emplace_back("VK_KHR_wayland_surface");
+}
+
 bool rw::Platform::init() {
     RW_PROFILE_SCOPE
 

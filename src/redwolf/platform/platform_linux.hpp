@@ -3,6 +3,7 @@
 #ifdef linux
 
     #include "redwolf/common.hpp"
+    #include "redwolf/containers/vec.hpp"
     #include "redwolf/input/keyboard.hpp"
     #include "redwolf/input/mouse.hpp"
     #include "xdg-shell.h"
@@ -27,6 +28,12 @@ namespace rw {
 
         Platform(Platform&&)            = delete;
         Platform& operator=(Platform&&) = delete;
+
+        /**
+         * @brief Append required rendering extension names to an extension list.
+         * @param enabled_extensions Vector of extensions to append to.
+         */
+        static void append_required_extension_names(Vec<const char*>& enabled_extensions);
 
         /**
          * @brief Initialise the platform abstraction.

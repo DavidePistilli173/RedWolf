@@ -4,6 +4,7 @@
 #include "redwolf/memory/memory.hpp"
 
 #include <algorithm>
+#include <array>
 #include <concepts>
 
 namespace rw {
@@ -117,6 +118,19 @@ namespace rw {
          * @param memory_type Type of memory where the data will be stored.
          */
         explicit Vec(MemoryType memory_type) : memory_pool_{ &Memory::pool(memory_type) } {}
+
+        /**
+         * @brief Construct a vector with some initial data.
+         * @param memory_type Type of memory where the data will be stored.
+         * @param initial_data Data to initialise the vector with.
+         */
+        template<size_t Size>
+        Vec(MemoryType memory_type, const std::array<T, Size> initial_data) : memory_pool_{ &Memory::pool(memory_type) } {
+            reserve(Size);
+            for (const auto& elem : initial_data) {
+                (void) emplace_back(elem);
+            }
+        }
 
         /**
          * @brief Destructor.
@@ -379,9 +393,7 @@ namespace rw {
                 return;
             }
 
-            debug("elements_ before reallocate: '{:x}'", (usize) elements_);
             elements_ = memory_pool_->reallocate(elements_, size);
-            debug("elements_ after reallocate: '{:x}'", (usize) elements_);
             capacity_ = size;
         }
 

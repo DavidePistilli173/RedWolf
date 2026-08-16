@@ -9,6 +9,7 @@ option(RW_BUILD_TESTS "Build tests" ON)
 option(RW_ENABLE_LOGGING "Enable logging" ON)
 option(RW_ENABLE_PROFILING "Enable profiling" OFF)
 option(RW_ENABLE_VULKAN "Enable Vulkan graphics API." ON)
+option(RW_ENABLE_VULKAN_DEBUG "Enable Vulkan validation layers." ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
@@ -30,6 +31,10 @@ endif()
 
 if (RW_ENABLE_VULKAN)
     add_compile_definitions(RW_ENABLE_VULKAN)
+endif()
+
+if (RW_ENABLE_VULKAN_DEBUG)
+    add_compile_definitions(RW_ENABLE_VULKAN_DEBUG)
 endif()
 
 add_subdirectory(src)

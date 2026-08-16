@@ -32,20 +32,18 @@ namespace rw {
 
             auto* instance{ instance_() };
             switch (type) {
+            case MemoryType::renderer:
+                return Ptr<T>(&(instance->pool_renderer_), std::forward<Args>(args)...);
             case MemoryType::engine:
                 return Ptr<T>(&(instance->pool_engine_), std::forward<Args>(args)...);
-                break;
             case MemoryType::modules:
                 return Ptr<T>(&(instance->pool_modules_), std::forward<Args>(args)...);
-                break;
             case MemoryType::app:
                 return Ptr<T>(&(instance->pool_app_), std::forward<Args>(args)...);
-                break;
             case MemoryType::invalid:
             default:
                 error("Invalid allocation type: '{}'", static_cast<u8>(type));
                 return Ptr<T>(&(instance->pool_invalid_), std::forward<Args>(args)...);
-                break;
             }
         }
 
@@ -69,10 +67,11 @@ namespace rw {
          */
         [[nodiscard]] static Memory* instance_();
 
-        MemoryPool pool_invalid_{ MemoryType::invalid }; /**< Invalid memory pool, just to make the program not crash. */
-        MemoryPool pool_engine_{ MemoryType::engine };   /**< Generic engine memory pool. */
-        MemoryPool pool_modules_{ MemoryType::modules }; /**< User modules memory pool. */
-        MemoryPool pool_app_{ MemoryType::app };         /**< Generic application memory pool. */
+        MemoryPool pool_invalid_{ MemoryType::invalid };   /**< Invalid memory pool, just to make the program not crash. */
+        MemoryPool pool_renderer_{ MemoryType::renderer }; /**< Renderer memory pool. */
+        MemoryPool pool_engine_{ MemoryType::engine };     /**< Generic engine memory pool. */
+        MemoryPool pool_modules_{ MemoryType::modules };   /**< User modules memory pool. */
+        MemoryPool pool_app_{ MemoryType::app };           /**< Generic application memory pool. */
     };
 
 } // namespace rw

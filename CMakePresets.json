@@ -16,7 +16,8 @@
         "RW_BUILD_PROFILER": "OFF",
         "RW_BUILD_TESTS": "ON",
         "RW_ENABLE_LOGGING": "ON",
-        "RW_ENABLE_PROFILING": "OFF"
+        "RW_ENABLE_PROFILING": "OFF",
+        "RW_ENABLE_VULKAN_DEBUG": "ON"
       }
     },
     {
@@ -29,7 +30,8 @@
         "RW_BUILD_PROFILER": "ON",
         "RW_BUILD_TESTS": "ON",
         "RW_ENABLE_LOGGING": "ON",
-        "RW_ENABLE_PROFILING": "ON"
+        "RW_ENABLE_PROFILING": "ON",
+        "RW_ENABLE_VULKAN_DEBUG": "ON"
       }
     },
     {
@@ -42,7 +44,8 @@
         "RW_BUILD_PROFILER": "OFF",
         "RW_BUILD_TESTS": "ON",
         "RW_ENABLE_LOGGING": "ON",
-        "RW_ENABLE_PROFILING": "ON"
+        "RW_ENABLE_PROFILING": "ON",
+        "RW_ENABLE_VULKAN_DEBUG": "ON"
       }
     },
     {
@@ -55,7 +58,8 @@
         "RW_BUILD_PROFILER": "OFF",
         "RW_BUILD_TESTS": "ON",
         "RW_ENABLE_LOGGING": "OFF",
-        "RW_ENABLE_PROFILING": "OFF"
+        "RW_ENABLE_PROFILING": "OFF",
+        "RW_ENABLE_VULKAN_DEBUG": "OFF"
       }
     }
   ],
