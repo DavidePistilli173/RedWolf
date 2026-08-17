@@ -67,6 +67,13 @@ namespace rw {
             VkPhysicalDevice device, const VkPhysicalDeviceProperties& properties, const VkPhysicalDeviceFeatures& features);
 
         /**
+         * @brief Get the swapchain support information from a physical device and store it.
+         * @param device Device to check.
+         * @return true on success, false otherwise.
+         */
+        [[nodiscard]] bool query_swapchain_support_(VkPhysicalDevice device);
+
+        /**
          * @brief Select a suitable physical device.
          */
         [[nodiscard]] bool select_physical_device_();

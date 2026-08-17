@@ -349,7 +349,7 @@ namespace rw {
         }
 
         /**
-         * @brief Erase all elements in the vector that satisfy a given predicate.
+         * @brief Erase the first element in the vector that satisfies a given predicate.
          * @tparam FnT Predicate in the form bool (const T& value). If true is returned for an element, that element is erased.
          */
         template<typename FnT>
@@ -365,6 +365,26 @@ namespace rw {
                 }
                 ++index;
             }
+        }
+
+        /**
+         * @brief Find the first in the vector that satisfy a given predicate.
+         * @tparam FnT Predicate in the form bool (const T& value). If true is returned for an element, that element is found.
+         * @return Index of the found element.
+         */
+        template<typename FnT>
+            requires requires(FnT fn, const T& t) {
+                { fn(t) } -> std::same_as<bool>;
+            }
+        [[nodiscard]] std::optional<usize> find_first(FnT fn) {
+            usize index{ 0U };
+            while (index < size_) {
+                if (fn(elements_[index])) {
+                    return index;
+                }
+                ++index;
+            }
+            return {};
         }
 
         /**

@@ -4,10 +4,9 @@
 #include "redwolf/platform/platform.hpp"
 #include "redwolf/user_data.hpp"
 #include "redwolf/version_info.hpp"
+#include "vulkan_common.hpp"
 
 #include <array>
-#include <vulkan/vk_enum_string_helper.h>
-#include <vulkan/vulkan_core.h>
 #include <vulkan/vulkan_wayland.h>
 
 namespace {
@@ -123,17 +122,17 @@ rw::Vec<const char*> rw::RendererBackend::init_layer_names_() {
 
     // Check that the layers exist.
     u32 available_layer_count{ 0U };
-    if (const auto res{ vkEnumerateInstanceLayerProperties(&available_layer_count, nullptr) }; VK_SUCCESS != res) {
-        error("Failed to enumerate Vulkan layers: '{}'", string_VkResult(res));
-        return Vec<const char*>(MemoryType::renderer);
-    }
+    RW_VK_CHECK(
+        vkEnumerateInstanceLayerProperties(&available_layer_count, nullptr),
+        "Failed to enumerate Vulkan layers: '{}'",
+        Vec<const char*>(MemoryType::renderer))
 
     Vec<VkLayerProperties> layer_properties{ MemoryType::renderer };
     layer_properties.resize(available_layer_count);
-    if (const auto res{ vkEnumerateInstanceLayerProperties(&available_layer_count, layer_properties.data()) }; VK_SUCCESS != res) {
-        error("Failed to enumerate Vulkan layers: '{}'", string_VkResult(res));
-        return Vec<const char*>(MemoryType::renderer);
-    }
+    RW_VK_CHECK(
+        vkEnumerateInstanceLayerProperties(&available_layer_count, layer_properties.data()),
+        "Failed to enumerate Vulkan layers: '{}'",
+        Vec<const char*>(MemoryType::renderer))
 
     for (const auto& required_layer : result) {
         bool found{ false };
@@ -206,10 +205,7 @@ bool rw::RendererBackend::init_vk_instance_() {
                                             .enabledExtensionCount   = static_cast<u32>(enabled_extensions.size()),
                                             .ppEnabledExtensionNames = enabled_extensions.data() };
 
-    if (const auto res{ vkCreateInstance(&create_info, vk_allocator_.get(), &vk_instance_) }; VK_SUCCESS != res) {
-        error("Failed to create Vulkan instance: '{}'", string_VkResult(res));
-        return false;
-    }
+    RW_VK_CHECK(vkCreateInstance(&create_info, vk_allocator_.get(), &vk_instance_), "Failed to create Vulkan instance: '{}'", false)
 
     return true;
 }
