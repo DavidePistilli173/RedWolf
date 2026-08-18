@@ -5,7 +5,12 @@
 ## INTRODUCTION
 
 RedWolf is an engine for console and GUI applications.
-It is written using C++23 and should be compatible with both Windows and Linux.
+It is written using C++23 and should be compatible with Linux (Wayland).
+
+It was inspired by:
+
+- Hazel Engine => https://www.youtube.com/playlist?list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT
+- Kohi Engine => https://www.youtube.com/playlist?list=PLv8Ddw9K0JPg1BEO-RS-0MYs423cvLVtj
 
 ## COMPILATION
 

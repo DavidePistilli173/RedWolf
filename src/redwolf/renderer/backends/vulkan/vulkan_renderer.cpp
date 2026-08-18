@@ -5,6 +5,7 @@
 #include "redwolf/user_data.hpp"
 #include "redwolf/version_info.hpp"
 #include "vulkan_common.hpp"
+#include "vulkan_device_impl.hpp"
 
 #include <array>
 #include <vulkan/vulkan_wayland.h>
@@ -49,19 +50,25 @@ namespace {
 } // namespace
 
 rw::RendererBackend::~RendererBackend() {
-    vkDestroySurfaceKHR(vk_instance_, vk_surface_, vk_allocator_.get());
+    auto& vk_ctx{ VulkanContext::ctx() };
+
+    VulkanDeviceImpl::shutdown();
+
+    vkDestroySurfaceKHR(vk_ctx.instance, vk_ctx.surface, vk_ctx.allocator.get());
 
 #ifdef RW_ENABLE_VULKAN_DEBUG
     auto func{ reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-        vkGetInstanceProcAddr(vk_instance_, "vkDestroyDebugUtilsMessengerEXT")) };
+        vkGetInstanceProcAddr(vk_ctx.instance, "vkDestroyDebugUtilsMessengerEXT")) };
     if (nullptr == func) {
         error("Failed to get function 'vkDestroyDebugUtilsMessengerEXT'.");
     } else {
-        func(vk_instance_, vk_debug_messenger_, vk_allocator_.get());
+        func(vk_ctx.instance, vk_ctx.debug_messenger, vk_ctx.allocator.get());
     }
 #endif
 
-    vkDestroyInstance(vk_instance_, vk_allocator_.get());
+    vkDestroyInstance(vk_ctx.instance, vk_ctx.allocator.get());
+
+    VulkanContext::shutdown();
 }
 
 bool rw::RendererBackend::begin_frame(f32 delta_time) {
@@ -77,8 +84,9 @@ bool rw::RendererBackend::init() {
         warn("Renderer backend already initialised.");
         return true;
     }
-
     g_backend = new RendererBackend();
+
+    VulkanContext::init();
 
     if (!g_backend->init_vk_instance_()) {
         error("Failed to initialise Vulkan instance.");
@@ -95,7 +103,7 @@ bool rw::RendererBackend::init() {
         return false;
     }
 
-    if (!g_backend->device_.init(g_backend->vk_instance_, g_backend->vk_surface_)) {
+    if (!VulkanDeviceImpl::init()) {
         error("Failed to initialise rendering device.");
         return false;
     }
@@ -154,6 +162,7 @@ rw::Vec<const char*> rw::RendererBackend::init_layer_names_() {
 }
 
 bool rw::RendererBackend::init_vk_debugger_() {
+    auto& vk_ctx{ VulkanContext::ctx() };
 #ifdef RW_ENABLE_VULKAN_DEBUG
     const VkDebugUtilsMessengerCreateInfoEXT debug_create_info{ .sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
                                                                 .flags           = 0,
@@ -166,13 +175,13 @@ bool rw::RendererBackend::init_vk_debugger_() {
                                                                 .pUserData       = nullptr };
 
     auto func{ reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(
-        vkGetInstanceProcAddr(vk_instance_, "vkCreateDebugUtilsMessengerEXT")) };
+        vkGetInstanceProcAddr(vk_ctx.instance, "vkCreateDebugUtilsMessengerEXT")) };
     if (nullptr == func) {
         error("Failed to get function 'vkCreateDebugUtilsMessengerEXT'.");
         return false;
     }
 
-    if (const auto res{ func(vk_instance_, &debug_create_info, vk_allocator_.get(), &vk_debug_messenger_) }; VK_SUCCESS != res) {
+    if (const auto res{ func(vk_ctx.instance, &debug_create_info, vk_ctx.allocator.get(), &vk_ctx.debug_messenger) }; VK_SUCCESS != res) {
         error("Failed to create Vulkan debug messenger.");
         return false;
     }
@@ -184,6 +193,8 @@ bool rw::RendererBackend::init_vk_debugger_() {
 }
 
 bool rw::RendererBackend::init_vk_instance_() {
+    auto& vk_ctx{ VulkanContext::ctx() };
+
     const VkApplicationInfo app_info{ .sType            = VK_STRUCTURE_TYPE_APPLICATION_INFO,
                                       .pApplicationName = UserData::app_name().c_str(),
 
@@ -205,18 +216,20 @@ bool rw::RendererBackend::init_vk_instance_() {
                                             .enabledExtensionCount   = static_cast<u32>(enabled_extensions.size()),
                                             .ppEnabledExtensionNames = enabled_extensions.data() };
 
-    RW_VK_CHECK(vkCreateInstance(&create_info, vk_allocator_.get(), &vk_instance_), "Failed to create Vulkan instance: '{}'", false)
+    RW_VK_CHECK(vkCreateInstance(&create_info, vk_ctx.allocator.get(), &vk_ctx.instance), "Failed to create Vulkan instance: '{}'", false)
 
     return true;
 }
 
 bool rw::RendererBackend::init_vk_surface_() {
+    auto&                               vk_ctx{ VulkanContext::ctx() };
     const VkWaylandSurfaceCreateInfoKHR create_info{ .sType   = VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR,
                                                      .flags   = 0,
                                                      .display = Platform::display(),
                                                      .surface = Platform::surface() };
 
-    if (const auto res{ vkCreateWaylandSurfaceKHR(vk_instance_, &create_info, vk_allocator_.get(), &vk_surface_) }; VK_SUCCESS != res) {
+    if (const auto res{ vkCreateWaylandSurfaceKHR(vk_ctx.instance, &create_info, vk_ctx.allocator.get(), &vk_ctx.surface) };
+        VK_SUCCESS != res) {
         error("Failed to create Vulkan surface: '{}'", string_VkResult(res));
         return false;
     }
