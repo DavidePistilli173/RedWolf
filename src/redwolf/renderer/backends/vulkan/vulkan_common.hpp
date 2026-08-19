@@ -2,6 +2,7 @@
 
 #include "redwolf/containers/vec.hpp"
 #include "redwolf/logger.hpp"
+#include "redwolf/memory/memory_pool.hpp"
 #include "redwolf/memory/ptr.hpp"
 
 #include <vulkan/vk_enum_string_helper.h>
@@ -63,13 +64,28 @@ namespace rw {
     };
 
     /**
+     * @brief Vulkan swapchain data.
+     */
+    struct VulkanSwapchain {
+        VkSurfaceFormatKHR image_format{};                 /**< Image data format. */
+        u8                 max_frames_in_flight{ 0 };      /**< Maximum number of frames being rendered to. */
+        VkSwapchainKHR     handle{ VK_NULL_HANDLE };       /**< Actual swapchain handle. */
+        Vec<VkImage>       images{ MemoryType::renderer }; /**< Swapchain images. */
+        Vec<VkImageView>   views{ MemoryType::renderer };  /**< Image views. */
+    };
+
+    /**
      * @brief All raw Vulkan data.
      */
     struct VulkanContext {
+        u32 framebuffer_width{ 0U };  /**< Width of the rendering framebuffer. */
+        u32 framebuffer_height{ 0U }; /**< Height of the rendering framebuffer. */
+
         VkInstance                 instance{ VK_NULL_HANDLE }; /**< Vulkan instance. */
         Ptr<VkAllocationCallbacks> allocator;                  /**< Custom Vulkan allocator. */
         VkSurfaceKHR               surface{ VK_NULL_HANDLE };  /**< Drawing surface. */
         VulkanDevice               device;                     /**< Rendering device. */
+        VulkanSwapchain            swapchain;                  /**< Image swapchain. */
 
 #ifdef RW_ENABLE_VULKAN_DEBUG
         VkDebugUtilsMessengerEXT debug_messenger{}; /**< Vulkan debug messenger. */

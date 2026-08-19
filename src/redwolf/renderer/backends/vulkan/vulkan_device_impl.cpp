@@ -35,6 +35,45 @@ bool rw::VulkanDeviceImpl::init() {
     return true;
 }
 
+bool rw::VulkanDeviceImpl::query_swapchain_support(VkPhysicalDevice device) {
+    auto& vk_ctx{ VulkanContext::ctx() };
+
+    // Capabilities.
+    RW_VK_CHECK(
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, vk_ctx.surface, &vk_ctx.device.swapchain_support.capabilities),
+        "Failed to query device capabilities: '{}'",
+        false)
+
+    // Surface formats.
+    u32 format_count{ 0U };
+    RW_VK_CHECK(
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, vk_ctx.surface, &format_count, nullptr), "Failed to enumerate surface formats.", false)
+
+    if (0 != format_count) {
+        vk_ctx.device.swapchain_support.formats.resize(format_count);
+        RW_VK_CHECK(
+            vkGetPhysicalDeviceSurfaceFormatsKHR(device, vk_ctx.surface, &format_count, nullptr),
+            "Failed to retrieve surface formats.",
+            false)
+    }
+    // Present modes.
+    u32 present_modes{ 0U };
+    RW_VK_CHECK(
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, vk_ctx.surface, &present_modes, nullptr),
+        "Failed to enumerate surface present modes: '{}'",
+        false)
+
+    if (0 != present_modes) {
+        vk_ctx.device.swapchain_support.present_modes.resize(present_modes);
+        RW_VK_CHECK(
+            vkGetPhysicalDeviceSurfacePresentModesKHR(device, vk_ctx.surface, &present_modes, nullptr),
+            "Failed to retrieve present modes: '{}'",
+            false)
+    }
+
+    return true;
+}
+
 void rw::VulkanDeviceImpl::shutdown() {
     auto& vk_ctx{ VulkanContext::ctx() };
     if (VK_NULL_HANDLE != vk_ctx.device.logical) {
@@ -123,7 +162,7 @@ bool rw::VulkanDeviceImpl::are_physical_requirements_met_(
         return false;
     }
 
-    if (!query_swapchain_support_(device)) {
+    if (!query_swapchain_support(device)) {
         error("Failed to query swapchain support.");
         return false;
     }
@@ -238,45 +277,6 @@ void rw::VulkanDeviceImpl::get_device_queues_() {
     vkGetDeviceQueue(vk_ctx.device.logical, vk_ctx.device.queue_families.graphics_family_index, 0, &vk_ctx.device.graphics_queue);
     vkGetDeviceQueue(vk_ctx.device.logical, vk_ctx.device.queue_families.present_family_index, 0, &vk_ctx.device.present_queue);
     vkGetDeviceQueue(vk_ctx.device.logical, vk_ctx.device.queue_families.transfer_family_index, 0, &vk_ctx.device.transfer_queue);
-}
-
-bool rw::VulkanDeviceImpl::query_swapchain_support_(VkPhysicalDevice device) {
-    auto& vk_ctx{ VulkanContext::ctx() };
-
-    // Capabilities.
-    RW_VK_CHECK(
-        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, vk_ctx.surface, &vk_ctx.device.swapchain_support.capabilities),
-        "Failed to query device capabilities: '{}'",
-        false)
-
-    // Surface formats.
-    u32 format_count{ 0U };
-    RW_VK_CHECK(
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, vk_ctx.surface, &format_count, nullptr), "Failed to enumerate surface formats.", false)
-
-    if (0 != format_count) {
-        vk_ctx.device.swapchain_support.formats.resize(format_count);
-        RW_VK_CHECK(
-            vkGetPhysicalDeviceSurfaceFormatsKHR(device, vk_ctx.surface, &format_count, nullptr),
-            "Failed to retrieve surface formats.",
-            false)
-    }
-    // Present modes.
-    u32 present_modes{ 0U };
-    RW_VK_CHECK(
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, vk_ctx.surface, &present_modes, nullptr),
-        "Failed to enumerate surface present modes: '{}'",
-        false)
-
-    if (0 != present_modes) {
-        vk_ctx.device.swapchain_support.present_modes.resize(present_modes);
-        RW_VK_CHECK(
-            vkGetPhysicalDeviceSurfacePresentModesKHR(device, vk_ctx.surface, &present_modes, nullptr),
-            "Failed to retrieve present modes: '{}'",
-            false)
-    }
-
-    return true;
 }
 
 bool rw::VulkanDeviceImpl::select_physical_device_() {

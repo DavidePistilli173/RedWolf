@@ -15,6 +15,13 @@ namespace rw {
         [[nodiscard]] static bool init();
 
         /**
+         * @brief Get the swapchain support information from a physical device and store it.
+         * @param device Device to check.
+         * @return true on success, false otherwise.
+         */
+        [[nodiscard]] static bool query_swapchain_support(VkPhysicalDevice device);
+
+        /**
          * @brief Shutdown the device.
          */
         static void shutdown();
@@ -40,13 +47,6 @@ namespace rw {
          * @brief Get all device queues.
          */
         static void get_device_queues_();
-
-        /**
-         * @brief Get the swapchain support information from a physical device and store it.
-         * @param device Device to check.
-         * @return true on success, false otherwise.
-         */
-        [[nodiscard]] static bool query_swapchain_support_(VkPhysicalDevice device);
 
         /**
          * @brief Select a suitable physical device.
