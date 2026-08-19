@@ -61,6 +61,19 @@ namespace rw {
         VulkanPhysicalDeviceInfo    requirements;      /**< Physical device requirements. */
         VulkanDeviceQueueFamilyInfo queue_families;    /**< Queue family information. */
         VulkanSwapchainSupportInfo  swapchain_support; /**< Swapchain support information. */
+
+        VkFormat depth_format{}; /**< Depth buffer format. */
+    };
+
+    /**
+     * @brief Vulkan image data.
+     */
+    struct VulkanImage {
+        VkImage        handle{ VK_NULL_HANDLE }; /**< Handle to the actual image. */
+        VkDeviceMemory memory{ VK_NULL_HANDLE }; /**< Handle to the image memory. */
+        VkImageView    view{ VK_NULL_HANDLE };   /**< Handle to the image view. */
+        u32            width{ 0U };              /**< Width of the image. */
+        u32            height{ 0U };             /**< Height of the image. */
     };
 
     /**
@@ -85,7 +98,11 @@ namespace rw {
         Ptr<VkAllocationCallbacks> allocator;                  /**< Custom Vulkan allocator. */
         VkSurfaceKHR               surface{ VK_NULL_HANDLE };  /**< Drawing surface. */
         VulkanDevice               device;                     /**< Rendering device. */
-        VulkanSwapchain            swapchain;                  /**< Image swapchain. */
+
+        VulkanSwapchain swapchain;                     /**< Image swapchain. */
+        u32             image_index{ 0U };             /**< Index of the image that is being used. */
+        u32             current_frame{ 0U };           /**<  */
+        bool            recreating_swapchain{ false }; /**< True if the swapchain is being recreated. */
 
 #ifdef RW_ENABLE_VULKAN_DEBUG
         VkDebugUtilsMessengerEXT debug_messenger{}; /**< Vulkan debug messenger. */

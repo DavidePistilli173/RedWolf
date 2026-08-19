@@ -3,6 +3,9 @@
 #include "vulkan_common.hpp"
 #include "vulkan_device_impl.hpp"
 
+#include <ranges>
+#include <vulkan/vulkan_core.h>
+
 bool rw::VulkanSwapchainImpl::init(u32 width, u32 height) {
     return create_(width, height);
 }
@@ -109,6 +112,84 @@ bool rw::VulkanSwapchainImpl::create_(u32 width, u32 height) {
         extent.height,
         vk_ctx.device.swapchain_support.capabilities.minImageExtent.height,
         vk_ctx.device.swapchain_support.capabilities.maxImageExtent.height);
+
+    u32 image_count{ std::min(
+        vk_ctx.device.swapchain_support.capabilities.minImageCount + 1, vk_ctx.device.swapchain_support.capabilities.maxImageCount) };
+
+    VkSwapchainCreateInfoKHR swapchain_create_info{ .sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+                                                    .pNext            = nullptr,
+                                                    .surface          = vk_ctx.surface,
+                                                    .minImageCount    = image_count,
+                                                    .imageFormat      = vk_ctx.swapchain.image_format.format,
+                                                    .imageColorSpace  = vk_ctx.swapchain.image_format.colorSpace,
+                                                    .imageExtent      = extent,
+                                                    .imageArrayLayers = 1,
+                                                    .imageUsage       = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+                                                    .preTransform     = vk_ctx.device.swapchain_support.capabilities.currentTransform,
+                                                    .compositeAlpha   = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+                                                    .presentMode      = present_mode,
+                                                    .clipped          = VK_TRUE,
+                                                    .oldSwapchain     = VK_NULL_HANDLE };
+
+    if (vk_ctx.device.queue_families.graphics_family_index != vk_ctx.device.queue_families.present_family_index) {
+        const std::array<u32, 2> queue_familty_indices{ vk_ctx.device.queue_families.graphics_family_index,
+                                                        vk_ctx.device.queue_families.present_family_index };
+        swapchain_create_info.imageSharingMode      = VK_SHARING_MODE_CONCURRENT;
+        swapchain_create_info.queueFamilyIndexCount = queue_familty_indices.size();
+        swapchain_create_info.pQueueFamilyIndices   = queue_familty_indices.data();
+    } else {
+        swapchain_create_info.imageSharingMode      = VK_SHARING_MODE_EXCLUSIVE;
+        swapchain_create_info.queueFamilyIndexCount = 0;
+        swapchain_create_info.pQueueFamilyIndices   = nullptr;
+    }
+
+    RW_VK_CHECK(
+        vkCreateSwapchainKHR(vk_ctx.device.logical, &swapchain_create_info, vk_ctx.allocator.get(), &vk_ctx.swapchain.handle),
+        "Failed to create swapchain: '{}'",
+        false)
+
+    image_count = 0;
+    RW_VK_CHECK(
+        vkGetSwapchainImagesKHR(vk_ctx.device.logical, vk_ctx.swapchain.handle, &image_count, nullptr),
+        "Failed to enumerate swapchain images: '{}'",
+        false)
+    if (0 == image_count) {
+        error("No images in swapchain.");
+        return false;
+    }
+    vk_ctx.swapchain.images.resize(image_count);
+    vk_ctx.swapchain.views.resize(image_count);
+
+    RW_VK_CHECK(
+        vkGetSwapchainImagesKHR(vk_ctx.device.logical, vk_ctx.swapchain.handle, &image_count, vk_ctx.swapchain.images.data()),
+        "Failed to retrieve swapchain images: '{}'",
+        false)
+
+    // Create the image view.
+    for (auto [i, view] : std::views::enumerate(vk_ctx.swapchain.views)) {
+        VkImageViewCreateInfo view_create_info{ .sType            = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+                                                .pNext            = nullptr,
+                                                .image            = vk_ctx.swapchain.images[i],
+                                                .viewType         = VK_IMAGE_VIEW_TYPE_2D,
+                                                .format           = vk_ctx.swapchain.image_format.format,
+                                                .subresourceRange = { .aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT,
+                                                                      .baseMipLevel   = 0,
+                                                                      .levelCount     = 1,
+                                                                      .baseArrayLayer = 0,
+                                                                      .layerCount     = 1 } };
+
+        RW_VK_CHECK(
+            vkCreateImageView(vk_ctx.device.logical, &view_create_info, vk_ctx.allocator.get(), &view),
+            "Failed to create image view: '{}'",
+            false)
+    }
+
+    if (!VulkanDeviceImpl::detect_depth_format()) {
+        error("Failed to detect depth buffer format.");
+        return false;
+    }
+
+    // Create the depth image.
 }
 
 void rw::VulkanSwapchainImpl::destroy_() {}

@@ -55,6 +55,7 @@ if (RW_ENABLE_VULKAN)
     target_sources(redwolf PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_common.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_device_impl.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_image_impl.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_swapchain_impl.cpp)
 endif()

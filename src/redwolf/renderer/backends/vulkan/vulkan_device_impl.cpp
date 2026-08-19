@@ -7,8 +7,35 @@
 
 #include <limits>
 #include <ranges>
-#include <vulkan/vk_enum_string_helper.h>
 #include <vulkan/vulkan_core.h>
+
+namespace {
+    /**
+     * @brief Candidate formats for the depth buffer.
+     */
+    constexpr std::array<VkFormat, 3> depth_format_candidates {
+        VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT
+    }
+} // namespace
+
+bool rw::VulkanDeviceImpl::detect_depth_format() {
+    auto& vk_ctx{ VulkanContext::ctx() };
+
+    const u32 flags{ VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT };
+
+    for (auto candidate : depth_format_candidates) {
+        VkFormatProperties properties{};
+        vkGetPhysicalDeviceFormatProperties(vk_ctx.device.physical, candidate, &properties);
+
+        if ((flags == (properties.linearTilingFeatures & flags)) || (flags == (properties.optimalTilingFeatures & flags))) {
+            vk_ctx.device.depth_format = candidate;
+            return true;
+        }
+    }
+
+    error("No suitable depth buffer format.");
+    return false;
+}
 
 bool rw::VulkanDeviceImpl::init() {
     auto& vk_ctx{ VulkanContext::ctx() };

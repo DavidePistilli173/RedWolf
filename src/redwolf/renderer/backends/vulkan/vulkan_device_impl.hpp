@@ -9,6 +9,12 @@ namespace rw {
     class VulkanDeviceImpl {
      public:
         /**
+         * @brief Detect the depth buffer format for the device and store it.
+         * @return true on success, false otherwise.
+         */
+        [[nodiscard]] static bool detect_depth_format();
+
+        /**
          * @brief Initialise the device.
          * @return true on success, false otherwise.
          */
