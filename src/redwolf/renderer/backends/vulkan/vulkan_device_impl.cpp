@@ -13,9 +13,9 @@ namespace {
     /**
      * @brief Candidate formats for the depth buffer.
      */
-    constexpr std::array<VkFormat, 3> depth_format_candidates {
-        VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT
-    }
+    constexpr std::array<VkFormat, 3> depth_format_candidates{ VK_FORMAT_D32_SFLOAT,
+                                                               VK_FORMAT_D32_SFLOAT_S8_UINT,
+                                                               VK_FORMAT_D24_UNORM_S8_UINT };
 } // namespace
 
 bool rw::VulkanDeviceImpl::detect_depth_format() {
@@ -35,6 +35,21 @@ bool rw::VulkanDeviceImpl::detect_depth_format() {
 
     error("No suitable depth buffer format.");
     return false;
+}
+
+std::optional<u32> rw::VulkanDeviceImpl::find_memory_index(u32 type_filter, u32 property_flags) {
+    auto& vk_ctx{ VulkanContext::ctx() };
+
+    VkPhysicalDeviceMemoryProperties memory_properties{};
+    vkGetPhysicalDeviceMemoryProperties(vk_ctx.device.physical, &memory_properties);
+
+    for (u32 i{ 0U }; i < memory_properties.memoryTypeCount; ++i) {
+        if ((0 != (type_filter & (1 << i))) && ((memory_properties.memoryTypes[i].propertyFlags & property_flags) == property_flags)) {
+            return i;
+        }
+    }
+
+    return {};
 }
 
 bool rw::VulkanDeviceImpl::init() {
@@ -79,7 +94,7 @@ bool rw::VulkanDeviceImpl::query_swapchain_support(VkPhysicalDevice device) {
     if (0 != format_count) {
         vk_ctx.device.swapchain_support.formats.resize(format_count);
         RW_VK_CHECK(
-            vkGetPhysicalDeviceSurfaceFormatsKHR(device, vk_ctx.surface, &format_count, nullptr),
+            vkGetPhysicalDeviceSurfaceFormatsKHR(device, vk_ctx.surface, &format_count, vk_ctx.device.swapchain_support.formats.data()),
             "Failed to retrieve surface formats.",
             false)
     }

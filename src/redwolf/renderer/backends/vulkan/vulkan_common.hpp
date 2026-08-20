@@ -85,6 +85,7 @@ namespace rw {
         VkSwapchainKHR     handle{ VK_NULL_HANDLE };       /**< Actual swapchain handle. */
         Vec<VkImage>       images{ MemoryType::renderer }; /**< Swapchain images. */
         Vec<VkImageView>   views{ MemoryType::renderer };  /**< Image views. */
+        VulkanImage        depth_buffer;                   /**< Depth buffer. */
     };
 
     /**

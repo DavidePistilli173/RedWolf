@@ -3,5 +3,5 @@
 #include "common.hpp"
 
 namespace rw {
-    constexpr VersionInfo version{ .major = 0, .minor = 8, .patch = 0, .build = 4 };
+    constexpr VersionInfo version{ .major = 0, .minor = 8, .patch = 0, .build = 5 };
 }

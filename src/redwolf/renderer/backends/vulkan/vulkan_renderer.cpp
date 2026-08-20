@@ -6,6 +6,7 @@
 #include "redwolf/version_info.hpp"
 #include "vulkan_common.hpp"
 #include "vulkan_device_impl.hpp"
+#include "vulkan_swapchain_impl.hpp"
 
 #include <array>
 #include <vulkan/vulkan_wayland.h>
@@ -52,6 +53,7 @@ namespace {
 rw::RendererBackend::~RendererBackend() {
     auto& vk_ctx{ VulkanContext::ctx() };
 
+    VulkanSwapchainImpl::shutdown();
     VulkanDeviceImpl::shutdown();
 
     vkDestroySurfaceKHR(vk_ctx.instance, vk_ctx.surface, vk_ctx.allocator.get());
@@ -87,6 +89,7 @@ bool rw::RendererBackend::init() {
     g_backend = new RendererBackend();
 
     VulkanContext::init();
+    auto& vk_ctx{ VulkanContext::ctx() };
 
     if (!g_backend->init_vk_instance_()) {
         error("Failed to initialise Vulkan instance.");
@@ -105,6 +108,11 @@ bool rw::RendererBackend::init() {
 
     if (!VulkanDeviceImpl::init()) {
         error("Failed to initialise rendering device.");
+        return false;
+    }
+
+    if (!VulkanSwapchainImpl::init(vk_ctx.framebuffer_width, vk_ctx.framebuffer_height)) {
+        error("Failed to initialise swapchain.");
         return false;
     }
 

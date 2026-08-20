@@ -2,6 +2,7 @@
 
 #include "vulkan_common.hpp"
 #include "vulkan_device_impl.hpp"
+#include "vulkan_image_impl.hpp"
 
 #include <ranges>
 #include <vulkan/vulkan_core.h>
@@ -113,8 +114,13 @@ bool rw::VulkanSwapchainImpl::create_(u32 width, u32 height) {
         vk_ctx.device.swapchain_support.capabilities.minImageExtent.height,
         vk_ctx.device.swapchain_support.capabilities.maxImageExtent.height);
 
-    u32 image_count{ std::min(
-        vk_ctx.device.swapchain_support.capabilities.minImageCount + 1, vk_ctx.device.swapchain_support.capabilities.maxImageCount) };
+    u32 image_count{ 0U };
+    if (0 < vk_ctx.device.swapchain_support.capabilities.maxImageCount) {
+        image_count = std::min(
+            vk_ctx.device.swapchain_support.capabilities.minImageCount + 1, vk_ctx.device.swapchain_support.capabilities.maxImageCount);
+    } else {
+        image_count = vk_ctx.device.swapchain_support.capabilities.minImageCount + 1;
+    }
 
     VkSwapchainCreateInfoKHR swapchain_create_info{ .sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
                                                     .pNext            = nullptr,
@@ -190,6 +196,35 @@ bool rw::VulkanSwapchainImpl::create_(u32 width, u32 height) {
     }
 
     // Create the depth image.
+    auto depth_image_res{ VulkanImageImpl::create(
+        extent.width,
+        extent.height,
+        vk_ctx.device.depth_format,
+        VK_IMAGE_TILING_OPTIMAL,
+        VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        true,
+        VK_IMAGE_ASPECT_DEPTH_BIT) };
+    if (!depth_image_res.has_value()) {
+        error("Failed to create depth buffer.");
+        return false;
+    }
+
+    vk_ctx.swapchain.depth_buffer = depth_image_res.value();
+
+    info("Swapchain created successfully.");
+    return true;
 }
 
-void rw::VulkanSwapchainImpl::destroy_() {}
+void rw::VulkanSwapchainImpl::destroy_() {
+    auto& vk_ctx{ VulkanContext::ctx() };
+
+    VulkanImageImpl::destroy(vk_ctx.swapchain.depth_buffer);
+
+    // Only destroy the views.
+    for (const auto& view : vk_ctx.swapchain.views) {
+        vkDestroyImageView(vk_ctx.device.logical, view, vk_ctx.allocator.get());
+    }
+
+    vkDestroySwapchainKHR(vk_ctx.device.logical, vk_ctx.swapchain.handle, vk_ctx.allocator.get());
+}

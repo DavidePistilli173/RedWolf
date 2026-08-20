@@ -1,5 +1,8 @@
 #pragma once
 
+#include "redwolf/common.hpp"
+
+#include <optional>
 #include <vulkan/vulkan.h>
 
 namespace rw {
@@ -13,6 +16,14 @@ namespace rw {
          * @return true on success, false otherwise.
          */
         [[nodiscard]] static bool detect_depth_format();
+
+        /**
+         * @brief Find the index of the memory area with the appropriate parameters.
+         * @param type_filter Memory type filter.
+         * @param property_flags Additional memory properties.
+         * @return Index of the memory area, if available.
+         */
+        [[nodiscard]] static std::optional<u32> find_memory_index(u32 type_filter, u32 property_flags);
 
         /**
          * @brief Initialise the device.

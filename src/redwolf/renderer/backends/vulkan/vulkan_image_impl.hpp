@@ -14,7 +14,6 @@ namespace rw {
      public:
         /**
          * @brief Create a Vulkan image.
-         * @param type Type of image.
          * @param width Width of the image.
          * @param height Height of the image.
          * @param format Data format.
@@ -26,7 +25,6 @@ namespace rw {
          * @return Newly created image, if no errors occured.
          */
         [[nodiscard]] static std::optional<VulkanImage> create(
-            VkImageType           type,
             u32                   width,
             u32                   height,
             VkFormat              format,
