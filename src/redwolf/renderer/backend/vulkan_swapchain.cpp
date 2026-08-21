@@ -9,6 +9,10 @@ rw::vk::Swapchain::~Swapchain() {
     destroy_();
 }
 
+VkSurfaceFormatKHR rw::vk::Swapchain::image_format() const {
+    return image_format_;
+}
+
 bool rw::vk::Swapchain::init(const Params& params) {
     allocator_ = params.allocator;
     surface_   = params.surface;

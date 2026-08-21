@@ -4,6 +4,7 @@
 #include "redwolf/containers/vec.hpp"
 #include "vulkan_device.hpp"
 #include "vulkan_instance.hpp"
+#include "vulkan_renderpass.hpp"
 #include "vulkan_surface.hpp"
 #include "vulkan_swapchain.hpp"
 
@@ -70,6 +71,7 @@ namespace rw {
         Ptr<vk::Surface>       surface_;              /**< Rendering surface. */
         Ptr<vk::Device>        device_;               /**< Rendering device. */
         Ptr<vk::Swapchain>     swapchain_;            /**< Swapchain for presenting images to the screen. */
+        Ptr<vk::RenderPass>    main_renderpass_;      /**< Main render pass. */
 
         u32 framebuffer_width_{ 512U };  /**< Framebuffer width. */
         u32 framebuffer_height_{ 512U }; /**< Framebuffer height. */

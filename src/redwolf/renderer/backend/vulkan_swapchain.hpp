@@ -38,6 +38,11 @@ namespace rw::vk {
         Swapchain& operator=(Swapchain&&) = delete;
 
         /**
+         * @brief Get the swapchain image format.
+         */
+        [[nodiscard]] VkSurfaceFormatKHR image_format() const;
+
+        /**
          * @brief Initialise the swapchain.
          * @param params Initialisation parameters.
          * @return true on success, false otherwise.

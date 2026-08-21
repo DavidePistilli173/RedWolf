@@ -2,13 +2,14 @@
 
 #include "redwolf/logger.hpp"
 #include "redwolf/platform/platform.hpp"
-#include "redwolf/renderer/backend/vulkan_device.hpp"
-#include "redwolf/renderer/backend/vulkan_instance.hpp"
-#include "redwolf/renderer/backend/vulkan_surface.hpp"
-#include "redwolf/renderer/backend/vulkan_swapchain.hpp"
+#include "redwolf/renderer/backend/vulkan_renderpass.hpp"
 #include "redwolf/user_data.hpp"
 #include "redwolf/version_info.hpp"
 #include "vulkan_common.hpp"
+#include "vulkan_device.hpp"
+#include "vulkan_instance.hpp"
+#include "vulkan_surface.hpp"
+#include "vulkan_swapchain.hpp"
 
 #include <array>
 
@@ -76,6 +77,20 @@ bool rw::RendererBackend::init_internal_() {
                                    .width     = framebuffer_width_,
                                    .height    = framebuffer_height_ })) {
         error("Failed to initialise swapchain.");
+        return false;
+    }
+
+    main_renderpass_ = Memory::new_object<vk::RenderPass>(MemoryType::renderer);
+    if (!main_renderpass_->init(
+            vk::RenderPass::Params{
+                .allocator   = allocator_,
+                .device      = device_,
+                .swapchain   = swapchain_,
+                .render_area = { .x = 0, .y = 0, .w = static_cast<f32>(framebuffer_width_), .h = static_cast<f32>(framebuffer_height_) },
+                .clear_color = { .r = 0.0F, .g = 0.0F, .b = 0.2F, .a = 1.0F },
+                .depth       = 1.0F,
+                .stencil     = 0 })) {
+        error("Failed to initialise main render pass.");
         return false;
     }
 
