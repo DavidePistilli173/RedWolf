@@ -9,7 +9,7 @@
 #include "memory/memory_pool.hpp"
 #include "platform/platform.hpp"
 #include "profiler.hpp"
-#include "renderer/backends/vulkan/vulkan_renderer.hpp"
+#include "renderer/backend/vulkan_renderer.hpp"
 #include "renderer/render_packet.hpp"
 #include "renderer/renderer.hpp"
 #include "user_data.hpp"

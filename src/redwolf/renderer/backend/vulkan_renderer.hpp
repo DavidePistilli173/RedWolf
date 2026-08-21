@@ -2,9 +2,14 @@
 
 #include "redwolf/common.hpp"
 #include "redwolf/containers/vec.hpp"
+#include "vulkan_device.hpp"
+#include "vulkan_instance.hpp"
+#include "vulkan_surface.hpp"
+#include "vulkan_swapchain.hpp"
 
 #include <string_view>
 #include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 
 namespace rw {
     /**
@@ -12,7 +17,7 @@ namespace rw {
      */
     class RendererBackend {
      public:
-        ~RendererBackend();
+        ~RendererBackend() = default;
 
         RendererBackend(const RendererBackend&)            = delete;
         RendererBackend& operator=(const RendererBackend&) = delete;
@@ -53,30 +58,20 @@ namespace rw {
         static void shutdown();
 
      private:
-        /**
-         * @brief Initialise the Vulkan layer names.
-         * @return Vector containing all required layer names.
-         */
-        [[nodiscard]] static Vec<const char*> init_layer_names_();
-
-        /**
-         * @brief Initialise the Vulkan debugger.
-         * @return true on success, false otherwise.
-         */
-        [[nodiscard]] static bool init_vk_debugger_();
-
-        /**
-         * @brief Initialise the Vulkan instance.
-         * @return true on success, false otherwise.
-         */
-        [[nodiscard]] static bool init_vk_instance_();
-
-        /**
-         * @brief Initialise the Vulkan surface.
-         * @return true on success, false otherwise.
-         */
-        [[nodiscard]] static bool init_vk_surface_();
-
         RendererBackend() = default;
+
+        /**
+         * @brief Initialise the backend.
+         */
+        [[nodiscard]] bool init_internal_();
+
+        VkAllocationCallbacks* allocator_{ nullptr }; /**< Custom vulkan allocator. */
+        Ptr<vk::Instance>      instance_;             /**< Backend instance. */
+        Ptr<vk::Surface>       surface_;              /**< Rendering surface. */
+        Ptr<vk::Device>        device_;               /**< Rendering device. */
+        Ptr<vk::Swapchain>     swapchain_;            /**< Swapchain for presenting images to the screen. */
+
+        u32 framebuffer_width_{ 512U };  /**< Framebuffer width. */
+        u32 framebuffer_height_{ 512U }; /**< Framebuffer height. */
     };
 } // namespace rw

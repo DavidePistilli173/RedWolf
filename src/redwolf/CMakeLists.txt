@@ -6,6 +6,12 @@ target_sources(redwolf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/input/input.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory_pool.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_device.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_image.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_instance.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_renderer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_surface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_swapchain.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/engine.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
@@ -49,15 +55,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_sources(redwolf PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/platform/platform_linux.cpp
     )
-endif()
-
-if (RW_ENABLE_VULKAN)
-    target_sources(redwolf PRIVATE 
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_common.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_device_impl.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_image_impl.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_renderer.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backends/vulkan/vulkan_swapchain_impl.cpp)
 endif()
 
 if(RW_ENABLE_PROFILING)

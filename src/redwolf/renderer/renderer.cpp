@@ -1,7 +1,6 @@
 #include "renderer.hpp"
 
-#include "backends/renderer_backends.hpp"
-#include "backends/vulkan/vulkan_renderer.hpp"
+#include "backend/vulkan_renderer.hpp"
 #include "redwolf/logger.hpp"
 
 namespace {
