@@ -76,6 +76,11 @@ namespace rw::vk {
         [[nodiscard]] std::optional<u32> find_memory_index(u32 type_filter, u32 property_flags);
 
         /**
+         * @brief Get the raw graphics command pool handle.
+         */
+        [[nodiscard]] VkCommandPool graphics_command_pool() const;
+
+        /**
          * @brief Get the raw graphics queue handle.
          */
         [[nodiscard]] VkQueue graphics_queue() const;
@@ -133,6 +138,12 @@ namespace rw::vk {
             VkPhysicalDevice device, const VkPhysicalDeviceProperties& properties, const VkPhysicalDeviceFeatures& features);
 
         /**
+         * @brief Create the command pools for this device.
+         * @return true on success, false otherwise.
+         */
+        [[nodiscard]] bool create_command_pools_();
+
+        /**
          * @brief Create the logical device.
          * @return true on success, false otherwise.
          */
@@ -157,6 +168,8 @@ namespace rw::vk {
         VkQueue          graphics_queue_{ VK_NULL_HANDLE }; /**< Graphics queue. */
         VkQueue          present_queue_{ VK_NULL_HANDLE };  /**< Presentation queue. */
         VkQueue          transfer_queue_{ VK_NULL_HANDLE }; /**< Transfer queue. */
+
+        VkCommandPool graphics_command_pool_{ VK_NULL_HANDLE }; /**< Pool used for graphics command buffers. */
 
         VulkanPhysicalDeviceInfo    requirements_;      /**< Physical device requirements. */
         VulkanDeviceQueueFamilyInfo queue_families_;    /**< Queue family information. */

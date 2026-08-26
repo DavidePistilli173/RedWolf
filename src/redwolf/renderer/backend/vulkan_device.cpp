@@ -7,6 +7,7 @@
 
 #include <limits>
 #include <ranges>
+#include <vulkan/vulkan_core.h>
 
 namespace {
     /**
@@ -18,6 +19,7 @@ namespace {
 } // namespace
 
 rw::vk::Device::~Device() {
+    vkDestroyCommandPool(logical_, graphics_command_pool_, nullptr);
     vkDestroyDevice(logical_, allocator_);
 }
 
@@ -55,6 +57,10 @@ std::optional<u32> rw::vk::Device::find_memory_index(u32 type_filter, u32 proper
     return {};
 }
 
+VkCommandPool rw::vk::Device::graphics_command_pool() const {
+    return graphics_command_pool_;
+}
+
 VkQueue rw::vk::Device::graphics_queue() const {
     return graphics_queue_;
 }
@@ -83,6 +89,11 @@ bool rw::vk::Device::init(Ptr<Instance> instance, VkAllocationCallbacks* allocat
     }
 
     get_device_queues_();
+
+    if (!create_command_pools_()) {
+        error("Failed to create command pools.");
+        return false;
+    }
 
     return true;
 }
@@ -265,6 +276,19 @@ bool rw::vk::Device::are_physical_requirements_met_(
         info("Device does not support sampler anisotropy.");
         return false;
     }
+
+    return true;
+}
+
+bool rw::vk::Device::create_command_pools_() {
+    const VkCommandPoolCreateInfo pool_create_info{ .sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+                                                    .pNext            = nullptr,
+                                                    .flags            = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+                                                    .queueFamilyIndex = queue_families_.graphics_family_index };
+    RW_VK_CHECK(
+        vkCreateCommandPool(logical_, &pool_create_info, allocator_, &graphics_command_pool_),
+        "Failed to create graphics command pool: '{}'",
+        false)
 
     return true;
 }

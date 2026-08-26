@@ -8,10 +8,13 @@ target_sources(redwolf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory_pool.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_command_buffer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_device.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_fence.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_framebuffer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_image.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_instance.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_renderpass.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_semaphore.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_surface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_swapchain.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/renderer.cpp
@@ -20,7 +23,7 @@ target_sources(redwolf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/profiler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/user_data.cpp)
 
-target_include_directories(redwolf PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..) 
+target_include_directories(redwolf PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(redwolf PUBLIC vulkan xkbcommon wayland-client)
@@ -46,12 +49,12 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
             VERBATIM
         )
 
-    target_sources(redwolf PRIVATE
-        ${SOURCE_FILE}
-        ${HEADER_FILE}
-    )
+        target_sources(redwolf PRIVATE
+            ${SOURCE_FILE}
+            ${HEADER_FILE}
+        )
     endfunction()
-    
+
     add_wayland_protocol_target(xdg_shell "stable/xdg-shell/xdg-shell.xml" xdg-shell)
 
     target_sources(redwolf PRIVATE

@@ -28,18 +28,25 @@ namespace rw::vk {
 
         /**
          * @brief Begin recording the command buffer.
+         * @param is_single_use The command buffer will be only submitted once.
+         * @param is_renderpass_continue A secondary buffer that is fully inside a renderpass. Ignored for primary buffers.
+         * @param is_simultaneous_use Can be resubmitted while it is in pending state.
+         * @return true on success, false otherwise.
          */
-        void begin(bool is_single_use, bool is_renderpass_continue, bool is_simultaneous_use);
+        [[nodiscard]] bool begin(bool is_single_use, bool is_renderpass_continue, bool is_simultaneous_use);
 
         /**
          * @brief End the current command buffer recording.
+         * @return true on success, false otherwise.
          */
-        void end();
+        [[nodiscard]] bool end();
 
         /**
          * @brief End the recording of a single use command buffer and submit it.
+         * @param queue Queue the command will be submitted to.
+         * @return true on success, false otherwise.
          */
-        void end_and_submit_single_use();
+        [[nodiscard]] bool end_and_submit_single_use(VkQueue queue);
 
         /**
          * @brief Initialise the command buffer.
@@ -51,7 +58,7 @@ namespace rw::vk {
         [[nodiscard]] bool init(Ptr<Device> device, VkCommandPool command_pool, bool is_primary);
 
         /**
-         * @brief Initialise and begin recording a single use command buffer.
+         * @brief Initialise and begin recording a single use, primary command buffer.
          * @param allocator Custom vulkan allocator.
          * @param device Rendering device.
          * @param command_pool Command pool the buffer will be allocated from.

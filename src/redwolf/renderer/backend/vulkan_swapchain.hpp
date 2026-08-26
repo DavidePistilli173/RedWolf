@@ -22,8 +22,8 @@ namespace rw::vk {
          */
         struct Params {
             VkAllocationCallbacks* allocator{ nullptr }; /**< Custom vulkan allocator. */
-            Ptr<Surface>           surface;              /**< Rendering surface. */
-            Ptr<Device>            device;               /**< Rendering device. */
+            const Ptr<Surface>&    surface;              /**< Rendering surface. */
+            const Ptr<Device>&     device;               /**< Rendering device. */
             u32                    width{ 0U };          /**< Viewport width. */
             u32                    height{ 0U };         /**< Viewport height. */
         };
@@ -38,6 +38,21 @@ namespace rw::vk {
         Swapchain& operator=(Swapchain&&) = delete;
 
         /**
+         * @brief Get the index of the currently drawn frame.
+         */
+        [[nodiscard]] usize current_frame() const;
+
+        /**
+         * @brief Get the depth attachment.
+         */
+        [[nodiscard]] const Ptr<Image2D>& depth_buffer() const;
+
+        /**
+         * @brief Get the number of images in the swapchain.
+         */
+        [[nodiscard]] usize image_count() const;
+
+        /**
          * @brief Get the swapchain image format.
          */
         [[nodiscard]] VkSurfaceFormatKHR image_format() const;
@@ -48,6 +63,11 @@ namespace rw::vk {
          * @return true on success, false otherwise.
          */
         [[nodiscard]] bool init(const Params& params);
+
+        /**
+         * @brief Get the maximum number of in-flight frames.
+         */
+        [[nodiscard]] u8 max_frames_in_flight() const;
 
         /**
          * @brief Acquire the index of the next swapchain image.
@@ -76,9 +96,9 @@ namespace rw::vk {
         [[nodiscard]] bool recreate(u32 width, u32 height);
 
         /**
-         * @brief Shut down the swapchain.
+         * @brief Get all the image views.
          */
-        void shutdown();
+        [[nodiscard]] const Vec<VkImageView>& views() const;
 
      private:
         /**
@@ -105,5 +125,7 @@ namespace rw::vk {
 
         u32 width_{ 0U };  /**< Viewport width. */
         u32 height_{ 0U }; /**< Viewport height. */
+
+        usize current_frame_{ 0U }; /**< Index of the frame that is currently being rendered. */
     };
 } // namespace rw::vk

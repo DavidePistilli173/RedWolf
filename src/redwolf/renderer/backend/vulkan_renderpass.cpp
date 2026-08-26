@@ -11,6 +11,38 @@ rw::vk::RenderPass::~RenderPass() {
     }
 }
 
+void rw::vk::RenderPass::begin(Ptr<CommandBuffer> command_buffer, VkFramebuffer frame_buffer) {
+    command_buffer_ = std::move(command_buffer);
+
+    const std::array clear_values{ VkClearValue{
+                                       .color = { .float32 = { clear_color_.r, clear_color_.g, clear_color_.b, clear_color_.a } } },
+                                   VkClearValue{ .depthStencil = { .depth = depth_, .stencil = stencil_ } } };
+
+    const VkRenderPassBeginInfo begin_info{
+        .sType           = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+        .pNext           = nullptr,
+        .renderPass      = render_pass_,
+        .framebuffer     = frame_buffer,
+        .renderArea      = { .offset = { .x = static_cast<i32>(render_area_.x), .y = static_cast<i32>(render_area_.y) },
+                             .extent = { .width = static_cast<u32>(render_area_.w), .height = static_cast<u32>(render_area_.h) } },
+        .clearValueCount = clear_values.size(),
+        .pClearValues    = clear_values.data()
+    };
+
+    vkCmdBeginRenderPass(command_buffer_->handle(), &begin_info, VK_SUBPASS_CONTENTS_INLINE);
+    command_buffer->set_state(CommandBuffer::State::in_render_pass);
+}
+
+void rw::vk::RenderPass::end() {
+    vkCmdEndRenderPass(command_buffer_->handle());
+    command_buffer_->set_state(CommandBuffer::State::recording);
+    command_buffer_.reset(); // Release the command buffer from this render pass.
+}
+
+VkRenderPass rw::vk::RenderPass::handle() const {
+    return render_pass_;
+}
+
 bool rw::vk::RenderPass::init(const Params& params) {
     allocator_ = params.allocator;
     device_    = params.device;
@@ -82,30 +114,7 @@ bool rw::vk::RenderPass::init(const Params& params) {
     return true;
 }
 
-void rw::vk::RenderPass::begin(Ptr<CommandBuffer> command_buffer, VkFramebuffer frame_buffer) {
-    command_buffer_ = std::move(command_buffer);
-
-    const std::array clear_values{ VkClearValue{
-                                       .color = { .float32 = { clear_color_.r, clear_color_.g, clear_color_.b, clear_color_.a } } },
-                                   VkClearValue{ .depthStencil = { .depth = depth_, .stencil = stencil_ } } };
-
-    const VkRenderPassBeginInfo begin_info{
-        .sType           = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-        .pNext           = nullptr,
-        .renderPass      = render_pass_,
-        .framebuffer     = frame_buffer,
-        .renderArea      = { .offset = { .x = static_cast<i32>(render_area_.x), .y = static_cast<i32>(render_area_.y) },
-                             .extent = { .width = static_cast<u32>(render_area_.w), .height = static_cast<u32>(render_area_.h) } },
-        .clearValueCount = clear_values.size(),
-        .pClearValues    = clear_values.data()
-    };
-
-    vkCmdBeginRenderPass(command_buffer_->handle(), &begin_info, VK_SUBPASS_CONTENTS_INLINE);
-    command_buffer->set_state(CommandBuffer::State::in_render_pass);
-}
-
-void rw::vk::RenderPass::end() {
-    vkCmdEndRenderPass(command_buffer_->handle());
-    command_buffer_->set_state(CommandBuffer::State::recording);
-    command_buffer_.reset(); // Release the command buffer from this render pass.
+void rw::vk::RenderPass::set_area_size(f32 width, f32 height) {
+    render_area_.w = width;
+    render_area_.h = height;
 }

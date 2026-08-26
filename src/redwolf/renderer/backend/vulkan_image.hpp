@@ -17,7 +17,7 @@ namespace rw::vk {
          */
         struct Params {
             VkAllocationCallbacks* allocator{ nullptr };                                /**< Custom vulkan allocator. */
-            Ptr<Device>            device;                                              /**< Rendering device. */
+            const Ptr<Device>&     device;                                              /**< Rendering device. */
             u32                    width{ 0U };                                         /**<  Width of the image. */
             u32                    height{ 0U };                                        /**< Height of the image. */
             VkFormat               format{ VK_FORMAT_UNDEFINED };                       /**< Data format. */

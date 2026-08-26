@@ -2,7 +2,6 @@
 
 #include "redwolf/containers/vec.hpp"
 #include "redwolf/memory/memory.hpp"
-#include "redwolf/object.hpp"
 
 #include <functional>
 

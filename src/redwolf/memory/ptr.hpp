@@ -69,7 +69,7 @@ namespace rw {
         template<typename To, typename From>
         friend Ptr<To> dynamic_ptr_cast(const Ptr<From>&);
 
-        explicit Ptr() = default;
+        Ptr() = default;
 
         /**
          * @brief Destructor.

@@ -9,6 +9,18 @@ rw::vk::Swapchain::~Swapchain() {
     destroy_();
 }
 
+usize rw::vk::Swapchain::current_frame() const {
+    return current_frame_;
+}
+
+const rw::Ptr<rw::vk::Image2D>& rw::vk::Swapchain::depth_buffer() const {
+    return depth_buffer_;
+}
+
+usize rw::vk::Swapchain::image_count() const {
+    return images_.size();
+}
+
 VkSurfaceFormatKHR rw::vk::Swapchain::image_format() const {
     return image_format_;
 }
@@ -21,6 +33,10 @@ bool rw::vk::Swapchain::init(const Params& params) {
     height_    = params.height;
 
     return create_();
+}
+
+u8 rw::vk::Swapchain::max_frames_in_flight() const {
+    return max_frames_in_flight_;
 }
 
 std::optional<u32>
@@ -66,6 +82,8 @@ bool rw::vk::Swapchain::present(VkSemaphore render_complete_semaphore, u32 prese
         return false;
     }
 
+    current_frame_ = (current_frame_ + 1) % max_frames_in_flight_;
+
     return true;
 }
 
@@ -75,6 +93,10 @@ bool rw::vk::Swapchain::recreate(u32 width, u32 height) {
     width_  = width;
     height_ = height;
     return create_();
+}
+
+const rw::Vec<VkImageView>& rw::vk::Swapchain::views() const {
+    return views_;
 }
 
 bool rw::vk::Swapchain::create_() {

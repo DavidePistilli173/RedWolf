@@ -260,7 +260,7 @@ namespace rw {
             new_vec.memory_pool_ = memory_pool_;
             new_vec.reserve(size_);
             for (usize i{ 0 }; i < size_; ++i) {
-                new (&(new_vec->elements_[i])) T(elements_[i]);
+                new (&(new_vec.elements_[i])) T(elements_[i]);
             }
             new_vec.size_ = size_;
             return new_vec;

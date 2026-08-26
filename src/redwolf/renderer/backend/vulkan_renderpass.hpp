@@ -27,8 +27,8 @@ namespace rw::vk {
          */
         struct Params {
             VkAllocationCallbacks* allocator{ nullptr }; /**< Custom vulkan allocator. */
-            Ptr<Device>            device;               /**< Rendering device. */
-            Ptr<Swapchain>         swapchain;            /**< Swapchain. */
+            const Ptr<Device>&     device;               /**< Rendering device. */
+            const Ptr<Swapchain>&  swapchain;            /**< Swapchain. */
             Rect                   render_area;          /**< Area to render to. */
             Color                  clear_color;          /**< Colour used to clear the screen. */
             f32                    depth{ 0.0F };
@@ -57,11 +57,23 @@ namespace rw::vk {
         void end();
 
         /**
+         * @brief Get the raw renderpass handle.
+         */
+        [[nodiscard]] VkRenderPass handle() const;
+
+        /**
          * @brief Initialise the render pass.
          * @param params Initialisation parameters.
          * @return true on success, false otherwise.
          */
         [[nodiscard]] bool init(const Params& params);
+
+        /**
+         * @brief Set the size of the render area.
+         * @param width New width.
+         * @param height New height.
+         */
+        void set_area_size(f32 width, f32 height);
 
      private:
         VkAllocationCallbacks* allocator_{ nullptr }; /**< Custom vulkan allocator. */
