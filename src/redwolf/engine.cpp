@@ -2,7 +2,6 @@
 
 #include "boot/entry_point.hpp"
 #include "containers/vec.hpp"
-#include "events/events.hpp"
 #include "input/input.hpp"
 #include "logger.hpp"
 #include "memory/memory.hpp"
@@ -38,6 +37,11 @@ bool rw::Engine::init() {
         return false;
     }
 
+    window_close_event_ = Events::subscribe<WindowCloseEvent>([this]([[maybe_unused]] const WindowCloseEvent& event) {
+        running_ = false;
+        return false;
+    });
+
     return true;
 }
 
@@ -45,6 +49,15 @@ rw::Engine::~Engine() {
     RW_PROFILE_SCOPE
 
     info("Shutting down engine.");
+
+    window_close_event_.unsubscribe();
+
+    // Shut down all user modules.
+    for (auto& module : modules_) {
+        module->on_close();
+    }
+    modules_.reset();
+
     Renderer::shutdown();
     Platform::shutdown();
     Input::shutdown();

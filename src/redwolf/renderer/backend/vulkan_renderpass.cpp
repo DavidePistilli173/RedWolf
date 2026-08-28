@@ -30,7 +30,7 @@ void rw::vk::RenderPass::begin(Ptr<CommandBuffer> command_buffer, VkFramebuffer 
     };
 
     vkCmdBeginRenderPass(command_buffer_->handle(), &begin_info, VK_SUBPASS_CONTENTS_INLINE);
-    command_buffer->set_state(CommandBuffer::State::in_render_pass);
+    command_buffer_->set_state(CommandBuffer::State::in_render_pass);
 }
 
 void rw::vk::RenderPass::end() {
@@ -44,9 +44,12 @@ VkRenderPass rw::vk::RenderPass::handle() const {
 }
 
 bool rw::vk::RenderPass::init(const Params& params) {
-    allocator_ = params.allocator;
-    device_    = params.device;
-    swapchain_ = params.swapchain;
+    allocator_   = params.allocator;
+    device_      = params.device;
+    swapchain_   = params.swapchain;
+    clear_color_ = params.clear_color;
+    depth_       = params.depth;
+    stencil_     = params.stencil;
 
     // Attachments.
     // Color attachment.

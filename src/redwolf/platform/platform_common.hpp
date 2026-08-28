@@ -4,6 +4,11 @@
 
 namespace rw {
     /**
+     * @brief Payload of a window close event.
+     */
+    struct WindowCloseEvent {};
+
+    /**
      * @brief Payload of a window resize event.
      */
     struct WindowResizeEvent {

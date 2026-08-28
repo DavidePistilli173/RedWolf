@@ -2,6 +2,8 @@
 
 #ifdef linux
 
+    #include "platform_common.hpp"
+    #include "redwolf/events/events.hpp"
     #include "redwolf/input/input.hpp"
     #include "redwolf/input/mouse.hpp"
     #include "redwolf/logger.hpp"
@@ -396,6 +398,15 @@ void rw::Platform::handle_xdg_surface_configure_([[maybe_unused]] void* data, xd
     xdg_surface_ack_configure(xdg_surface, serial);
     if (g_platform->resize_) {
         g_platform->ready_to_resize_ = true;
+
+        if ((0 < g_platform->new_width_) && (0 < g_platform->new_height_)) {
+            Events::fire(
+                WindowResizeEvent{ .old_width  = static_cast<u32>(g_platform->old_width_),
+                                   .old_height = static_cast<u32>(g_platform->old_height_),
+                                   .new_width  = static_cast<u32>(g_platform->new_width_),
+                                   .new_height = static_cast<u32>(g_platform->new_height_) });
+            info("Window resize event fired with new size: {}x{}", g_platform->new_width_, g_platform->new_height_);
+        }
     }
 }
 
@@ -403,6 +414,8 @@ void rw::Platform::handle_xdg_toplevel_close([[maybe_unused]] void* data, [[mayb
     RW_PROFILE_SCOPE
 
     g_platform->close_requested_ = true;
+    Events::fire(WindowCloseEvent{});
+    info("Window close event fired.");
 }
 
 void rw::Platform::handle_xdg_toplevel_configure_(
@@ -411,6 +424,8 @@ void rw::Platform::handle_xdg_toplevel_configure_(
 
     if ((0 != width) && (0 != height)) {
         g_platform->resize_     = true;
+        g_platform->old_width_  = g_platform->new_width_;
+        g_platform->old_height_ = g_platform->new_height_;
         g_platform->new_width_  = width;
         g_platform->new_height_ = height;
     }

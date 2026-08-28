@@ -14,6 +14,7 @@ namespace rw {
      */
     enum class MemoryType : u8 {
         invalid,  /**< Invalid allocation type. */
+        events,   /**< Event allocations. */
         renderer, /**< Renderer allocations. */
         engine,   /**< Generic engine allocation. */
         modules,  /**< User modules allocations. */

@@ -304,6 +304,8 @@ namespace rw {
         bool resize_{ false }; /**< Signals that the window needs to be resized. */
         i32  new_width_{ 0 };  /**< New width requested by the compositor. */
         i32  new_height_{ 0 }; /**< New height requested by the compositor. */
+        i32  old_width_{ 0 };  /**< Width previous to the last resize. */
+        i32  old_height_{ 0 }; /**<> Height previous to the last resize. */
 
         bool ready_to_resize_{ false }; /**< Signals that the window can actually be resized. */
         bool close_requested_{ false }; /**< Signals that the window should be closed. */

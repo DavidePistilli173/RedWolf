@@ -49,6 +49,16 @@ namespace rw::vk {
         [[nodiscard]] bool end_and_submit_single_use(VkQueue queue);
 
         /**
+         * @brief Get the raw command buffer handle.
+         */
+        [[nodiscard]] VkCommandBuffer handle() const;
+
+        /**
+         * @brief Get a pointer to the raw command buffer handle.
+         */
+        [[nodiscard]] VkCommandBuffer* handle_pointer();
+
+        /**
          * @brief Initialise the command buffer.
          * @param device Rendering device.
          * @param command_pool Command pool the buffer will be allocated from.
@@ -65,11 +75,6 @@ namespace rw::vk {
          * @return true on success, false otherwise.
          */
         [[nodiscard]] bool init_and_begin_single_use(Ptr<Device> device, VkCommandPool command_pool);
-
-        /**
-         * @brief Get the raw command buffer handle.
-         */
-        [[nodiscard]] VkCommandBuffer handle() const;
 
         /**
          * @brief Reset the command buffer to the ready state.

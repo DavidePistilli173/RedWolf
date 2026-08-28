@@ -66,12 +66,14 @@ namespace rw {
 
             // New event.
             if (it == g_events->events_.end()) {
-                auto& event{ g_events->events_.emplace(id, Memory::new_object<Event<PayloadT>>()) };
-                return Connection<PayloadT>(event.subscribe(callback), event);
+                auto event{ static_ptr_cast<Event<PayloadT>>(
+                    g_events->events_.emplace(id, Memory::new_object<Event<PayloadT>>(MemoryType::events))) };
+                return Connection<PayloadT>(event->subscribe(callback), event);
             }
 
             // Already existing event.
-            return Connection<PayloadT>(static_ptr_cast<Event<PayloadT>>(it->value)->subscribe(callback), it->value);
+            auto event{ static_ptr_cast<Event<PayloadT>>(it->value) };
+            return Connection<PayloadT>(event->subscribe(callback), event);
         }
 
      private:

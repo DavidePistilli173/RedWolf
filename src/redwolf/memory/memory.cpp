@@ -23,6 +23,8 @@ rw::MemoryPool& rw::Memory::pool(MemoryType type) {
     RW_PROFILE_SCOPE
 
     switch (type) {
+    case MemoryType::events:
+        return g_memory->pool_events_;
     case MemoryType::renderer:
         return g_memory->pool_renderer_;
     case MemoryType::engine:

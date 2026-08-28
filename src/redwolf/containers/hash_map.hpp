@@ -108,7 +108,7 @@ namespace rw {
             Vec<std::optional<Entry>>::template Iterator<IsConst> end_; // bound for skip-scanning
         };
 
-        explicit HashMap(MemoryType memory_type) : table_{ memory_type } {}
+        explicit HashMap(MemoryType memory_type) : memory_type_{ memory_type }, table_{ memory_type } {}
 
         /**
          * @brief Get an element from the map.
@@ -195,12 +195,12 @@ namespace rw {
             if (!table_[index].has_value()) {
                 table_[index].emplace(Entry{ .key = key, .value = ValueT(std::forward<Args>(args)...) });
                 ++size_;
-                return table_[index].value;
+                return table_[index]->value;
             }
 
             // Key already present.
-            table_[index].value = std::move(ValueT(std::forward<Args>(args)...));
-            return table_[index].value;
+            table_[index]->value = ValueT(std::forward<Args>(args)...);
+            return table_[index]->value;
         }
 
         /**
@@ -249,6 +249,10 @@ namespace rw {
          * @return Iterator to the element, or the end iterator.
          */
         [[nodiscard]] Iterator<false> find(const KeyT& key) {
+            if (0 == size_) {
+                return Iterator<false>(table_.end(), table_.end());
+            }
+
             const usize index{ find_(key) };
             if (table_[index].has_value()) {
                 return Iterator<false>(table_.begin() + index, table_.end());
@@ -331,13 +335,13 @@ namespace rw {
          * @brief Resize the map, making space for more entries.
          */
         void resize_() {
-            const usize new_capacity{ std::max(min_capacity, table_.size() * growth_factor) };
-            Vec<Entry>  new_table{};
+            const usize               new_capacity{ std::max(min_capacity, table_.size() * growth_factor) };
+            Vec<std::optional<Entry>> new_table{ memory_type_ };
             new_table.resize(new_capacity);
 
             for (auto& entry : table_) {
                 if (entry.has_value()) {
-                    usize idx{ hash_(entry.key, new_capacity) };
+                    usize idx{ hash_(entry->key, new_capacity) };
                     while (new_table[idx].has_value()) {
                         idx = (idx + 1) % new_capacity;
                     }
@@ -348,7 +352,8 @@ namespace rw {
             table_ = std::move(new_table);
         }
 
-        Vec<std::optional<Entry>> table_{ MemoryType::engine }; /**< Actual map data. */
-        usize                     size_{ 0U };                  /**< Number of real elements stored in the map. */
+        MemoryType                memory_type_{ MemoryType::engine }; /**< Memory pool used by the hashmap. */
+        Vec<std::optional<Entry>> table_{ MemoryType::engine };       /**< Actual map data. */
+        usize                     size_{ 0U };                        /**< Number of real elements stored in the map. */
     };
 } // namespace rw

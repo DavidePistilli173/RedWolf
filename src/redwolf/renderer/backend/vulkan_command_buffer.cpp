@@ -57,12 +57,17 @@ VkCommandBuffer rw::vk::CommandBuffer::handle() const {
     return command_buffer_;
 }
 
+VkCommandBuffer* rw::vk::CommandBuffer::handle_pointer() {
+    return &command_buffer_;
+}
+
 bool rw::vk::CommandBuffer::init(Ptr<Device> device, VkCommandPool command_pool, bool is_primary) {
-    device_ = std::move(device);
+    device_       = std::move(device);
+    command_pool_ = command_pool;
 
     const VkCommandBufferAllocateInfo allocate_info{ .sType       = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
                                                      .pNext       = nullptr,
-                                                     .commandPool = command_pool,
+                                                     .commandPool = command_pool_,
                                                      .level =
                                                          is_primary ? VK_COMMAND_BUFFER_LEVEL_PRIMARY : VK_COMMAND_BUFFER_LEVEL_SECONDARY,
                                                      .commandBufferCount = 1 };

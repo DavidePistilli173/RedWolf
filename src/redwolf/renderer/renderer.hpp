@@ -25,13 +25,6 @@ namespace rw {
         [[nodiscard]] static bool init();
 
         /**
-         * @brief Called on viewport resize.
-         * @param width New width.
-         * @param height New height.
-         */
-        static void on_resize(u16 width, u16 height);
-
-        /**
          * @brief Shutdown the renderer.
          */
         static void shutdown();

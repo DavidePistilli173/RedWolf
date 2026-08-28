@@ -25,6 +25,11 @@ namespace rw::vk {
         [[nodiscard]] VkSemaphore handle() const;
 
         /**
+         * @brief Get a pointer to the raw semaphore handle.
+         */
+        [[nodiscard]] VkSemaphore* handle_pointer();
+
+        /**
          * @brief Initialise the semaphore.
          * @param allocator Custom vulkan allocator.
          * @param device Rendering device.

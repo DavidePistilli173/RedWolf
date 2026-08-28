@@ -70,6 +70,11 @@ namespace rw::vk {
         [[nodiscard]] u8 max_frames_in_flight() const;
 
         /**
+         * @brief Check whether the swapchain needs to be re-created.
+         */
+        [[nodiscard]] bool needs_recreation() const;
+
+        /**
          * @brief Acquire the index of the next swapchain image.
          * @param timeout Timeout for waiting for the next image to become available.
          * @param image_available_semaphore Semaphore for waiting on the next image availability.
@@ -126,6 +131,7 @@ namespace rw::vk {
         u32 width_{ 0U };  /**< Viewport width. */
         u32 height_{ 0U }; /**< Viewport height. */
 
-        usize current_frame_{ 0U }; /**< Index of the frame that is currently being rendered. */
+        usize current_frame_{ 0U };       /**< Index of the frame that is currently being rendered. */
+        bool  needs_recreation_{ false }; /**< If true, the swapchain needs to be recreated. */
     };
 } // namespace rw::vk

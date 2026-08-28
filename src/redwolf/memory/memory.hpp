@@ -32,6 +32,8 @@ namespace rw {
 
             auto* instance{ instance_() };
             switch (type) {
+            case rw::MemoryType::events:
+                return Ptr<T>(&(instance->pool_events_), std::forward<Args>(args)...);
             case MemoryType::renderer:
                 return Ptr<T>(&(instance->pool_renderer_), std::forward<Args>(args)...);
             case MemoryType::engine:
@@ -68,6 +70,7 @@ namespace rw {
         [[nodiscard]] static Memory* instance_();
 
         MemoryPool pool_invalid_{ MemoryType::invalid };   /**< Invalid memory pool, just to make the program not crash. */
+        MemoryPool pool_events_{ MemoryType::events };     /**< Events memory pool. */
         MemoryPool pool_renderer_{ MemoryType::renderer }; /**< Renderer memory pool. */
         MemoryPool pool_engine_{ MemoryType::engine };     /**< Generic engine memory pool. */
         MemoryPool pool_modules_{ MemoryType::modules };   /**< User modules memory pool. */

@@ -31,6 +31,11 @@ namespace rw {
         [[nodiscard]] virtual std::string_view name() = 0;
 
         /**
+         * @brief Called when the application closes.
+         */
+        virtual void on_close() = 0;
+
+        /**
          * @brief Called on each update tick.
          * @param delta_time Time since the last update. [s]
          */

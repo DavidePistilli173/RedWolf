@@ -2,6 +2,7 @@
 
 #include "redwolf/common.hpp"
 #include "redwolf/containers/vec.hpp"
+#include "redwolf/events/events.hpp"
 #include "redwolf/platform/platform_common.hpp"
 #include "vulkan_command_buffer.hpp"
 #include "vulkan_device.hpp"
@@ -23,7 +24,7 @@ namespace rw {
      */
     class RendererBackend {
      public:
-        ~RendererBackend() = default;
+        ~RendererBackend();
 
         RendererBackend(const RendererBackend&)            = delete;
         RendererBackend& operator=(const RendererBackend&) = delete;
@@ -102,6 +103,11 @@ namespace rw {
          */
         [[nodiscard]] bool init_sync_objects_();
 
+        /**
+         * @brief Recreate the swapchain.
+         */
+        [[nodiscard]] bool recreate_swapchain_();
+
         VkAllocationCallbacks*      allocator_{ nullptr };                 /**< Custom vulkan allocator. */
         Ptr<vk::Instance>           instance_;                             /**< Backend instance. */
         Ptr<vk::Surface>            surface_;                              /**< Rendering surface. */
@@ -114,7 +120,7 @@ namespace rw {
         Vec<Ptr<vk::Semaphore>> image_available_sems_{ MemoryType::renderer }; /**< Image available semaphores. */
         Vec<Ptr<vk::Semaphore>> queue_complete_sems_{ MemoryType::renderer };  /**< Queue completion semaphores. */
         Vec<Ptr<vk::Fence>>     in_flight_fences_{ MemoryType::renderer };     /**< Fences for the in-flight frames. */
-        Vec<VkFence>            images_in_flight_{ MemoryType::renderer };     /**< Fences currently in use. */
+        Vec<vk::Fence*>         images_in_flight_{ MemoryType::renderer };     /**< Fences currently in use. */
 
         u32 cached_framebuffer_width_{ 512U };       /**< Cached framebuffer width, to be used when resizing. */
         u32 cached_framebuffer_height_{ 512U };      /**< Cached framebuffer height, to be used when resizing. */
@@ -126,5 +132,7 @@ namespace rw {
         usize current_frame_{ 0U };           /**< Index of the current frame. */
         usize image_index_{ 0U };             /**< Index of the current image. */
         bool  recreating_swapchain_{ false }; /**< True if we are recreating the swapchain. */
+
+        Connection<WindowResizeEvent> window_resize_event_; /**< Connection to the WindowResizeEvent. */
     };
 } // namespace rw

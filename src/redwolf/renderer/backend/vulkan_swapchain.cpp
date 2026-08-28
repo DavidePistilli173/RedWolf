@@ -39,6 +39,10 @@ u8 rw::vk::Swapchain::max_frames_in_flight() const {
     return max_frames_in_flight_;
 }
 
+bool rw::vk::Swapchain::needs_recreation() const {
+    return needs_recreation_;
+}
+
 std::optional<u32>
     rw::vk::Swapchain::next_image_index(std::chrono::nanoseconds timeout, VkSemaphore image_available_semaphore, VkFence fence) {
     u32            out_image_index{ 0 };
@@ -73,11 +77,9 @@ bool rw::vk::Swapchain::present(VkSemaphore render_complete_semaphore, u32 prese
 
     const VkResult res{ vkQueuePresentKHR(device_->present_queue(), &present_info) };
     if ((VK_ERROR_OUT_OF_DATE_KHR == res) || (VK_SUBOPTIMAL_KHR == res)) {
-        info("Re-creating swapchain.");
-        return recreate(width_, height_);
-    }
-
-    if (VK_SUCCESS != res) {
+        info("Swapchain needs to be recreated.");
+        needs_recreation_ = true;
+    } else if (VK_SUCCESS != res) {
         error("Failed to present swapchain image.");
         return false;
     }
@@ -235,6 +237,7 @@ bool rw::vk::Swapchain::create_() {
         return false;
     }
 
+    needs_recreation_ = false;
     info("Swapchain created successfully.");
     return true;
 }

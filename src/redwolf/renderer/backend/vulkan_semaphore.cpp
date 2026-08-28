@@ -10,6 +10,10 @@ VkSemaphore rw::vk::Semaphore::handle() const {
     return semaphore_;
 }
 
+VkSemaphore* rw::vk::Semaphore::handle_pointer() {
+    return &semaphore_;
+}
+
 bool rw::vk::Semaphore::init(VkAllocationCallbacks* allocator, Ptr<Device> device) {
     allocator_ = allocator;
     device_    = std::move(device);

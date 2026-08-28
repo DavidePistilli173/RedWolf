@@ -136,7 +136,7 @@ namespace rw {
          * @brief Destructor.
          */
         ~Vec() {
-            reset_();
+            reset();
         }
 
         // Deleted because shallow copies are not allowed.
@@ -159,7 +159,7 @@ namespace rw {
          */
         Vec& operator=(Vec&& other) noexcept {
             if (this != &other) {
-                reset_();
+                reset();
 
                 memory_pool_ = other.memory_pool_;
 
@@ -317,6 +317,16 @@ namespace rw {
         }
 
         /**
+         * @brief Fill the vector with the given value.
+         */
+        void fill(const T& value) {
+            for (usize i{ 0U }; i < size_; ++i) {
+                elements_[i].~T();
+                elements_[i] = value;
+            }
+        }
+
+        /**
          * @brief Erase an element at a given index.
          * @param index Index of the element to erase.
          */
@@ -404,6 +414,17 @@ namespace rw {
         }
 
         /**
+         * @brief Reset the vector, deallocating all its memory.
+         */
+        void reset() {
+            if (nullptr != elements_) {
+                clear();
+                memory_pool_->deallocate(elements_);
+                elements_ = nullptr;
+            }
+        }
+
+        /**
          * @brief Reserve a specific size in the vector capacity.
          * @param size Number of elements that need to fit in the new capacity.
          */
@@ -443,6 +464,9 @@ namespace rw {
             for (; size_ < new_size; ++size_) {
                 new (&(elements_[size_])) T(value);
             }
+
+            size_     = new_size;
+            capacity_ = new_size;
         }
 
         /**
@@ -469,17 +493,6 @@ namespace rw {
 
      private:
         Vec() = default;
-
-        /**
-         * @brief Reset the vector, deallocating all its memory.
-         */
-        void reset_() {
-            if (nullptr != elements_) {
-                clear();
-                memory_pool_->deallocate(elements_);
-                elements_ = nullptr;
-            }
-        }
 
         /**
          * @brief Shift all the elements in a given range up or down the vector.

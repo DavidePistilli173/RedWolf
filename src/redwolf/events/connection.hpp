@@ -13,9 +13,7 @@ namespace rw {
         Connection(u32 id, Ptr<Event<PayloadT>> event) : id_{ id }, event_{ std::move(event) } {}
 
         ~Connection() {
-            if (!event_.is_null()) {
-                event_->unsubscribe(id_);
-            }
+            unsubscribe();
         }
 
         Connection(const Connection&)            = delete;
@@ -36,6 +34,16 @@ namespace rw {
                 move_(other);
             }
             return *this;
+        }
+
+        /**
+         * @brief Unsubscribe from the event.
+         */
+        void unsubscribe() {
+            if (!event_.is_null()) {
+                event_->unsubscribe(id_);
+                event_.reset();
+            }
         }
 
      private:

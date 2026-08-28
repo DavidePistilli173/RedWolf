@@ -22,4 +22,11 @@ namespace rw::vk {
                                               VK_EXT_DEBUG_UTILS_EXTENSION_NAME
 #endif
     };
+
+    /**
+     * @brief Check whether a Vulkan result is an error or not, according to the spec.
+     * @param result Result to check.
+     * @return true if the result is not an error, false if it is an error.
+     */
+    [[nodiscard]] bool result_not_error(VkResult result);
 } // namespace rw::vk

@@ -7,6 +7,7 @@ target_sources(redwolf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory_pool.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_command_buffer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_common.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_device.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_fence.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_framebuffer.cpp

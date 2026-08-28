@@ -22,6 +22,13 @@ namespace {
     rw::RendererBackend* g_backend{ nullptr }; // Renderer backend instance.
 } // namespace
 
+rw::RendererBackend::~RendererBackend() {
+    // Wait for the device to be idle before proceeding with destruction.
+    if (const auto res{ vkDeviceWaitIdle(device_->logical()) }; !vk::result_not_error(res)) {
+        error("vkDeviceWaitIdle failed: '{}'", string_VkResult(res));
+    }
+}
+
 bool rw::RendererBackend::begin_frame(f32 delta_time) {
     return g_backend->begin_frame_(delta_time);
 }
@@ -48,6 +55,7 @@ bool rw::RendererBackend::init() {
 void rw::RendererBackend::on_resize(const WindowResizeEvent& event) {
     g_backend->cached_framebuffer_width_  = event.new_width;
     g_backend->cached_framebuffer_height_ = event.new_height;
+    ++g_backend->framebuffer_size_generation_;
     info("Vulkan renderer backend resized: '{}x{}'", event.new_width, event.new_height);
 }
 
@@ -63,7 +71,7 @@ void rw::RendererBackend::shutdown() {
 
 bool rw::RendererBackend::begin_frame_(f32 delta_time) {
     if (recreating_swapchain_) {
-        if (const auto res{ vkDeviceWaitIdle(device_->logical()) }; VK_SUCCESS != res) {
+        if (const auto res{ vkDeviceWaitIdle(device_->logical()) }; !vk::result_not_error(res)) {
             error("vkDeviceWaitIdle failed: '{}'", string_VkResult(res));
             return false;
         }
@@ -72,8 +80,8 @@ bool rw::RendererBackend::begin_frame_(f32 delta_time) {
     }
 
     // Check if the swapchain needs to be recreated.
-    if (framebuffer_size_generation_ != framebuffer_size_last_generation_) {
-        if (const auto res{ vkDeviceWaitIdle(device_->logical()) }; VK_SUCCESS != res) {
+    if ((framebuffer_size_generation_ != framebuffer_size_last_generation_) || swapchain_->needs_recreation()) {
+        if (const auto res{ vkDeviceWaitIdle(device_->logical()) }; !vk::result_not_error(res)) {
             error("vkDeviceWaitIdle failed: '{}'", string_VkResult(res));
             return false;
         }
@@ -83,19 +91,19 @@ bool rw::RendererBackend::begin_frame_(f32 delta_time) {
         }
 
         // This frame has to be skipped.
-        info("Framebuffer resized.");
+        info("Framebuffer resized. Skipping frame.");
         return false;
     }
 
     current_frame_ = swapchain_->current_frame();
-    if (!in_flight_fences_[current_frame_].fence->wait(default_timeout)) {
+    if (!in_flight_fences_[current_frame_]->wait(default_timeout)) {
         warn("Failed to wait on the in-flight fence.");
         return false;
     }
 
     // Acquire the next image index.
     const auto image_index_res{ swapchain_->next_image_index(
-        default_timeout, image_available_sems_[current_frame_]->handle(), in_flight_fences_[current_frame_].fence->handle()) };
+        default_timeout, image_available_sems_[current_frame_]->handle(), VK_NULL_HANDLE) };
     if (!image_index_res.has_value()) {
         warn("Failed to retrieve index of the next image.");
         return false;
@@ -154,15 +162,50 @@ bool rw::RendererBackend::end_frame_(f32 delta_time) {
     }
 
     // Make sure that the previous frame is not this image.
-    if (images_in_flight_[image_index_]) {
-        if (!in_flight_fences_[image_index_].fence->wait(default_timeout)) {
+    if (nullptr != images_in_flight_[image_index_]) {
+        if (!images_in_flight_[image_index_]->wait(default_timeout)) {
             warn("Failed to wait on current image fence.");
             return false;
         }
     }
 
     // Mark the fence as in use.
-    in_flight_fences_[image_index_].in_flight = true;
+    images_in_flight_[image_index_] = in_flight_fences_[current_frame_].get();
+
+    // Reset the fence for use on the next frame.
+    if (!in_flight_fences_[current_frame_]->reset()) {
+        error("Failed to reset fence.");
+        return false;
+    }
+
+    // Queue submission.
+    const std::array<VkPipelineStageFlags, 1> pipeline_flags{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+    const VkSubmitInfo submit_info{ .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+                                    .pNext = nullptr,
+                                    // Wait semaphore ensures that the operation cannot begin until the image is available.
+                                    .waitSemaphoreCount = 1,
+                                    .pWaitSemaphores    = image_available_sems_[current_frame_]->handle_pointer(),
+                                    // Each semaphore waits on the corresponding pipeline stage to complete.
+                                    .pWaitDstStageMask  = pipeline_flags.data(),
+                                    .commandBufferCount = 1,
+                                    .pCommandBuffers    = graphics_command_buffers_[image_index_]->handle_pointer(),
+                                    // Semaphore to be signalled when the queue is complete.
+                                    .signalSemaphoreCount = 1,
+                                    .pSignalSemaphores    = queue_complete_sems_[image_index_]->handle_pointer() };
+
+    RW_VK_CHECK(
+        vkQueueSubmit(device_->graphics_queue(), 1, &submit_info, in_flight_fences_[current_frame_]->handle()),
+        "Failed to submit queue: '{}'",
+        false)
+
+    graphics_command_buffers_[image_index_]->update_submitted();
+
+    // Presentation.
+    if (!swapchain_->present(queue_complete_sems_[image_index_]->handle(), image_index_)) {
+        error("Failed to present frame.");
+        return false;
+    }
 
     return true;
 }
@@ -229,7 +272,7 @@ bool rw::RendererBackend::init_internal_() {
                 .device      = device_,
                 .swapchain   = swapchain_,
                 .render_area = { .x = 0, .y = 0, .w = static_cast<f32>(framebuffer_width_), .h = static_cast<f32>(framebuffer_height_) },
-                .clear_color = { .r = 0.0F, .g = 0.0F, .b = 0.2F, .a = 1.0F },
+                .clear_color = { .r = 0.2F, .g = 0.0F, .b = 0.0F, .a = 1.0F },
                 .depth       = 1.0F,
                 .stencil     = 0 })) {
         error("Failed to initialise main render pass.");
@@ -251,6 +294,11 @@ bool rw::RendererBackend::init_internal_() {
         return false;
     }
 
+    window_resize_event_ = Events::subscribe<WindowResizeEvent>([this](const WindowResizeEvent& event) {
+        on_resize(event);
+        return false;
+    });
+
     return true;
 }
 
@@ -264,7 +312,7 @@ bool rw::RendererBackend::init_sync_objects_() {
         }
     }
 
-    queue_complete_sems_.resize(swapchain_->max_frames_in_flight());
+    queue_complete_sems_.resize(swapchain_->image_count());
     for (auto& sem : queue_complete_sems_) {
         sem = Memory::new_object<vk::Semaphore>(MemoryType::renderer);
         if (!sem->init(allocator_, device_)) {
@@ -275,12 +323,91 @@ bool rw::RendererBackend::init_sync_objects_() {
 
     in_flight_fences_.resize(swapchain_->max_frames_in_flight());
     for (auto& fence : in_flight_fences_) {
-        fence.fence = Memory::new_object<vk::Fence>(MemoryType::renderer);
-        if (!fence.fence->init(allocator_, device_, true)) {
+        fence = Memory::new_object<vk::Fence>(MemoryType::renderer);
+        if (!fence->init(allocator_, device_, true)) {
             error("Failed to initialise in-flight fences.");
             return false;
         }
     }
+
+    images_in_flight_.resize(swapchain_->image_count());
+
+    return true;
+}
+
+bool rw::RendererBackend::recreate_swapchain_() {
+    if (recreating_swapchain_) {
+        warn("Already recreating swapchain.");
+        return false;
+    }
+
+    if ((0 == framebuffer_width_) || (0 == framebuffer_height_)) {
+        warn("Recreate swapchain called with size {}x{}", framebuffer_width_, framebuffer_height_);
+        return false;
+    }
+
+    recreating_swapchain_ = true;
+
+    if (const auto res{ vkDeviceWaitIdle(device_->logical()) }; !vk::result_not_error(res)) [[unlikely]] {
+        error("Failed to wait on device: '{}'", string_VkResult(res));
+        return false;
+    }
+
+    if (!device_->query_swapchain_support(device_->physical())) [[unlikely]] {
+        error("Failed to query device swapchain support.");
+        return false;
+    }
+
+    if (!device_->detect_depth_format()) [[unlikely]] {
+        error("Failed to detect depth format.");
+        return false;
+    }
+
+    if (!swapchain_->recreate(cached_framebuffer_width_, cached_framebuffer_height_)) {
+        error("Failed to recreate swapchain.");
+        return false;
+    }
+
+    // Clear the images in flight.
+    images_in_flight_.resize(swapchain_->image_count());
+    images_in_flight_.fill(nullptr);
+
+    if (queue_complete_sems_.size() != swapchain_->image_count()) {
+        queue_complete_sems_.clear();
+        queue_complete_sems_.resize(swapchain_->image_count());
+        for (auto& sem : queue_complete_sems_) {
+            sem = Memory::new_object<vk::Semaphore>(MemoryType::renderer);
+            if (!sem->init(allocator_, device_)) {
+                error("Failed to re-initialise queue complete semaphore.");
+                return false;
+            }
+        }
+    }
+
+    framebuffer_width_         = cached_framebuffer_width_;
+    framebuffer_height_        = cached_framebuffer_height_;
+    cached_framebuffer_width_  = 0;
+    cached_framebuffer_height_ = 0;
+
+    framebuffer_size_last_generation_ = framebuffer_size_generation_;
+
+    // Clear command buffers and framebuffers.
+    graphics_command_buffers_.clear();
+    framebuffers_.clear();
+
+    main_renderpass_->set_area_size(static_cast<f32>(framebuffer_width_), static_cast<f32>(framebuffer_height_));
+
+    if (!regenerate_framebuffers_()) {
+        error("Failed to regenerate framebuffers.");
+        return false;
+    }
+
+    if (!create_command_buffers_()) {
+        error("Failed to recreate command buffers");
+        return false;
+    }
+
+    recreating_swapchain_ = false;
 
     return true;
 }
