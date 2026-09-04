@@ -53,16 +53,4 @@ namespace rw {
 
         return is_power_of_two(integral);
     }
-
-    /**
-     * @brief Get a random number.
-     */
-    template<typename T>
-    [[nodiscard]] T random() {}
-
-    /**
-     * @brief Get a random number in the [min, max] range.
-     */
-    template<typename T>
-    [[nodiscard]] T random_in_range(T min, T max) {}
 } // namespace rw

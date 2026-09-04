@@ -4,6 +4,7 @@
 #include "containers/vec.hpp"
 #include "input/input.hpp"
 #include "logger.hpp"
+#include "math/random.hpp"
 #include "memory/memory.hpp"
 #include "memory/memory_pool.hpp"
 #include "platform/platform.hpp"
@@ -64,6 +65,7 @@ rw::Engine::~Engine() {
     Events::shutdown();
     Memory::shutdown();
     UserData::shutdown();
+    Random::shutdown();
     info("Engine shut down.");
 
     Logger::shutdown();
@@ -128,6 +130,10 @@ bool rw::Engine::init_modules_() {
 }
 
 bool rw::Engine::init_subsystems_() {
+    trace("Initialising random number generator.");
+    Random::init(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    info("Random number generator initialised.");
+
     trace("Initialising user data manager.");
     if (!UserData::init()) {
         error("Failed to initialise user data manager.");

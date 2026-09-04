@@ -1,6 +1,6 @@
 #pragma once
 
-#include <redwolf/module.hpp>
+#include <redwolf/redwolf.hpp>
 
 namespace rwt {
     /**

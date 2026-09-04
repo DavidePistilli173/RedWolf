@@ -123,7 +123,7 @@ namespace rw::vk {
 
         VkSwapchainKHR     swapchain_{ VK_NULL_HANDLE };    /**< Raw swapchain handle. */
         VkSurfaceFormatKHR image_format_{};                 /**< Image data format. */
-        u8                 max_frames_in_flight_{ 2 };      /**< Maximum number of frames being rendered to. */
+        u8                 max_frames_in_flight_{ 0U };     /**< Maximum number of frames being rendered to. */
         Vec<VkImage>       images_{ MemoryType::renderer }; /**< Swapchain images. */
         Vec<VkImageView>   views_{ MemoryType::renderer };  /**< Image views. */
         Ptr<Image2D>       depth_buffer_;                   /**< Depth buffer. */

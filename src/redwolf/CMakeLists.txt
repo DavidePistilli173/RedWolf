@@ -1,9 +1,12 @@
 add_library(redwolf STATIC)
 
+find_package(Vulkan REQUIRED COMPONENTS glslc)
+
 target_sources(redwolf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/boot/entry_point.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/events/events.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/input/input.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/math/random.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory_pool.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_command_buffer.cpp
@@ -26,6 +29,7 @@ target_sources(redwolf PRIVATE
 
 target_include_directories(redwolf PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
+# Custom linux preparation.
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     target_link_libraries(redwolf PUBLIC vulkan xkbcommon wayland-client)
 
@@ -63,6 +67,30 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     )
 endif()
 
+# Shader compilation
+make_directory(${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/shaders/)
+
+set_property(GLOBAL PROPERTY RW_SHADER_OUTPUTS "")
+function(compile_shader SHADER_NAME SHADER_STAGE)
+    set(INPUT_FILE ${PROJECT_SOURCE_DIR}/data/shaders/${SHADER_NAME}.${SHADER_STAGE}.glsl)
+    set(OUTPUT_FILE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/shaders/${SHADER_NAME}.spv)
+
+    add_custom_command(
+        OUTPUT ${OUTPUT_FILE}
+        COMMAND Vulkan::glslc -fshader-stage=${SHADER_STAGE} ${INPUT_FILE} -o ${OUTPUT_FILE}
+        DEPENDS ${INPUT_FILE}
+        COMMENT "Compiling ${INPUT_FILE}"
+        VERBATIM
+    )
+    set_property(GLOBAL APPEND PROPERTY RW_SHADER_OUTPUTS ${OUTPUT_FILE})
+endfunction()
+#compile_shader("builtin.object_shader" "vert")
+
+get_property(RW_ALL_SHADER_OUTPUTS GLOBAL PROPERTY RW_SHADER_OUTPUTS)
+add_custom_target(redwolf_shaders ALL DEPENDS ${RW_ALL_SHADER_OUTPUTS})
+add_dependencies(redwolf redwolf_shaders)
+
+# Profiling
 if(RW_ENABLE_PROFILING)
     target_link_libraries(redwolf PUBLIC TracyClient)
 endif()

@@ -9,7 +9,7 @@ namespace rw {
      * @brief 4-dimensional vector.
      */
     template<typename T>
-    struct Vector4 {
+    struct Vec4 {
         T x{ 0.0F };
         T y{ 0.0F };
         T z{ 0.0F };
@@ -17,21 +17,21 @@ namespace rw {
         /**
          * @brief Equality.
          */
-        [[nodiscard]] constexpr bool operator==(const Vector4& value) const {
+        [[nodiscard]] constexpr bool operator==(const Vec4& value) const {
             return are_equal(x, value.x) && are_equal(y, value.y) && are_equal(z, value.z) && are_equal(w, value.w);
         }
 
         /**
          * @brief Sum.
          */
-        [[nodiscard]] constexpr Vector4 operator+(const Vector4& value) const {
-            return Vector4{ .x = x + value.x, .y = y + value.y, .z = z + value.z, .w = w + value.w };
+        [[nodiscard]] constexpr Vec4 operator+(const Vec4& value) const {
+            return Vec4{ .x = x + value.x, .y = y + value.y, .z = z + value.z, .w = w + value.w };
         }
 
         /**
          * @brief Sum.
          */
-        constexpr Vector4& operator+=(const Vector4& value) {
+        constexpr Vec4& operator+=(const Vec4& value) {
             x += value.x;
             y += value.y;
             z += value.z;
@@ -42,14 +42,14 @@ namespace rw {
         /**
          * @brief Subtract.
          */
-        [[nodiscard]] constexpr Vector4 operator-(const Vector4& value) const {
-            return Vector4{ .x = x - value.x, .y = y - value.y, .z = z - value.z, .w = w - value.w };
+        [[nodiscard]] constexpr Vec4 operator-(const Vec4& value) const {
+            return Vec4{ .x = x - value.x, .y = y - value.y, .z = z - value.z, .w = w - value.w };
         }
 
         /**
          * @brief Subtract.
          */
-        constexpr Vector4& operator-=(const Vector4& value) {
+        constexpr Vec4& operator-=(const Vec4& value) {
             x -= value.x;
             y -= value.y;
             z -= value.z;
@@ -60,21 +60,21 @@ namespace rw {
         /**
          * @brief Multiply by vector.
          */
-        [[nodiscard]] constexpr Vector4 operator*(const Vector4& value) const {
-            return Vector4{ .x = x * value.x, .y = y * value.y, .z = z * value.z, .w = w * value.w };
+        [[nodiscard]] constexpr Vec4 operator*(const Vec4& value) const {
+            return Vec4{ .x = x * value.x, .y = y * value.y, .z = z * value.z, .w = w * value.w };
         }
 
         /**
          * @brief Multiply by scalar.
          */
-        [[nodiscard]] constexpr Vector4 operator*(T scalar) {
-            return Vector4{ .x = x * scalar, .y = y * scalar, .z = z * scalar, .w = w * scalar };
+        [[nodiscard]] constexpr Vec4 operator*(T scalar) {
+            return Vec4{ .x = x * scalar, .y = y * scalar, .z = z * scalar, .w = w * scalar };
         }
 
         /**
          * @brief Multiply by vector.
          */
-        constexpr Vector4& operator*=(const Vector4& value) {
+        constexpr Vec4& operator*=(const Vec4& value) {
             x *= value.x;
             y *= value.y;
             z *= value.z;
@@ -85,7 +85,7 @@ namespace rw {
         /**
          * @brief Multiply by scalar.
          */
-        constexpr Vector4& operator*=(T scalar) {
+        constexpr Vec4& operator*=(T scalar) {
             x *= scalar;
             y *= scalar;
             z *= scalar;
@@ -96,14 +96,14 @@ namespace rw {
         /**
          * @brief Divide.
          */
-        [[nodiscard]] constexpr Vector4 operator/(const Vector4& value) const {
-            return Vector4{ .x = x / value.x, .y = y / value.y, .z = z / value.z, .w = w / value.w };
+        [[nodiscard]] constexpr Vec4 operator/(const Vec4& value) const {
+            return Vec4{ .x = x / value.x, .y = y / value.y, .z = z / value.z, .w = w / value.w };
         }
 
         /**
          * @brief Divide.
          */
-        constexpr Vector4& operator/=(const Vector4& value) {
+        constexpr Vec4& operator/=(const Vec4& value) {
             x /= value.x;
             y /= value.y;
             z /= value.z;
@@ -139,8 +139,8 @@ namespace rw {
         /**
          * @brief Get a normalized copy of the vector.
          */
-        [[nodiscard]] constexpr Vector4 normalized() const {
-            Vector4 result{ *this };
+        [[nodiscard]] constexpr Vec4 normalized() const {
+            Vec4 result{ *this };
             result.normalize();
             return result;
         }
@@ -148,8 +148,8 @@ namespace rw {
         /**
          * @brief Create the unit vector.
          */
-        [[nodiscard]] static constexpr Vector4 one() {
-            return Vector4{ .x = static_cast<T>(1), .y = static_cast<T>(1), .z = static_cast<T>(1), .w = static_cast<T>(1) };
+        [[nodiscard]] static constexpr Vec4 one() {
+            return Vec4{ .x = static_cast<T>(1), .y = static_cast<T>(1), .z = static_cast<T>(1), .w = static_cast<T>(1) };
         }
     };
 
@@ -157,7 +157,7 @@ namespace rw {
      * @brief Multiply by scalar.
      */
     template<typename T>
-    [[nodiscard]] constexpr Vector4<T> operator*(T scalar, const Vector4<T> vec) {
+    [[nodiscard]] constexpr Vec4<T> operator*(T scalar, const Vec4<T> vec) {
         return vec * scalar;
     }
 
@@ -165,21 +165,22 @@ namespace rw {
      * @brief Compute the cross product between two vectors.
      */
     template<typename T>
-    [[nodiscard]] constexpr Vector4<T> cross(const Vector4<T>& vec_1, const Vector4<T>& vec_2) {
-        return Vector4<T>{ .x = (vec_1.y * vec_2.z) - (vec_1.z * vec_2.y),
-                           .y = (vec_1.z * vec_2.x) - (vec_1.x * vec_2.z),
-                           .z = (vec_1.x * vec_2.y) - (vec_1.y * vec_2.x) };
+    [[nodiscard]] constexpr Vec4<T> cross(const Vec4<T>& vec_1, const Vec4<T>& vec_2) {
+        return Vec4<T>{ .x = (vec_1.y * vec_2.z) - (vec_1.z * vec_2.y),
+                        .y = (vec_1.z * vec_2.x) - (vec_1.x * vec_2.z),
+                        .z = (vec_1.x * vec_2.y) - (vec_1.y * vec_2.x) };
     }
 
     /**
      * @brief Compute the dot product between two vectors.
      */
     template<typename T>
-    [[nodiscard]] constexpr T dot(const Vector4<T>& vec_1, const Vector4<T>& vec_2) {
+    [[nodiscard]] constexpr T dot(const Vec4<T>& vec_1, const Vec4<T>& vec_2) {
         T result{};
         result += (vec_1.x * vec_2.x);
         result += (vec_1.y * vec_2.y);
         result += (vec_1.z * vec_2.z);
+        result += (vec_1.w * vec_2.w);
         return result;
     }
 
@@ -190,8 +191,8 @@ namespace rw {
      * @return ||destination - source||
      */
     template<typename T>
-    [[nodiscard]] constexpr T distance(const Vector4<T>& destination, const Vector4<T>& source) {
-        Vector4<T> diff{ destination - source };
+    [[nodiscard]] constexpr T distance(const Vec4<T>& destination, const Vec4<T>& source) {
+        Vec4<T> diff{ destination - source };
         return diff.length();
     }
 } // namespace rw

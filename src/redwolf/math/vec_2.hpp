@@ -10,28 +10,28 @@ namespace rw {
      * @brief 2-component vector.
      */
     template<typename T>
-    struct Vector2 {
+    struct Vec2 {
         T x{ 0.0F };
         T y{ 0.0F };
 
         /**
          * @brief Equality.
          */
-        [[nodiscard]] constexpr bool operator==(const Vector2& value) const {
+        [[nodiscard]] constexpr bool operator==(const Vec2& value) const {
             return are_equal(x, value.x) && are_equal(y, value.y);
         }
 
         /**
          * @brief Sum.
          */
-        [[nodiscard]] constexpr Vector2 operator+(const Vector2& value) const {
-            return Vector2{ .x = x + value.x, .y = y + value.y };
+        [[nodiscard]] constexpr Vec2 operator+(const Vec2& value) const {
+            return Vec2{ .x = x + value.x, .y = y + value.y };
         }
 
         /**
          * @brief Sum.
          */
-        constexpr Vector2& operator+=(const Vector2& value) {
+        constexpr Vec2& operator+=(const Vec2& value) {
             x += value.x;
             y += value.y;
             return *this;
@@ -40,14 +40,14 @@ namespace rw {
         /**
          * @brief Subtract.
          */
-        [[nodiscard]] constexpr Vector2 operator-(const Vector2& value) const {
-            return Vector2{ .x = x - value.x, .y = y - value.y };
+        [[nodiscard]] constexpr Vec2 operator-(const Vec2& value) const {
+            return Vec2{ .x = x - value.x, .y = y - value.y };
         }
 
         /**
          * @brief Subtract.
          */
-        constexpr Vector2& operator-=(const Vector2& value) {
+        constexpr Vec2& operator-=(const Vec2& value) {
             x -= value.x;
             y -= value.y;
             return *this;
@@ -56,21 +56,21 @@ namespace rw {
         /**
          * @brief Multiply by vector.
          */
-        [[nodiscard]] constexpr Vector2 operator*(const Vector2& value) const {
-            return Vector2{ .x = x * value.x, .y = y * value.y };
+        [[nodiscard]] constexpr Vec2 operator*(const Vec2& value) const {
+            return Vec2{ .x = x * value.x, .y = y * value.y };
         }
 
         /**
          * @brief Multiply by scalar.
          */
-        [[nodiscard]] constexpr Vector2 operator*(T scalar) {
-            return Vector2{ .x = x * scalar, .y = y * scalar };
+        [[nodiscard]] constexpr Vec2 operator*(T scalar) {
+            return Vec2{ .x = x * scalar, .y = y * scalar };
         }
 
         /**
          * @brief Multiply by vector.
          */
-        constexpr Vector2& operator*=(const Vector2& value) {
+        constexpr Vec2& operator*=(const Vec2& value) {
             x *= value.x;
             y *= value.y;
             return *this;
@@ -79,7 +79,7 @@ namespace rw {
         /**
          * @brief Multiply by scalar.
          */
-        constexpr Vector2& operator*=(T scalar) {
+        constexpr Vec2& operator*=(T scalar) {
             x *= scalar;
             y *= scalar;
             return *this;
@@ -88,14 +88,14 @@ namespace rw {
         /**
          * @brief Divide.
          */
-        [[nodiscard]] constexpr Vector2 operator/(const Vector2& value) const {
-            return Vector2{ .x = x / value.x, .y = y / value.y };
+        [[nodiscard]] constexpr Vec2 operator/(const Vec2& value) const {
+            return Vec2{ .x = x / value.x, .y = y / value.y };
         }
 
         /**
          * @brief Divide.
          */
-        constexpr Vector2& operator/=(const Vector2& value) {
+        constexpr Vec2& operator/=(const Vec2& value) {
             x /= value.x;
             y /= value.y;
             return *this;
@@ -104,19 +104,19 @@ namespace rw {
         /**
          * @brief Create the down vector.
          */
-        [[nodiscard]] static constexpr Vector2 down()
+        [[nodiscard]] static constexpr Vec2 down()
             requires std::is_signed_v<T>
         {
-            return Vector2{ .x = static_cast<T>(0), .y = static_cast<T>(-1) };
+            return Vec2{ .x = 0, .y = static_cast<T>(-1) };
         }
 
         /**
          * @brief Create the left vector.s
          */
-        [[nodiscard]] static constexpr Vector2 left()
+        [[nodiscard]] static constexpr Vec2 left()
             requires std::is_signed_v<T>
         {
-            return Vector2{ .x = static_cast<T>(-1), .y = static_cast<T>(0) };
+            return Vec2{ .x = static_cast<T>(-1), .y = 0 };
         }
 
         /**
@@ -145,8 +145,8 @@ namespace rw {
         /**
          * @brief Get a normalized copy of the vector.
          */
-        [[nodiscard]] constexpr Vector2 normalized() const {
-            Vector2 result{ *this };
+        [[nodiscard]] constexpr Vec2 normalized() const {
+            Vec2 result{ *this };
             result.normalize();
             return result;
         }
@@ -154,22 +154,22 @@ namespace rw {
         /**
          * @brief Create the unit vector.
          */
-        [[nodiscard]] static constexpr Vector2 one() {
-            return Vector2{ .x = static_cast<T>(1), .y = static_cast<T>(1) };
+        [[nodiscard]] static constexpr Vec2 one() {
+            return Vec2{ .x = static_cast<T>(1), .y = static_cast<T>(1) };
         }
 
         /**
          * @brief Create the right vector.s
          */
-        [[nodiscard]] static constexpr Vector2 right() {
-            return Vector2{ .x = static_cast<T>(1), .y = static_cast<T>(0) };
+        [[nodiscard]] static constexpr Vec2 right() {
+            return Vec2{ .x = static_cast<T>(1), .y = 0 };
         }
 
         /**
          * @brief Create the up vector.
          */
-        [[nodiscard]] static constexpr Vector2 up() {
-            return Vector2{ .x = static_cast<T>(0), .y = static_cast<T>(1) };
+        [[nodiscard]] static constexpr Vec2 up() {
+            return Vec2{ .x = 0, .y = static_cast<T>(1) };
         }
     };
 
@@ -177,7 +177,7 @@ namespace rw {
      * @brief Multiply by scalar.
      */
     template<typename T>
-    [[nodiscard]] constexpr Vector2<T> operator*(T scalar, const Vector2<T> vec) {
+    [[nodiscard]] constexpr Vec2<T> operator*(T scalar, const Vec2<T> vec) {
         return vec * scalar;
     }
 
@@ -188,8 +188,8 @@ namespace rw {
      * @return ||destination - source||
      */
     template<typename T>
-    [[nodiscard]] constexpr T distance(const Vector2<T>& destination, const Vector2<T>& source) {
-        Vector2<T> diff{ destination - source };
+    [[nodiscard]] constexpr T distance(const Vec2<T>& destination, const Vec2<T>& source) {
+        Vec2<T> diff{ destination - source };
         return diff.length();
     }
 } // namespace rw

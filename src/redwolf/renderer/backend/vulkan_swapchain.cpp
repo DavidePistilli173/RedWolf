@@ -151,6 +151,8 @@ bool rw::vk::Swapchain::create_() {
         image_count = device_->swapchain_support().capabilities.minImageCount + 1;
     }
 
+    max_frames_in_flight_ = image_count - 1;
+
     VkSwapchainCreateInfoKHR swapchain_create_info{ .sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
                                                     .pNext            = nullptr,
                                                     .surface          = surface_->handle(),

@@ -1,7 +1,5 @@
 #include "generic_module.hpp"
 
-#include <redwolf/logger.hpp>
-
 bool rwt::GenericModule::init() {
     rw::trace("GenericModule initialised.");
     return true;

@@ -9,6 +9,14 @@
 #include <redwolf/events/events.hpp>
 #include <redwolf/input/input.hpp>
 #include <redwolf/logger.hpp>
+#include <redwolf/math/mat_4.hpp>
+#include <redwolf/math/math_functions.hpp>
+#include <redwolf/math/quaternion.hpp>
+#include <redwolf/math/random.hpp>
+#include <redwolf/math/vec_2.hpp>
+#include <redwolf/math/vec_3.hpp>
+#include <redwolf/math/vec_4.hpp>
+#include <redwolf/math/vector_functions.hpp>
 #include <redwolf/memory/memory.hpp>
 #include <redwolf/module.hpp>
 #include <redwolf/platform/platform.hpp>

@@ -8,7 +8,7 @@ namespace rw {
      * @brief 3-component vector.
      */
     template<typename T>
-    struct Vector3 {
+    struct Vec3 {
         T x{ 0.0F };
         T y{ 0.0F };
         T z{ 0.0F };
@@ -16,21 +16,21 @@ namespace rw {
         /**
          * @brief Equality.
          */
-        [[nodiscard]] constexpr bool operator==(const Vector3& value) const {
+        [[nodiscard]] constexpr bool operator==(const Vec3& value) const {
             return are_equal(x, value.x) && are_equal(y, value.y) && are_equal(z, value.z);
         }
 
         /**
          * @brief Sum.
          */
-        [[nodiscard]] constexpr Vector3 operator+(const Vector3& value) const {
-            return Vector3{ .x = x + value.x, .y = y + value.y, .z = z + value.z };
+        [[nodiscard]] constexpr Vec3 operator+(const Vec3& value) const {
+            return Vec3{ .x = x + value.x, .y = y + value.y, .z = z + value.z };
         }
 
         /**
          * @brief Sum.
          */
-        constexpr Vector3& operator+=(const Vector3& value) {
+        constexpr Vec3& operator+=(const Vec3& value) {
             x += value.x;
             y += value.y;
             z += value.z;
@@ -40,14 +40,14 @@ namespace rw {
         /**
          * @brief Subtract.
          */
-        [[nodiscard]] constexpr Vector3 operator-(const Vector3& value) const {
-            return Vector3{ .x = x - value.x, .y = y - value.y, .z = z - value.z };
+        [[nodiscard]] constexpr Vec3 operator-(const Vec3& value) const {
+            return Vec3{ .x = x - value.x, .y = y - value.y, .z = z - value.z };
         }
 
         /**
          * @brief Subtract.
          */
-        constexpr Vector3& operator-=(const Vector3& value) {
+        constexpr Vec3& operator-=(const Vec3& value) {
             x -= value.x;
             y -= value.y;
             z -= value.z;
@@ -57,21 +57,21 @@ namespace rw {
         /**
          * @brief Multiply by vector.
          */
-        [[nodiscard]] constexpr Vector3 operator*(const Vector3& value) const {
-            return Vector3{ .x = x * value.x, .y = y * value.y, .z = z * value.z };
+        [[nodiscard]] constexpr Vec3 operator*(const Vec3& value) const {
+            return Vec3{ .x = x * value.x, .y = y * value.y, .z = z * value.z };
         }
 
         /**
          * @brief Multiply by scalar.
          */
-        [[nodiscard]] constexpr Vector3 operator*(T scalar) {
-            return Vector3{ .x = x * scalar, .y = y * scalar, .z = z * scalar };
+        [[nodiscard]] constexpr Vec3 operator*(T scalar) {
+            return Vec3{ .x = x * scalar, .y = y * scalar, .z = z * scalar };
         }
 
         /**
          * @brief Multiply by vector.
          */
-        constexpr Vector3& operator*=(const Vector3& value) {
+        constexpr Vec3& operator*=(const Vec3& value) {
             x *= value.x;
             y *= value.y;
             z *= value.z;
@@ -81,7 +81,7 @@ namespace rw {
         /**
          * @brief Multiply by scalar.
          */
-        constexpr Vector3& operator*=(T scalar) {
+        constexpr Vec3& operator*=(T scalar) {
             x *= scalar;
             y *= scalar;
             z *= scalar;
@@ -91,14 +91,14 @@ namespace rw {
         /**
          * @brief Divide.
          */
-        [[nodiscard]] constexpr Vector3 operator/(const Vector3& value) const {
-            return Vector3{ .x = x / value.x, .y = y / value.y, .z = z / value.z };
+        [[nodiscard]] constexpr Vec3 operator/(const Vec3& value) const {
+            return Vec3{ .x = x / value.x, .y = y / value.y, .z = z / value.z };
         }
 
         /**
          * @brief Divide.
          */
-        constexpr Vector3& operator/=(const Vector3& value) {
+        constexpr Vec3& operator/=(const Vec3& value) {
             x /= value.x;
             y /= value.y;
             z /= value.z;
@@ -108,35 +108,35 @@ namespace rw {
         /**
          * @brief Create the back vector.
          */
-        [[nodiscard]] static constexpr Vector3 back() {
-            return Vector3{ .x = static_cast<T>(0), .y = static_cast<T>(0), .z = static_cast<T>(1) };
+        [[nodiscard]] static constexpr Vec3 back() {
+            return Vec3{ .x = 0, .y = 0, .z = static_cast<T>(1) };
         }
 
         /**
          * @brief Create the down vector.
          */
-        [[nodiscard]] static constexpr Vector3 down()
+        [[nodiscard]] static constexpr Vec3 down()
             requires std::is_signed_v<T>
         {
-            return Vector3{ .x = static_cast<T>(0), .y = static_cast<T>(-1), .z = static_cast<T>(0) };
+            return Vec3{ .x = 0, .y = static_cast<T>(-1), .z = 0 };
         }
 
         /**
          * @brief Create the forward vector.
          */
-        [[nodiscard]] static constexpr Vector3 forward()
+        [[nodiscard]] static constexpr Vec3 forward()
             requires std::is_signed_v<T>
         {
-            return Vector3{ .x = static_cast<T>(0), .y = static_cast<T>(0), .z = static_cast<T>(-1) };
+            return Vec3{ .x = 0, .y = 0, .z = static_cast<T>(-1) };
         }
 
         /**
          * @brief Create the left vector.s
          */
-        [[nodiscard]] static constexpr Vector3 left()
+        [[nodiscard]] static constexpr Vec3 left()
             requires std::is_signed_v<T>
         {
-            return Vector3{ .x = static_cast<T>(-1), .y = static_cast<T>(0), .z = static_cast<T>(0) };
+            return Vec3{ .x = static_cast<T>(-1), .y = 0, .z = 0 };
         }
 
         /**
@@ -166,8 +166,8 @@ namespace rw {
         /**
          * @brief Get a normalized copy of the vector.
          */
-        [[nodiscard]] constexpr Vector3 normalized() const {
-            Vector3 result{ *this };
+        [[nodiscard]] constexpr Vec3 normalized() const {
+            Vec3 result{ *this };
             result.normalize();
             return result;
         }
@@ -175,22 +175,22 @@ namespace rw {
         /**
          * @brief Create the unit vector.
          */
-        [[nodiscard]] static constexpr Vector3 one() {
-            return Vector3{ .x = static_cast<T>(1), .y = static_cast<T>(1), .z = static_cast<T>(1) };
+        [[nodiscard]] static constexpr Vec3 one() {
+            return Vec3{ .x = static_cast<T>(1), .y = static_cast<T>(1), .z = static_cast<T>(1) };
         }
 
         /**
          * @brief Create the right vector.s
          */
-        [[nodiscard]] static constexpr Vector3 right() {
-            return Vector3{ .x = static_cast<T>(1), .y = static_cast<T>(0), .z = static_cast<T>(0) };
+        [[nodiscard]] static constexpr Vec3 right() {
+            return Vec3{ .x = static_cast<T>(1), .y = 0, .z = 0 };
         }
 
         /**
          * @brief Create the up vector.
          */
-        [[nodiscard]] static constexpr Vector3 up() {
-            return Vector3{ .x = static_cast<T>(0), .y = static_cast<T>(1), .z = static_cast<T>(0) };
+        [[nodiscard]] static constexpr Vec3 up() {
+            return Vec3{ .x = 0, .y = static_cast<T>(1), .z = 0 };
         }
     };
 
@@ -198,7 +198,7 @@ namespace rw {
      * @brief Multiply by scalar.
      */
     template<typename T>
-    [[nodiscard]] constexpr Vector3<T> operator*(T scalar, const Vector3<T> vec) {
+    [[nodiscard]] constexpr Vec3<T> operator*(T scalar, const Vec3<T> vec) {
         return vec * scalar;
     }
 
@@ -206,17 +206,17 @@ namespace rw {
      * @brief Compute the cross product between two vectors.
      */
     template<typename T>
-    [[nodiscard]] constexpr Vector3<T> cross(const Vector3<T>& vec_1, const Vector3<T>& vec_2) {
-        return Vector3<T>{ .x = (vec_1.y * vec_2.z) - (vec_1.z * vec_2.y),
-                           .y = (vec_1.z * vec_2.x) - (vec_1.x * vec_2.z),
-                           .z = (vec_1.x * vec_2.y) - (vec_1.y * vec_2.x) };
+    [[nodiscard]] constexpr Vec3<T> cross(const Vec3<T>& vec_1, const Vec3<T>& vec_2) {
+        return Vec3<T>{ .x = (vec_1.y * vec_2.z) - (vec_1.z * vec_2.y),
+                        .y = (vec_1.z * vec_2.x) - (vec_1.x * vec_2.z),
+                        .z = (vec_1.x * vec_2.y) - (vec_1.y * vec_2.x) };
     }
 
     /**
      * @brief Compute the dot product between two vectors.
      */
     template<typename T>
-    [[nodiscard]] constexpr T dot(const Vector3<T>& vec_1, const Vector3<T>& vec_2) {
+    [[nodiscard]] constexpr T dot(const Vec3<T>& vec_1, const Vec3<T>& vec_2) {
         T result{};
         result += (vec_1.x * vec_2.x);
         result += (vec_1.y * vec_2.y);
@@ -231,8 +231,8 @@ namespace rw {
      * @return ||destination - source||
      */
     template<typename T>
-    [[nodiscard]] constexpr T distance(const Vector3<T>& destination, const Vector3<T>& source) {
-        Vector3<T> diff{ destination - source };
+    [[nodiscard]] constexpr T distance(const Vec3<T>& destination, const Vec3<T>& source) {
+        Vec3<T> diff{ destination - source };
         return diff.length();
     }
 } // namespace rw
