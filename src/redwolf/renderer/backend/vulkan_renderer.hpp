@@ -108,19 +108,19 @@ namespace rw {
          */
         [[nodiscard]] bool recreate_swapchain_();
 
-        VkAllocationCallbacks*      allocator_{ nullptr };                 /**< Custom vulkan allocator. */
-        Ptr<vk::Instance>           instance_;                             /**< Backend instance. */
-        Ptr<vk::Surface>            surface_;                              /**< Rendering surface. */
-        Ptr<vk::Device>             device_;                               /**< Rendering device. */
-        Ptr<vk::Swapchain>          swapchain_;                            /**< Swapchain for presenting images to the screen. */
-        Ptr<vk::RenderPass>         main_renderpass_;                      /**< Main render pass. */
-        Vec<Ptr<vk::Framebuffer>>   framebuffers_{ MemoryType::renderer }; /**< Framebuffers for the swapchain. */
-        Vec<Ptr<vk::CommandBuffer>> graphics_command_buffers_{ MemoryType::renderer }; /**< Graphics command buffers. */
+        VkAllocationCallbacks*      allocator_{ nullptr };                     /**< Custom vulkan allocator. */
+        Ptr<vk::Instance>           instance_;                                 /**< Backend instance. */
+        Ptr<vk::Surface>            surface_;                                  /**< Rendering surface. */
+        Ptr<vk::Device>             device_;                                   /**< Rendering device. */
+        Ptr<vk::Swapchain>          swapchain_;                                /**< Swapchain for presenting images to the screen. */
+        Ptr<vk::RenderPass>         main_renderpass_;                          /**< Main render pass. */
+        Vec<Ptr<vk::Framebuffer>>   framebuffers_{ MemoryCategory::renderer }; /**< Framebuffers for the swapchain. */
+        Vec<Ptr<vk::CommandBuffer>> graphics_command_buffers_{ MemoryCategory::renderer }; /**< Graphics command buffers. */
 
-        Vec<Ptr<vk::Semaphore>> image_available_sems_{ MemoryType::renderer }; /**< Image available semaphores. */
-        Vec<Ptr<vk::Semaphore>> queue_complete_sems_{ MemoryType::renderer };  /**< Queue completion semaphores. */
-        Vec<Ptr<vk::Fence>>     in_flight_fences_{ MemoryType::renderer };     /**< Fences for the in-flight frames. */
-        Vec<vk::Fence*>         images_in_flight_{ MemoryType::renderer };     /**< Fences currently in use. */
+        Vec<Ptr<vk::Semaphore>> image_available_sems_{ MemoryCategory::renderer }; /**< Image available semaphores. */
+        Vec<Ptr<vk::Semaphore>> queue_complete_sems_{ MemoryCategory::renderer };  /**< Queue completion semaphores. */
+        Vec<Ptr<vk::Fence>>     in_flight_fences_{ MemoryCategory::renderer };     /**< Fences for the in-flight frames. */
+        Vec<vk::Fence*>         images_in_flight_{ MemoryCategory::renderer };     /**< Fences currently in use. */
 
         u32 cached_framebuffer_width_{ 512U };       /**< Cached framebuffer width, to be used when resizing. */
         u32 cached_framebuffer_height_{ 512U };      /**< Cached framebuffer height, to be used when resizing. */

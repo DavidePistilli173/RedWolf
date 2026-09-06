@@ -2,7 +2,7 @@
 
 #include "redwolf/common.hpp"
 #include "redwolf/logger.hpp"
-#include "redwolf/memory/memory_pool.hpp"
+#include "redwolf/memory/generic_allocator.hpp"
 #include "vulkan_common.hpp"
 
 #include <limits>
@@ -169,7 +169,7 @@ bool rw::vk::Device::are_physical_requirements_met_(
     // Obtain queue family data.
     u32 queue_family_count{ 0U };
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, nullptr);
-    Vec<VkQueueFamilyProperties> queue_family_properties{ MemoryType::renderer };
+    Vec<VkQueueFamilyProperties> queue_family_properties{ MemoryCategory::renderer };
     queue_family_properties.resize(queue_family_count);
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, queue_family_properties.data());
 
@@ -253,7 +253,7 @@ bool rw::vk::Device::are_physical_requirements_met_(
             info("Device unsuitable: no extensions supported.");
             return false;
         }
-        Vec<VkExtensionProperties> extension_properties{ MemoryType::renderer };
+        Vec<VkExtensionProperties> extension_properties{ MemoryCategory::renderer };
         extension_properties.resize(extension_count);
         RW_VK_CHECK(
             vkEnumerateDeviceExtensionProperties(device, nullptr, &extension_count, extension_properties.data()),
@@ -301,7 +301,7 @@ bool rw::vk::Device::create_logical_device_() {
     const std::array<f32, 2> queue_priority{ 1.0F, 1.0F };
 
     // Graphics queues.
-    Vec<VkDeviceQueueCreateInfo> queue_create_info{ MemoryType::renderer };
+    Vec<VkDeviceQueueCreateInfo> queue_create_info{ MemoryCategory::renderer };
     (void) queue_create_info.emplace_back(
         VkDeviceQueueCreateInfo{ .sType            = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
                                  .pNext            = nullptr,
@@ -368,7 +368,7 @@ bool rw::vk::Device::select_physical_device_() {
         return false;
     }
 
-    Vec<VkPhysicalDevice> physical_devices{ MemoryType::renderer };
+    Vec<VkPhysicalDevice> physical_devices{ MemoryCategory::renderer };
     physical_devices.resize(physical_device_count);
     RW_VK_CHECK(
         vkEnumeratePhysicalDevices(instance_->handle(), &physical_device_count, physical_devices.data()),

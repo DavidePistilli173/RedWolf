@@ -1,6 +1,6 @@
 #pragma once
 
-#include "memory_pool.hpp"
+#include "generic_allocator.hpp"
 #include "redwolf/profiler.hpp"
 
 #include <atomic>
@@ -33,14 +33,15 @@ namespace rw {
     class ControlBlock final : public ControlBlockBase {
      public:
         template<typename... Args>
-        explicit ControlBlock(MemoryPool* pool, Args&&... args) : pool_{ pool }, data_{ std::forward<Args>(args)... } {}
+        explicit ControlBlock(GenericAllocator* allocator, Args&&... args) :
+            allocator_{ allocator }, data_{ std::forward<Args>(args)... } {}
 
         /**
          * @brief Destroy and deallocate the control block.
          */
         void destroy() override {
             data_.~T();
-            pool_->deallocate<ControlBlock<T>>(this);
+            allocator_->deallocate<ControlBlock<T>>(this);
         }
 
         [[nodiscard]] T* get() {
@@ -48,8 +49,8 @@ namespace rw {
         }
 
      private:
-        MemoryPool* pool_;
-        T           data_;
+        GenericAllocator* allocator_;
+        T                 data_;
     };
 
     /**
@@ -245,7 +246,7 @@ namespace rw {
          * @brief Constructor.
          */
         template<typename... Args>
-        explicit Ptr(MemoryPool* pool, Args&&... args) {
+        explicit Ptr(GenericAllocator* pool, Args&&... args) {
             RW_PROFILE_SCOPE
 
             auto* block{ pool->allocate<ControlBlock<T>>() };

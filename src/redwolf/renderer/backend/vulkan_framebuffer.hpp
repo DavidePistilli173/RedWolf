@@ -45,10 +45,10 @@ namespace rw::vk {
         [[nodiscard]] bool init(const Params& params);
 
      private:
-        VkAllocationCallbacks* allocator_{ nullptr };                /**< Custom vulkan allocator. */
-        Ptr<Device>            device_;                              /**< Rendering device. */
-        VkFramebuffer          framebuffer_{ VK_NULL_HANDLE };       /**< Raw framebuffer handle. */
-        Vec<VkImageView>       attachments_{ MemoryType::renderer }; /**< Attachments of the framebuffer. */
-        Ptr<RenderPass>        render_pass_;                         /**< Render pass the framebuffer is associated with. */
+        VkAllocationCallbacks* allocator_{ nullptr };                    /**< Custom vulkan allocator. */
+        Ptr<Device>            device_;                                  /**< Rendering device. */
+        VkFramebuffer          framebuffer_{ VK_NULL_HANDLE };           /**< Raw framebuffer handle. */
+        Vec<VkImageView>       attachments_{ MemoryCategory::renderer }; /**< Attachments of the framebuffer. */
+        Ptr<RenderPass>        render_pass_;                             /**< Render pass the framebuffer is associated with. */
     };
 } // namespace rw::vk

@@ -104,7 +104,7 @@ bool rw::vk::Instance::init_instance_() {
                                       .engineVersion = VK_MAKE_VERSION(rw::version.major, rw::version.minor, rw::version.patch),
                                       .apiVersion    = VK_API_VERSION_1_2 };
 
-    Vec<const char*> enabled_extensions{ MemoryType::renderer, required_extensions };
+    Vec<const char*> enabled_extensions{ MemoryCategory::renderer, required_extensions };
     Platform::append_required_extension_names(enabled_extensions);
 
     Vec<const char*> enabled_layers{ init_layer_names_() };
@@ -121,7 +121,7 @@ bool rw::vk::Instance::init_instance_() {
 }
 
 rw::Vec<const char*> rw::vk::Instance::init_layer_names_() {
-    Vec<const char*> result{ MemoryType::renderer };
+    Vec<const char*> result{ MemoryCategory::renderer };
 #ifdef RW_ENABLE_VULKAN_DEBUG
 
     trace("Validation layers enabled.");
@@ -132,14 +132,14 @@ rw::Vec<const char*> rw::vk::Instance::init_layer_names_() {
     RW_VK_CHECK(
         vkEnumerateInstanceLayerProperties(&available_layer_count, nullptr),
         "Failed to enumerate Vulkan layers: '{}'",
-        Vec<const char*>(MemoryType::renderer))
+        Vec<const char*>(MemoryCategory::renderer))
 
-    Vec<VkLayerProperties> layer_properties{ MemoryType::renderer };
+    Vec<VkLayerProperties> layer_properties{ MemoryCategory::renderer };
     layer_properties.resize(available_layer_count);
     RW_VK_CHECK(
         vkEnumerateInstanceLayerProperties(&available_layer_count, layer_properties.data()),
         "Failed to enumerate Vulkan layers: '{}'",
-        Vec<const char*>(MemoryType::renderer))
+        Vec<const char*>(MemoryCategory::renderer))
 
     for (const auto& required_layer : result) {
         bool found{ false };
@@ -152,7 +152,7 @@ rw::Vec<const char*> rw::vk::Instance::init_layer_names_() {
 
         if (!found) {
             error("Layer '{}' not available.", required_layer);
-            return Vec<const char*>(MemoryType::renderer);
+            return Vec<const char*>(MemoryCategory::renderer);
         }
     }
 

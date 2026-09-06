@@ -3,7 +3,7 @@
 #include "common.hpp"
 #include "containers/vec.hpp"
 #include "events/events.hpp"
-#include "memory/memory_pool.hpp"
+#include "memory/generic_allocator.hpp"
 #include "memory/ptr.hpp"
 #include "module.hpp"
 #include "platform/platform_common.hpp"
@@ -56,8 +56,8 @@ namespace rw {
          */
         [[nodiscard]] bool init_subsystems_();
 
-        bool             running_{ true };               /**< Main loop conditino flag. */
-        Vec<Ptr<Module>> modules_{ MemoryType::engine }; /**< User modules. */
+        bool             running_{ true };                   /**< Main loop conditino flag. */
+        Vec<Ptr<Module>> modules_{ MemoryCategory::engine }; /**< User modules. */
 
         Connection<WindowCloseEvent> window_close_event_; /**< Connection for the window close event. */
     };

@@ -7,6 +7,27 @@ namespace {
     rw::Memory* g_memory{ nullptr }; // Global memory manager instance.
 }
 
+rw::GenericAllocator& rw::Memory::allocator(MemoryCategory type) {
+    RW_PROFILE_SCOPE
+
+    switch (type) {
+    case MemoryCategory::events:
+        return g_memory->pool_events_;
+    case MemoryCategory::renderer:
+        return g_memory->pool_renderer_;
+    case MemoryCategory::engine:
+        return g_memory->pool_engine_;
+    case MemoryCategory::modules:
+        return g_memory->pool_modules_;
+    case MemoryCategory::app:
+        return g_memory->pool_app_;
+    case MemoryCategory::invalid:
+    default:
+        error("Invalid allocation type: '{}'", static_cast<u8>(type));
+        return g_memory->pool_invalid_;
+    }
+}
+
 bool rw::Memory::init() {
     RW_PROFILE_SCOPE
 
@@ -17,27 +38,6 @@ bool rw::Memory::init() {
 
     g_memory = new Memory();
     return true;
-}
-
-rw::MemoryPool& rw::Memory::pool(MemoryType type) {
-    RW_PROFILE_SCOPE
-
-    switch (type) {
-    case MemoryType::events:
-        return g_memory->pool_events_;
-    case MemoryType::renderer:
-        return g_memory->pool_renderer_;
-    case MemoryType::engine:
-        return g_memory->pool_engine_;
-    case MemoryType::modules:
-        return g_memory->pool_modules_;
-    case MemoryType::app:
-        return g_memory->pool_app_;
-    case MemoryType::invalid:
-    default:
-        error("Invalid allocation type: '{}'", static_cast<u8>(type));
-        return g_memory->pool_invalid_;
-    }
 }
 
 void rw::Memory::shutdown() {

@@ -10,24 +10,12 @@
 
 namespace rw {
     /**
-     * @brief Memory categories.
-     */
-    enum class MemoryType : u8 {
-        invalid,  /**< Invalid allocation type. */
-        events,   /**< Event allocations. */
-        renderer, /**< Renderer allocations. */
-        engine,   /**< Generic engine allocation. */
-        modules,  /**< User modules allocations. */
-        app       /**< Generic application allocation. */
-    };
-
-    /**
      * @brief Single pool of memory that can be used by the engine.
      * @todo Implement an actual memory pool / memory arena.
      */
-    class MemoryPool {
+    class GenericAllocator {
      public:
-        explicit MemoryPool(MemoryType type);
+        explicit GenericAllocator();
 
         /**
          * @brief Allocate enough memory to store a single object, but does not create the object itself.
@@ -121,16 +109,8 @@ namespace rw {
             return reinterpret_cast<T*>(new_it.first->first);
         }
 
-        /**
-         * @brief Get the memory type of the pool.
-         */
-        [[nodiscard]] MemoryType type() const {
-            return type_;
-        }
-
      private:
-        MemoryType                     type_{ MemoryType::invalid }; /**< Category this memory pool belongs to. */
-        usize                          size_{ 0U };                  /**< Currently allocated size estimate. [B] */
-        std::unordered_map<u8*, usize> allocations_;                 /**< Current allocations. */
+        usize                          size_{ 0U };  /**< Currently allocated size estimate. [B] */
+        std::unordered_map<u8*, usize> allocations_; /**< Current allocations. */
     };
 } // namespace rw

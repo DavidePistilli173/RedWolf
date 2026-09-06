@@ -108,7 +108,7 @@ namespace rw {
             Vec<std::optional<Entry>>::template Iterator<IsConst> end_; // bound for skip-scanning
         };
 
-        explicit HashMap(MemoryType memory_type) : memory_type_{ memory_type }, table_{ memory_type } {}
+        explicit HashMap(MemoryCategory memory_type) : memory_category_{ memory_type }, table_{ memory_type } {}
 
         /**
          * @brief Get an element from the map.
@@ -336,7 +336,7 @@ namespace rw {
          */
         void resize_() {
             const usize               new_capacity{ std::max(min_capacity, table_.size() * growth_factor) };
-            Vec<std::optional<Entry>> new_table{ memory_type_ };
+            Vec<std::optional<Entry>> new_table{ memory_category_ };
             new_table.resize(new_capacity);
 
             for (auto& entry : table_) {
@@ -352,8 +352,8 @@ namespace rw {
             table_ = std::move(new_table);
         }
 
-        MemoryType                memory_type_{ MemoryType::engine }; /**< Memory pool used by the hashmap. */
-        Vec<std::optional<Entry>> table_{ MemoryType::engine };       /**< Actual map data. */
-        usize                     size_{ 0U };                        /**< Number of real elements stored in the map. */
+        MemoryCategory            memory_category_{ MemoryCategory::engine }; /**< Memory pool used by the hashmap. */
+        Vec<std::optional<Entry>> table_{ MemoryCategory::engine };           /**< Actual map data. */
+        usize                     size_{ 0U };                                /**< Number of real elements stored in the map. */
     };
 } // namespace rw

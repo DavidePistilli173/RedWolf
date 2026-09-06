@@ -121,12 +121,12 @@ namespace rw::vk {
         Ptr<Surface>           surface_;              /**< Rendering surface. */
         Ptr<Device>            device_;               /**< Rendering device. */
 
-        VkSwapchainKHR     swapchain_{ VK_NULL_HANDLE };    /**< Raw swapchain handle. */
-        VkSurfaceFormatKHR image_format_{};                 /**< Image data format. */
-        u8                 max_frames_in_flight_{ 0U };     /**< Maximum number of frames being rendered to. */
-        Vec<VkImage>       images_{ MemoryType::renderer }; /**< Swapchain images. */
-        Vec<VkImageView>   views_{ MemoryType::renderer };  /**< Image views. */
-        Ptr<Image2D>       depth_buffer_;                   /**< Depth buffer. */
+        VkSwapchainKHR     swapchain_{ VK_NULL_HANDLE };        /**< Raw swapchain handle. */
+        VkSurfaceFormatKHR image_format_{};                     /**< Image data format. */
+        u8                 max_frames_in_flight_{ 0U };         /**< Maximum number of frames being rendered to. */
+        Vec<VkImage>       images_{ MemoryCategory::renderer }; /**< Swapchain images. */
+        Vec<VkImageView>   views_{ MemoryCategory::renderer };  /**< Image views. */
+        Ptr<Image2D>       depth_buffer_;                       /**< Depth buffer. */
 
         u32 width_{ 0U };  /**< Viewport width. */
         u32 height_{ 0U }; /**< Viewport height. */

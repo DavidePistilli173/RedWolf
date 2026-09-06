@@ -144,7 +144,7 @@ bool rw::RendererBackend::create_command_buffers_() {
             buffer->reset();
         }
 
-        buffer = std::move(Memory::new_object<vk::CommandBuffer>(MemoryType::renderer));
+        buffer = std::move(Memory::new_object<vk::CommandBuffer>(MemoryCategory::renderer));
         if (!buffer->init(device_, device_->graphics_command_pool(), true)) {
             error("Failed to initialise command buffer.");
             return false;
@@ -214,9 +214,9 @@ bool rw::RendererBackend::regenerate_framebuffers_() {
     framebuffers_.resize(swapchain_->image_count());
 
     for (auto [i, framebuffer] : std::views::enumerate(framebuffers_)) {
-        framebuffer = Memory::new_object<vk::Framebuffer>(MemoryType::renderer);
+        framebuffer = Memory::new_object<vk::Framebuffer>(MemoryCategory::renderer);
 
-        Vec<VkImageView> attachments{ MemoryType::renderer };
+        Vec<VkImageView> attachments{ MemoryCategory::renderer };
         (void) attachments.emplace_back(swapchain_->views()[i]);
         (void) attachments.emplace_back(swapchain_->depth_buffer()->view());
 
@@ -236,25 +236,25 @@ bool rw::RendererBackend::regenerate_framebuffers_() {
 }
 
 bool rw::RendererBackend::init_internal_() {
-    instance_ = Memory::new_object<vk::Instance>(MemoryType::renderer);
+    instance_ = Memory::new_object<vk::Instance>(MemoryCategory::renderer);
     if (!instance_->init(allocator_)) {
         error("Failed to initialise Vulkan instance.");
         return false;
     }
 
-    surface_ = Memory::new_object<vk::Surface>(MemoryType::renderer);
+    surface_ = Memory::new_object<vk::Surface>(MemoryCategory::renderer);
     if (!surface_->init(g_backend->instance_, allocator_)) {
         error("Failed to initialise Vulkan surface.");
         return false;
     }
 
-    device_ = Memory::new_object<vk::Device>(MemoryType::renderer);
+    device_ = Memory::new_object<vk::Device>(MemoryCategory::renderer);
     if (!device_->init(instance_, allocator_, surface_)) {
         error("Failed to initialise rendering device.");
         return false;
     }
 
-    swapchain_ = Memory::new_object<vk::Swapchain>(MemoryType::renderer);
+    swapchain_ = Memory::new_object<vk::Swapchain>(MemoryCategory::renderer);
     if (!swapchain_->init(
             vk::Swapchain::Params{ .allocator = allocator_,
                                    .surface   = surface_,
@@ -265,7 +265,7 @@ bool rw::RendererBackend::init_internal_() {
         return false;
     }
 
-    main_renderpass_ = Memory::new_object<vk::RenderPass>(MemoryType::renderer);
+    main_renderpass_ = Memory::new_object<vk::RenderPass>(MemoryCategory::renderer);
     if (!main_renderpass_->init(
             vk::RenderPass::Params{
                 .allocator   = allocator_,
@@ -305,7 +305,7 @@ bool rw::RendererBackend::init_internal_() {
 bool rw::RendererBackend::init_sync_objects_() {
     image_available_sems_.resize(swapchain_->max_frames_in_flight());
     for (auto& sem : image_available_sems_) {
-        sem = Memory::new_object<vk::Semaphore>(MemoryType::renderer);
+        sem = Memory::new_object<vk::Semaphore>(MemoryCategory::renderer);
         if (!sem->init(allocator_, device_)) {
             error("Failed to initialise image available semaphore.");
             return false;
@@ -314,7 +314,7 @@ bool rw::RendererBackend::init_sync_objects_() {
 
     queue_complete_sems_.resize(swapchain_->image_count());
     for (auto& sem : queue_complete_sems_) {
-        sem = Memory::new_object<vk::Semaphore>(MemoryType::renderer);
+        sem = Memory::new_object<vk::Semaphore>(MemoryCategory::renderer);
         if (!sem->init(allocator_, device_)) {
             error("Failed to initialise queue complete semaphore.");
             return false;
@@ -323,7 +323,7 @@ bool rw::RendererBackend::init_sync_objects_() {
 
     in_flight_fences_.resize(swapchain_->max_frames_in_flight());
     for (auto& fence : in_flight_fences_) {
-        fence = Memory::new_object<vk::Fence>(MemoryType::renderer);
+        fence = Memory::new_object<vk::Fence>(MemoryCategory::renderer);
         if (!fence->init(allocator_, device_, true)) {
             error("Failed to initialise in-flight fences.");
             return false;
@@ -376,7 +376,7 @@ bool rw::RendererBackend::recreate_swapchain_() {
         queue_complete_sems_.clear();
         queue_complete_sems_.resize(swapchain_->image_count());
         for (auto& sem : queue_complete_sems_) {
-            sem = Memory::new_object<vk::Semaphore>(MemoryType::renderer);
+            sem = Memory::new_object<vk::Semaphore>(MemoryCategory::renderer);
             if (!sem->init(allocator_, device_)) {
                 error("Failed to re-initialise queue complete semaphore.");
                 return false;

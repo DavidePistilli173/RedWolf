@@ -3,7 +3,7 @@
 #include "connection.hpp"
 #include "event.hpp"
 #include "redwolf/containers/hash_map.hpp"
-#include "redwolf/memory/memory_pool.hpp"
+#include "redwolf/memory/generic_allocator.hpp"
 
 namespace rw {
     /**
@@ -67,7 +67,7 @@ namespace rw {
             // New event.
             if (it == g_events->events_.end()) {
                 auto event{ static_ptr_cast<Event<PayloadT>>(
-                    g_events->events_.emplace(id, Memory::new_object<Event<PayloadT>>(MemoryType::events))) };
+                    g_events->events_.emplace(id, Memory::new_object<Event<PayloadT>>(MemoryCategory::events))) };
                 return Connection<PayloadT>(event->subscribe(callback), event);
             }
 
@@ -84,6 +84,6 @@ namespace rw {
          */
         [[nodiscard]] static Events* instance_();
 
-        HashMap<TypeId, Ptr<EventBase>> events_{ MemoryType::engine }; /**< All enabled events. */
+        HashMap<TypeId, Ptr<EventBase>> events_{ MemoryCategory::engine }; /**< All enabled events. */
     };
 } // namespace rw

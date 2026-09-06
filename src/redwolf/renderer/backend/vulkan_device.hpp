@@ -19,13 +19,13 @@ namespace rw::vk {
          * @brief Information about a physical device.
          */
         struct VulkanPhysicalDeviceInfo {
-            bool             graphics{ false };                            /**< Has a graphics queue. */
-            bool             present{ false };                             /**< Has a presentation queue. */
-            bool             compute{ false };                             /**< Has a compute queue. */
-            bool             transfer{ false };                            /**< Has a transfer queue. */
-            Vec<const char*> supported_extensions{ MemoryType::renderer }; /**< Supported extensions. */
-            bool             sampler_anisotropy{ false };                  /**< */
-            bool             discrete{ false };                            /**< Discrete/integrated GPU. */
+            bool             graphics{ false };                                /**< Has a graphics queue. */
+            bool             present{ false };                                 /**< Has a presentation queue. */
+            bool             compute{ false };                                 /**< Has a compute queue. */
+            bool             transfer{ false };                                /**< Has a transfer queue. */
+            Vec<const char*> supported_extensions{ MemoryCategory::renderer }; /**< Supported extensions. */
+            bool             sampler_anisotropy{ false };                      /**< */
+            bool             discrete{ false };                                /**< Discrete/integrated GPU. */
         };
 
         /**
@@ -42,9 +42,9 @@ namespace rw::vk {
          * @brief Information about swapchain support for a device.
          */
         struct VulkanSwapchainSupportInfo {
-            VkSurfaceCapabilitiesKHR capabilities{};                        /**< Capabilities. */
-            Vec<VkSurfaceFormatKHR>  formats{ MemoryType::renderer };       /**< Image formats. */
-            Vec<VkPresentModeKHR>    present_modes{ MemoryType::renderer }; /**< Presentation modes. */
+            VkSurfaceCapabilitiesKHR capabilities{};                            /**< Capabilities. */
+            Vec<VkSurfaceFormatKHR>  formats{ MemoryCategory::renderer };       /**< Image formats. */
+            Vec<VkPresentModeKHR>    present_modes{ MemoryCategory::renderer }; /**< Presentation modes. */
         };
 
         Device() = default;

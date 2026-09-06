@@ -64,7 +64,7 @@ namespace rw {
         }
 
      private:
-        u32                           next_subscriber_id_{ 1U };          /**< Next subscriber ID to allocate. */
-        Vec<std::pair<Callback, u32>> subscribers_{ MemoryType::events }; /**< List of all event subscribers. */
+        u32                           next_subscriber_id_{ 1U };              /**< Next subscriber ID to allocate. */
+        Vec<std::pair<Callback, u32>> subscribers_{ MemoryCategory::events }; /**< List of all event subscribers. */
     };
 } // namespace rw

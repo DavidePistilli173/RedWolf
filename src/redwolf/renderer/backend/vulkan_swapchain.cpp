@@ -222,7 +222,7 @@ bool rw::vk::Swapchain::create_() {
     }
 
     // Create the depth image.
-    depth_buffer_ = Memory::new_object<Image2D>(MemoryType::renderer);
+    depth_buffer_ = Memory::new_object<Image2D>(MemoryCategory::renderer);
     if (!depth_buffer_->init(
             Image2D::Params{ .allocator    = allocator_,
                              .device       = device_,
