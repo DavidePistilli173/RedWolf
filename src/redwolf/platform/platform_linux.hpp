@@ -1,6 +1,5 @@
 #pragma once
 
-#include <wayland-client-core.h>
 #ifdef linux
 
     #include "redwolf/common.hpp"

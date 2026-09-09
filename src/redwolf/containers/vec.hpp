@@ -1,5 +1,6 @@
 #pragma once
 
+#include "iterators.hpp"
 #include "redwolf/common.hpp"
 #include "redwolf/memory/memory.hpp"
 
@@ -18,114 +19,18 @@ namespace rw {
         static constexpr usize min_capacity{ 8 };  /**< Minimum number of items that can be stored. */
 
         /**
-         * @brief Iterator for the Vec.
-         */
-        template<bool IsConst>
-        class Iterator {
-         public:
-            // --- Required member types for std::contiguous_iterator ---
-            using iterator_concept  = std::contiguous_iterator_tag;
-            using iterator_category = std::random_access_iterator_tag;
-            using value_type        = std::remove_cv_t<T>;
-            using difference_type   = std::ptrdiff_t;
-            using pointer           = std::conditional_t<IsConst, const T*, T*>;
-            using reference         = std::conditional_t<IsConst, const T&, T&>;
-            using element_type      = std::conditional_t<IsConst, const T, T>; // required by contiguous_iterator
-
-            // --- Constructors ---
-            constexpr Iterator() noexcept = default;
-            constexpr explicit Iterator(pointer ptr) noexcept : ptr_{ ptr } {}
-
-            // Allow implicit conversion from iterator -> const_iterator
-            template<bool WasConst>
-                requires(IsConst && !WasConst)
-            constexpr Iterator(const Iterator<WasConst>& other) noexcept : ptr_{ other.ptr_ } {}
-
-            // --- Dereference ---
-            constexpr reference operator*() const noexcept {
-                return *ptr_;
-            }
-            constexpr pointer operator->() const noexcept {
-                return ptr_;
-            }
-            constexpr reference operator[](difference_type n) const noexcept {
-                return *(ptr_ + n);
-            }
-
-            // --- Increment / decrement ---
-            constexpr Iterator& operator++() noexcept {
-                ++ptr_;
-                return *this;
-            }
-            constexpr Iterator operator++(int) noexcept {
-                auto result{ Iterator(ptr_++) };
-                return result;
-            }
-            constexpr Iterator& operator--() noexcept {
-                --ptr_;
-                return *this;
-            }
-            constexpr Iterator operator--(int) noexcept {
-                auto result{ Iteratlr(ptr_--) };
-                return result;
-            }
-
-            // --- Arithmetic ---
-            constexpr Iterator& operator+=(difference_type n) noexcept {
-                ptr_ += n;
-                return *this;
-            }
-            constexpr Iterator& operator-=(difference_type n) noexcept {
-                ptr_ -= n;
-                return *this;
-            }
-
-            constexpr Iterator operator+(difference_type n) const noexcept {
-                return Iterator(ptr_ + n);
-            }
-            constexpr Iterator operator-(difference_type n) const noexcept {
-                return Iterator(ptr_ - n);
-            }
-
-            friend constexpr Iterator operator+(difference_type n, const Iterator& it) noexcept {
-                return Iterator(it.ptr_ + n);
-            }
-
-            constexpr difference_type operator-(const Iterator& other) const noexcept {
-                return ptr_ - other.ptr_;
-            }
-
-            // --- Comparisons (rewritten operators cover ==, !=, <, >, <=, >= via <=>) ---
-            constexpr bool                 operator==(const Iterator& other) const noexcept  = default;
-            constexpr std::strong_ordering operator<=>(const Iterator& other) const noexcept = default;
-
-            // Needed for cross iterator/const_iterator comparison (e.g. it == carr.cend())
-            template<bool OtherConst>
-            constexpr bool operator==(const Iterator<OtherConst>& other) const noexcept {
-                return ptr_ == other.ptr_;
-            }
-            template<bool OtherConst>
-            constexpr std::strong_ordering operator<=>(const Iterator<OtherConst>& other) const noexcept {
-                return ptr_ <=> other.ptr_;
-            }
-
-         private:
-            pointer ptr_{ nullptr };
-        };
-
-        /**
          * @brief Constructor.
-         * @param memory_type Type of memory where the data will be stored.
+         * @param memory_category Type of memory where the data will be stored.
          */
-        explicit Vec(MemoryCategory memory_type) : allocator_{ &Memory::allocator(memory_type) } {}
+        explicit Vec(MemoryCategory memory_category) : allocator_{ &Memory::allocator(memory_category) } {}
 
         /**
          * @brief Construct a vector with some initial data.
-         * @param memory_type Type of memory where the data will be stored.
+         * @param memory_category Type of memory where the data will be stored.
          * @param initial_data Data to initialise the vector with.
          */
         template<size_t Size>
-        Vec(MemoryCategory memory_type, const std::array<T, Size> initial_data) : allocator_{ &Memory::allocator(memory_type) } {
+        Vec(MemoryCategory memory_category, const std::array<T, Size> initial_data) : allocator_{ &Memory::allocator(memory_category) } {
             reserve(Size);
             for (const auto& elem : initial_data) {
                 (void) emplace_back(elem);
@@ -210,15 +115,15 @@ namespace rw {
         /**
          * @brief Get an iterator to the first element of the vector.
          */
-        [[nodiscard]] Iterator<false> begin() {
-            return Iterator<false>(elements_);
+        [[nodiscard]] ContiguousIterator<T, false> begin() {
+            return ContiguousIterator<T, false>(elements_);
         }
 
         /**
          * @brief Get an iterator to the first element of the vector.
          */
-        [[nodiscard]] Iterator<true> begin() const {
-            return Iterator<true>(elements_);
+        [[nodiscard]] ContiguousIterator<T, true> begin() const {
+            return ContiguousIterator<T, true>(elements_);
         }
 
         /**
@@ -231,15 +136,15 @@ namespace rw {
         /**
          * @brief Get an iterator to the first element of the vector.
          */
-        [[nodiscard]] Iterator<true> cbegin() const {
-            return Iterator(elements_);
+        [[nodiscard]] ContiguousIterator<T, true> cbegin() const {
+            return ContiguousIterator(elements_);
         }
 
         /**
          * @brief Get the end iterator of the vector. (One item past the last valid item.)
          */
-        [[nodiscard]] Iterator<true> cend() const {
-            return Iterator(elements_ + size_);
+        [[nodiscard]] ContiguousIterator<T, true> cend() const {
+            return ContiguousIterator(elements_ + size_);
         }
 
         /**
@@ -305,15 +210,15 @@ namespace rw {
         /**
          * @brief Get the end iterator of the vector. (One item past the last valid item.)
          */
-        [[nodiscard]] Iterator<false> end() {
-            return Iterator<false>(elements_ + size_);
+        [[nodiscard]] ContiguousIterator<T, false> end() {
+            return ContiguousIterator<T, false>(elements_ + size_);
         }
 
         /**
          * @brief Get the end iterator of the vector. (One item past the last valid item.)
          */
-        [[nodiscard]] Iterator<true> end() const {
-            return Iterator<true>(elements_ + size_);
+        [[nodiscard]] ContiguousIterator<T, true> end() const {
+            return ContiguousIterator<T, true>(elements_ + size_);
         }
 
         /**
@@ -478,9 +383,7 @@ namespace rw {
                 return;
             }
 
-            debug("elements_ before reallocate: '{:x}'", (usize) elements_);
             elements_ = allocator_->reallocate(elements_, size_);
-            debug("elements_ after reallocate: '{:x}'", (usize) elements_);
             capacity_ = size_;
         }
 

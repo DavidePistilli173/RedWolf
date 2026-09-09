@@ -53,7 +53,7 @@ namespace rw {
             using pointer           = std::conditional_t<IsConst, const Entry*, Entry*>;
             using reference         = std::conditional_t<IsConst, const Entry&, Entry&>;
 
-            using vec_iterator = Vec<std::optional<Entry>>::template Iterator<IsConst>;
+            using vec_iterator = ContiguousIterator<std::optional<Entry>, IsConst>;
 
             // --- Constructors ---
             constexpr Iterator() noexcept = default;
@@ -104,11 +104,11 @@ namespace rw {
                 }
             }
 
-            Vec<std::optional<Entry>>::template Iterator<IsConst> ptr_;
-            Vec<std::optional<Entry>>::template Iterator<IsConst> end_; // bound for skip-scanning
+            ContiguousIterator<std::optional<Entry>, IsConst> ptr_;
+            ContiguousIterator<std::optional<Entry>, IsConst> end_; // bound for skip-scanning
         };
 
-        explicit HashMap(MemoryCategory memory_type) : memory_category_{ memory_type }, table_{ memory_type } {}
+        explicit HashMap(MemoryCategory memory_category) : memory_category_{ memory_category }, table_{ memory_category } {}
 
         /**
          * @brief Get an element from the map.

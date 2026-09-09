@@ -1,22 +1,20 @@
 #include "platform_linux.hpp"
 
-#ifdef linux
+#include "platform_common.hpp"
+#include "redwolf/events/events.hpp"
+#include "redwolf/input/input.hpp"
+#include "redwolf/input/mouse.hpp"
+#include "redwolf/logger.hpp"
+#include "redwolf/profiler.hpp"
+#include "redwolf/user_data.hpp"
+#include "xdg-shell.h"
 
-    #include "platform_common.hpp"
-    #include "redwolf/events/events.hpp"
-    #include "redwolf/input/input.hpp"
-    #include "redwolf/input/mouse.hpp"
-    #include "redwolf/logger.hpp"
-    #include "redwolf/profiler.hpp"
-    #include "redwolf/user_data.hpp"
-    #include "xdg-shell.h"
-
-    #include <cstring>
-    #include <linux/input-event-codes.h>
-    #include <sys/mman.h>
-    #include <unistd.h>
-    #include <wayland-client-core.h>
-    #include <wayland-client-protocol.h>
+#include <cstring>
+#include <linux/input-event-codes.h>
+#include <sys/mman.h>
+#include <unistd.h>
+#include <wayland-client-core.h>
+#include <wayland-client-protocol.h>
 
 namespace {
     rw::Platform* g_platform{ nullptr }; // Platform instance.
@@ -1097,5 +1095,3 @@ rw::MouseBtn rw::Platform::translate_mouse_btn_(u32 linux_code) {
         return MouseBtn::invalid;
     }
 }
-
-#endif

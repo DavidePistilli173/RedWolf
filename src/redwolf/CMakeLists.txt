@@ -4,12 +4,14 @@ find_package(Vulkan REQUIRED COMPONENTS glslc)
 
 target_sources(redwolf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/boot/entry_point.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/containers/str.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/events/events.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/input/input.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/random.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/linear_allocator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/generic_allocator.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/shaders/vulkan_object_shader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_command_buffer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_common.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_device.cpp
@@ -64,6 +66,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     add_wayland_protocol_target(xdg_shell "stable/xdg-shell/xdg-shell.xml" xdg-shell)
 
     target_sources(redwolf PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/platform/file_linux.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/platform/platform_linux.cpp
     )
 endif()
