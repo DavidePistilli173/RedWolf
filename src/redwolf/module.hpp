@@ -1,8 +1,7 @@
 #pragma once
 
 #include "common.hpp"
-
-#include <string_view>
+#include "redwolf/containers/view.hpp"
 
 namespace rw {
     /**
@@ -28,7 +27,7 @@ namespace rw {
         /**
          * @brief Get the name of the module.
          */
-        [[nodiscard]] virtual std::string_view name() = 0;
+        [[nodiscard]] virtual View<char> name() = 0;
 
         /**
          * @brief Called when the application closes.

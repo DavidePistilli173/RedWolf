@@ -17,11 +17,11 @@ namespace rwt {
         GenericModule(GenericModule&&)            = delete;
         GenericModule& operator=(GenericModule&&) = delete;
 
-        [[nodiscard]] bool             init() override;
-        [[nodiscard]] std::string_view name() override;
-        void                           on_close() override;
-        void                           on_update(f32 delta_time) override;
-        void                           on_render(f32 delta_time) override;
+        [[nodiscard]] bool           init() override;
+        [[nodiscard]] rw::View<char> name() override;
+        void                         on_close() override;
+        void                         on_update(f32 delta_time) override;
+        void                         on_render(f32 delta_time) override;
 
      private:
     };

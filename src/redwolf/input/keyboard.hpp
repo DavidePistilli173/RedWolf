@@ -1,11 +1,11 @@
 #pragma once
 
 #include "redwolf/common.hpp"
+#include "redwolf/containers/view.hpp"
 
 #include <array>
 #include <chrono>
 #include <limits>
-#include <string_view>
 
 namespace rw {
     /**
@@ -160,7 +160,7 @@ namespace rw {
      * @brief Payload of a keyboard text input event.
      */
     struct KeyboardTextEvent {
-        std::string_view text; /**< Text that was inserted by the user. */
+        View<char> text; /**< Text that was inserted by the user. */
     };
 
     /**

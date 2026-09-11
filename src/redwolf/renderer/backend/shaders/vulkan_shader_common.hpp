@@ -1,8 +1,8 @@
 #pragma once
 
+#include "redwolf/containers/view.hpp"
 #include "redwolf/renderer/backend/vulkan_common.hpp"
-
-#include <string_view>
+#include "redwolf/renderer/backend/vulkan_device.hpp"
 
 namespace rw::vk {
     /**
@@ -24,13 +24,19 @@ namespace rw::vk {
 
     /**
      * @brief Create a shader module.
+     * @param allocator Custom vulkan allocator.
+     * @param device Rendering device.
      * @param name Name of the shader.
      * @param type Type of shader stage.
      * @param type_name Name of the shader type.
-     * @param index Index of the current stage.
      * @param stage Output shader stage.
      * @return true on success, false otherwise.
      */
     [[nodiscard]] bool create_shader_module(
-        std::string_view name, VkShaderStageFlagBits type, std::string_view type_name, usize index, ShaderStage& stage);
+        VkAllocationCallbacks* allocator,
+        Ptr<Device>&           device,
+        View<char>             name,
+        VkShaderStageFlagBits  type,
+        View<char>             type_name,
+        ShaderStage&           stage);
 } // namespace rw::vk

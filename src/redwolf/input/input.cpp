@@ -50,7 +50,7 @@ void rw::Input::update_keyboard_repeat_info(std::chrono::milliseconds delay, i32
     g_input->keyboard_.repeat_rate  = rate;
 }
 
-void rw::Input::update_keyboard_text(std::string_view text) {
+void rw::Input::update_keyboard_text(View<char> text) {
     Events::fire(KeyboardTextEvent{ .text = text });
 }
 

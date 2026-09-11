@@ -2,6 +2,7 @@
 
 #include "keyboard.hpp"
 #include "mouse.hpp"
+#include "redwolf/containers/view.hpp"
 
 namespace rw {
     /**
@@ -49,7 +50,7 @@ namespace rw {
          * @brief Update the text input by the keyboard.
          * @param text Text input from the keyboard.
          */
-        static void update_keyboard_text(std::string_view text);
+        static void update_keyboard_text(View<char> text);
 
         /**
          * @brief Update the state of a mouse button.

@@ -12,12 +12,14 @@ namespace rw {
      * @brief Memory categories.
      */
     enum class MemoryCategory : u8 {
-        invalid,  /**< Invalid allocation type. */
-        events,   /**< Event allocations. */
-        renderer, /**< Renderer allocations. */
-        engine,   /**< Generic engine allocation. */
-        modules,  /**< User modules allocations. */
-        app       /**< Generic application allocation. */
+        invalid,   /**< Invalid allocation type. */
+        events,    /**< Event allocations. */
+        user_data, /**< User data allocations. */
+        platform,  /**< Platform allocations. */
+        renderer,  /**< Renderer allocations. */
+        engine,    /**< Generic engine allocation. */
+        modules,   /**< User modules allocations. */
+        app        /**< Generic application allocation. */
     };
 
     /**
@@ -52,6 +54,10 @@ namespace rw {
             switch (type) {
             case rw::MemoryCategory::events:
                 return Ptr<T>(&(instance->pool_events_), std::forward<Args>(args)...);
+            case rw::MemoryCategory::user_data:
+                return Ptr<T>(&(instance->pool_user_data_), std::forward<Args>(args)...);
+            case rw::MemoryCategory::platform:
+                return Ptr<T>(&(instance->pool_platform_), std::forward<Args>(args)...);
             case MemoryCategory::renderer:
                 return Ptr<T>(&(instance->pool_renderer_), std::forward<Args>(args)...);
             case MemoryCategory::engine:
@@ -80,12 +86,14 @@ namespace rw {
          */
         [[nodiscard]] static Memory* instance_();
 
-        GenericAllocator pool_invalid_;  /**< Invalid memory pool, just to make the program not crash. */
-        GenericAllocator pool_events_;   /**< Events memory pool. */
-        GenericAllocator pool_renderer_; /**< Renderer memory pool. */
-        GenericAllocator pool_engine_;   /**< Generic engine memory pool. */
-        GenericAllocator pool_modules_;  /**< User modules memory pool. */
-        GenericAllocator pool_app_;      /**< Generic application memory pool. */
+        GenericAllocator pool_invalid_;   /**< Invalid memory pool, just to make the program not crash. */
+        GenericAllocator pool_events_;    /**< Events memory pool. */
+        GenericAllocator pool_user_data_; /**< User data memory pool. */
+        GenericAllocator pool_platform_;  /**< Platform memory pool. */
+        GenericAllocator pool_renderer_;  /**< Renderer memory pool. */
+        GenericAllocator pool_engine_;    /**< Generic engine memory pool. */
+        GenericAllocator pool_modules_;   /**< User modules memory pool. */
+        GenericAllocator pool_app_;       /**< Generic application memory pool. */
     };
 
 } // namespace rw

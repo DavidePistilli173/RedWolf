@@ -4,6 +4,7 @@
 #include "redwolf/containers/vec.hpp"
 #include "redwolf/events/events.hpp"
 #include "redwolf/platform/platform_common.hpp"
+#include "shaders/vulkan_object_shader.hpp"
 #include "vulkan_command_buffer.hpp"
 #include "vulkan_device.hpp"
 #include "vulkan_fence.hpp"
@@ -134,5 +135,7 @@ namespace rw {
         bool  recreating_swapchain_{ false }; /**< True if we are recreating the swapchain. */
 
         Connection<WindowResizeEvent> window_resize_event_; /**< Connection to the WindowResizeEvent. */
+
+        Ptr<vk::ObjectShader> object_shader_; /**< Base object shader. */
     };
 } // namespace rw

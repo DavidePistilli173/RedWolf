@@ -1,8 +1,7 @@
 #pragma once
 
 #include "common.hpp"
-
-#include <string>
+#include "redwolf/containers/str.hpp"
 
 namespace rw {
     /**
@@ -13,7 +12,7 @@ namespace rw {
         /**
          * @brief Get the application name.
          */
-        [[nodiscard]] static const std::string& app_name();
+        [[nodiscard]] static View<char> app_name();
 
         /**
          * @brief Get the application version.
@@ -34,7 +33,7 @@ namespace rw {
      private:
         UserData() = default;
 
-        std::string app_name_;    /**< Application name. */
-        VersionInfo app_version_; /**< Application version. */
+        Str         app_name_{ MemoryCategory::user_data }; /**< Application name. */
+        VersionInfo app_version_;                           /**< Application version. */
     };
 } // namespace rw

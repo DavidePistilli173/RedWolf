@@ -2,10 +2,9 @@
 
 #include "redwolf/common.hpp"
 #include "redwolf/containers/vec.hpp"
+#include "redwolf/containers/view.hpp"
 #include "redwolf/memory/memory.hpp"
 #include "redwolf/module.hpp"
-
-#include <string_view>
 
 /**
  * @brief Entry point of the application, defined by the engine.
@@ -18,7 +17,7 @@ namespace rw_user {
      * @details This must be implemented by the user of RedWolf.
      * @return Name of the application.
      */
-    [[nodiscard]] extern std::string_view app_name();
+    [[nodiscard]] extern rw::View<char> app_name();
 
     /**
      * @brief Get the version of the application.

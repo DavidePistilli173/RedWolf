@@ -61,10 +61,10 @@ rw::Engine::~Engine() {
 
     Renderer::shutdown();
     Platform::shutdown();
+    UserData::shutdown();
     Input::shutdown();
     Events::shutdown();
     Memory::shutdown();
-    UserData::shutdown();
     Random::shutdown();
     info("Engine shut down.");
 
@@ -134,13 +134,6 @@ bool rw::Engine::init_subsystems_() {
     Random::init(std::chrono::high_resolution_clock::now().time_since_epoch().count());
     info("Random number generator initialised.");
 
-    trace("Initialising user data manager.");
-    if (!UserData::init()) {
-        error("Failed to initialise user data manager.");
-        return false;
-    }
-    info("User data manager initialised.");
-
     trace("Initialising memory manager.");
     if (!Memory::init()) {
         error("Failed to initialise memory manager.");
@@ -161,6 +154,13 @@ bool rw::Engine::init_subsystems_() {
         return false;
     }
     info("Input manager initialised.");
+
+    trace("Initialising user data manager.");
+    if (!UserData::init()) {
+        error("Failed to initialise user data manager.");
+        return false;
+    }
+    info("User data manager initialised.");
 
     trace("Initialising platform.");
     if (!Platform::init()) {

@@ -96,7 +96,7 @@ bool rw::vk::Instance::init_debugger_() {
 
 bool rw::vk::Instance::init_instance_() {
     const VkApplicationInfo app_info{ .sType            = VK_STRUCTURE_TYPE_APPLICATION_INFO,
-                                      .pApplicationName = UserData::app_name().c_str(),
+                                      .pApplicationName = UserData::app_name().data(),
 
                                       .applicationVersion = VK_MAKE_VERSION(
                                           UserData::app_version().major, UserData::app_version().minor, UserData::app_version().patch),

@@ -60,8 +60,8 @@ bool rw::Platform::init() {
         return true;
     }
 
-    g_platform                = new Platform();
-    g_platform->window_title_ = UserData::app_name();
+    g_platform = new Platform();
+    g_platform->window_title_.append(UserData::app_name());
 
     g_platform->prepare_listeners_();
 
@@ -167,8 +167,8 @@ bool rw::Platform::create_surface_() {
         return false;
     }
 
-    xdg_toplevel_set_title(xdg_top_level_, window_title_.c_str());
-    xdg_toplevel_set_app_id(xdg_top_level_, window_title_.c_str());
+    xdg_toplevel_set_title(xdg_top_level_, window_title_.data());
+    xdg_toplevel_set_app_id(xdg_top_level_, window_title_.data());
 
     wl_surface_commit(g_platform->surface_);
     if (-1 == wl_display_roundtrip(g_platform->display_)) {
@@ -500,7 +500,7 @@ void rw::Platform::process_text_key_(u32 key, u32 state) {
         }
 
         if (0 < len) {
-            Input::update_keyboard_text(std::string_view{ text_buffer_.data(), len });
+            Input::update_keyboard_text(View<char>{ text_buffer_.data(), len });
         }
     }
 }

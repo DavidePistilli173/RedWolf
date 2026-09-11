@@ -299,6 +299,12 @@ bool rw::RendererBackend::init_internal_() {
         return false;
     });
 
+    object_shader_ = Memory::new_object<vk::ObjectShader>(MemoryCategory::renderer);
+    if (!object_shader_->init(allocator_, device_)) {
+        error("Failed to initialise object shader.");
+        return false;
+    }
+
     return true;
 }
 

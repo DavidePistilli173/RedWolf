@@ -3,8 +3,6 @@
 #include "redwolf/containers/str.hpp"
 #include "redwolf/containers/vec.hpp"
 
-#include <string_view>
-
 namespace rw {
 #ifdef linux
     /**
@@ -23,7 +21,7 @@ namespace rw {
      */
     class File {
      public:
-        static constexpr usize buffer_read_size{ 4096 }; /**< Size for buffered reads. [B] */
+        static constexpr usize buffer_read_size{ 32768 }; /**< Size for buffered reads. [B] */
 
         /**
          * @brief File open modes.
@@ -34,7 +32,7 @@ namespace rw {
             read_write /**< Both read and write. */
         };
 
-        File(MemoryCategory memory_category, std::string_view path);
+        File(MemoryCategory memory_category, View<char> path);
         ~File();
 
         File(const File&)            = delete;
@@ -95,11 +93,19 @@ namespace rw {
          * @param text Text to write.
          * @return true on success, false otherwise.
          */
-        [[nodiscard]] bool write_line(std::string_view text);
+        [[nodiscard]] bool write_line(View<char> text);
 
      private:
-        Str            path_;                          /**< File path. */
-        FileDescriptor fd_{ invalid_file_descriptor }; /**< Raw file descriptor. */
-        Vec<u8>        buffer_;                        /**< Read buffer. */
+        /**
+         * @brief Fill the read buffer.
+         */
+        [[nodiscard]] bool fill_buffer_();
+
+        MemoryCategory memory_category_{ MemoryCategory::invalid }; /**< Memory category used by the file. */
+        Str            path_;                                       /**< File path. */
+        FileDescriptor fd_{ invalid_file_descriptor };              /**< Raw file descriptor. */
+        Vec<u8>        buffer_;                                     /**< Read buffer. */
+        usize          buffer_index_{ 0U };                         /**< Index of the next byte to read from the buffer_. */
+        bool           eof_{ false };                               /**< If true, EOF has been reached. */
     };
 } // namespace rw

@@ -3,10 +3,13 @@
 #include "iterators.hpp"
 #include "redwolf/common.hpp"
 #include "redwolf/memory/memory.hpp"
+#include "view.hpp"
 
 #include <algorithm>
 #include <array>
 #include <concepts>
+#include <format>
+#include <string_view>
 
 namespace rw {
     /**
@@ -97,6 +100,28 @@ namespace rw {
         }
 
         /**
+         * @brief Append some data to the vector.
+         */
+        void append(View<T> data) {
+            reserve(size_ + data.size());
+
+            for (const auto& element : data) {
+                (void) emplace_back(element);
+            }
+        }
+
+        /**
+         * @brief Append some data to the vector.
+         */
+        void append(const Vec<T>& data) {
+            reserve(size_ + data.size());
+
+            for (const auto& element : data) {
+                (void) emplace_back(element);
+            }
+        }
+
+        /**
          * @brief Get a reference to the last element of the vector.
          * @details No check is performed on the validity of such element.
          */
@@ -154,6 +179,7 @@ namespace rw {
             for (usize i{ 0U }; i < size_; ++i) {
                 elements_[i].~T();
             }
+            size_ = 0;
         }
 
         /**
@@ -365,13 +391,15 @@ namespace rw {
             }
 
             // Expand the vector.
-            elements_ = allocator_->reallocate(elements_, new_size);
+            if (new_size > capacity_) {
+                elements_ = allocator_->reallocate(elements_, new_size);
+                capacity_ = new_size;
+            }
             for (; size_ < new_size; ++size_) {
                 new (&(elements_[size_])) T(value);
             }
 
-            size_     = new_size;
-            capacity_ = new_size;
+            size_ = new_size;
         }
 
         /**
@@ -392,6 +420,31 @@ namespace rw {
          */
         [[nodiscard]] usize size() const {
             return size_;
+        }
+
+        /**
+         * @brief Get a sub-view over the vector data.
+         * @details The parameters are note checked.
+         * @param index Starting index of the subview.
+         * @param size Number of elements of the subview.
+         */
+        [[nodiscard]] View<T> subview(usize index, usize size) {
+            return View<T>(elements_ + index, size);
+        }
+
+        /**
+         * @brief Cast the vector to have a different underlying type.
+         */
+        template<typename U>
+        [[nodiscard]] Vec<U>& to() {
+            return *reinterpret_cast<Vec<U>*>(this);
+        }
+
+        /**
+         * @brief Get a view over the entire vector.
+         */
+        [[nodiscard]] View<T> view() const {
+            return View<T>(elements_, size_);
         }
 
      private:

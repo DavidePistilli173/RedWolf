@@ -7,8 +7,8 @@ namespace {
     rw::UserData* g_user_data{ nullptr }; // User data manager instance.
 }
 
-const std::string& rw::UserData::app_name() {
-    return g_user_data->app_name_;
+rw::View<char> rw::UserData::app_name() {
+    return g_user_data->app_name_.view();
 }
 
 const rw::VersionInfo& rw::UserData::app_version() {
@@ -21,8 +21,8 @@ bool rw::UserData::init() {
         return true;
     }
 
-    g_user_data               = new UserData();
-    g_user_data->app_name_    = rw_user::app_name();
+    g_user_data = new UserData();
+    g_user_data->app_name_.append(rw_user::app_name());
     g_user_data->app_version_ = rw_user::app_version();
     return true;
 }

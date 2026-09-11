@@ -4,9 +4,9 @@
 
 rw::Str::Str(MemoryCategory memory_category) : allocator_{ &Memory::allocator(memory_category) } {}
 
-rw::Str::Str(MemoryCategory memory_category, std::string_view text) :
+rw::Str::Str(MemoryCategory memory_category, View<char> text) :
     allocator_{ &Memory::allocator(memory_category) }, size_{ text.size() }, capacity_{ text.size() + 1 } {
-    reserve(capacity_);
+    chars_ = allocator_->reallocate(chars_, capacity_);
     std::memcpy(chars_, text.data(), size_);
     chars_[size_] = '\0';
 }
@@ -48,9 +48,11 @@ char& rw::Str::operator[](usize index) {
     return chars_[index];
 }
 
-void rw::Str::append(std::string_view text) {
-    resize(size_ + text.size() + 1);
+void rw::Str::append(View<char> text) {
+    reserve(size_ + text.size() + 1);
     std::memcpy(&chars_[size_], text.data(), text.size());
+    size_ += text.size();
+    chars_[size_] = '\0';
 }
 
 const char& rw::Str::back() const {
@@ -125,7 +127,7 @@ void rw::Str::fill(char value) {
     std::memset(chars_, static_cast<int32_t>(value), size_);
 }
 
-std::optional<usize> rw::Str::find_first(std::string_view text) const {
+std::optional<usize> rw::Str::find_first(View<char> text) const {
     // The text cannot be inside the string.
     if (text.size() > size_) {
         return {};
@@ -197,10 +199,12 @@ void rw::Str::resize(usize new_size, char value) {
     }
 
     // Expand the string.
-    chars_ = allocator_->reallocate(chars_, new_size);
+    if (new_size > capacity_) {
+        chars_    = allocator_->reallocate(chars_, new_size + 1);
+        capacity_ = new_size + 1;
+    }
     std::memset(&chars_[size_], static_cast<int32_t>(value), new_size - size_);
     size_         = new_size;
-    capacity_     = new_size;
     chars_[size_] = '\0';
 }
 
@@ -216,6 +220,10 @@ void rw::Str::shrink_to_fit() {
 
 usize rw::Str::size() const {
     return size_;
+}
+
+rw::View<char> rw::Str::subview(usize index, usize size) {
+    return View<char>(chars_ + index, size);
 }
 
 void rw::Str::trim() {
@@ -244,6 +252,6 @@ void rw::Str::trim() {
     }
 }
 
-std::string_view rw::Str::view() const {
+rw::View<char> rw::Str::view() const {
     return { chars_, size_ };
 }

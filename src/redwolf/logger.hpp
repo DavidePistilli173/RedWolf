@@ -14,7 +14,7 @@ namespace rw {
      * @brief Concept for objects that can be used as std::format arguments.
      */
     template<typename T>
-    concept IsFormattable = std::formattable<T, char>;
+    concept IsFormattable = std::formattable<std::remove_cvref_t<T>, char>;
 
     /**
      * @brief Logging levels.

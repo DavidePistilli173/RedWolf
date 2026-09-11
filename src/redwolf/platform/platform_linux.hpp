@@ -3,14 +3,13 @@
 #ifdef linux
 
     #include "redwolf/common.hpp"
+    #include "redwolf/containers/str.hpp"
     #include "redwolf/containers/vec.hpp"
     #include "redwolf/input/keyboard.hpp"
     #include "redwolf/input/mouse.hpp"
     #include "xdg-shell.h"
     #include "xkbcommon/xkbcommon.h"
 
-    #include <string>
-    #include <string_view>
     #include <wayland-client.h>
 
 namespace rw {
@@ -281,7 +280,7 @@ namespace rw {
          */
         [[nodiscard]] static MouseBtn translate_mouse_btn_(u32 linux_code);
 
-        std::string window_title_; /**< Window title. */
+        Str window_title_{ MemoryCategory::platform }; /**< Window title. */
 
         wl_registry_listener  registry_listener_{};      /**< wl_registry event listener. */
         xdg_wm_base_listener  xdg_wm_base_listener_{};   /**< xdg_wm_base event listener. */

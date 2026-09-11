@@ -13,6 +13,10 @@ rw::GenericAllocator& rw::Memory::allocator(MemoryCategory type) {
     switch (type) {
     case MemoryCategory::events:
         return g_memory->pool_events_;
+    case rw::MemoryCategory::user_data:
+        return g_memory->pool_user_data_;
+    case rw::MemoryCategory::platform:
+        return g_memory->pool_platform_;
     case MemoryCategory::renderer:
         return g_memory->pool_renderer_;
     case MemoryCategory::engine:

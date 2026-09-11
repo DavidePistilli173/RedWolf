@@ -12,6 +12,7 @@ target_sources(redwolf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/memory/generic_allocator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/shaders/vulkan_object_shader.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/shaders/vulkan_shader_common.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_command_buffer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_common.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer/backend/vulkan_device.cpp
@@ -77,7 +78,7 @@ make_directory(${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/shaders/)
 set_property(GLOBAL PROPERTY RW_SHADER_OUTPUTS "")
 function(compile_shader SHADER_NAME SHADER_STAGE)
     set(INPUT_FILE ${PROJECT_SOURCE_DIR}/data/shaders/${SHADER_NAME}.${SHADER_STAGE}.glsl)
-    set(OUTPUT_FILE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/shaders/${SHADER_NAME}.spv)
+    set(OUTPUT_FILE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/shaders/${SHADER_NAME}.${SHADER_STAGE}.spv)
 
     add_custom_command(
         OUTPUT ${OUTPUT_FILE}
@@ -88,7 +89,8 @@ function(compile_shader SHADER_NAME SHADER_STAGE)
     )
     set_property(GLOBAL APPEND PROPERTY RW_SHADER_OUTPUTS ${OUTPUT_FILE})
 endfunction()
-#compile_shader("builtin.object_shader" "vert")
+compile_shader("rw.object_shader" "vert")
+compile_shader("rw.object_shader" "frag")
 
 get_property(RW_ALL_SHADER_OUTPUTS GLOBAL PROPERTY RW_SHADER_OUTPUTS)
 add_custom_target(redwolf_shaders ALL DEPENDS ${RW_ALL_SHADER_OUTPUTS})

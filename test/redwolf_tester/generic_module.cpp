@@ -5,7 +5,7 @@ bool rwt::GenericModule::init() {
     return true;
 }
 
-std::string_view rwt::GenericModule::name() {
+rw::View<char> rwt::GenericModule::name() {
     return "GenericModule";
 }
 
